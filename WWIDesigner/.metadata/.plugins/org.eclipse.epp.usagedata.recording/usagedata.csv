@@ -1,0 +1,19 @@
+what,kind,bundleId,bundleVersion,description,time
+java.runtime.name,sysinfo,,,"Java(TM) SE Runtime Environment",1292028616691
+java.runtime.version,sysinfo,,,"1.6.0_18-b07",1292028616691
+java.specification.name,sysinfo,,,"Java Platform API Specification",1292028616691
+java.specification.vendor,sysinfo,,,"Sun Microsystems Inc.",1292028616691
+java.specification.version,sysinfo,,,"1.6",1292028616691
+java.vendor,sysinfo,,,"Sun Microsystems Inc.",1292028616691
+java.version,sysinfo,,,"1.6.0_18",1292028616691
+java.vm.info,sysinfo,,,"mixed mode",1292028616691
+java.vm.name,sysinfo,,,"Java HotSpot(TM) Client VM",1292028616691
+java.vm.specification.name,sysinfo,,,"Java Virtual Machine Specification",1292028616691
+java.vm.specification.vendor,sysinfo,,,"Sun Microsystems Inc.",1292028616691
+java.vm.specification.version,sysinfo,,,"1.0",1292028616691
+java.vm.vendor,sysinfo,,,"Sun Microsystems Inc.",1292028616691
+java.vm.version,sysinfo,,,"16.0-b13",1292028616691
+activated,view,org.eclipse.jdt.ui,3.5.1.r351_v20090821-0800,"org.eclipse.jdt.ui.PackageExplorer",1292028619967
+activated,view,org.eclipse.jdt.ui,3.5.1.r351_v20090821-0800,"org.eclipse.jdt.ui.PackageExplorer",1292028619998
+closed,view,org.eclipse.ui,3.5.1.M20090902-1000,"org.eclipse.ui.internal.introview",1292028620029
+closed,workbench,org.eclipse.ui.workbench,3.5.1.M20090826-0800a,"",1292028652352

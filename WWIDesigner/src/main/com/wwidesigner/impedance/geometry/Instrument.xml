@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ekf:instrument description="" xmlns:ekf="http://www.wwidesigner.com/Instrument" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.wwidesigner.com/Instrument Instrument.xsd ">
+  <lengthType>mm</lengthType>
+  <embouchure>
+    <backSet>0.0</backSet>
+    <characteristicLength>5.0</characteristicLength>
+  </embouchure>
+  <borePoint>
+    <borePosition>0.0</borePosition>
+    <boreDiameter>0.0</boreDiameter>
+  </borePoint>
+  <termination>
+    <flangeDiameter>1.0</flangeDiameter>
+  </termination>
+</ekf:instrument>

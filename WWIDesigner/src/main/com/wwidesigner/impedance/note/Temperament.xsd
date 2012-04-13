@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ekf="http://www.wwidesigner.com"
+	targetNamespace="http://www.wwidesigner.com" elementFormDefault="unqualified">
+	<xs:complexType name="Temperament">
+		<xs:sequence>
+			<xs:element name="name" type="xs:string" maxOccurs="1"
+				minOccurs="1" />
+			<xs:element name="note" type="ekf:TemperamentNote" maxOccurs="12"
+				minOccurs="2" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="TemperamentNote">
+		<xs:sequence>
+			<xs:element name="name" type="xs:string" minOccurs="1"
+				maxOccurs="1" />
+			<xs:element name="semitone" type="xs:int" minOccurs="1"
+				maxOccurs="1" />
+			<xs:element name="ratio" type="xs:double" minOccurs="0"
+				maxOccurs="1" />
+			<xs:element name="cents" type="xs:double" minOccurs="0"
+				maxOccurs="1" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:element name="temperament" type="ekf:Temperament" />
+</xs:schema>

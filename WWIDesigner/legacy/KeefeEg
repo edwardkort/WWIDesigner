@@ -1,0 +1,43 @@
+flute
+{
+	notes
+	{
+		D[0]	xxxxxx
+		E[0]	xxxxxo
+		F#[0]	xxxxoo
+		G[0]	xxxooo
+		A[0]	xxoooo
+		B[0]	xooooo
+		C[1]	oxxooo
+		C#[1]	oooooo
+		D[1]	oxxxxx
+		E[1]	xxxxxo
+		F#[1]	xxxxoo
+		G[1]	xxxooo
+		A[1]	xxoooo
+		B[1]	xooooo
+		C[2]	oxoxxx
+		C#[2]	oooooo
+	}
+	
+	parameters (temp = 26, length_units = mm)
+
+	bore
+	{
+		[@ 0.0  ]	18.90
+		[@ 575.2]	18.90
+	}
+
+	holes
+	{
+		[@ 286.4] (diam = 9.53, depth = 3.40 )
+		[@ 323.4] (diam = 9.53, depth = 3.40 )
+		[@ 359.0] (diam = 7.94, depth = 3.40 )
+		[@ 412.0] (diam = 7.94, depth = 3.40 )
+		[@ 436.4] (diam = 9.53, depth = 3.40 )
+		[@ 475.7] (diam = 6.35, depth = 3.40 )
+	}
+
+	termination ( flange_diam = 1000 )
+		% Approx. infinite flange.
+}

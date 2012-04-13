@@ -1,0 +1,106 @@
+#!/bin/ksh
+
+INFILE=
+OUTFILE=out
+PITCH_ST=440
+DO_PLOT=
+LOGSCALE=
+DO_BORE=0
+DO_TUNING=0
+NOTE=
+OCTAVE=
+FMIN=1
+FMAX=10000
+NFREQ=1000
+# Defaults for bore-loss calculations
+# The u parameter selects lossless calculations
+CALC_PROGRAM=FluteCalc_with_losses
+
+# Command line options:
+while getopts "i:o:a:plbTuN:f:F:n:" OPT
+do
+	case ${OPT} in
+		i)
+			INFILE=${OPTARG}
+			;;
+		o)
+			OUTFILE=${OPTARG}
+			;;
+		a)
+			PITCH_ST=${OPTARG}
+			;;
+		p)
+			DO_PLOT=yes
+			;;
+		l)
+			LOGSCALE="set logscale y; "
+			;;
+		b)
+			DO_BORE=1
+			;;
+		T)
+			DO_TUNING=1
+			;;
+		N)
+			NOTE=${OPTARG}
+			;;
+		f)
+			FMIN=${OPTARG}
+			;;
+		F)
+			FMAX=${OPTARG}
+			;;
+		n)
+			NFREQ=${OPTARG}
+			;;
+		u)
+			CALC_PROGRAM=FluteCalc_no_losses
+	esac
+done
+	
+if [ -z "${INFILE}" -o ! -r "${INFILE}" ]
+then
+	echo "A valid input file must be specified with the -i option." 1>&2
+	exit 1
+fi
+
+if [ -n "${NOTE}" ]
+then
+	OCTAVE=$(echo ${NOTE} | sed -e 's/^[^\[]*\[\(.*\)\]$/\1/g')
+	NOTE=$(echo ${NOTE} | sed -e 's/^\([^\[]*\)\[.*$/\1/g')
+fi
+
+rm "${OUTFILE}.fc"* 2>/dev/null
+
+${CALC_PROGRAM} "${INFILE}" "${OUTFILE}" "${PITCH_ST}" "${DO_BORE}" "${DO_TUNING}" "${NOTE}" "${OCTAVE}" "${FMIN}" "${FMAX}" "${NFREQ}"
+
+if [ $? != 0 ]
+then
+	echo "FluteCalc failed." 1>&2
+	exit 1
+fi
+
+if [ -n "${DO_PLOT}" ]
+then 
+	if [ ${DO_BORE} = 1 ]
+	then
+		echo "set style line; plot '${OUTFILE}.fcb' using 1:2 with linespoints" > .${OUTFILE}.fcgb
+		gnuplot -persist .${OUTFILE}.fcgb
+	fi
+
+	if [ ${DO_TUNING} = 1 ]
+	then
+		echo "set style line; plot '${OUTFILE}.fct' using 3 with lines" > .${OUTFILE}.fcgt
+		gnuplot -persist .${OUTFILE}.fcgt
+	fi
+
+	if [ -n "${NOTE}" ]
+	then
+		echo "set style line; ${LOGSCALE}plot '${OUTFILE}.fci' using 1:2 with lines" > .${OUTFILE}.fcgi
+		gnuplot -persist .${OUTFILE}.fcgi
+	fi
+fi
+
+rm .${OUTFILE}.fcg* 2>/dev/null
+
+exit 0

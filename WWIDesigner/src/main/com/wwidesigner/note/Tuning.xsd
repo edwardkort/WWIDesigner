@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	targetNamespace="http://www.wwidesigner.com/Tuning" xmlns:wit="http://www.wwidesigner.com/Tuning"
+	elementFormDefault="unqualified">
+
+	<xsd:element name="temperament" type="wit:Temperament">
+		<xsd:annotation>
+			<xsd:documentation>Persistent/reusable temperament
+			</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+
+	<xsd:element name="scaleSymbolList" type="wit:ScaleSymbolList">
+		<xsd:annotation>
+			<xsd:documentation>Persistent/reusable list of note symbols
+			</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+
+	<xsd:element name="scale" type="wit:Scale">
+		<xsd:annotation>
+			<xsd:documentation>Persistent/reusable scale</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+
+	<xsd:element name="fingeringPattern" type="wit:FingeringPattern"/>
+
+	<xsd:element name="tuning" type="wit:Tuning"/>
+
+	<xsd:complexType name="Scale">
+		<xsd:annotation>
+			<xsd:documentation>Named list of Notes</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="name" type="xsd:string"/>
+			<xsd:element name="note" maxOccurs="unbounded" minOccurs="1">
+				<xsd:complexType>
+					<xsd:complexContent>
+						<xsd:restriction base="wit:Note">
+							<xsd:sequence>
+								<xsd:element name="name" type="xsd:string"/>
+								<xsd:element name="frequency" type="xsd:double"
+									minOccurs="1" maxOccurs="1"/>
+							</xsd:sequence>
+						</xsd:restriction>
+					</xsd:complexContent>
+				</xsd:complexType>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="Note">
+		<xsd:annotation>
+			<xsd:documentation>Name/frequency pair</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="name" type="xsd:string"/>
+			<xsd:element name="frequency" type="xsd:double"
+				maxOccurs="1" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="Temperament">
+		<xsd:annotation>
+			<xsd:documentation>Named list of intervals relative to the root
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="name" type="xsd:string"/>
+			<xsd:element name="interval" type="wit:OneOrMore"
+				maxOccurs="unbounded" minOccurs="1"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:simpleType name="OneOrMore">
+		<xsd:annotation>
+			<xsd:documentation>Number greater than or equal to 1.
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:double">
+			<xsd:minInclusive value="1"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+
+	<xsd:complexType name="ScaleSymbolList">
+		<xsd:annotation>
+			<xsd:documentation>Named list of note symbols</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="name" type="xsd:string"/>
+			<xsd:element name="scaleSymbol" type="xsd:string"
+				maxOccurs="unbounded" minOccurs="1"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="FingeringPattern">
+		<xsd:sequence>
+			<xsd:element name="name" type="xsd:string"/>
+			<xsd:element name="numberOfHoles" type="xsd:nonNegativeInteger"/>
+			<xsd:sequence>
+				<xsd:element name="fingering" type="wit:Fingering"
+					maxOccurs="unbounded" minOccurs="1"/>
+			</xsd:sequence>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="Fingering">
+		<xsd:sequence>
+			<xsd:element name="numberOfHoles" type="xsd:nonNegativeInteger"
+				maxOccurs="1" minOccurs="1"/>
+			<xsd:element name="note" type="wit:Note" maxOccurs="1"
+				minOccurs="0"/>
+			<xsd:sequence>
+				<xsd:element name="openHole" type="xsd:boolean"
+					maxOccurs="unbounded" minOccurs="0"/>
+			</xsd:sequence>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="Tuning">
+		<xsd:complexContent>
+			<xsd:restriction base="wit:FingeringPattern">
+				<xsd:sequence>
+					<xsd:element name="name" type="xsd:string"/>
+					<xsd:element name="numberOfHoles" type="xsd:nonNegativeInteger"/>
+					<xsd:sequence>
+						<xsd:element name="fingering" maxOccurs="unbounded"
+							minOccurs="1">
+							<xsd:complexType>
+								<xsd:complexContent>
+									<xsd:restriction base="wit:Fingering">
+										<xsd:sequence>
+											<xsd:element name="numberOfHoles" type="xsd:nonNegativeInteger"
+												maxOccurs="1" minOccurs="1"/>
+											<xsd:element name="note" maxOccurs="1" minOccurs="1">
+												<xsd:complexType>
+													<xsd:complexContent>
+														<xsd:restriction base="wit:Note">
+															<xsd:sequence>
+																<xsd:element name="name" type="xsd:string"/>
+																<xsd:element name="frequency" type="xsd:double"
+																	maxOccurs="1" minOccurs="1"/>
+															</xsd:sequence>
+														</xsd:restriction>
+													</xsd:complexContent>
+												</xsd:complexType>
+											</xsd:element>
+											<xsd:sequence>
+												<xsd:element name="openHole" type="xsd:boolean"
+													maxOccurs="unbounded" minOccurs="0"/>
+											</xsd:sequence>
+										</xsd:sequence>
+									</xsd:restriction>
+								</xsd:complexContent>
+							</xsd:complexType>
+						</xsd:element>
+					</xsd:sequence>
+				</xsd:sequence>
+			</xsd:restriction>
+		</xsd:complexContent>
+	</xsd:complexType>
+
+</xsd:schema>

@@ -5,6 +5,7 @@
 	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry exported="true" kind="con" path="SWT_CONTAINER"/>
-	<classpathentry exported="true" kind="lib" path="C:/programming/lib/commons-math-2.1/commons-math-2.1/commons-math-2.1.jar" sourcepath="C:/programming/lib/commons-math-2.1/commons-math-2.1/commons-math-2.1-sources.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/XMLUnit"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/ApacheCommonsMath3"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>

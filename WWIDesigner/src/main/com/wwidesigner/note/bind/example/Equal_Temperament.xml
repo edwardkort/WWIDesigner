@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wit:temperament xmlns:wit="http://www.wwidesigner.com/Tuning"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://www.wwidesigner.com/Tuning file:///../Tuning.xsd">
+  <name>Equal Temperament</name>
+  <comment>Chromatic, equal temperament</comment>
+  <interval>1.000000</interval>
+  <interval>1.059463</interval>
+  <interval>1.122462</interval>
+  <interval>1.189207</interval>
+  <interval>1.259921</interval>
+  <interval>1.334840</interval>
+  <interval>1.414214</interval>
+  <interval>1.498307</interval>
+  <interval>1.587401</interval>
+  <interval>1.681793</interval>
+  <interval>1.781797</interval>
+  <interval>1.887749</interval>
+  <interval>2.000000</interval>
+</wit:temperament>
+

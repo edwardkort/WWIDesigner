@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wit:scale xmlns:wit="http://www.wwidesigner.com/Tuning"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://www.wwidesigner.com/Tuning file:///../Tuning.xsd">
+  <name>A pentatonic minor scale</name>
+  <comment>Key of A, equal temperament, only the pentatonic minor notes</comment>
+  <note>
+    <name>A</name>
+    <frequency>440.000000</frequency>
+  </note>
+  <note>
+    <name>C</name>
+    <frequency>523.251131</frequency>
+  </note>
+  <note>
+    <name>D</name>
+    <frequency>587.329536</frequency>
+  </note>
+  <note>
+    <name>E</name>
+    <frequency>659.255114</frequency>
+  </note>
+  <note>
+    <name>G</name>
+    <frequency>783.990872</frequency>
+  </note>
+  <note>
+    <name>A</name>
+    <frequency>880.000000</frequency>
+  </note>
+</wit:scale>
+

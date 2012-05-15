@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wit:fingeringPattern xmlns:wit="http://www.wwidesigner.com/Tuning"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://www.wwidesigner.com/Tuning file:///../Tuning.xsd">
+  <name>5-hole NAF standard fingering</name>
+  <comment>Only the pentatonic minor notes in Nakai tab</comment>
+  <numberOfHoles>5</numberOfHoles>
+  <fingering>
+    <note>
+      <name>F#</name>
+    </note>
+    <openHole>false</openHole>
+    <openHole>false</openHole>
+    <openHole>false</openHole>
+    <openHole>false</openHole>
+    <openHole>false</openHole>
+  </fingering>
+  <fingering>
+    <note>
+      <name>A</name>
+    </note>
+    <openHole>true</openHole>
+    <openHole>false</openHole>
+    <openHole>false</openHole>
+    <openHole>false</openHole>
+    <openHole>false</openHole>
+  </fingering>
+  <fingering>
+    <note>
+      <name>B</name>
+    </note>
+    <openHole>true</openHole>
+    <openHole>true</openHole>
+    <openHole>false</openHole>
+    <openHole>false</openHole>
+    <openHole>false</openHole>
+  </fingering>
+  <fingering>
+    <note>
+      <name>C#</name>
+    </note>
+    <openHole>true</openHole>
+    <openHole>true</openHole>
+    <openHole>true</openHole>
+    <openHole>false</openHole>
+    <openHole>false</openHole>
+  </fingering>
+  <fingering>
+    <note>
+      <name>E</name>
+    </note>
+    <openHole>true</openHole>
+    <openHole>true</openHole>
+    <openHole>true</openHole>
+    <openHole>true</openHole>
+    <openHole>false</openHole>
+  </fingering>
+  <fingering>
+    <note>
+      <name>F#</name>
+    </note>
+    <openHole>true</openHole>
+    <openHole>true</openHole>
+    <openHole>true</openHole>
+    <openHole>true</openHole>
+    <openHole>true</openHole>
+  </fingering>
+</wit:fingeringPattern>
+
+

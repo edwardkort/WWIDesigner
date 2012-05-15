@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wit:fingeringPattern xmlns:wit="http://www.wwidesigner.com/Tuning"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://www.wwidesigner.com/Tuning file:///C:/Users/kort/git/wwidesigner/WWIDesigner/jaxb_tmp/Tuning.xsd">
+  <name>No Holes Pattern</name>
+  <comment>Essentially a no-op pattern</comment>
+  <numberOfHoles>0</numberOfHoles>
+</wit:fingeringPattern>
+

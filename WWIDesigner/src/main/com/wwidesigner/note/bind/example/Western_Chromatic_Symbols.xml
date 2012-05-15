@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wit:scaleSymbolList xmlns:wit="http://www.wwidesigner.com/Tuning"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://www.wwidesigner.com/Tuning file:///../Tuning.xsd">
+  <name>Western Chromatic Symbols</name>
+  <comment>A symbol set with no indication of octave</comment>
+  <scaleSymbol>C</scaleSymbol>
+  <scaleSymbol>C#</scaleSymbol>
+  <scaleSymbol>Db</scaleSymbol>
+  <scaleSymbol>D</scaleSymbol>
+  <scaleSymbol>D#</scaleSymbol>
+  <scaleSymbol>Eb</scaleSymbol>
+  <scaleSymbol>E</scaleSymbol>
+  <scaleSymbol>F</scaleSymbol>
+  <scaleSymbol>F#</scaleSymbol>
+  <scaleSymbol>Gb</scaleSymbol>
+  <scaleSymbol>G</scaleSymbol>
+  <scaleSymbol>G#</scaleSymbol>
+  <scaleSymbol>Ab</scaleSymbol>
+  <scaleSymbol>A</scaleSymbol>
+  <scaleSymbol>A#</scaleSymbol>
+  <scaleSymbol>Bb</scaleSymbol>
+  <scaleSymbol>B</scaleSymbol>
+</wit:scaleSymbolList>
+

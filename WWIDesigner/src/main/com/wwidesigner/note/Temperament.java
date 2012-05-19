@@ -52,7 +52,7 @@ public class Temperament
 {
 	static private boolean mIsInitEqualT;
     static private boolean mIsInitJustT;
-    static private String[] mDiatonicNotes = new String[12];
+    //static private String[] mDiatonicNotes = new String[12];
     static private Temperament mEqualTemp;
     static private Temperament mJustTemp;
 

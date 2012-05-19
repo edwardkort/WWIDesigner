@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<wit:temperament xmlns:wit="http://www.wwidesigner.com/Tuning"
-   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-   xsi:schemaLocation="http://www.wwidesigner.com/Tuning file:///../Tuning.xsd">
+<wit:temperament xmlns:wit="http://www.wwidesigner.com/Tuning">
   <name>Equal Temperament</name>
   <comment>Chromatic, equal temperament</comment>
   <interval>1.000000</interval>

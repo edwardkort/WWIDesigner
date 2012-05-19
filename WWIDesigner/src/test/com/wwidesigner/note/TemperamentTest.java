@@ -3,15 +3,12 @@
  */
 package com.wwidesigner.note;
 
-import static org.junit.Assert.*;
-import com.wwidesigner.util.*;
-import com.wwidesigner.note.DeviatedNominalNote;
-import com.wwidesigner.note.NominalNote;
-import com.wwidesigner.note.Temperament;
-import com.wwidesigner.util.Constants;
+import static org.junit.Assert.assertEquals;
 
 import org.junit.Before;
 import org.junit.Test;
+
+import com.wwidesigner.util.Constants;
 
 /**
  * @author kort

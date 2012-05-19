@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<wit:scale xmlns:wit="http://www.wwidesigner.com/Tuning"
-   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-   xsi:schemaLocation="http://www.wwidesigner.com/Tuning file:///../Tuning.xsd">
+<wit:scale xmlns:wit="http://www.wwidesigner.com/Tuning">
   <name>A pentatonic minor scale</name>
   <comment>Key of A, equal temperament, only the pentatonic minor notes</comment>
   <note>

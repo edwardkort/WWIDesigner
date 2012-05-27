@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.wwidesigner.com/Tuning"
+	xmlns:wit="http://www.wwidesigner.com/Tuning" elementFormDefault="unqualified">
+	<xsd:element name="baseNote" type="wit:Frequency">
+		<xsd:annotation>
+			<xsd:documentation>Bell note, or fundamental pitch.
+			</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="noteNames" type="wit:XmlNoteNames">
+		<xsd:annotation>
+			<xsd:documentation>
+				List of names for notes of played scale, starting with baseNote.
+			</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="relativeScale" type="wit:XmlRelativeScale">
+		<xsd:annotation>
+			<xsd:documentation>
+				List of frequencies for notes of played scale, relative to baseNote.
+				Same cardinality as noteNames.
+			</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="playedScale" type="wit:XmlPlayedScale">
+		<xsd:annotation>
+			<xsd:documentation>
+				List of playing configurations for notes of played scale, beginning with baseNote.
+				Same cardinality as noteNames.
+			</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:simpleType name="Frequency">
+		<xsd:annotation>
+			<xsd:documentation>Frequency in Hz, greater than 0.
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:double">
+			<xsd:minExclusive value="0" />
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="RelativeFrequency">
+		<xsd:annotation>
+			<xsd:documentation>
+				Dimensionless frequency relative to a base note, greater than or equal to 1.
+				In principle, relative frequencies less than 1 are possible,
+				but unlikely to be required.
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:double">
+			<xsd:minInclusive value="1" />
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:complexType name="XmlNoteNames">
+		<xsd:annotation>
+			<xsd:documentation>Names or symbols for notes of a scale, not necessarily distinct.
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="name" type="xsd:string" minOccurs="1" maxOccurs="unbounded" />
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="XmlRelativeScale">
+		<xsd:annotation>
+			<xsd:documentation>
+				Relative frequencies for notes of a scale.
+				The first ratio is always 1, for the base note.
+				Temperament attribute may be "Equal", "Just", "Pythagorean",
+				or the name of some other conventional temperament.
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="ratio" type="wit:RelativeFrequency" minOccurs="1" maxOccurs="unbounded" />
+		</xsd:sequence>
+		<xsd:attribute name="temperament" type="xsd:string" />
+	</xsd:complexType>
+	<xsd:complexType name="XmlPlayedScale">
+		<xsd:annotation>
+			<xsd:documentation>List of playing configurations for notes of a played scale.
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="play" type="wit:PlayingConfig" minOccurs="1" maxOccurs="unbounded" />
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="PlayingConfig">
+		<xsd:annotation>
+			<xsd:documentation>
+				Playing configuration for one note.
+				The structure defined here is *one* possible structure; it applies
+				specifically to conventional fipple flutes played without half-holing.
+				For a given instrument, all of these playing configurations must
+				have exactly one "hole" item for each of the instrument's toneholes.
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="register" type="xsd:positiveInteger" />
+			<xsd:element name="hole" type="wit:HoleState" minOccurs="0" maxOccurs="unbounded" />
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:simpleType name="HoleState">
+		<xsd:annotation>
+			<xsd:documentation>
+				State of one tonehole: open (0, o), or closed (1, x).
+				At present, state does not include half-open holes,
+				such as are used with some instruments in some styles.
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="0" />
+			<xsd:enumeration value="1" />
+			<xsd:enumeration value="o" />
+			<xsd:enumeration value="x" />
+		</xsd:restriction>
+	</xsd:simpleType>
+</xsd:schema>

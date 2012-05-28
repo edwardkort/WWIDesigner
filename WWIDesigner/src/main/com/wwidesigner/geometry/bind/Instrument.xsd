@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	xmlns:wii="http://www.wwidesigner.com/Instrument" targetNamespace="http://www.wwidesigner.com/Instrument"
+	elementFormDefault="unqualified">
+	<xsd:complexType name="XmlInstrument">
+		<xsd:annotation>
+			<xsd:documentation>The physical geometry of a wood wind. Dimensions
+				may represent initial values subject to optimization or final values
+				fixed throughout the calculations.
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="name" type="xsd:string" />
+			<xsd:element name="description" type="xsd:string"
+				minOccurs="0" />
+			<xsd:element name="lengthType" type="wii:XmlLengthType" />
+			<xsd:element name="borePoint" type="wii:XmlBorePoint"
+				maxOccurs="unbounded" />
+			<xsd:element name="embouchure" type="wii:XmlEmbouchure"
+				minOccurs="0" />
+			<xsd:element name="hole" type="wii:XmlHole" maxOccurs="unbounded" />
+			<xsd:element name="termination" type="wii:XmlEndBoreSection" />
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:simpleType name="XmlLengthType">
+		<xsd:annotation>
+			<xsd:documentation>An enumeration, applied globally to all
+				Dimensions, indicating mm or inch values.
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:token">
+			<xsd:enumeration value="mm" />
+			<xsd:enumeration value="in" />
+		</xsd:restriction>
+	</xsd:simpleType>
+
+	<xsd:simpleType name="XmlOptimization">
+		<xsd:annotation>
+			<xsd:documentation>An enumeration, applied individually to all
+				Dimension values, that is interpreted by the optimization engine. We
+				might want to add other/additional values to this enumeration.
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:token">
+			<xsd:enumeration value="FIXED" />
+			<xsd:enumeration value="FREE" />
+		</xsd:restriction>
+	</xsd:simpleType>
+
+	<xsd:complexType name="XmlDimension">
+		<xsd:annotation>
+			<xsd:documentation>Base class for a double value and associated
+				optimization flag.
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="value" type="xsd:double" />
+			<xsd:element name="optimization" type="wii:XmlOptimization" />
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="XmlZeroOrMore">
+		<xsd:annotation>
+			<xsd:documentation>A non-negative Dimension.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:restriction base="wii:XmlDimension">
+				<xsd:sequence>
+					<xsd:element name="value">
+						<xsd:simpleType>
+							<xsd:restriction base="xsd:double">
+								<xsd:minInclusive value="0" />
+							</xsd:restriction>
+						</xsd:simpleType>
+					</xsd:element>
+					<xsd:element name="optimization" type="wii:XmlOptimization" />
+				</xsd:sequence>
+			</xsd:restriction>
+		</xsd:complexContent>
+	</xsd:complexType>
+
+	<xsd:complexType name="XmlMoreThanZero">
+		<xsd:annotation>
+			<xsd:documentation>A Dimension with a value greater than 0.
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:restriction base="wii:XmlDimension">
+				<xsd:sequence>
+					<xsd:element name="value">
+						<xsd:simpleType>
+							<xsd:restriction base="xsd:double">
+								<xsd:minExclusive value="0" />
+							</xsd:restriction>
+						</xsd:simpleType>
+					</xsd:element>
+					<xsd:element name="optimization" type="wii:XmlOptimization" />
+				</xsd:sequence>
+			</xsd:restriction>
+		</xsd:complexContent>
+	</xsd:complexType>
+
+	<xsd:complexType name="XmlBorePoint">
+		<xsd:annotation>
+			<xsd:documentation>Represents a bore position and effective diameter,
+				measured from the head of the instrument. Diameters between
+				borePoints are linearly interpolated.
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="borePosition" type="wii:XmlZeroOrMore" />
+			<xsd:element name="boreDiameter" type="wii:XmlZeroOrMore" />
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="XmlEndBoreSection">
+		<xsd:annotation>
+			<xsd:documentation>The terminal borePoint of an instrument that also
+				contains a flange value.
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="wii:XmlBorePoint">
+				<xsd:sequence>
+					<xsd:element name="flangeDiameter" type="wii:XmlMoreThanZero" />
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+
+	<xsd:complexType name="XmlKey">
+		<xsd:annotation>
+			<xsd:documentation>Representation of a key mechanism over a tone
+				hole.
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="diameter" type="wii:XmlMoreThanZero" />
+			<xsd:element name="holeDiameter" type="wii:XmlZeroOrMore" />
+			<xsd:element name="height" type="wii:XmlZeroOrMore" />
+			<xsd:element name="thickness" type="wii:XmlZeroOrMore" />
+			<xsd:element name="wallThickness" type="wii:XmlZeroOrMore" />
+			<xsd:element name="chimneyHeight" type="wii:XmlZeroOrMore" />
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="XmlHole">
+		<xsd:annotation>
+			<xsd:documentation>A tone hole with optional key mechanism. The tone
+				hole assumes a cylindrical shape with a radiused inner edge. More
+				complexity is possible, including truncated conical profiles and
+				angled holes.
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="name" type="xsd:string" minOccurs="0" />
+			<xsd:element name="position" type="wii:XmlZeroOrMore" />
+			<xsd:element name="diameter" type="wii:XmlMoreThanZero" />
+			<xsd:element name="height" type="wii:XmlMoreThanZero" />
+			<xsd:element name="innerCurvatureRadius" type="wii:XmlZeroOrMore"
+				minOccurs="0" />
+			<xsd:element name="key" type="wii:XmlKey" minOccurs="0" />
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="XmlEmbouchure">
+		<xsd:annotation>
+			<xsd:documentation>First pass at a sound-mechanism model. Represents
+				a choice between (1) a characteristic length, (2) a flute-type
+				embouchure, and (3) a fipple mechanism. We need to add reeds,
+				end-blown flutes, etc.
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="position" type="wii:XmlZeroOrMore" />
+			<xsd:choice>
+				<xsd:element name="characteristicLength" type="wii:XmlMoreThanZero" />
+				<xsd:element name="embouchureHole">
+					<xsd:complexType>
+						<xsd:sequence>
+							<xsd:element name="innerDiameter" type="wii:XmlMoreThanZero" />
+							<xsd:element name="outerDiameter" type="wii:XmlMoreThanZero" />
+							<xsd:element name="length" type="wii:XmlMoreThanZero" />
+						</xsd:sequence>
+					</xsd:complexType>
+				</xsd:element>
+				<xsd:element name="fipple">
+					<xsd:complexType>
+						<xsd:sequence>
+							<xsd:element name="width" type="wii:XmlMoreThanZero" />
+							<xsd:element name="length" type="wii:XmlMoreThanZero" />
+							<xsd:element name="fippleFactor" type="wii:XmlMoreThanZero" />
+						</xsd:sequence>
+					</xsd:complexType>
+				</xsd:element>
+			</xsd:choice>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:element name="instrument" type="wii:XmlInstrument" />
+</xsd:schema>

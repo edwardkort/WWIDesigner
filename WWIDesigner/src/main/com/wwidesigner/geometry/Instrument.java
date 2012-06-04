@@ -3,309 +3,190 @@
  */
 package com.wwidesigner.geometry;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.math3.complex.Complex;
 
-import com.wwidesigner.math.ImpedanceSpectrum;
-import com.wwidesigner.math.TransferMatrix;
-import com.wwidesigner.note.DeviatedNominalNote;
-import com.wwidesigner.note.NominalNote;
-import com.wwidesigner.note.NoteConfig;
-import com.wwidesigner.note.Temperament;
-import com.wwidesigner.util.Constants;
+import com.wwidesigner.geometry.bind.XmlBorePoint;
+import com.wwidesigner.geometry.bind.XmlEndBoreSection;
+import com.wwidesigner.geometry.bind.XmlHole;
+import com.wwidesigner.geometry.bind.XmlInstrument;
+import com.wwidesigner.geometry.bind.XmlLengthType;
+import com.wwidesigner.geometry.bind.XmlMouthpiece;
 
 /**
- * Class representing a flute. Contains a linear chain of {@link Component Components},
- * terminated by a {@link Termination}.
+ * @author kort
+ * 
  */
 public class Instrument implements InstrumentInterface
 {
 
-	private String mDescription;
-    private List<Component> mComponents;
-    private EmbouchureInterface mEmbouchure;
-    private List<BoreSection> mBoreSections;
-    private List<Hole> mHoles;
-    private TerminationInterface mTermination;
-    private List<NoteConfig> mNoteConfigs;
-    private transient Temperament mTemperament;
-    private transient double mPitchStandard;
-    private NominalNote mKey;
+	protected XmlInstrument xmlInstrumtent;
 
-    public Instrument()
-    {
-        mComponents = new ArrayList<Component>();
-        mHoles = new ArrayList<Hole>();
-        mTemperament = Temperament.getEqualTemperament();
-        mKey = new NominalNote("C", 4);
-        mPitchStandard = 440.0;
-        mBoreSections = new ArrayList<BoreSection>();
-        mNoteConfigs = new ArrayList<NoteConfig>();
-    }
-
-    /**
-	 * @return the mKey
+	/**
+	 * @return the xmlInstrumtent
 	 */
-	public NominalNote getKey()
+	public XmlInstrument getXmlInstrumtent()
 	{
-		return mKey;
+		return xmlInstrumtent;
 	}
 
 	/**
-	 * @return the mDescription
+	 * @param xmlInstrumtent
+	 *            the xmlInstrumtent to set
 	 */
-	protected String getDescription()
+	public void setXmlInstrumtent(XmlInstrument xmlInstrumtent)
 	{
-		return mDescription;
+		this.xmlInstrumtent = xmlInstrumtent;
 	}
 
-	/**
-	 * @param mDescription the mDescription to set
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.wwidesigner.geometry.InstrumentInterface#getName()
 	 */
-	protected void setDescription(String mDescription)
+	@Override
+	public String getName()
 	{
-		this.mDescription = mDescription;
+		return xmlInstrumtent.getName();
 	}
 
-	/**
-	 * @param key the mKey to set
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.wwidesigner.geometry.InstrumentInterface#setName(java.lang.String)
 	 */
-	public void setKey(NominalNote key)
+	@Override
+	public void setName(String value)
 	{
-		mKey = key;
+		xmlInstrumtent.setName(value);
 	}
 
-	/**
-	 * @see com.wwidesigner.geometry.InstrumentInterface#validate()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.wwidesigner.geometry.InstrumentInterface#getDescription()
 	 */
-    public void validate()
-    {
-        assert mTermination != null;
+	@Override
+	public String getDescription()
+	{
+		return xmlInstrumtent.getDescription();
+	}
 
-        for ( ComponentInterface comp : mComponents )
-        {
-            assert comp != null;
-            comp.validate();
-        }
-    }
-
-    /**
-     * Add a nominal note and the configuration of open and closed holes that
-     * produce it.
-     */
-    void addNote( NominalNote nominalNote, String xoConfig )
-    {
-        boolean[] config = new boolean[xoConfig.length()];
-        char[] chars = xoConfig.toCharArray();
-        int index = 0;
-        for ( char ch : chars )
-        {
-            if ( ch == 'x' )
-            {
-                config[index] = true;
-            }
-            else if ( ch == 'o' )
-            {
-                config[index] = false;
-            }
-            index++;
-        }
-        mNoteConfigs.add( new NoteConfig( nominalNote, config ) );
-    }
-
-    /**
-	 * @see com.wwidesigner.geometry.InstrumentInterface#setNote(com.wwidesigner.note.NominalNote)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.wwidesigner.geometry.InstrumentInterface#setDescription(java.lang
+	 * .String)
 	 */
-    public void setNote( NominalNote nominalNote )
-    {
-        for ( NoteConfig noteConfig : mNoteConfigs )
-        {
-            if ( noteConfig.compareTo( nominalNote ) == 0 )
-            {
-                boolean[] config = noteConfig.getConfig();
-                for ( int i = 0; i < config.length; i++ )
-                {
-                    Hole hole = mHoles.get( i );
-                    hole.setIsClosed( config[i] );
-                    hole.validate();
-                }
-            }
-        }
-    }
+	@Override
+	public void setDescription(String value)
+	{
+		xmlInstrumtent.setDescription(value);
+	}
 
-    /**
-     * Add a {@link BoreSect} to the right (foot) end.
-     */
-    void addBoreSection( BoreSection boreSection )
-    {
-        mComponents.add( boreSection );
-        mBoreSections.add( boreSection );
-    }
-
-    /**
-     * Add a Hole to the right (foot) end.
-     */
-    void addHole( Hole hole )
-    {
-        mComponents.add( hole );
-        mHoles.add( hole );
-    }
-
-    /**
-	 * @see com.wwidesigner.geometry.InstrumentInterface#calcZ(double)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.wwidesigner.geometry.InstrumentInterface#getLengthType()
 	 */
-    public Complex calcZ( double freq )
-    {
-        TransferMatrix fluteMatrix = new TransferMatrix( Complex.ONE, Complex.ZERO, Complex.ZERO,
-                                                         Complex.ONE );
-        TransferMatrix compMatrix = new TransferMatrix( Complex.ONE, Complex.ZERO, Complex.ZERO,
-                                                        Complex.ONE );
-        for ( ComponentInterface component : mComponents )
-        {
-            component.calcT( compMatrix, freq );
-            fluteMatrix = TransferMatrix.multiply( fluteMatrix, compMatrix );
-        }
-        Complex zL = mTermination.calcZL( freq );
-        Complex result = zL.multiply( fluteMatrix.getPP() ).add( fluteMatrix.getPU() )
-                .divide( zL.multiply( fluteMatrix.getUP() ).add( fluteMatrix.getUU() ) );
-        return result;
-    }
+	@Override
+	public XmlLengthType getLengthType()
+	{
+		return xmlInstrumtent.getLengthType();
+	}
 
-    public List<DeviatedNominalNote> calcTuning(int nFreq)
-    {
-    	List<DeviatedNominalNote> calcNotes = new ArrayList<DeviatedNominalNote>();
-    	for (NoteConfig noteConfig : mNoteConfigs)
-    	{
-    		setNote( noteConfig );
-    		double matchingFreq = mTemperament.getFreq(noteConfig, mPitchStandard, mKey);
-
-    		double deltaFactor =
-    			Math.pow(Constants.CENT_FACTOR, Constants.CENTS_IN_SEMITONE * 4.0);
-    		double freqStart = matchingFreq / deltaFactor;
-    		double freqEnd = matchingFreq * deltaFactor;
-
-    		ImpedanceSpectrum imp = new ImpedanceSpectrum();
-    		imp.calcImpedance(this, freqStart, freqEnd, nFreq);
-
-    		double minDeviationFreq = 0;
-    		double minDeviation = Constants.BIG_DBL;
-
-    		List<Double>minima = imp.getMinima();
-    		for (Double minVal : minima)
-    		{
-    			double deviation = Math.abs(minVal - matchingFreq);
-    			if (deviation < minDeviation)
-    			{
-    				minDeviation = deviation;
-    				minDeviationFreq = minVal;
-    			}
-    		}
-
-    		if (minDeviation < Constants.BIG_DBL)
-    		{
-    			double centsFromNominal = Constants.CENTS_IN_OCTAVE *
-    				Math.log10(minDeviationFreq / matchingFreq) / Constants.LOG2;
-
-    			calcNotes.add(new DeviatedNominalNote(noteConfig, centsFromNominal));
-    		}
-    		else
-    		{
-    			calcNotes.add(new DeviatedNominalNote(noteConfig, Constants.BIG_DBL));
-    		}
-    	}
-    	
-    	return calcNotes;
-    }
-
-    /**
-	 * @see com.wwidesigner.geometry.InstrumentInterface#getTemperament()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.wwidesigner.geometry.InstrumentInterface#setLengthType(com.wwidesigner
+	 * .geometry.bind.XmlLengthType)
 	 */
-    public Temperament getTemperament()
-    {
-        return mTemperament;
-    }
+	@Override
+	public void setLengthType(XmlLengthType value)
+	{
+		xmlInstrumtent.setLengthType(value);
+	}
 
-    /**
-	 * @see com.wwidesigner.geometry.InstrumentInterface#setTemperament(com.wwidesigner.note.Temperament)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.wwidesigner.geometry.InstrumentInterface#getBorePoint()
 	 */
-    public void setTemperament( Temperament temperament )
-    {
-        mTemperament = temperament;
-    }
+	@Override
+	public List<XmlBorePoint> getBorePoint()
+	{
+		return xmlInstrumtent.getBorePoint();
+	}
 
-    /**
-	 * @see com.wwidesigner.geometry.InstrumentInterface#getEmbouchure()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.wwidesigner.geometry.InstrumentInterface#getMouthpiece()
 	 */
-    public EmbouchureInterface getEmbouchure()
-    {
-        return mEmbouchure;
-    }
+	@Override
+	public XmlMouthpiece getMouthpiece()
+	{
+		return xmlInstrumtent.getMouthpiece();
+	}
 
-    /**
-	 * @see com.wwidesigner.geometry.InstrumentInterface#getBoreSections()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.wwidesigner.geometry.InstrumentInterface#setMouthpiece(com.wwidesigner
+	 * .geometry.bind.XmlMouthpiece)
 	 */
-    public List<BoreSection> getBoreSections()
-    {
-        return mBoreSections;
-    }
+	@Override
+	public void setMouthpiece(XmlMouthpiece value)
+	{
+		xmlInstrumtent.setMouthpiece(value);
+	}
 
-    /**
-	 * @see com.wwidesigner.geometry.InstrumentInterface#getHoles()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.wwidesigner.geometry.InstrumentInterface#getHole()
 	 */
-    public List<Hole> getHoles()
-    {
-        return mHoles;
-    }
+	@Override
+	public List<XmlHole> getHole()
+	{
+		return xmlInstrumtent.getHole();
+	}
 
-    /**
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.wwidesigner.geometry.InstrumentInterface#getTermination()
 	 */
-    public TerminationInterface getTermination()
-    {
-        return mTermination;
-    }
+	@Override
+	public XmlEndBoreSection getTermination()
+	{
+		return xmlInstrumtent.getTermination();
+	}
 
-    /**
-	 * @see com.wwidesigner.geometry.InstrumentInterface#getNoteConfigs()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.wwidesigner.geometry.InstrumentInterface#setTermination(com.wwidesigner
+	 * .geometry.bind.XmlEndBoreSection)
 	 */
-    public List<NoteConfig> getNoteConfigs()
-    {
-        return mNoteConfigs;
-    }
+	@Override
+	public void setTermination(XmlEndBoreSection value)
+	{
+		xmlInstrumtent.setTermination(value);
+	}
 
-	/**
-	 * @see com.wwidesigner.geometry.InstrumentInterface#setEmbouchure(com.wwidesigner.geometry.Embouchure)
+	/*
+	 * Included for possible compatibility to Dan Gordon's code.
 	 */
-    public void setEmbouchure( Embouchure embouchure )
-    {
-        mComponents.add( 0, embouchure );
-        mEmbouchure = embouchure;
-    }
+	public Complex calcZ(double freq)
+	{
+		return null;
+	}
 
-    /**
-	 * @see com.wwidesigner.geometry.InstrumentInterface#setTermination(com.edkort.flute.impedance.geometry.Termination)
-	 */
-    public void setTermination( TerminationInterface termination )
-    {
-        assert termination != null;
-        mTermination = termination;
-    }
-
-    /**
-	 * @see com.wwidesigner.geometry.InstrumentInterface#getPitchStandard()
-	 */
-    public double getPitchStandard()
-    {
-        return mPitchStandard;
-    }
-
-    /**
-	 * @see com.wwidesigner.geometry.InstrumentInterface#setPitchStandard(double)
-	 */
-    public void setPitchStandard( double pitchStandard )
-    {
-        mPitchStandard = pitchStandard;
-    }
 }

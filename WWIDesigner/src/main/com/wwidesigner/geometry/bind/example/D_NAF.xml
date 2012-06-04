@@ -33,7 +33,7 @@
 			<optimization>FIXED</optimization>
 		</boreDiameter>
 	</borePoint>
-	<embouchure>
+	<mouthpiece>
 		<position>
 			<value>0.18</value>
 			<optimization>FIXED</optimization>
@@ -52,7 +52,7 @@
 				<optimization>FIXED</optimization>
 			</fippleFactor>
 		</fipple>
-	</embouchure>
+	</mouthpiece>
 	<hole>
 		<name>7</name>
 		<position>

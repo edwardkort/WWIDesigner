@@ -16,7 +16,7 @@
 			<xsd:element name="lengthType" type="wii:XmlLengthType" />
 			<xsd:element name="borePoint" type="wii:XmlBorePoint"
 				maxOccurs="unbounded" />
-			<xsd:element name="embouchure" type="wii:XmlEmbouchure"
+			<xsd:element name="mouthpiece" type="wii:XmlMouthpiece"
 				minOccurs="0" />
 			<xsd:element name="hole" type="wii:XmlHole" maxOccurs="unbounded" />
 			<xsd:element name="termination" type="wii:XmlEndBoreSection" />
@@ -164,7 +164,7 @@
 		</xsd:sequence>
 	</xsd:complexType>
 
-	<xsd:complexType name="XmlEmbouchure">
+	<xsd:complexType name="XmlMouthpiece">
 		<xsd:annotation>
 			<xsd:documentation>First pass at a sound-mechanism model. Represents
 				a choice between (1) a characteristic length, (2) a flute-type

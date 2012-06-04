@@ -5,7 +5,6 @@
 // Generated on: 2012.05.15 at 12:02:46 AM MDT 
 //
 
-
 package com.wwidesigner.note.bind;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -14,13 +13,15 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
  * Name/frequency pair
  * 
- * <p>Java class for XmlNote complex type.
+ * <p>
+ * Java class for XmlNote complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
  * 
  * <pre>
  * &lt;complexType name="XmlNote">
@@ -38,65 +39,59 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "XmlNote", propOrder = {
-    "name",
-    "frequency"
-})
-@XmlSeeAlso({
-    com.wwidesigner.note.bind.XmlScale.Note.class
-})
-public class XmlNote {
+@XmlType(name = "XmlNote", propOrder = { "name", "frequency" })
+@XmlSeeAlso({ com.wwidesigner.note.bind.XmlScale.Note.class })
+public class XmlNote
+{
 
-    @XmlElement(required = true)
-    protected String name;
-    protected Double frequency;
+	@XmlElement(required = true)
+	protected String name;
+	protected Double frequency;
 
-    /**
-     * Gets the value of the name property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getName() {
-        return name;
-    }
+	/**
+	 * Gets the value of the name property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
+	public String getName()
+	{
+		return name;
+	}
 
-    /**
-     * Sets the value of the name property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setName(String value) {
-        this.name = value;
-    }
+	/**
+	 * Sets the value of the name property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link String }
+	 * 
+	 */
+	public void setName(String value)
+	{
+		this.name = value;
+	}
 
-    /**
-     * Gets the value of the frequency property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Double }
-     *     
-     */
-    public Double getFrequency() {
-        return frequency;
-    }
+	/**
+	 * Gets the value of the frequency property.
+	 * 
+	 * @return possible object is {@link Double }
+	 * 
+	 */
+	public Double getFrequency()
+	{
+		return frequency;
+	}
 
-    /**
-     * Sets the value of the frequency property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Double }
-     *     
-     */
-    public void setFrequency(Double value) {
-        this.frequency = value;
-    }
+	/**
+	 * Sets the value of the frequency property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link Double }
+	 * 
+	 */
+	public void setFrequency(Double value)
+	{
+		this.frequency = value;
+	}
 
 }

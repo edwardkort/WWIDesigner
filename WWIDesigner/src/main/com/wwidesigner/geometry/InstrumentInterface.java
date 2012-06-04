@@ -7,6 +7,7 @@ import org.apache.commons.math3.complex.Complex;
 import com.wwidesigner.geometry.bind.XmlBorePoint;
 import com.wwidesigner.geometry.bind.XmlEndBoreSection;
 import com.wwidesigner.geometry.bind.XmlHole;
+import com.wwidesigner.geometry.bind.XmlInstrument;
 import com.wwidesigner.geometry.bind.XmlLengthType;
 import com.wwidesigner.geometry.bind.XmlMouthpiece;
 
@@ -14,12 +15,20 @@ public interface InstrumentInterface
 {
 
 	/**
+	 * Gets the {@link XmlInstrument}
+	 */
+	public XmlInstrument getXmlInstrumtent();
+
+	/**
+	 * Sets the {@link XmlInstrument}
+	 */
+	public void setXmlInstrumtent(XmlInstrument xmlInstrumtent);
+
+	/**
 	 * Gets the value of the name property.
 	 * 
-	 * @return
-	 *     possible object is
-	 *     {@link String }
-	 *     
+	 * @return possible object is {@link String }
+	 * 
 	 */
 	public String getName();
 
@@ -27,19 +36,16 @@ public interface InstrumentInterface
 	 * Sets the value of the name property.
 	 * 
 	 * @param value
-	 *     allowed object is
-	 *     {@link String }
-	 *     
+	 *            allowed object is {@link String }
+	 * 
 	 */
 	public void setName(String value);
 
 	/**
 	 * Gets the value of the description property.
 	 * 
-	 * @return
-	 *     possible object is
-	 *     {@link String }
-	 *     
+	 * @return possible object is {@link String }
+	 * 
 	 */
 	public String getDescription();
 
@@ -47,19 +53,16 @@ public interface InstrumentInterface
 	 * Sets the value of the description property.
 	 * 
 	 * @param value
-	 *     allowed object is
-	 *     {@link String }
-	 *     
+	 *            allowed object is {@link String }
+	 * 
 	 */
 	public void setDescription(String value);
 
 	/**
 	 * Gets the value of the lengthType property.
 	 * 
-	 * @return
-	 *     possible object is
-	 *     {@link XmlLengthType }
-	 *     
+	 * @return possible object is {@link XmlLengthType }
+	 * 
 	 */
 	public XmlLengthType getLengthType();
 
@@ -67,9 +70,8 @@ public interface InstrumentInterface
 	 * Sets the value of the lengthType property.
 	 * 
 	 * @param value
-	 *     allowed object is
-	 *     {@link XmlLengthType }
-	 *     
+	 *            allowed object is {@link XmlLengthType }
+	 * 
 	 */
 	public void setLengthType(XmlLengthType value);
 
@@ -77,15 +79,16 @@ public interface InstrumentInterface
 	 * Gets the value of the borePoint property.
 	 * 
 	 * <p>
-	 * This accessor method returns a reference to the live list,
-	 * not a snapshot. Therefore any modification you make to the
-	 * returned list will be present inside the JAXB object.
-	 * This is why there is not a <CODE>set</CODE> method for the borePoint property.
+	 * This accessor method returns a reference to the live list, not a
+	 * snapshot. Therefore any modification you make to the returned list will
+	 * be present inside the JAXB object. This is why there is not a
+	 * <CODE>set</CODE> method for the borePoint property.
 	 * 
 	 * <p>
 	 * For example, to add a new item, do as follows:
+	 * 
 	 * <pre>
-	 *    getBorePoint().add(newItem);
+	 * getBorePoint().add(newItem);
 	 * </pre>
 	 * 
 	 * 
@@ -100,10 +103,8 @@ public interface InstrumentInterface
 	/**
 	 * Gets the value of the mouthpiece property.
 	 * 
-	 * @return
-	 *     possible object is
-	 *     {@link XmlMouthpiece }
-	 *     
+	 * @return possible object is {@link XmlMouthpiece }
+	 * 
 	 */
 	public XmlMouthpiece getMouthpiece();
 
@@ -111,9 +112,8 @@ public interface InstrumentInterface
 	 * Sets the value of the mouthpiece property.
 	 * 
 	 * @param value
-	 *     allowed object is
-	 *     {@link XmlMouthpiece }
-	 *     
+	 *            allowed object is {@link XmlMouthpiece }
+	 * 
 	 */
 	public void setMouthpiece(XmlMouthpiece value);
 
@@ -121,21 +121,21 @@ public interface InstrumentInterface
 	 * Gets the value of the hole property.
 	 * 
 	 * <p>
-	 * This accessor method returns a reference to the live list,
-	 * not a snapshot. Therefore any modification you make to the
-	 * returned list will be present inside the JAXB object.
-	 * This is why there is not a <CODE>set</CODE> method for the hole property.
+	 * This accessor method returns a reference to the live list, not a
+	 * snapshot. Therefore any modification you make to the returned list will
+	 * be present inside the JAXB object. This is why there is not a
+	 * <CODE>set</CODE> method for the hole property.
 	 * 
 	 * <p>
 	 * For example, to add a new item, do as follows:
+	 * 
 	 * <pre>
-	 *    getHole().add(newItem);
+	 * getHole().add(newItem);
 	 * </pre>
 	 * 
 	 * 
 	 * <p>
-	 * Objects of the following type(s) are allowed in the list
-	 * {@link XmlHole }
+	 * Objects of the following type(s) are allowed in the list {@link XmlHole }
 	 * 
 	 * 
 	 */
@@ -144,10 +144,8 @@ public interface InstrumentInterface
 	/**
 	 * Gets the value of the termination property.
 	 * 
-	 * @return
-	 *     possible object is
-	 *     {@link XmlEndBoreSection }
-	 *     
+	 * @return possible object is {@link XmlEndBoreSection }
+	 * 
 	 */
 	public XmlEndBoreSection getTermination();
 
@@ -155,16 +153,14 @@ public interface InstrumentInterface
 	 * Sets the value of the termination property.
 	 * 
 	 * @param value
-	 *     allowed object is
-	 *     {@link XmlEndBoreSection }
-	 *     
+	 *            allowed object is {@link XmlEndBoreSection }
+	 * 
 	 */
 	public void setTermination(XmlEndBoreSection value);
-	
+
 	/*
 	 * Added for possible compatibility with Dan Gordon's code.
 	 */
 	public Complex calcZ(double freq);
-
 
 }

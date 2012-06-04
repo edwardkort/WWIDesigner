@@ -5,18 +5,19 @@
 // Generated on: 2012.05.15 at 12:02:46 AM MDT 
 //
 
-
 package com.wwidesigner.note.bind;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * <p>Java class for XmlTuning complex type.
+ * <p>
+ * Java class for XmlTuning complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
  * 
  * <pre>
  * &lt;complexType name="XmlTuning">
@@ -63,9 +64,7 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "XmlTuning")
-public class XmlTuning
-    extends XmlFingeringPattern
+public class XmlTuning extends XmlFingeringPattern
 {
-
 
 }

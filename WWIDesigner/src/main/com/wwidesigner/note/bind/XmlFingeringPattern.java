@@ -5,7 +5,6 @@
 // Generated on: 2012.05.15 at 12:02:46 AM MDT 
 //
 
-
 package com.wwidesigner.note.bind;
 
 import java.math.BigInteger;
@@ -19,11 +18,13 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * <p>Java class for XmlFingeringPattern complex type.
+ * <p>
+ * Java class for XmlFingeringPattern complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
  * 
  * <pre>
  * &lt;complexType name="XmlFingeringPattern">
@@ -45,124 +46,95 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "XmlFingeringPattern", propOrder = {
-    "name",
-    "comment",
-    "numberOfHoles",
-    "fingering"
-})
-@XmlSeeAlso({
-    XmlTuning.class
-})
-public class XmlFingeringPattern {
+@XmlType(name = "XmlFingeringPattern", propOrder = { "name", "comment",
+		"numberOfHoles", "fingering" })
+@XmlSeeAlso({ XmlTuning.class })
+public class XmlFingeringPattern
+{
 
-    @XmlElement(required = true)
-    protected String name;
-    protected String comment;
-    @XmlElement(required = true)
-    @XmlSchemaType(name = "nonNegativeInteger")
-    protected BigInteger numberOfHoles;
-    protected List<XmlFingering> fingering;
+	@XmlElement(required = true)
+	protected String name;
+	protected String comment;
+	@XmlElement(required = true)
+	@XmlSchemaType(name = "nonNegativeInteger")
+	protected BigInteger numberOfHoles;
+	protected List<XmlFingering> fingering;
 
-    /**
-     * Gets the value of the name property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getName() {
-        return name;
-    }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.wwidesigner.note.bind.TuningInterface#getName()
+	 */
+	public String getName()
+	{
+		return name;
+	}
 
-    /**
-     * Sets the value of the name property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setName(String value) {
-        this.name = value;
-    }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.wwidesigner.note.bind.TuningInterface#setName(java.lang.String)
+	 */
+	public void setName(String value)
+	{
+		this.name = value;
+	}
 
-    /**
-     * Gets the value of the comment property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getComment() {
-        return comment;
-    }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.wwidesigner.note.bind.TuningInterface#getComment()
+	 */
+	public String getComment()
+	{
+		return comment;
+	}
 
-    /**
-     * Sets the value of the comment property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setComment(String value) {
-        this.comment = value;
-    }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.wwidesigner.note.bind.TuningInterface#setComment(java.lang.String)
+	 */
+	public void setComment(String value)
+	{
+		this.comment = value;
+	}
 
-    /**
-     * Gets the value of the numberOfHoles property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link BigInteger }
-     *     
-     */
-    public BigInteger getNumberOfHoles() {
-        return numberOfHoles;
-    }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.wwidesigner.note.bind.TuningInterface#getNumberOfHoles()
+	 */
+	public BigInteger getNumberOfHoles()
+	{
+		return numberOfHoles;
+	}
 
-    /**
-     * Sets the value of the numberOfHoles property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link BigInteger }
-     *     
-     */
-    public void setNumberOfHoles(BigInteger value) {
-        this.numberOfHoles = value;
-    }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.wwidesigner.note.bind.TuningInterface#setNumberOfHoles(java.math.
+	 * BigInteger)
+	 */
+	public void setNumberOfHoles(BigInteger value)
+	{
+		this.numberOfHoles = value;
+	}
 
-    /**
-     * Gets the value of the fingering property.
-     * 
-     * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the fingering property.
-     * 
-     * <p>
-     * For example, to add a new item, do as follows:
-     * <pre>
-     *    getFingering().add(newItem);
-     * </pre>
-     * 
-     * 
-     * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link XmlFingering }
-     * 
-     * 
-     */
-    public List<XmlFingering> getFingering() {
-        if (fingering == null) {
-            fingering = new ArrayList<XmlFingering>();
-        }
-        return this.fingering;
-    }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.wwidesigner.note.bind.TuningInterface#getFingering()
+	 */
+	public List<XmlFingering> getFingering()
+	{
+		if (fingering == null)
+		{
+			fingering = new ArrayList<XmlFingering>();
+		}
+		return this.fingering;
+	}
 
 }

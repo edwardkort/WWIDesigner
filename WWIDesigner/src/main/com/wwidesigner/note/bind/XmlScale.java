@@ -5,7 +5,6 @@
 // Generated on: 2012.05.15 at 12:02:46 AM MDT 
 //
 
-
 package com.wwidesigner.note.bind;
 
 import java.util.ArrayList;
@@ -16,13 +15,15 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
  * Named list of Notes
  * 
- * <p>Java class for XmlScale complex type.
+ * <p>
+ * Java class for XmlScale complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
  * 
  * <pre>
  * &lt;complexType name="XmlScale">
@@ -52,124 +53,122 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "XmlScale", propOrder = {
-    "name",
-    "comment",
-    "note"
-})
-public class XmlScale {
+@XmlType(name = "XmlScale", propOrder = { "name", "comment", "note" })
+public class XmlScale
+{
 
-    @XmlElement(required = true)
-    protected String name;
-    protected String comment;
-    @XmlElement(required = true)
-    protected List<XmlScale.Note> note;
+	@XmlElement(required = true)
+	protected String name;
+	protected String comment;
+	@XmlElement(required = true)
+	protected List<XmlScale.Note> note;
 
-    /**
-     * Gets the value of the name property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getName() {
-        return name;
-    }
+	/**
+	 * Gets the value of the name property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
+	public String getName()
+	{
+		return name;
+	}
 
-    /**
-     * Sets the value of the name property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setName(String value) {
-        this.name = value;
-    }
+	/**
+	 * Sets the value of the name property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link String }
+	 * 
+	 */
+	public void setName(String value)
+	{
+		this.name = value;
+	}
 
-    /**
-     * Gets the value of the comment property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getComment() {
-        return comment;
-    }
+	/**
+	 * Gets the value of the comment property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
+	public String getComment()
+	{
+		return comment;
+	}
 
-    /**
-     * Sets the value of the comment property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setComment(String value) {
-        this.comment = value;
-    }
+	/**
+	 * Sets the value of the comment property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link String }
+	 * 
+	 */
+	public void setComment(String value)
+	{
+		this.comment = value;
+	}
 
-    /**
-     * Gets the value of the note property.
-     * 
-     * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the note property.
-     * 
-     * <p>
-     * For example, to add a new item, do as follows:
-     * <pre>
-     *    getNote().add(newItem);
-     * </pre>
-     * 
-     * 
-     * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link XmlScale.Note }
-     * 
-     * 
-     */
-    public List<XmlScale.Note> getNote() {
-        if (note == null) {
-            note = new ArrayList<XmlScale.Note>();
-        }
-        return this.note;
-    }
+	/**
+	 * Gets the value of the note property.
+	 * 
+	 * <p>
+	 * This accessor method returns a reference to the live list, not a
+	 * snapshot. Therefore any modification you make to the returned list will
+	 * be present inside the JAXB object. This is why there is not a
+	 * <CODE>set</CODE> method for the note property.
+	 * 
+	 * <p>
+	 * For example, to add a new item, do as follows:
+	 * 
+	 * <pre>
+	 * getNote().add(newItem);
+	 * </pre>
+	 * 
+	 * 
+	 * <p>
+	 * Objects of the following type(s) are allowed in the list
+	 * {@link XmlScale.Note }
+	 * 
+	 * 
+	 */
+	public List<XmlScale.Note> getNote()
+	{
+		if (note == null)
+		{
+			note = new ArrayList<XmlScale.Note>();
+		}
+		return this.note;
+	}
 
+	/**
+	 * <p>
+	 * Java class for anonymous complex type.
+	 * 
+	 * <p>
+	 * The following schema fragment specifies the expected content contained
+	 * within this class.
+	 * 
+	 * <pre>
+	 * &lt;complexType>
+	 *   &lt;complexContent>
+	 *     &lt;restriction base="{http://www.wwidesigner.com/Tuning}XmlNote">
+	 *       &lt;sequence>
+	 *         &lt;element name="name" type="{http://www.w3.org/2001/XMLSchema}string"/>
+	 *         &lt;element name="frequency" type="{http://www.w3.org/2001/XMLSchema}double"/>
+	 *       &lt;/sequence>
+	 *     &lt;/restriction>
+	 *   &lt;/complexContent>
+	 * &lt;/complexType>
+	 * </pre>
+	 * 
+	 * 
+	 */
+	@XmlAccessorType(XmlAccessType.FIELD)
+	@XmlType(name = "")
+	public static class Note extends XmlNote
+	{
 
-    /**
-     * <p>Java class for anonymous complex type.
-     * 
-     * <p>The following schema fragment specifies the expected content contained within this class.
-     * 
-     * <pre>
-     * &lt;complexType>
-     *   &lt;complexContent>
-     *     &lt;restriction base="{http://www.wwidesigner.com/Tuning}XmlNote">
-     *       &lt;sequence>
-     *         &lt;element name="name" type="{http://www.w3.org/2001/XMLSchema}string"/>
-     *         &lt;element name="frequency" type="{http://www.w3.org/2001/XMLSchema}double"/>
-     *       &lt;/sequence>
-     *     &lt;/restriction>
-     *   &lt;/complexContent>
-     * &lt;/complexType>
-     * </pre>
-     * 
-     * 
-     */
-    @XmlAccessorType(XmlAccessType.FIELD)
-    @XmlType(name = "")
-    public static class Note
-        extends XmlNote
-    {
-
-
-    }
+	}
 
 }

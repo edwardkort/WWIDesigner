@@ -36,4 +36,14 @@ public class StateVector
         mP = TransferMatrix.copyComplex( from.mP );
         mU = TransferMatrix.copyComplex( from.mU );
     }
+    
+    public Complex Impedance()
+    {
+    	return mP.divide(mU);
+    }
+    
+    public Complex Reflectance(double Z0)
+    {
+    	return mP.subtract(mU.multiply(Z0)).divide( mP.add(mU.multiply(Z0)));
+    }
 }

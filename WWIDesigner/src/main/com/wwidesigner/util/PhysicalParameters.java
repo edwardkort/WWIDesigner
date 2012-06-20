@@ -17,7 +17,13 @@ public class PhysicalParameters
     private double mEta;
     private double mTemperature;
     private double mSpecificHeat;
+	private double mSpeedOfSound;
 
+	private double mMu;
+	private double mGamma;
+	private double mNu;
+	private double mAlphaConstant;
+	
     public PhysicalParameters()
     {
     	this(72.0, TemperatureType.F);
@@ -28,17 +34,28 @@ public class PhysicalParameters
         switch ( tempType )
         {
             case C:
-                mTemperature = temperature + 273.15;
-                mSpecificHeat = 332.0 * ( 1.0 + 0.00166 * temperature );
+                mTemperature = temperature + 273.15;                
                 break;
             case F:
-                mTemperature = ( temperature + 40. ) * 5. / 9. - 40.;
-                mSpecificHeat = 332.0 * ( 1.0 + 0.00166 * mTemperature );
-                mTemperature += 273.15;
+                mTemperature = ( temperature + 40. ) * 5. / 9. - 40. + 273.15;
+                break;
         }
-        mRho = ( ( P_AIR / R_AIR ) + ( P_V / R_V ) ) / mTemperature;
+        mSpeedOfSound = 332.0 * ( 1.0 + 0.00166*(mTemperature-273.15) );
+        
+        //mRho = ( ( P_AIR / R_AIR ) + ( P_V / R_V ) ) / mTemperature;
 
         mEta = 3.648e-6 * ( 1 + 0.0135003 * mTemperature );
+        
+        double deltaT = (mTemperature-273.15)-26.85;
+        
+        mRho = 1.1769   * (1 - 0.00335*deltaT);
+        mMu = 1.8460E-5 * (1 + 0.00250*deltaT);
+  	    mGamma = 1.4017 * (1 - 0.00002*deltaT);
+   	    mNu = 0.8410    * (1 - 0.00020*deltaT);
+   	    //p.c = 3.4723E+2  * (1 + 0.00166*deltaT);
+
+        
+        mAlphaConstant = Math.sqrt(mMu/(2*mRho*mSpeedOfSound)) * (1 + (mGamma-1)/mNu);
 
     }
 
@@ -48,7 +65,7 @@ public class PhysicalParameters
      */
     public double calcZ0( double radius )
     {
-        return mRho * mSpecificHeat / ( Math.PI * radius * radius );
+        return mRho * mSpeedOfSound / ( Math.PI * radius * radius );
         // Wave impedance of a bore, nominal radius r.
     }
 
@@ -59,6 +76,7 @@ public class PhysicalParameters
         buf.append( "Temperature = " + mTemperature + "\n" );
         buf.append( "Specific Heat = " + mSpecificHeat + "\n" );
         buf.append( "rho = " + mRho + "\n" );
+        buf.append( "c = " + mSpeedOfSound + "\n" );
         buf.append( "eta = " + mEta + "\n" );
         buf.append( "gamma = " + GAMMA + "\n" );
         buf.append( "kappa = " + KAPPA + "\n" );
@@ -100,4 +118,13 @@ public class PhysicalParameters
         return mTemperature;
     }
 
+	public double getSpeedOfSound()
+	{
+		return mSpeedOfSound;
+	}
+
+	public double getAlphaConstant()
+	{
+		return mAlphaConstant;
+	}
 }

@@ -132,4 +132,9 @@ public class TransferMatrix
     {
         mUU = uu;
     }
+
+	public static TransferMatrix makeIdentity()
+	{
+        return new TransferMatrix(Complex.ONE, Complex.ZERO, Complex.ZERO, Complex.ONE);
+	}
 }

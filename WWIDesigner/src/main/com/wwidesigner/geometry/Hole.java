@@ -1,273 +1,168 @@
-/**
- * 
- */
 package com.wwidesigner.geometry;
 
 import org.apache.commons.math3.complex.Complex;
 
 import com.wwidesigner.math.TransferMatrix;
-import com.wwidesigner.util.Constants;
 import com.wwidesigner.util.PhysicalParameters;
 
-/**
- * @author kort
- * 
- */
-public class Hole extends Component implements HoleInterface
+public class Hole implements ComponentInterface, PositionInterface
 {
+	protected double height;
+	protected double position;
+	protected boolean openHole;
+	protected double boreRadius;
 
-	protected double mHoleDiameter;
-    protected transient double mRB; // The radius of the bore at the position of the
-    // hole.
-    protected double mRHExt; // The external radius of the hole;
-    protected double mLH; // The physical length of the hole.
-    protected boolean mIsClosed; // Is the hole open or closed?
-    protected double mRC; // Effective radius of curvature of the internal
-    // and external ends of the tonehole wall, see
-    // Keefe (1990). I think this refers to the
-    // transition between the tonehole wall and the
-    // bore or exterior of the flute.
+	public Hole()
+	{
 
-    // The following values are calculated at validation and cached.
-    protected double mLHG; // The geometric length of the hole, which
-    // takes into accout the effects of the hole
-    // deviating from a perfect cylinder.
-    protected double mRHG; // The geometric radius of the hole, which
-    // takes into account the effects of the hole
-    // deviating from a perfect cylinder.
-    protected double mOHLB; // Effective acoustic length along the axis of the
-    // bore, when the hole is open.
-    protected double mCHLB; // Effective acoustic length along the axis of
-    // the bore, when the hole is closed.
+	}
 
-    public Hole( PhysicalParameters params, double rB, double rHExt, double lH, boolean isClosed,
-                 double rC )
-    {
-        super( params );
-        mRB = rB;
-        mRHExt = rHExt;
-        mLH = lH;
-        mIsClosed = isClosed;
-        mRC = rC;
-        mLHG = 0.0;
-        mRHG = 0.0;
-        mOHLB = 0.0;
-        mCHLB = 0.0;
-    }
+	public Hole(double position, double radius, double height)
+	{
+		this.position = position;
+		this.radius = radius;
+		this.height = height;
+	}
 
-    /**
-     * The bore radius at the position of the hole.
-     */
-    double getRB()
-    {
-        return mRB;
-    }
+	protected double radius;
 
-    /**
-     * The bore radius at the position of the hole.
-     */
-    void setRB( double rB )
-    {
-        mRB = rB;
-    }
-
-    /**
-     * The radius of the hole.
-     */
-    double getRHExt()
-    {
-        return mRHExt;
-    }
-
-    /**
-     * The radius of the hole.
-     */
-    void setRHExt( double rHExt )
-    {
-        mRHExt = rHExt;
-    }
-
-    /**
-     * The actual depth of the hole.
-     */
-    double getLH()
-    {
-        return mLH;
-    }
-
-    /**
-     * The actual depth of the hole.
-     */
-    void setLH( double l )
-    {
-        mLH = l;
-    }
-
-    /**
-     * Is the hole closed?
-     */
-    boolean getIsClosed()
-    {
-        return mIsClosed;
-    }
-
-    /**
-     * Is the hole closed?
-     */
-    void setIsClosed( boolean isClosed )
-    {
-        mIsClosed = isClosed;
-    }
-
-    /**
-     * The effective radius of curvature of the transition between the hole wall
-     * and the bore or exterior of the flute.
-     */
-    double getRC()
-    {
-        return mRC;
-    }
-
-    /**
-     * The effective radius of curvature of the transition between the hole wall
-     * and the bore or exterior of the flute.
-     */
-    void setRC( double rC )
-    {
-        mRC = rC;
-    }
-
-    /**
-     * Effective accoustic length along the bore, when the hole is open.
-     */
-    double getOHLB()
-    {
-        return mOHLB;
-    }
-
-    /**
-     * Effective accoustic length along the bore, when the hole is closed.
-     */
-    double getCHLB()
-    {
-        return mCHLB;
-    }
-
-    /**
-     * @see com.wwidesigner.geometry.Component#calcT(com.wwidesigner.math.TransferMatrix,
-     *      double)
-	 * @see com.wwidesigner.geometry.HoleInterface#calcT(com.wwidesigner.math.TransferMatrix, double)
+	/**
+	 * @return the radius
 	 */
-    @Override
-    public void calcT( TransferMatrix t, double freq )
-    {
-        double omega = 2.0 * Math.PI * freq;
-        double k = omega / mParams.getSpecificHeat(); // Wavenumber.
-        double z0 = mParams.getRho() * mParams.getSpecificHeat() / ( Math.PI * mRB * mRB ); // Wave
-        // impedance
-        // of
-        // the
-        // main
-        // bore.
-        double rb_on_rh = mRB / mRHG;
-        double rb_on_rh_2 = rb_on_rh * rb_on_rh;
+	public double getRadius()
+	{
+		return radius;
+	}
 
-        t.setPP( Complex.ONE );
-        t.setUU( Complex.ONE );
-        if ( mIsClosed )
-        {
-            t.setPU( new Complex( 0.0, z0 * rb_on_rh_2 * k * mCHLB ) );
-            t.setUP( new Complex( 0.0, -Math.tan( k * mLHG ) / ( z0 * rb_on_rh_2 ) ) );
-        }
-        else
-        {
-            t.setPU( new Complex( 0.0, z0 * rb_on_rh_2 * k * mOHLB ) );
-            t.setUP( Complex.ONE.divide( new Complex( z0 * rb_on_rh_2, 0.0 )
-                    .multiply( ( new Complex( calcXi( freq ), -k * calcHLE( freq ) ) ) ) ) );
-        }
-    }
-
-    /**
-     * @see com.wwidesigner.geometry.Component#validate()
-	 * @see com.wwidesigner.geometry.HoleInterface#validate()
+	/**
+	 * @param radius
+	 *            the radius to set
 	 */
-    @Override
-    public void validate()
-    {
-        super.validate();
+	public void setRadius(double radius)
+	{
+		this.radius = radius;
+	}
 
-        assert ( mRB > 0.0 );
-        assert ( mRHExt > 0.0 );
-        assert ( mLH > 0.0 );
+	/**
+	 * @return the boreRadius
+	 */
+	public double getBoreRadius()
+	{
+		return boreRadius;
+	}
 
-        calcAndCacheRLG();
+	/**
+	 * @param boreRadius
+	 *            the boreRadius to set
+	 */
+	public void setBoreRadius(double boreRadius)
+	{
+		this.boreRadius = boreRadius;
+	}
 
-        // Calculate and cache the series effective lengths of the hole:
+	/**
+	 * @return the height
+	 */
+	public double getHeight()
+	{
+		return height;
+	}
 
-        // See Keefe 1990
+	/**
+	 * @param height
+	 *            the height to set
+	 */
+	public void setHeight(double height)
+	{
+		this.height = height;
+	}
 
-        double rh_on_rb = mRHG / mRB;
-        double rh_on_rb_2 = rh_on_rb * rh_on_rb;
-        double rh_on_rb_4 = rh_on_rb_2 * rh_on_rb_2;
+	/**
+	 * @return the openHole
+	 */
+	public boolean isOpenHole()
+	{
+		return openHole;
+	}
 
-        double term1 = 0.47 * mRHG * rh_on_rb_4;
-        double term2 = 0.62 * rh_on_rb_2 + 0.64 * rh_on_rb;
-        double term3 = Math.tanh( 1.84 * mLHG / mRHG );
+	/**
+	 * @param openHole
+	 *            the openHole to set
+	 */
+	public void setOpenHole(boolean openHole)
+	{
+		this.openHole = openHole;
+	}
 
-        // From eq. (8) in Keefe (1990):
-        mOHLB = term1 / ( term2 + term3 );
-        // From eq. (9) in Keefe (1990):
-        mCHLB = term1 / ( term2 + ( 1.0 / term3 ) );
-    }
+	public double getPosition()
+	{
+		return position;
+	}
 
-    // Effective accoustic length of the hole when it is open.
-    protected double calcHLE( double freq )
-    {
-        // See Keefe 1990
+	public void setPosition(double position)
+	{
+		this.position = position;
+	}
 
-        double k = 2.0 * Math.PI * freq / mParams.getSpecificHeat(); // Wavenumber.
-        double k_inv = 1.0 / k;
+	public TransferMatrix calcTransferMatrix(double wave_number,
+			PhysicalParameters mParameters)
+	{
+		Complex Zs = null;
+		Complex Za = null;
 
-        double tan_k_l = Math.tan( k * mLHG );
+		double Z0 = mParameters.calcZ0(radius);
 
-        double rh_on_rb = mRHG / mRB;
+		double delta = radius / boreRadius;
 
-        double result = ( k_inv * tan_k_l + mRHG * ( 1.40 - 0.58 * rh_on_rb * rh_on_rb ) )
-                        / ( 1.0 - 0.61 * k * mRHG * tan_k_l );
-        // From eq. (5) in Keefe (1990):
-        assert ( result > 0.0 );
+		double tm = (radius * delta / 8.)
+				* (1. + 0.207 * delta * delta * delta);
+		double te = height + tm;
 
-        return result;
-    }
+		double ta = 0.;
 
-    // Specific resistance along the bore, when the hole is open.
-    protected double calcXi( double freq )
-    {
-        double omega = 2.0 * Math.PI * freq;
-        double k = omega / mParams.getSpecificHeat(); // Wavenumber.
+		// Complex Gamma = Complex.I.multiply(wave_number);
 
-        double d_v = Math.sqrt( 2.0 * mParams.getEta() / ( mParams.getRho() * omega ) );
-        // Viscous boundary layer thickness.
+		if (openHole) // open
+		{
+			double kb = wave_number * radius;
+			double ka = kb / delta;
+			double xhi = 0.25 * kb * kb;
 
-        double alpha = ( Math.sqrt( 2 * mParams.getEta() * omega / mParams.getRho() ) + ( Constants.GAMMA - 1 )
-                                                                                        * Math
-                                                                                                .sqrt( 2
-                                                                                                       * Constants.KAPPA
-                                                                                                       * omega
-                                                                                                       / ( mParams
-                                                                                                               .getRho() * Constants.C_P ) ) )
-                       / ( 2 * mRHG * mParams.getSpecificHeat() );
+			ta = (-0.35 + 0.06 * Math.tanh(2.7 * height / radius)) * radius
+					* delta * delta * delta * delta;
 
-        double result = 0.25 * ( k * mRHG ) * ( k * mRHG ) + alpha * mLHG + 0.25 * k * d_v
-                        * Math.log( 2 * mRHG / mRC );
+			Complex Zr = Complex.I.multiply(wave_number * 0.61 * radius).add(
+					xhi);
 
-        return result;
-    }
+			Complex Zo = (Zr.multiply(Math.cos(wave_number * te)).add(Complex.I
+					.multiply(Math.sin(wave_number * te)))).divide(Complex.I
+					.multiply(Zr).multiply(Math.sin(wave_number * te))
+					.add(Math.cos(wave_number * te)));
 
-    protected void calcAndCacheRLG()
-    {
-        mRHG = mRHExt;
-        mLHG = mLH;
-    }
+			double ti = radius
+					* (0.822 - 0.10 * delta - 1.57 * delta * delta + 2.14
+							* delta * delta * delta - 1.6 * delta * delta
+							* delta * delta + 0.50 * delta * delta * delta
+							* delta * delta)
+					* (1. + (1. - 4.56 * delta + 6.55 * delta * delta)
+							* (0.17 * ka + 0.92 * ka * ka + 0.16 * ka * ka * ka - 0.29
+									* ka * ka * ka * ka));
 
+			Zs = Complex.I.multiply(wave_number * ti).add(Zo).multiply(Z0);
+
+		}
+		else
+		{
+			ta = (-0.12 - 0.17 * Math.tanh(2.4 * height / radius)) * radius
+					* delta * delta * delta * delta;
+			Zs = Complex.valueOf(0, -Z0 / Math.tan(wave_number * te));
+		}
+
+		Za = Complex.I.multiply(Z0 * wave_number * ta);
+		Complex Za_Zs = Za.divide(Zs);
+
+		return new TransferMatrix(Za_Zs.divide(2.).add(1.), Za.multiply(Za_Zs
+				.divide(4.).add(1.)), Complex.ONE.divide(Zs), Za_Zs.divide(2.0)
+				.add(1.));
+	}
 }

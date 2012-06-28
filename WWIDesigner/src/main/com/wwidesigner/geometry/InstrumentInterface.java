@@ -4,25 +4,12 @@ import java.util.List;
 
 import org.apache.commons.math3.complex.Complex;
 
-import com.wwidesigner.geometry.bind.XmlBorePoint;
 import com.wwidesigner.geometry.bind.XmlEndBoreSection;
-import com.wwidesigner.geometry.bind.XmlHole;
-import com.wwidesigner.geometry.bind.XmlInstrument;
-import com.wwidesigner.geometry.bind.XmlLengthType;
-import com.wwidesigner.geometry.bind.XmlMouthpiece;
+import com.wwidesigner.note.bind.XmlFingering;
+import com.wwidesigner.util.PhysicalParameters;
 
 public interface InstrumentInterface
 {
-
-	/**
-	 * Gets the {@link XmlInstrument}
-	 */
-	public XmlInstrument getXmlInstrumtent();
-
-	/**
-	 * Sets the {@link XmlInstrument}
-	 */
-	public void setXmlInstrumtent(XmlInstrument xmlInstrumtent);
 
 	/**
 	 * Gets the value of the name property.
@@ -59,30 +46,13 @@ public interface InstrumentInterface
 	public void setDescription(String value);
 
 	/**
-	 * Gets the value of the lengthType property.
-	 * 
-	 * @return possible object is {@link XmlLengthType }
-	 * 
-	 */
-	public XmlLengthType getLengthType();
-
-	/**
-	 * Sets the value of the lengthType property.
-	 * 
-	 * @param value
-	 *            allowed object is {@link XmlLengthType }
-	 * 
-	 */
-	public void setLengthType(XmlLengthType value);
-
-	/**
 	 * Gets the value of the borePoint property.
 	 * 
 	 * <p>
 	 * This accessor method returns a reference to the live list, not a
 	 * snapshot. Therefore any modification you make to the returned list will
-	 * be present inside the JAXB object. This is why there is not a
-	 * <CODE>set</CODE> method for the borePoint property.
+	 * be present. This is why there is not a <CODE>set</CODE> method for the
+	 * borePoint property.
 	 * 
 	 * <p>
 	 * For example, to add a new item, do as follows:
@@ -94,28 +64,30 @@ public interface InstrumentInterface
 	 * 
 	 * <p>
 	 * Objects of the following type(s) are allowed in the list
-	 * {@link XmlBorePoint }
+	 * {@link BorePoint }
 	 * 
 	 * 
 	 */
-	public List<XmlBorePoint> getBorePoint();
+	public List<BorePoint> getBorePoint();
+
+	public void addBorePoint(BorePoint borePoint);
 
 	/**
 	 * Gets the value of the mouthpiece property.
 	 * 
-	 * @return possible object is {@link XmlMouthpiece }
+	 * @return possible object is {@link Mouthpiece }
 	 * 
 	 */
-	public XmlMouthpiece getMouthpiece();
+	public MouthpieceInterface getMouthpiece();
 
 	/**
 	 * Sets the value of the mouthpiece property.
 	 * 
 	 * @param value
-	 *            allowed object is {@link XmlMouthpiece }
+	 *            allowed object is {@link Mouthpiece }
 	 * 
 	 */
-	public void setMouthpiece(XmlMouthpiece value);
+	public void setMouthpiece(MouthpieceInterface value);
 
 	/**
 	 * Gets the value of the hole property.
@@ -123,8 +95,8 @@ public interface InstrumentInterface
 	 * <p>
 	 * This accessor method returns a reference to the live list, not a
 	 * snapshot. Therefore any modification you make to the returned list will
-	 * be present inside the JAXB object. This is why there is not a
-	 * <CODE>set</CODE> method for the hole property.
+	 * be present. This is why there is not a <CODE>set</CODE> method for the
+	 * hole property.
 	 * 
 	 * <p>
 	 * For example, to add a new item, do as follows:
@@ -135,11 +107,13 @@ public interface InstrumentInterface
 	 * 
 	 * 
 	 * <p>
-	 * Objects of the following type(s) are allowed in the list {@link XmlHole }
+	 * Objects of the following type(s) are allowed in the list {@link Hole }
 	 * 
 	 * 
 	 */
-	public List<XmlHole> getHole();
+	public List<Hole> getHole();
+
+	public void addHole(Hole hole);
 
 	/**
 	 * Gets the value of the termination property.
@@ -147,7 +121,7 @@ public interface InstrumentInterface
 	 * @return possible object is {@link XmlEndBoreSection }
 	 * 
 	 */
-	public XmlEndBoreSection getTermination();
+	public TerminationInterface getTermination();
 
 	/**
 	 * Sets the value of the termination property.
@@ -156,7 +130,16 @@ public interface InstrumentInterface
 	 *            allowed object is {@link XmlEndBoreSection }
 	 * 
 	 */
-	public void setTermination(XmlEndBoreSection value);
+	public void setTermination(TerminationInterface value);
+
+	/**
+	 * Creates the instrument Components (BoreSection and filled-out Holes) from
+	 * the raw BorePoints and Holes.
+	 */
+	public void updateComponents();
+
+	public Complex calculateReflectionCoefficient(XmlFingering fingering,
+			PhysicalParameters physicalParams);
 
 	/*
 	 * Added for possible compatibility with Dan Gordon's code.

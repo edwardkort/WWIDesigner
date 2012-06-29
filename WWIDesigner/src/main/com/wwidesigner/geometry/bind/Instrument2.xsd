@@ -30,25 +30,17 @@
 					</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:choice>
-				<xsd:element name="boreDiameter" type="wii:XmlMoreThanZero">
-					<xsd:annotation>
-						<xsd:documentation>Inside diameter for uniform cylindrical bore.
-						</xsd:documentation>
-					</xsd:annotation>
-				</xsd:element>
-				<xsd:element name="borePoint" type="wii:XmlBorePoint"
-					maxOccurs="unbounded">
-					<xsd:annotation>
-						<xsd:documentation>Sequence of inside diameter
-							measurements for non-uniform bore,
-							from fipple, cork or other head-end termination,
-							to bottom-end.  Assume segments between bore points
-							are conical, with linear increase in diameter.
-						</xsd:documentation>
-					</xsd:annotation>
-				</xsd:element>
-			</xsd:choice>
+			<xsd:element name="borePoint" type="wii:XmlBorePoint"
+				minOccurs="2" maxOccurs="unbounded">
+				<xsd:annotation>
+					<xsd:documentation>Sequence of inside diameter
+						measurements for non-uniform bore,
+						from fipple, cork or other head-end termination,
+						to bottom-end.  Assume segments between bore points
+						are conical, with linear increase in diameter.
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
 			<xsd:element name="hole" type="wii:XmlHole" maxOccurs="unbounded">
 				<xsd:annotation>
 					<xsd:documentation>Hole specifications for toneholes,
@@ -131,16 +123,16 @@
 		<xsd:annotation>
 			<xsd:documentation>Draft sound-mechanism model. Represents
 				a choice between (1) a characteristic length, (2) a flute-type
-				embouchure hole, or (3) a fipple window and sound blade. We need to add reeds,
-				end-blown flutes, etc.
+				embouchure hole, or (3) a fipple window and sound blade.
+				We need to add reeds, end-blown flutes, etc.
 			</xsd:documentation>
 		</xsd:annotation>
 		<xsd:sequence>
 			<xsd:element name="position" type="wii:XmlZeroOrMore">
 				<xsd:annotation>
-					<xsd:documentation>Position of sound-blade for fipple flute,
-						centre of embouchure hole for transverse flute,
-						measured from bottom end.
+					<xsd:documentation>Position of mouthpiece, centre of embouchure hole,
+						or sound blade, relative to reference position.
+						Usually set to zero.
 					</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
@@ -229,8 +221,7 @@
 	<xsd:complexType name="XmlBorePoint">
 		<xsd:annotation>
 			<xsd:documentation>Represents a bore position and effective inside diameter,
-				measured from the bottom end of the instrument. Diameters between
-				borePoints are linearly interpolated.
+				measured from the head end. Diameters between borePoints are linearly interpolated.
 			</xsd:documentation>
 		</xsd:annotation>
 		<xsd:sequence>
@@ -249,7 +240,13 @@
 		</xsd:annotation>
 		<xsd:sequence>
 			<xsd:element name="name" type="xsd:string" minOccurs="0" />
-			<xsd:element name="position" type="wii:XmlZeroOrMore" />
+			<xsd:element name="position" type="wii:XmlZeroOrMore">
+				<xsd:annotation>
+					<xsd:documentation>Position of hole, relative to reference position,
+						measured from mouthpiece to bottom end.
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
 			<xsd:element name="diameter" type="wii:XmlMoreThanZero" />
 			<xsd:element name="height" type="wii:XmlMoreThanZero" />
 			<xsd:element name="innerCurvatureRadius" type="wii:XmlZeroOrMore"

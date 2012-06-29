@@ -6,7 +6,7 @@
 	<description>6-hole PVC whistle, high D, A=440 Just Intonation</description>
 	<lengthType>mm</lengthType>
 	<mouthpiece>
-		<position>267.5</position>
+		<position>0</position>
 		<fipple>
 			<windowLength>5.4</windowLength>
 			<windowWidth>6.5</windowWidth>
@@ -16,34 +16,41 @@
 		</fipple>
 		<beta>0.4</beta>
 	</mouthpiece>
-	<boreDiameter>11.9</boreDiameter>
+	<borePoint>
+		<borePosition>0</borePosition>
+		<boreDiameter>11.9</boreDiameter>
+	</borePoint>
+	<borePoint>
+		<borePosition>267.5</borePosition>
+		<boreDiameter>11.9</boreDiameter>
+	</borePoint>
 	<hole>
-		<position optimization="FREE">150.5</position>
+		<position optimization="FREE">117.0</position>
 		<diameter optimization="FREE">5.6</diameter>
 		<height>2.0</height>
 	</hole>
 	<hole>
-		<position optimization="FREE">128.0</position>
+		<position optimization="FREE">139.5</position>
 		<diameter optimization="FREE">6.0</diameter>
 		<height>2.0</height>
 	</hole>
 	<hole>
-		<position optimization="FREE">109.0</position>
+		<position optimization="FREE">158.5</position>
 		<diameter optimization="FREE">6.0</diameter>
 		<height>2.0</height>
 	</hole>
 	<hole>
-		<position optimization="FREE">81.0</position>
+		<position optimization="FREE">186.5</position>
 		<diameter optimization="FREE">6.0</diameter>
 		<height>2.0</height>
 	</hole>
 	<hole>
-		<position optimization="FREE">64.5</position>
+		<position optimization="FREE">203.0</position>
 		<diameter optimization="FREE">7.9</diameter>
 		<height>2.0</height>
 	</hole>
 	<hole>
-		<position optimization="FREE">40.0</position>
+		<position optimization="FREE">227.5</position>
 		<diameter optimization="FREE">7.5</diameter>
 		<height>2.0</height>
 	</hole>

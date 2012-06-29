@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wit:tuning xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns:wit="http://www.wwidesigner.com/Tuning"
+         xsi:schemaLocation="http://www.wwidesigner.com/Tuning ../Tuning2.xsd ">
+
+	<name>BP7 Whistle</name>
+	<description>6-hole PVC whistle, high D, target and actual tuning</description>
+	<temperament>Just Intonation</temperament>
+
+    <baseNote>587.33</baseNote>
+	<note>
+		<name>low D</name>
+		<fingers>1 1 1 1 1 1</fingers>
+		<target>587.33</target>
+		<actualMin>568</actualMin>
+		<actualMax>589</actualMax>
+	</note>
+	<note>
+		<name>E</name>
+		<fingers>1 1 1 1 1 0</fingers>
+		<target>660.74 1321.5</target>
+		<actualMin>640 1265</actualMin>
+		<actualMax>663 1334</actualMax>
+	</note>
+	<note>
+		<name>F#</name>
+		<fingers>1 1 1 1 0 0</fingers>
+		<target>734.16 1468.3</target>
+		<actualMin>705 1417</actualMin>
+		<actualMax>740 1493</actualMax>
+	</note>
+	<note>
+		<name>G</name>
+		<fingers>1 1 1 0 0 0</fingers>
+		<target>783.10 1566.2</target>
+		<actualMin>747 1512</actualMin>
+		<actualMax>791 1595</actualMax>
+	</note>
+	<note>
+		<name>A</name>
+		<fingers>1 1 0 0 0 0</fingers>
+		<target>880.99 1762.0</target>
+		<actualMin>830 1698</actualMin>
+		<actualMax>892 1803</actualMax>
+	</note>
+	<note>
+		<name>B</name>
+		<fingers>1 0 0 0 0 0</fingers>
+		<target>978.88 1957.8</target>
+		<actualMin>900 1892</actualMin>
+		<actualMax>998 2007</actualMax>
+	</note>
+	<note>
+		<name>C-nat</name>
+		<fingers>0 1 1 0 0 0</fingers>
+		<target>1044.1</target>
+		<actualMin>980</actualMin>
+		<actualMax>1086</actualMax>
+	</note>
+	<note>
+		<name>high C-nat</name>
+		<fingers>0 1 0 0 0 0</fingers>
+		<target>2088.3</target>
+		<actualMin>1998</actualMin>
+		<actualMax>2038</actualMax>
+	</note>
+	<note>
+		<name>C#</name>
+		<fingers>0 0 0 0 0 0</fingers>
+		<target>1101.2 2202.5</target>
+		<actualMin>1030 2138</actualMin>
+		<actualMax>1143 2225</actualMax>
+	</note>
+	<note>
+		<name>high D</name>
+		<fingers>0 1 1 1 1 1</fingers>
+		<target>1174.7 2349.3</target>
+		<actualMin>1130 2370</actualMin>
+		<actualMax>1207 2449</actualMax>
+	</note>
+	<note>
+		<name>pre-D</name>
+		<fingers>0 1 1 1 1 1</fingers>
+		<actualMin>870</actualMin>
+		<actualMax>905</actualMax>
+	</note>
+
+</wit:tuning>

@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-	xmlns:wii="http://www.wwidesigner.com/Instrument" targetNamespace="http://www.wwidesigner.com/Instrument"
+	xmlns:wii="http://www.wwidesigner.com/Instrument"
+	targetNamespace="http://www.wwidesigner.com/Instrument"
 	elementFormDefault="unqualified">
+
+	<xsd:element name="instrument" type="wii:XmlInstrument" />
+
 	<xsd:complexType name="XmlInstrument">
 		<xsd:annotation>
 			<xsd:documentation>The physical geometry of a woodwind instrument.
@@ -55,14 +59,6 @@
 			<xsd:element name="termination" type="wii:XmlTermination">
 				<xsd:annotation>
 					<xsd:documentation>Description of bottom end.
-					</xsd:documentation>
-				</xsd:annotation>
-			</xsd:element>
-			<xsd:element name="played" type="wii:XmlPlayingConfig"
-				minOccurs="0" maxOccurs="unbounded">
-				<xsd:annotation>
-					<xsd:documentation>List of possible playing configurations,
-						with expected or measured responses.
 					</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
@@ -306,73 +302,4 @@
 		</xsd:restriction>
 	</xsd:simpleType>
 
-	<xsd:simpleType name="XmlFingering">
-		<xsd:annotation>
-			<xsd:documentation>List of tonehole states, from mouthpiece to bottom end.
-			</xsd:documentation>
-		</xsd:annotation>
-		<xsd:list itemType="wii:XmlHoleState" />
-	</xsd:simpleType>
-
-	<xsd:simpleType name="XmlPitch">
-		<xsd:annotation>
-			<xsd:documentation>Non-zero frequency, in Hz.
-			</xsd:documentation>
-		</xsd:annotation>
-		<xsd:restriction base="xsd:double">
-			<xsd:minExclusive value="0" />
-		</xsd:restriction>
-	</xsd:simpleType>
-
-	<xsd:simpleType name="XmlListOfPitches">
-		<xsd:annotation>
-			<xsd:documentation>List of playing frequencies, in Hz.
-			</xsd:documentation>
-		</xsd:annotation>
-		<xsd:list itemType="wii:XmlPitch" />
-	</xsd:simpleType>
-
-	<xsd:complexType name="XmlPlayingConfig">
-		<xsd:annotation>
-			<xsd:documentation>Description of a playing configuration for the instrument,
-				with the intended and measured responses for that playing configuration.
-			</xsd:documentation>
-		</xsd:annotation>
-		<xsd:sequence>
-			<xsd:element name="fingers" type="wii:XmlFingering">
-				<xsd:annotation>
-					<xsd:documentation>Description of playing configuration.
-					</xsd:documentation>
-				</xsd:annotation>
-			</xsd:element>
-			<xsd:element name="embouchure" type="wii:XmlMoreThanZero" minOccurs="0">
-				<xsd:annotation>
-					<xsd:documentation>Distance from lips to edge of embouchure hole.
-					</xsd:documentation>
-				</xsd:annotation>
-			</xsd:element>
-			<xsd:element name="target" type="wii:XmlListOfPitches">
-				<xsd:annotation>
-					<xsd:documentation>Target pitches expected from this playing configuration.
-					</xsd:documentation>
-				</xsd:annotation>
-			</xsd:element>
-			<xsd:element name="fmin" type="wii:XmlListOfPitches">
-				<xsd:annotation>
-					<xsd:documentation>Measured actual minimum frequencies
-						for playing ranges of this configuration. 
-					</xsd:documentation>
-				</xsd:annotation>
-			</xsd:element>
-			<xsd:element name="fmax" type="wii:XmlListOfPitches">
-				<xsd:annotation>
-					<xsd:documentation>Measured actual maximum frequencies
-						for playing ranges of this configuration. 
-					</xsd:documentation>
-				</xsd:annotation>
-			</xsd:element>
-		</xsd:sequence>
-	</xsd:complexType>
-
-	<xsd:element name="instrument" type="wii:XmlInstrument" />
 </xsd:schema>

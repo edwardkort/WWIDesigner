@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wii:instrument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns:wii="http://www.wwidesigner.com/Instrument"
+         xsi:schemaLocation="http://www.wwidesigner.com/Instrument ../Instrument2.xsd ">
+	<name>BP7 Whistle</name>
+	<description>6-hole PVC whistle, high D, A=440 Just Intonation</description>
+	<lengthType>mm</lengthType>
+	<mouthpiece>
+		<position>267.5</position>
+		<fipple>
+			<windowLength>5.4</windowLength>
+			<windowWidth>6.5</windowWidth>
+			<windowHeight>3.6</windowHeight>
+			<windwayLength>21.</windwayLength>
+			<windwayHeight>1.36</windwayHeight>
+		</fipple>
+		<beta>0.4</beta>
+	</mouthpiece>
+	<boreDiameter>11.9</boreDiameter>
+	<hole>
+		<position optimization="FREE">150.5</position>
+		<diameter optimization="FREE">5.6</diameter>
+		<height>2.0</height>
+	</hole>
+	<hole>
+		<position optimization="FREE">128.0</position>
+		<diameter optimization="FREE">6.0</diameter>
+		<height>2.0</height>
+	</hole>
+	<hole>
+		<position optimization="FREE">109.0</position>
+		<diameter optimization="FREE">6.0</diameter>
+		<height>2.0</height>
+	</hole>
+	<hole>
+		<position optimization="FREE">81.0</position>
+		<diameter optimization="FREE">6.0</diameter>
+		<height>2.0</height>
+	</hole>
+	<hole>
+		<position optimization="FREE">64.5</position>
+		<diameter optimization="FREE">7.9</diameter>
+		<height>2.0</height>
+	</hole>
+	<hole>
+		<position optimization="FREE">40.0</position>
+		<diameter optimization="FREE">7.5</diameter>
+		<height>2.0</height>
+	</hole>
+	<termination>
+		<flangeDiameter>15.9</flangeDiameter>
+	</termination>
+	<played>
+		<fingers>1 1 1 1 1 1</fingers>
+		<target>587.33</target>
+		<fmin>568</fmin>
+		<fmax>589</fmax>
+	</played>
+	<played>
+		<fingers>1 1 1 1 1 0</fingers>
+		<target>660.74 1321.5</target>
+		<fmin>640 1265</fmin>
+		<fmax>663 1334</fmax>
+	</played>
+	<played>
+		<fingers>1 1 1 1 0 0</fingers>
+		<target>734.16 1468.3</target>
+		<fmin>705 1417</fmin>
+		<fmax>740 1493</fmax>
+	</played>
+	<played>
+		<fingers>1 1 1 0 0 0</fingers>
+		<target>783.10 1566.2</target>
+		<fmin>747 1512</fmin>
+		<fmax>791 1595</fmax>
+	</played>
+	<played>
+		<fingers>1 1 0 0 0 0</fingers>
+		<target>880.99 1762.0</target>
+		<fmin>830 1698</fmin>
+		<fmax>892 1803</fmax>
+	</played>
+	<played>
+		<fingers>1 0 0 0 0 0</fingers>
+		<target>978.88 1957.8</target>
+		<fmin>900 1892</fmin>
+		<fmax>998 2007</fmax>
+	</played>
+	<played>
+		<fingers>0 1 1 0 0 0</fingers>
+		<target>1044.1</target>
+		<fmin>980</fmin>
+		<fmax>1086</fmax>
+	</played>
+	<played>
+		<fingers>0 1 0 0 0 0</fingers>
+		<target>2088.3</target>
+		<fmin>1998</fmin>
+		<fmax>2038</fmax>
+	</played>
+	<played>
+		<fingers>0 0 0 0 0 0</fingers>
+		<target>1101.2 2202.5</target>
+		<fmin>1030 2138</fmin>
+		<fmax>1143 2225</fmax>
+	</played>
+	<played>
+		<fingers>0 1 1 1 1 1</fingers>
+		<target>1174.7 2349.3</target>
+		<fmin>1130 2370 870</fmin>
+		<fmax>1207 2449 905</fmax>
+	</played>
+</wii:instrument>
+
+
+
+
+
+
+
+

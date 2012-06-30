@@ -39,10 +39,8 @@
 			<xsd:element name="borePoint" type="wii:BorePoint"
 				maxOccurs="unbounded">
 				<xsd:annotation>
-					<xsd:documentation>Sequence of inside diameter
-						measurements for
-						non-uniform bore,
-						from fipple, cork or other head-end termination,
+					<xsd:documentation>Sequence of inside diameter measurements for
+						non-uniform bore, from fipple, cork or other head-end termination,
 						to bottom-end. Assume segments between bore points
 						are conical,
 						with linear increase in diameter.
@@ -304,8 +302,7 @@
 					</xsd:complexType>
 				</xsd:element>
 			</xsd:choice>
-			<xsd:element name="beta" type="wii:ZeroOrMore"
-				minOccurs="0">
+			<xsd:element name="beta" type="wii:ZeroOrMore" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Jet spatial amplification factor.
 						See Auvray, et

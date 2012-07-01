@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <wit:tuning xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xmlns:wit="http://www.wwidesigner.com/Tuning"
-         xsi:schemaLocation="http://www.wwidesigner.com/Tuning ../Tuning2.xsd ">
+         xmlns:wit="http://www.wwidesigner.com/Tuning2"
+         xsi:schemaLocation="http://www.wwidesigner.com/Tuning2 ../Tuning2.xsd ">
 
 	<name>BP7 Whistle</name>
 	<description>6-hole PVC whistle, high D, target and actual tuning</description>

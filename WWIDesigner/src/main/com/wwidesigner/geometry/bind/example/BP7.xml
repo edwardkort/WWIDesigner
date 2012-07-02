@@ -1,60 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
 <wii:instrument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xmlns:wii="http://www.wwidesigner.com/Instrument"
-         xsi:schemaLocation="http://www.wwidesigner.com/Instrument ../Instrument2.xsd ">
+         xsi:schemaLocation="http://www.wwidesigner.com/Instrument ../Instrument.xsd ">
 	<name>BP7 Whistle</name>
 	<description>6-hole PVC whistle, high D, A=440 Just Intonation</description>
 	<lengthType>mm</lengthType>
 	<mouthpiece>
-		<position>0</position>
 		<fipple>
-			<windowLength>5.4</windowLength>
-			<windowWidth>6.5</windowWidth>
-			<windowHeight>3.6</windowHeight>
-			<windwayLength>21.</windwayLength>
-			<windwayHeight>1.36</windwayHeight>
+			<windowLength><value>5.4</value><optimization>FIXED</optimization></windowLength>
+			<windowWidth><value>6.5</value><optimization>FIXED</optimization></windowWidth>
+			<windowHeight><value>3.6</value><optimization>FIXED</optimization></windowHeight>
+			<windwayLength><value>21.</value><optimization>FIXED</optimization></windwayLength>
+			<windwayHeight><value>1.36</value><optimization>FIXED</optimization></windwayHeight>
 		</fipple>
 		<beta>0.4</beta>
 	</mouthpiece>
+	<mouthpieceOrigin>
+		<borePosition><value>0</value><optimization>FIXED</optimization></borePosition>
+		<boreDiameter><value>11.9</value><optimization>FIXED</optimization></boreDiameter>
+	</mouthpieceOrigin>
 	<borePoint>
-		<borePosition>0</borePosition>
-		<boreDiameter>11.9</boreDiameter>
+		<borePosition><value>0</value><optimization>FIXED</optimization></borePosition>
+		<boreDiameter><value>11.9</value><optimization>FIXED</optimization></boreDiameter>
 	</borePoint>
 	<borePoint>
-		<borePosition>267.5</borePosition>
-		<boreDiameter>11.9</boreDiameter>
+		<borePosition><value>267.5</value><optimization>FIXED</optimization></borePosition>
+		<boreDiameter><value>11.9</value><optimization>FIXED</optimization></boreDiameter>
 	</borePoint>
 	<hole>
-		<position optimization="FREE">117.0</position>
-		<diameter optimization="FREE">5.6</diameter>
-		<height>2.0</height>
+		<position><value>117.0</value><optimization>FREE</optimization></position>
+		<diameter><value>5.6</value><optimization>FREE</optimization></diameter>
+		<height><value>2.0</value><optimization>FIXED</optimization></height>
 	</hole>
 	<hole>
-		<position optimization="FREE">139.5</position>
-		<diameter optimization="FREE">6.0</diameter>
-		<height>2.0</height>
+		<position><value>139.5</value><optimization>FREE</optimization></position>
+		<diameter><value>6.0</value><optimization>FREE</optimization></diameter>
+		<height><value>2.0</value><optimization>FIXED</optimization></height>
 	</hole>
 	<hole>
-		<position optimization="FREE">158.5</position>
-		<diameter optimization="FREE">6.0</diameter>
-		<height>2.0</height>
+		<position><value>158.5</value><optimization>FREE</optimization></position>
+		<diameter><value>6.0</value><optimization>FREE</optimization></diameter>
+		<height><value>2.0</value><optimization>FIXED</optimization></height>
 	</hole>
 	<hole>
-		<position optimization="FREE">186.5</position>
-		<diameter optimization="FREE">6.0</diameter>
-		<height>2.0</height>
+		<position><value>186.5</value><optimization>FREE</optimization></position>
+		<diameter><value>6.0</value><optimization>FREE</optimization></diameter>
+		<height><value>2.0</value><optimization>FIXED</optimization></height>
 	</hole>
 	<hole>
-		<position optimization="FREE">203.0</position>
-		<diameter optimization="FREE">7.9</diameter>
-		<height>2.0</height>
+		<position><value>203.0</value><optimization>FREE</optimization></position>
+		<diameter><value>7.9</value><optimization>FREE</optimization></diameter>
+		<height><value>2.0</value><optimization>FIXED</optimization></height>
 	</hole>
 	<hole>
-		<position optimization="FREE">227.5</position>
-		<diameter optimization="FREE">7.5</diameter>
-		<height>2.0</height>
+		<position><value>227.5</value><optimization>FREE</optimization></position>
+		<diameter><value>7.5</value><optimization>FREE</optimization></diameter>
+		<height><value>2.0</value><optimization>FIXED</optimization></height>
 	</hole>
 	<termination>
-		<flangeDiameter>15.9</flangeDiameter>
+		<flangeDiameter><value>15.9</value><optimization>FIXED</optimization></flangeDiameter>
 	</termination>
 </wii:instrument>

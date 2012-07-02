@@ -8,19 +8,14 @@ import static org.junit.Assert.fail;
 
 import org.junit.Test;
 
+import com.wwidesigner.util.AbstractXmlTest;
+
 /**
  * @author kort
  * 
  */
 public class XmlScaleSymbolListTest extends AbstractXmlTest<XmlScaleSymbolList>
 {
-
-	@Override
-	public void setVariables()
-	{
-		inputSymbolXML = "com/wwidesigner/note/bind/example/Western_Chromatic_Symbols.xml";
-		outputSymbolXML = "Western_Chromatic_Symbols_test.xml";
-	}
 
 	/**
 	 * Test method for
@@ -89,6 +84,25 @@ public class XmlScaleSymbolListTest extends AbstractXmlTest<XmlScaleSymbolList>
 		{
 			fail(e.getMessage());
 		}
+	}
+
+	@Override
+	protected void setInputSymbolXML()
+	{
+		inputSymbolXML = "com/wwidesigner/note/bind/example/Western_Chromatic_Symbols.xml";
+	}
+
+	@Override
+	protected void setOutputSymbolXML()
+	{
+		outputSymbolXML = "Western_Chromatic_Symbols_test.xml";
+	}
+
+	@Override
+	protected void setBindFactory()
+	{
+		bindFactory = new NoteBindFactory();
+
 	}
 
 }

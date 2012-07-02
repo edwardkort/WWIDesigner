@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.wwidesigner.note.bind;
+package com.wwidesigner.util;
 
 import java.io.File;
 import java.io.FileReader;

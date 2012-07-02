@@ -3,9 +3,12 @@
  */
 package com.wwidesigner.note.bind;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import org.junit.Test;
+
+import com.wwidesigner.util.AbstractXmlTest;
 
 /**
  * @author kort
@@ -14,13 +17,6 @@ import org.junit.Test;
 public class XmlFingeringPatternTest extends
 		AbstractXmlTest<XmlFingeringPattern>
 {
-
-	@Override
-	public void setVariables()
-	{
-		inputSymbolXML = "com/wwidesigner/note/bind/example/5-hole_NAF_standard_fingering.xml";
-		outputSymbolXML = "5-hole_NAF_standard_fingering_test.xml";
-	}
 
 	/**
 	 * Test method for
@@ -114,6 +110,27 @@ public class XmlFingeringPatternTest extends
 		{
 			fail(e.getMessage());
 		}
+	}
+
+	@Override
+	protected void setInputSymbolXML()
+	{
+		inputSymbolXML = "com/wwidesigner/note/bind/example/5-hole_NAF_standard_fingering.xml";
+
+	}
+
+	@Override
+	protected void setOutputSymbolXML()
+	{
+		outputSymbolXML = "5-hole_NAF_standard_fingering_test.xml";
+
+	}
+
+	@Override
+	protected void setBindFactory()
+	{
+		bindFactory = new NoteBindFactory();
+
 	}
 
 }

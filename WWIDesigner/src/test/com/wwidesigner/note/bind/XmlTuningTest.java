@@ -3,9 +3,12 @@
  */
 package com.wwidesigner.note.bind;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import org.junit.Test;
+
+import com.wwidesigner.util.AbstractXmlTest;
 
 /**
  * @author kort
@@ -13,13 +16,6 @@ import org.junit.Test;
  */
 public class XmlTuningTest extends AbstractXmlTest<XmlTuning>
 {
-
-	@Override
-	public void setVariables()
-	{
-		inputSymbolXML = "com/wwidesigner/note/bind/example/A_5-hole_NAF_standard_tuning.xml";
-		outputSymbolXML = "A_5-hole_NAF_standard_tuning_test.xml";
-	}
 
 	/**
 	 * Test method for
@@ -116,6 +112,25 @@ public class XmlTuningTest extends AbstractXmlTest<XmlTuning>
 		{
 			fail(e.getMessage());
 		}
+	}
+
+	@Override
+	protected void setInputSymbolXML()
+	{
+		inputSymbolXML = "com/wwidesigner/note/bind/example/A_5-hole_NAF_standard_tuning.xml";
+	}
+
+	@Override
+	protected void setOutputSymbolXML()
+	{
+		outputSymbolXML = "A_5-hole_NAF_standard_tuning_test.xml";
+	}
+
+	@Override
+	protected void setBindFactory()
+	{
+		bindFactory = new NoteBindFactory();
+
 	}
 
 }

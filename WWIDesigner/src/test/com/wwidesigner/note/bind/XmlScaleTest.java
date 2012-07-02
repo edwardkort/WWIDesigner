@@ -3,9 +3,12 @@
  */
 package com.wwidesigner.note.bind;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import org.junit.Test;
+
+import com.wwidesigner.util.AbstractXmlTest;
 
 /**
  * @author kort
@@ -13,13 +16,6 @@ import org.junit.Test;
  */
 public class XmlScaleTest extends AbstractXmlTest<XmlScale>
 {
-
-	@Override
-	public void setVariables()
-	{
-		inputSymbolXML = "com/wwidesigner/note/bind/example/A_pentatonic_minor_scale.xml";
-		outputSymbolXML = "A_pentatonic_minor_scale_test.xml";
-	}
 
 	/**
 	 * Test method for {@link com.wwidesigner.note.bind.XmlScale#getName()}.
@@ -88,6 +84,25 @@ public class XmlScaleTest extends AbstractXmlTest<XmlScale>
 		{
 			fail(e.getMessage());
 		}
+	}
+
+	@Override
+	protected void setInputSymbolXML()
+	{
+		inputSymbolXML = "com/wwidesigner/note/bind/example/A_pentatonic_minor_scale.xml";
+	}
+
+	@Override
+	protected void setOutputSymbolXML()
+	{
+		outputSymbolXML = "A_pentatonic_minor_scale_test.xml";
+	}
+
+	@Override
+	protected void setBindFactory()
+	{
+		bindFactory = new NoteBindFactory();
+
 	}
 
 }

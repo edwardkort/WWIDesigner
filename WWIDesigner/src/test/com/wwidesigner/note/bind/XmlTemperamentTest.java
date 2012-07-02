@@ -8,19 +8,14 @@ import static org.junit.Assert.fail;
 
 import org.junit.Test;
 
+import com.wwidesigner.util.AbstractXmlTest;
+
 /**
  * @author kort
  * 
  */
 public class XmlTemperamentTest extends AbstractXmlTest<XmlTemperament>
 {
-
-	@Override
-	public void setVariables()
-	{
-		inputSymbolXML = "com/wwidesigner/note/bind/example/Equal_Temperament.xml";
-		outputSymbolXML = "Equal_Temperament_test.xml";
-	}
 
 	/**
 	 * Test method for
@@ -82,12 +77,32 @@ public class XmlTemperamentTest extends AbstractXmlTest<XmlTemperament>
 				unmarshalInput();
 			}
 			double interval = inputElement.getInterval().get(1);
-			assertEquals("Temperament interval incoorect", 1.059, interval, 0.001);
+			assertEquals("Temperament interval incoorect", 1.059, interval,
+					0.001);
 		}
 		catch (Exception e)
 		{
 			fail(e.getMessage());
 		}
+	}
+
+	@Override
+	protected void setInputSymbolXML()
+	{
+		inputSymbolXML = "com/wwidesigner/note/bind/example/Equal_Temperament.xml";
+	}
+
+	@Override
+	protected void setOutputSymbolXML()
+	{
+		outputSymbolXML = "Equal_Temperament_test.xml";
+	}
+
+	@Override
+	protected void setBindFactory()
+	{
+		bindFactory = new NoteBindFactory();
+
 	}
 
 }

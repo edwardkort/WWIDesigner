@@ -1,4 +1,4 @@
-package com.wwidesigner.note.bind;
+package com.wwidesigner.util;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -8,18 +8,25 @@ import java.io.File;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.wwidesigner.util.BindFactory;
+
 public abstract class AbstractXmlTest<T>
 {
-	public abstract void setVariables();
+	protected abstract void setInputSymbolXML();
 
-	String inputSymbolXML;
-	String outputSymbolXML;
+	protected abstract void setOutputSymbolXML();
 
-	File inputFile;
-	File outputFile;
-	String writePath;
+	protected abstract void setBindFactory();
 
-	T inputElement;
+	protected String inputSymbolXML;
+	protected String outputSymbolXML;
+	protected BindFactory bindFactory;
+
+	protected File inputFile;
+	protected File outputFile;
+	protected String writePath;
+
+	protected T inputElement;
 
 	/**
 	 * @throws java.lang.Exception
@@ -27,8 +34,9 @@ public abstract class AbstractXmlTest<T>
 	@Before
 	public void setUp() throws Exception
 	{
-		setVariables();
-		NoteBindFactory bindFactory = new NoteBindFactory();
+		setInputSymbolXML();
+		setOutputSymbolXML();
+		setBindFactory();
 		String inputFilePath = bindFactory.getPathFromName(inputSymbolXML);
 		inputFile = new File(inputFilePath);
 		String inputFileName = inputFile.getName();
@@ -47,17 +55,16 @@ public abstract class AbstractXmlTest<T>
 	@SuppressWarnings("unchecked")
 	public void unmarshalInput() throws Exception
 	{
-		NoteBindFactory bindFactory = new NoteBindFactory();
 		inputElement = (T) bindFactory.unmarshalXml(inputFile);
 	}
 
 	/**
 	 * Marshal the input element
+	 * 
 	 * @throws Exception
 	 */
 	public void marshalOutput() throws Exception
 	{
-		NoteBindFactory bindFactory = new NoteBindFactory();
 		bindFactory.marshalToXml(inputElement, outputFile);
 	}
 

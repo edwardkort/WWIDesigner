@@ -55,7 +55,7 @@ public abstract class BindFactory
 		marshaller.marshal(createElement(input), outputXml);
 	}
 
-	public Schema getSchema()
+	private Schema getSchema()
 	{
 		try
 		{
@@ -74,7 +74,7 @@ public abstract class BindFactory
 		return ClassLoader.getSystemResource(name).getPath();
 	}
 
-	public File getFileFromName(String name)
+	private File getFileFromName(String name)
 	{
 		String filePath = ClassLoader.getSystemResource(name).getPath();
 

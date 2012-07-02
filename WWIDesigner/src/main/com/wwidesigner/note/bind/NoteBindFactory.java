@@ -12,7 +12,7 @@ import com.wwidesigner.util.BindFactory;
 public class NoteBindFactory extends BindFactory
 {
 
-	public Object createElement(Object obj)
+	protected Object createElement(Object obj)
 	{
 		String objName = obj.getClass().getSimpleName();
 		Object element = null;

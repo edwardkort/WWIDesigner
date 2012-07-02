@@ -11,11 +11,6 @@ import com.wwidesigner.util.BindFactory;
  */
 public class NoteBindFactory extends BindFactory
 {
-	public NoteBindFactory()
-	{
-		setPackagePath();
-		setSchemaName();
-	}
 
 	public Object createElement(Object obj)
 	{

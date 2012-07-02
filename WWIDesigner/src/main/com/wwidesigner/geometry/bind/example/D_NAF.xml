@@ -1,9 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<wii:instrument xmlns:wii="http://www.wwidesigner.com/Instrument">
+<wii:instrument xmlns:wii="http://www.wwidesigner.com/Instrument" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<name>D NAF</name>
 	<description>7-hole NAF, key of D, A=432</description>
 	<lengthType>in</lengthType>
-	<borePoint>
+	<mouthpiece>
+		<fipple>
+			<windowLength>
+				<value>0.15</value>
+				<optimization>FIXED</optimization>
+			</windowLength>
+			<windowWidth>
+				<value>0.64</value>
+				<optimization>FIXED</optimization>
+			</windowWidth>
+			<fippleFactor>
+				<value>0.91</value>
+				<optimization>FIXED</optimization>
+			</fippleFactor>
+		</fipple>
+	</mouthpiece>
+	<mouthpieceOrigin>
 		<borePosition>
 			<value>0</value>
 			<optimization>FIXED</optimization>
@@ -12,7 +28,7 @@
 			<value>1.16</value>
 			<optimization>FREE</optimization>
 		</boreDiameter>
-	</borePoint>
+	</mouthpieceOrigin>
 	<borePoint>
 		<borePosition>
 			<value>9.8</value>
@@ -33,26 +49,6 @@
 			<optimization>FIXED</optimization>
 		</boreDiameter>
 	</borePoint>
-	<mouthpiece>
-		<position>
-			<value>0.18</value>
-			<optimization>FIXED</optimization>
-		</position>
-		<fipple>
-			<width>
-				<value>0.64</value>
-				<optimization>FIXED</optimization>
-			</width>
-			<length>
-				<value>0.15</value>
-				<optimization>FIXED</optimization>
-			</length>
-			<fippleFactor>
-				<value>0.91</value>
-				<optimization>FIXED</optimization>
-			</fippleFactor>
-		</fipple>
-	</mouthpiece>
 	<hole>
 		<name>7</name>
 		<position>
@@ -187,20 +183,13 @@
 		</innerCurvatureRadius>
 	</hole>
 	<termination>
-		<borePosition>
-			<value>18.92</value>
-			<optimization>FREE</optimization>
-		</borePosition>
-		<boreDiameter>
-			<value>1.06</value>
-			<optimization>FREE</optimization>
-		</boreDiameter>
 		<flangeDiameter>
 			<value>1.44</value>
 			<optimization>FREE</optimization>
 		</flangeDiameter>
 	</termination>
 </wii:instrument>
+
 
 
 

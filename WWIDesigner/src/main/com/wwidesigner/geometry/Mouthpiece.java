@@ -3,9 +3,6 @@
  */
 package com.wwidesigner.geometry;
 
-import com.wwidesigner.geometry.bind.XmlMoreThanZero;
-import com.wwidesigner.geometry.bind.XmlMouthpiece;
-import com.wwidesigner.geometry.bind.XmlZeroOrMore;
 import com.wwidesigner.math.TransferMatrix;
 import com.wwidesigner.util.PhysicalParameters;
 

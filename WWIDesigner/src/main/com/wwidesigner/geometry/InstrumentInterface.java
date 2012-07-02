@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.apache.commons.math3.complex.Complex;
 
-import com.wwidesigner.geometry.bind.XmlEndBoreSection;
 import com.wwidesigner.note.bind.XmlFingering;
 import com.wwidesigner.util.PhysicalParameters;
 

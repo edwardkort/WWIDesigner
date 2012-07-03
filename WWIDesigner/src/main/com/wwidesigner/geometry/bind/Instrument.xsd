@@ -42,8 +42,7 @@
 					<xsd:documentation>Sequence of inside diameter measurements for
 						non-uniform bore, from fipple, cork or other head-end termination,
 						to bottom-end. Assume segments between bore points
-						are conical,
-						with linear increase in diameter.
+						are conical, with linear increase in diameter.
 					</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
@@ -51,8 +50,7 @@
 				maxOccurs="unbounded">
 				<xsd:annotation>
 					<xsd:documentation>Hole specifications for toneholes,
-						from
-						mouthpiece to bottom-end.
+						from mouthpiece to bottom-end.
 					</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
@@ -150,8 +148,7 @@
 			<xsd:documentation>Represents a bore position and effective diameter,
 				measured from an arbitrary position, greater positions toward the
 				foot of the instrument. Diameters between
-				borePoints are linearly
-				interpolated.
+				borePoints are linearly interpolated.
 			</xsd:documentation>
 		</xsd:annotation>
 		<xsd:sequence>
@@ -189,8 +186,7 @@
 			<xsd:element name="position" type="wii:ZeroOrMore">
 				<xsd:annotation>
 					<xsd:documentation>Position of hole, relative to reference
-						position,
-						measured from mouthpiece to bottom end.
+						position, measured from mouthpiece to bottom end.
 					</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
@@ -266,20 +262,18 @@
 									</xsd:documentation>
 								</xsd:annotation>
 							</xsd:element>
-							<xsd:element name="fippleFactor" type="wii:MoreThanZero">
+							<xsd:element name="fippleFactor" type="wii:MoreThanZero" minOccurs="0">
 								<xsd:annotation>
 									<xsd:documentation>An empirical multiplier of the calculated
 										characteristic dimension of the window.
+										The impedance model does not use this value.
 									</xsd:documentation>
 								</xsd:annotation>
 							</xsd:element>
-							<xsd:element name="windowHeight" type="wii:MoreThanZero"
-								minOccurs="0">
+							<xsd:element name="windowHeight" type="wii:MoreThanZero">
 								<xsd:annotation>
 									<xsd:documentation>Average "height" of window, between inside
-										and outside of tube. This value is optional. It may be useful
-										either in the impedance calculations or the determination of
-										the fippleFactor.
+										and outside of tube.
 									</xsd:documentation>
 								</xsd:annotation>
 							</xsd:element>
@@ -290,11 +284,9 @@
 									</xsd:documentation>
 								</xsd:annotation>
 							</xsd:element>
-							<xsd:element name="windwayHeight" type="wii:MoreThanZero"
-								minOccurs="0">
+							<xsd:element name="windwayHeight" type="wii:MoreThanZero">
 								<xsd:annotation>
-									<xsd:documentation>Average height of windway at the exit. This
-										value may be useful in calculating the fippleFactor.
+									<xsd:documentation>Average height of windway at the exit.
 									</xsd:documentation>
 								</xsd:annotation>
 							</xsd:element>
@@ -302,15 +294,20 @@
 					</xsd:complexType>
 				</xsd:element>
 			</xsd:choice>
-			<xsd:element name="beta" type="wii:ZeroOrMore" minOccurs="0">
+			<xsd:element name="beta">
 				<xsd:annotation>
-					<xsd:documentation>Jet spatial amplification factor.
-						See Auvray, et
-						al., "Regime change and oscillation thresholds
-						in recorder-like
-						instruments", J. Acoust. Soc. Am. 131 (2), February 2012
+					<xsd:documentation>Jet spatial amplification factor
+						typically between 0.3 and 0.4.
+						See Auvray, et al., "Regime change and oscillation
+						thresholds in recorder-like instruments",
+						J. Acoust. Soc. Am. 131 (2), February 2012
 					</xsd:documentation>
 				</xsd:annotation>
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:double">
+						<xsd:minExclusive value="0"></xsd:minExclusive>
+					</xsd:restriction>
+				</xsd:simpleType>
 			</xsd:element>
 		</xsd:sequence>
 	</xsd:complexType>
@@ -325,8 +322,7 @@
 			<xsd:element name="flangeDiameter" type="wii:ZeroOrMore">
 				<xsd:annotation>
 					<xsd:documentation>Outer diameter of the open end.
-						Zero if the
-						bottom end is closed.
+						Zero if the bottom end is closed.
 					</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>

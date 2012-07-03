@@ -270,7 +270,7 @@
 									</xsd:documentation>
 								</xsd:annotation>
 							</xsd:element>
-							<xsd:element name="windowHeight" type="wii:MoreThanZero">
+							<xsd:element name="windowHeight" type="wii:MoreThanZero" minOccurs="0">
 								<xsd:annotation>
 									<xsd:documentation>Average "height" of window, between inside
 										and outside of tube.
@@ -284,7 +284,7 @@
 									</xsd:documentation>
 								</xsd:annotation>
 							</xsd:element>
-							<xsd:element name="windwayHeight" type="wii:MoreThanZero">
+							<xsd:element name="windwayHeight" type="wii:MoreThanZero" minOccurs="0">
 								<xsd:annotation>
 									<xsd:documentation>Average height of windway at the exit.
 									</xsd:documentation>
@@ -294,7 +294,7 @@
 					</xsd:complexType>
 				</xsd:element>
 			</xsd:choice>
-			<xsd:element name="beta">
+			<xsd:element name="beta" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Jet spatial amplification factor
 						typically between 0.3 and 0.4.

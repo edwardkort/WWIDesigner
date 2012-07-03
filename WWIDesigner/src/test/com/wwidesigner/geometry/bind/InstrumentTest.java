@@ -6,6 +6,8 @@ package com.wwidesigner.geometry.bind;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
+import java.util.List;
+
 import org.junit.Test;
 
 import com.wwidesigner.util.AbstractXmlTest;
@@ -25,8 +27,8 @@ public class InstrumentTest extends AbstractXmlTest<Instrument>
 			{
 				unmarshalInput();
 			}
-			String scaleName = inputElement.getName();
-			assertEquals("Instrument name incorrect", "D NAF", scaleName);
+			String instrumentName = inputElement.getName();
+			assertEquals("Instrument name incorrect", "D NAF", instrumentName);
 		}
 		catch (Exception e)
 		{
@@ -45,10 +47,56 @@ public class InstrumentTest extends AbstractXmlTest<Instrument>
 				unmarshalInput();
 			}
 			String instrumentDescription = inputElement.getDescription();
-			assertEquals(
-					"Instrument description incorrect",
-					"7-hole NAF, key of D, A=432",
-					instrumentDescription);
+			assertEquals("Instrument description incorrect",
+					"7-hole NAF, key of D, A=432", instrumentDescription);
+		}
+		catch (Exception e)
+		{
+			fail(e.getMessage());
+		}
+	}
+
+	@Test
+	public final void testGetBorePoints()
+	{
+		try
+		{
+			if (inputElement == null)
+			{
+				unmarshalInput();
+			}
+			List<BorePoint> borePoints = inputElement.getBorePoint();
+			int numberOfBorePoints = borePoints.size();
+			assertEquals("Number of bore points incorrect", 2,
+					numberOfBorePoints);
+			BorePoint borePoint2 = borePoints.get(1);
+			double position = borePoint2.getBorePosition().getValue();
+			assertEquals("Bore point 2 position incorrect", 13.3, position,
+					0.01);
+			BorePoint borePoint1 = borePoints.get(0);
+			Optimization boreDiameterOpt = borePoint1.getBoreDiameter()
+					.getOptimization();
+			assertEquals("Bore point 1 diameter optimization incorrect",
+					Optimization.FIXED, boreDiameterOpt);
+		}
+		catch (Exception e)
+		{
+			fail(e.getMessage());
+		}
+	}
+
+	@Test
+	public final void testGetFippleWindowLength()
+	{
+		try
+		{
+			if (inputElement == null)
+			{
+				unmarshalInput();
+			}
+			double windowLength = inputElement.getMouthpiece().getFipple()
+					.getWindowLength().getValue();
+			assertEquals("Window length incorrect", 0.15, windowLength, 0.01);
 		}
 		catch (Exception e)
 		{

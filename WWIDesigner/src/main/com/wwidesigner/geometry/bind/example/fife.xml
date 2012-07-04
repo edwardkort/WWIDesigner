@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wii:instrument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns:wii="http://www.wwidesigner.com/Instrument"
+         xsi:schemaLocation="http://www.wwidesigner.com/Instrument ../Instrument.xsd ">
+	<name>Bb Fife</name>
+	<description>6-hole maple fife, cylindrical bore, Bb.
+		Positions measured from far left-hand end, above the cork.
+	</description>
+	<lengthType>mm</lengthType>
+	<mouthpiece>
+		<embouchureHole>
+			<innerDiameter>
+				<value>9.6</value>
+				<optimization>FIXED</optimization>
+			</innerDiameter>
+			<outerDiameter>
+				<value>9.6</value>
+				<optimization>FIXED</optimization>
+			</outerDiameter>
+			<height>
+				<value>4.8</value>
+				<optimization>FIXED</optimization>
+			</height>
+			<headPoint>
+				<borePosition>
+					<value>83.5</value>
+					<optimization>FIXED</optimization>
+				</borePosition>
+				<boreDiameter>
+					<value>12.4</value>
+					<optimization>FIXED</optimization>
+				</boreDiameter>
+			</headPoint>
+		</embouchureHole>
+		
+		<beta>0.4</beta>
+	</mouthpiece>
+	<mouthpieceOrigin>
+		<borePosition><value>73.5</value><optimization>FIXED</optimization></borePosition>
+		<boreDiameter><value>12.4</value><optimization>FIXED</optimization></boreDiameter>
+	</mouthpieceOrigin>
+	<borePoint>
+		<borePosition><value>73.5</value><optimization>FIXED</optimization></borePosition>
+		<boreDiameter><value>12.4</value><optimization>FIXED</optimization></boreDiameter>
+	</borePoint>
+	<borePoint>
+		<borePosition><value>420.5</value><optimization>FIXED</optimization></borePosition>
+		<boreDiameter><value>12.4</value><optimization>FIXED</optimization></boreDiameter>
+	</borePoint>
+	<hole>
+		<position><value>234.0</value><optimization>FREE</optimization></position>
+		<diameter><value>6.2</value><optimization>FREE</optimization></diameter>
+		<height><value>4.2</value><optimization>FIXED</optimization></height>
+	</hole>
+	<hole>
+		<position><value>257.0</value><optimization>FREE</optimization></position>
+		<diameter><value>7.0</value><optimization>FREE</optimization></diameter>
+		<height><value>4.1</value><optimization>FIXED</optimization></height>
+	</hole>
+	<hole>
+		<position><value>281.0</value><optimization>FREE</optimization></position>
+		<diameter><value>7.0</value><optimization>FREE</optimization></diameter>
+		<height><value>3.9</value><optimization>FIXED</optimization></height>
+	</hole>
+	<hole>
+		<position><value>314.0</value><optimization>FREE</optimization></position>
+		<diameter><value>6.2</value><optimization>FREE</optimization></diameter>
+		<height><value>3.6</value><optimization>FIXED</optimization></height>
+	</hole>
+	<hole>
+		<position><value>335.5</value><optimization>FREE</optimization></position>
+		<diameter><value>8.1</value><optimization>FREE</optimization></diameter>
+		<height><value>3.3</value><optimization>FIXED</optimization></height>
+	</hole>
+	<hole>
+		<position><value>360.5</value><optimization>FREE</optimization></position>
+		<diameter><value>6.4</value><optimization>FREE</optimization></diameter>
+		<height><value>3.0</value><optimization>FIXED</optimization></height>
+	</hole>
+	<termination>
+		<flangeDiameter><value>17.5</value><optimization>FIXED</optimization></flangeDiameter>
+	</termination>
+</wii:instrument>

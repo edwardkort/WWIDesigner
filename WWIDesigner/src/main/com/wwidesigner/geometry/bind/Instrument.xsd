@@ -29,20 +29,14 @@
 					</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="mouthpieceOrigin" type="wii:BorePoint">
-				<xsd:annotation>
-					<xsd:documentation>BorePoint that defines the flute origin. Center
-						of embouchure hole, top of fipple window, etc.
-					</xsd:documentation>
-				</xsd:annotation>
-			</xsd:element>
 			<xsd:element name="borePoint" type="wii:BorePoint"
 				maxOccurs="unbounded">
 				<xsd:annotation>
 					<xsd:documentation>Sequence of inside diameter measurements for
 						non-uniform bore, from fipple, cork or other head-end termination,
 						to bottom-end. Assume segments between bore points
-						are conical, with linear increase in diameter.
+						are conical,
+						with linear increase in diameter.
 					</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
@@ -50,7 +44,8 @@
 				maxOccurs="unbounded">
 				<xsd:annotation>
 					<xsd:documentation>Hole specifications for toneholes,
-						from mouthpiece to bottom-end.
+						from
+						mouthpiece to bottom-end.
 					</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
@@ -77,78 +72,40 @@
 		</xsd:restriction>
 	</xsd:simpleType>
 
-	<xsd:simpleType name="Optimization">
+	<xsd:simpleType name="Dimension">
 		<xsd:annotation>
-			<xsd:documentation>An enumeration, applied individually to all
-				Dimension values, that is interpreted by the optimization engine. We
-				might want to add other/additional values to this enumeration.
+			<xsd:documentation>Base class for a dimensional double value.
 			</xsd:documentation>
 		</xsd:annotation>
-		<xsd:restriction base="xsd:token">
-			<xsd:enumeration value="FIXED" />
-			<xsd:enumeration value="FREE" />
-		</xsd:restriction>
+		<xsd:restriction base="xsd:double" />
 	</xsd:simpleType>
 
-	<xsd:complexType name="Dimension">
-		<xsd:annotation>
-			<xsd:documentation>Base class for a double value and associated
-				optimization flag.
-			</xsd:documentation>
-		</xsd:annotation>
-		<xsd:sequence>
-			<xsd:element name="value" type="xsd:double" />
-			<xsd:element name="optimization" type="wii:Optimization" />
-		</xsd:sequence>
-	</xsd:complexType>
-
-	<xsd:complexType name="ZeroOrMore">
+	<xsd:simpleType name="ZeroOrMore">
 		<xsd:annotation>
 			<xsd:documentation>A non-negative Dimension.</xsd:documentation>
 		</xsd:annotation>
-		<xsd:complexContent>
-			<xsd:restriction base="wii:Dimension">
-				<xsd:sequence>
-					<xsd:element name="value">
-						<xsd:simpleType>
-							<xsd:restriction base="xsd:double">
-								<xsd:minInclusive value="0" />
-							</xsd:restriction>
-						</xsd:simpleType>
-					</xsd:element>
-					<xsd:element name="optimization" type="wii:Optimization" />
-				</xsd:sequence>
-			</xsd:restriction>
-		</xsd:complexContent>
-	</xsd:complexType>
+		<xsd:restriction base="wii:Dimension">
+			<xsd:minInclusive value="0" />
+		</xsd:restriction>
+	</xsd:simpleType>
 
-	<xsd:complexType name="MoreThanZero">
+	<xsd:simpleType name="MoreThanZero">
 		<xsd:annotation>
 			<xsd:documentation>A Dimension with a value greater than 0.
 			</xsd:documentation>
 		</xsd:annotation>
-		<xsd:complexContent>
-			<xsd:restriction base="wii:Dimension">
-				<xsd:sequence>
-					<xsd:element name="value">
-						<xsd:simpleType>
-							<xsd:restriction base="xsd:double">
-								<xsd:minExclusive value="0" />
-							</xsd:restriction>
-						</xsd:simpleType>
-					</xsd:element>
-					<xsd:element name="optimization" type="wii:Optimization" />
-				</xsd:sequence>
-			</xsd:restriction>
-		</xsd:complexContent>
-	</xsd:complexType>
+		<xsd:restriction base="wii:Dimension">
+			<xsd:minExclusive value="0" />
+		</xsd:restriction>
+	</xsd:simpleType>
 
 	<xsd:complexType name="BorePoint">
 		<xsd:annotation>
 			<xsd:documentation>Represents a bore position and effective diameter,
 				measured from an arbitrary position, greater positions toward the
-				foot of the instrument. Diameters between
-				borePoints are linearly interpolated.
+				foot of the instrument. Diameters between borePoints are linearly
+				interpolated. This list includes borePoints above and below the
+				mouthpiece position.
 			</xsd:documentation>
 		</xsd:annotation>
 		<xsd:sequence>
@@ -183,7 +140,7 @@
 		</xsd:annotation>
 		<xsd:sequence>
 			<xsd:element name="name" type="xsd:string" minOccurs="0" />
-			<xsd:element name="position" type="wii:ZeroOrMore">
+			<xsd:element name="position" type="wii:Dimension">
 				<xsd:annotation>
 					<xsd:documentation>Position of hole, relative to reference
 						position, measured from mouthpiece to bottom end.
@@ -201,15 +158,20 @@
 	<xsd:complexType name="Mouthpiece">
 		<xsd:annotation>
 			<xsd:documentation>First pass at a sound-mechanism model. Represents
-				a choice between (1) a characteristic length, (2) a flute-type
-				embouchure, and (3) a fipple mechanism. We need to add reeds,
-				end-blown flutes, etc. The position of the mouthpiece is taken from
-				the mouthpieceOrigin borePoint.
+				a choice between (1) a flute-type embouchure and (2) a fipple
+				mechanism. We need to add reeds, end-blown flutes, etc. The position
+				of the mouthpiece is taken from the mouthpieceOrigin borePoint.
 			</xsd:documentation>
 		</xsd:annotation>
 		<xsd:sequence>
+			<xsd:element name="position" type="wii:Dimension">
+				<xsd:annotation>
+					<xsd:documentation>The position of the mouthpiece: center of
+						embouchure hole, splitting edge, etc. as appropriate for the
+						mouthpiece type.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
 			<xsd:choice>
-				<xsd:element name="characteristicLength" type="wii:MoreThanZero" />
 				<xsd:element name="embouchureHole">
 					<xsd:complexType>
 						<xsd:sequence>
@@ -233,17 +195,6 @@
 									</xsd:documentation>
 								</xsd:annotation>
 							</xsd:element>
-							<xsd:element name="headPoint" type="wii:BorePoint"
-								maxOccurs="unbounded">
-								<xsd:annotation>
-									<xsd:documentation>BorePoints that define the bore profile
-										above the embouchure hole center. Each position is relative to
-										the mouthpieceOrigin position, decreasing as you move up the
-										flute. Because the origin is in the center of the embouchure
-										hole, there must be at least one headPoint.
-									</xsd:documentation>
-								</xsd:annotation>
-							</xsd:element>
 						</xsd:sequence>
 					</xsd:complexType>
 				</xsd:element>
@@ -262,15 +213,18 @@
 									</xsd:documentation>
 								</xsd:annotation>
 							</xsd:element>
-							<xsd:element name="fippleFactor" type="wii:MoreThanZero" minOccurs="0">
+							<xsd:element name="fippleFactor" type="wii:MoreThanZero"
+								minOccurs="0">
 								<xsd:annotation>
 									<xsd:documentation>An empirical multiplier of the calculated
 										characteristic dimension of the window.
-										The impedance model does not use this value.
+										The impedance model
+										does not use this value.
 									</xsd:documentation>
 								</xsd:annotation>
 							</xsd:element>
-							<xsd:element name="windowHeight" type="wii:MoreThanZero" minOccurs="0">
+							<xsd:element name="windowHeight" type="wii:MoreThanZero"
+								minOccurs="0">
 								<xsd:annotation>
 									<xsd:documentation>Average "height" of window, between inside
 										and outside of tube.
@@ -284,7 +238,8 @@
 									</xsd:documentation>
 								</xsd:annotation>
 							</xsd:element>
-							<xsd:element name="windwayHeight" type="wii:MoreThanZero" minOccurs="0">
+							<xsd:element name="windwayHeight" type="wii:MoreThanZero"
+								minOccurs="0">
 								<xsd:annotation>
 									<xsd:documentation>Average height of windway at the exit.
 									</xsd:documentation>
@@ -322,7 +277,8 @@
 			<xsd:element name="flangeDiameter" type="wii:ZeroOrMore">
 				<xsd:annotation>
 					<xsd:documentation>Outer diameter of the open end.
-						Zero if the bottom end is closed.
+						Zero if the
+						bottom end is closed.
 					</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>

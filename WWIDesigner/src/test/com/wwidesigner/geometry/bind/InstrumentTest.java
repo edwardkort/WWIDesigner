@@ -67,17 +67,12 @@ public class InstrumentTest extends AbstractXmlTest<Instrument>
 			}
 			List<BorePoint> borePoints = inputElement.getBorePoint();
 			int numberOfBorePoints = borePoints.size();
-			assertEquals("Number of bore points incorrect", 2,
+			assertEquals("Number of bore points incorrect", 3,
 					numberOfBorePoints);
 			BorePoint borePoint2 = borePoints.get(1);
-			double position = borePoint2.getBorePosition().getValue();
-			assertEquals("Bore point 2 position incorrect", 13.3, position,
+			double position = borePoint2.getBorePosition();
+			assertEquals("Bore point 2 position incorrect", 9.8, position,
 					0.01);
-			BorePoint borePoint1 = borePoints.get(0);
-			Optimization boreDiameterOpt = borePoint1.getBoreDiameter()
-					.getOptimization();
-			assertEquals("Bore point 1 diameter optimization incorrect",
-					Optimization.FIXED, boreDiameterOpt);
 		}
 		catch (Exception e)
 		{
@@ -95,7 +90,7 @@ public class InstrumentTest extends AbstractXmlTest<Instrument>
 				unmarshalInput();
 			}
 			double windowLength = inputElement.getMouthpiece().getFipple()
-					.getWindowLength().getValue();
+					.getWindowLength();
 			assertEquals("Window length incorrect", 0.15, windowLength, 0.01);
 		}
 		catch (Exception e)

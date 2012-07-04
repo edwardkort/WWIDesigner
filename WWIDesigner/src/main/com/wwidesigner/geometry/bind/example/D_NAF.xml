@@ -1,194 +1,84 @@
 <?xml version="1.0" encoding="utf-8"?>
-<wii:instrument xmlns:wii="http://www.wwidesigner.com/Instrument" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<wii:instrument xmlns:wii="http://www.wwidesigner.com/Instrument"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<name>D NAF</name>
 	<description>7-hole NAF, key of D, A=432</description>
 	<lengthType>in</lengthType>
 	<mouthpiece>
+		<position>0</position>
 		<fipple>
-			<windowLength>
-				<value>0.15</value>
-				<optimization>FIXED</optimization>
-			</windowLength>
-			<windowWidth>
-				<value>0.64</value>
-				<optimization>FIXED</optimization>
-			</windowWidth>
-			<fippleFactor>
-				<value>0.91</value>
-				<optimization>FIXED</optimization>
-			</fippleFactor>
+			<windowLength>0.15</windowLength>
+			<windowWidth>0.64</windowWidth>
+			<fippleFactor>0.91</fippleFactor>
 		</fipple>
 	</mouthpiece>
-	<mouthpieceOrigin>
-		<borePosition>
-			<value>0</value>
-			<optimization>FIXED</optimization>
-		</borePosition>
-		<boreDiameter>
-			<value>1.16</value>
-			<optimization>FREE</optimization>
-		</boreDiameter>
-	</mouthpieceOrigin>
 	<borePoint>
-		<borePosition>
-			<value>9.8</value>
-			<optimization>FREE</optimization>
-		</borePosition>
-		<boreDiameter>
-			<value>1.16</value>
-			<optimization>FIXED</optimization>
-		</boreDiameter>
+		<borePosition>0</borePosition>
+		<boreDiameter>1.16</boreDiameter>
 	</borePoint>
 	<borePoint>
-		<borePosition>
-			<value>13.3</value>
-			<optimization>FREE</optimization>
-		</borePosition>
-		<boreDiameter>
-			<value>1.06</value>
-			<optimization>FIXED</optimization>
-		</boreDiameter>
+		<borePosition>9.8</borePosition>
+		<boreDiameter>1.16</boreDiameter>
+	</borePoint>
+	<borePoint>
+		<borePosition>13.3</borePosition>
+		<boreDiameter>1.06</boreDiameter>
 	</borePoint>
 	<hole>
 		<name>7</name>
-		<position>
-			<value>5.6</value>
-			<optimization>FREE</optimization>
-		</position>
-		<diameter>
-			<value>0.284</value>
-			<optimization>FREE</optimization>
-		</diameter>
-		<height>
-			<value>0.18</value>
-			<optimization>FIXED</optimization>
-		</height>
-		<innerCurvatureRadius>
-			<value>0.02</value>
-			<optimization>FIXED</optimization>
-		</innerCurvatureRadius>
+		<position>5.6</position>
+		<diameter>0.284</diameter>
+		<height>0.18</height>
+		<innerCurvatureRadius>0.02</innerCurvatureRadius>
 	</hole>
 	<hole>
 		<name>6</name>
-		<position>
-			<value>6.85</value>
-			<optimization>FREE</optimization>
-		</position>
-		<diameter>
-			<value>0.328</value>
-			<optimization>FREE</optimization>
-		</diameter>
-		<height>
-			<value>0.18</value>
-			<optimization>FIXED</optimization>
-		</height>
-		<innerCurvatureRadius>
-			<value>0.02</value>
-			<optimization>FIXED</optimization>
-		</innerCurvatureRadius>
+		<position>6.85</position>
+		<diameter>0.328</diameter>
+		<height>0.18</height>
+		<innerCurvatureRadius>0.02</innerCurvatureRadius>
 	</hole>
 	<hole>
 		<name>5</name>
-		<position>
-			<value>8.1</value>
-			<optimization>FREE</optimization>
-		</position>
-		<diameter>
-			<value>0.312</value>
-			<optimization>FREE</optimization>
-		</diameter>
-		<height>
-			<value>0.18</value>
-			<optimization>FIXED</optimization>
-		</height>
-		<innerCurvatureRadius>
-			<value>0.02</value>
-			<optimization>FIXED</optimization>
-		</innerCurvatureRadius>
+		<position>8.1</position>
+		<diameter>0.312</diameter>
+		<height>0.18</height>
+		<innerCurvatureRadius>0.02</innerCurvatureRadius>
 	</hole>
 	<hole>
 		<name>4</name>
-		<position>
-			<value>10.3</value>
-			<optimization>FREE</optimization>
-		</position>
-		<diameter>
-			<value>0.403</value>
-			<optimization>FREE</optimization>
-		</diameter>
-		<height>
-			<value>0.18</value>
-			<optimization>FIXED</optimization>
-		</height>
-		<innerCurvatureRadius>
-			<value>0.02</value>
-			<optimization>FIXED</optimization>
-		</innerCurvatureRadius>
+		<position>10.3</position>
+		<diameter>0.403</diameter>
+		<height>0.18</height>
+		<innerCurvatureRadius>0.02</innerCurvatureRadius>
 	</hole>
 	<hole>
 		<name>3</name>
-		<position>
-			<value>11.55</value>
-			<optimization>FREE</optimization>
-		</position>
-		<diameter>
-			<value>0.337</value>
-			<optimization>FREE</optimization>
-		</diameter>
-		<height>
-			<value>0.18</value>
-			<optimization>FIXED</optimization>
-		</height>
-		<innerCurvatureRadius>
-			<value>0.02</value>
-			<optimization>FIXED</optimization>
-		</innerCurvatureRadius>
+		<position>11.55</position>
+		<diameter>0.337</diameter>
+		<height>0.18</height>
+		<innerCurvatureRadius>0.02</innerCurvatureRadius>
 	</hole>
 	<hole>
 		<name>2</name>
-		<position>
-			<value>12.75</value>
-			<optimization>FREE</optimization>
-		</position>
-		<diameter>
-			<value>0.158</value>
-			<optimization>FREE</optimization>
-		</diameter>
-		<height>
-			<value>0.10</value>
-			<optimization>FIXED</optimization>
-		</height>
-		<innerCurvatureRadius>
-			<value>0.02</value>
-			<optimization>FIXED</optimization>
-		</innerCurvatureRadius>
+		<position>12.75</position>
+		<diameter>0.158</diameter>
+		<height>0.10</height>
+		<innerCurvatureRadius>0.02</innerCurvatureRadius>
 	</hole>
 	<hole>
 		<name>1</name>
-		<position>
-			<value>12.80</value>
-			<optimization>FREE</optimization>
-		</position>
-		<diameter>
-			<value>0.172</value>
-			<optimization>FREE</optimization>
-		</diameter>
-		<height>
-			<value>0.10</value>
-			<optimization>FIXED</optimization>
-		</height>
-		<innerCurvatureRadius>
-			<value>0.02</value>
-			<optimization>FIXED</optimization>
-		</innerCurvatureRadius>
+		<position>12.80</position>
+		<diameter>0.172</diameter>
+		<height>0.10</height>
+		<innerCurvatureRadius>0.02</innerCurvatureRadius>
 	</hole>
 	<termination>
-		<flangeDiameter>
-			<value>1.44</value>
-			<optimization>FREE</optimization>
-		</flangeDiameter>
+		<flangeDiameter>1.44</flangeDiameter>
 	</termination>
 </wii:instrument>
+
+
 
 
 

@@ -8,76 +8,53 @@
 	</description>
 	<lengthType>mm</lengthType>
 	<mouthpiece>
+		<position>83.5</position>
 		<embouchureHole>
-			<innerDiameter>
-				<value>9.6</value>
-				<optimization>FIXED</optimization>
-			</innerDiameter>
-			<outerDiameter>
-				<value>9.6</value>
-				<optimization>FIXED</optimization>
-			</outerDiameter>
-			<height>
-				<value>4.8</value>
-				<optimization>FIXED</optimization>
-			</height>
-			<headPoint>
-				<borePosition>
-					<value>83.5</value>
-					<optimization>FIXED</optimization>
-				</borePosition>
-				<boreDiameter>
-					<value>12.4</value>
-					<optimization>FIXED</optimization>
-				</boreDiameter>
-			</headPoint>
+			<innerDiameter>9.6</innerDiameter>
+			<outerDiameter>9.6</outerDiameter>
+			<height>4.8</height>
 		</embouchureHole>
-		
 		<beta>0.4</beta>
 	</mouthpiece>
-	<mouthpieceOrigin>
-		<borePosition><value>73.5</value><optimization>FIXED</optimization></borePosition>
-		<boreDiameter><value>12.4</value><optimization>FIXED</optimization></boreDiameter>
-	</mouthpieceOrigin>
 	<borePoint>
-		<borePosition><value>73.5</value><optimization>FIXED</optimization></borePosition>
-		<boreDiameter><value>12.4</value><optimization>FIXED</optimization></boreDiameter>
+		<borePosition>73.5</borePosition>
+		<boreDiameter>12.4</boreDiameter>
 	</borePoint>
 	<borePoint>
-		<borePosition><value>420.5</value><optimization>FIXED</optimization></borePosition>
-		<boreDiameter><value>12.4</value><optimization>FIXED</optimization></boreDiameter>
+		<borePosition>420.5</borePosition>
+		<boreDiameter>12.4</boreDiameter>
 	</borePoint>
 	<hole>
-		<position><value>234.0</value><optimization>FREE</optimization></position>
-		<diameter><value>6.2</value><optimization>FREE</optimization></diameter>
-		<height><value>4.2</value><optimization>FIXED</optimization></height>
+		<position>234.0</position>
+		<diameter>6.2</diameter>
+		<height>4.2</height>
 	</hole>
 	<hole>
-		<position><value>257.0</value><optimization>FREE</optimization></position>
-		<diameter><value>7.0</value><optimization>FREE</optimization></diameter>
-		<height><value>4.1</value><optimization>FIXED</optimization></height>
+		<position>257.0</position>
+		<diameter>7.0</diameter>
+		<height>4.1</height>
 	</hole>
 	<hole>
-		<position><value>281.0</value><optimization>FREE</optimization></position>
-		<diameter><value>7.0</value><optimization>FREE</optimization></diameter>
-		<height><value>3.9</value><optimization>FIXED</optimization></height>
+		<position>281.0</position>
+		<diameter>7.0</diameter>
+		<height>3.9</height>
 	</hole>
 	<hole>
-		<position><value>314.0</value><optimization>FREE</optimization></position>
-		<diameter><value>6.2</value><optimization>FREE</optimization></diameter>
-		<height><value>3.6</value><optimization>FIXED</optimization></height>
+		<position>314.0</position>
+		<diameter>6.2</diameter>
+		<height>3.6</height>
 	</hole>
 	<hole>
-		<position><value>335.5</value><optimization>FREE</optimization></position>
-		<diameter><value>8.1</value><optimization>FREE</optimization></diameter>
-		<height><value>3.3</value><optimization>FIXED</optimization></height>
+		<position>335.5</position>
+		<diameter>8.1</diameter>
+		<height>3.3</height>
 	</hole>
 	<hole>
-		<position><value>360.5</value><optimization>FREE</optimization></position>
-		<diameter><value>6.4</value><optimization>FREE</optimization></diameter>
-		<height><value>3.0</value><optimization>FIXED</optimization></height>
+		<position>360.5</position>
+		<diameter>6.4</diameter>
+		<height>3.0</height>
 	</hole>
 	<termination>
-		<flangeDiameter><value>17.5</value><optimization>FIXED</optimization></flangeDiameter>
+		<flangeDiameter>17.5</flangeDiameter>
 	</termination>
 </wii:instrument>

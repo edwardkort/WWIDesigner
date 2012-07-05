@@ -5,7 +5,6 @@
 // Generated on: 2012.07.04 at 12:07:42 PM MDT 
 //
 
-
 package com.wwidesigner.geometry.bind;
 
 import java.util.ArrayList;
@@ -15,16 +14,17 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * The physical geometry of a wood wind. Dimensions
- * 				may represent initial values subject to optimization or final values
- * 				fixed throughout the calculations.
- * 			
+ * The physical geometry of a wood wind. Dimensions may represent initial values
+ * subject to optimization or final values fixed throughout the calculations.
  * 
- * <p>Java class for Instrument complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * Java class for Instrument complex type.
+ * 
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
  * 
  * <pre>
  * &lt;complexType name="Instrument">
@@ -47,205 +47,217 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "Instrument", propOrder = {
-    "name",
-    "description",
-    "lengthType",
-    "mouthpiece",
-    "borePoint",
-    "hole",
-    "termination"
-})
-public class Instrument {
+@XmlType(name = "Instrument", propOrder = { "name", "description",
+		"lengthType", "mouthpiece", "borePoint", "hole", "termination" })
+public class Instrument
+{
 
-    @XmlElement(required = true)
-    protected String name;
-    protected String description;
-    @XmlElement(required = true)
-    protected LengthType lengthType;
-    protected Mouthpiece mouthpiece;
-    @XmlElement(required = true)
-    protected List<BorePoint> borePoint;
-    protected List<Hole> hole;
-    @XmlElement(required = true)
-    protected Termination termination;
+	@XmlElement(required = true)
+	protected String name;
+	protected String description;
+	@XmlElement(required = true)
+	protected LengthType lengthType;
+	protected Mouthpiece mouthpiece;
+	@XmlElement(required = true)
+	protected List<BorePoint> borePoint;
+	protected List<Hole> hole;
+	@XmlElement(required = true)
+	protected Termination termination;
 
-    /**
-     * Gets the value of the name property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getName() {
-        return name;
-    }
+	/**
+	 * Gets the value of the name property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
+	public String getName()
+	{
+		return name;
+	}
 
-    /**
-     * Sets the value of the name property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setName(String value) {
-        this.name = value;
-    }
+	/**
+	 * Sets the value of the name property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link String }
+	 * 
+	 */
+	public void setName(String value)
+	{
+		this.name = value;
+	}
 
-    /**
-     * Gets the value of the description property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getDescription() {
-        return description;
-    }
+	/**
+	 * Gets the value of the description property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
+	public String getDescription()
+	{
+		return description;
+	}
 
-    /**
-     * Sets the value of the description property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setDescription(String value) {
-        this.description = value;
-    }
+	/**
+	 * Sets the value of the description property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link String }
+	 * 
+	 */
+	public void setDescription(String value)
+	{
+		this.description = value;
+	}
 
-    /**
-     * Gets the value of the lengthType property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link LengthType }
-     *     
-     */
-    public LengthType getLengthType() {
-        return lengthType;
-    }
+	/**
+	 * Gets the value of the lengthType property.
+	 * 
+	 * @return possible object is {@link LengthType }
+	 * 
+	 */
+	public LengthType getLengthType()
+	{
+		return lengthType;
+	}
 
-    /**
-     * Sets the value of the lengthType property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link LengthType }
-     *     
-     */
-    public void setLengthType(LengthType value) {
-        this.lengthType = value;
-    }
+	/**
+	 * Sets the value of the lengthType property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link LengthType }
+	 * 
+	 */
+	public void setLengthType(LengthType value)
+	{
+		this.lengthType = value;
+	}
 
-    /**
-     * Gets the value of the mouthpiece property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Mouthpiece }
-     *     
-     */
-    public Mouthpiece getMouthpiece() {
-        return mouthpiece;
-    }
+	/**
+	 * Gets the value of the mouthpiece property.
+	 * 
+	 * @return possible object is {@link Mouthpiece }
+	 * 
+	 */
+	public Mouthpiece getMouthpiece()
+	{
+		return mouthpiece;
+	}
 
-    /**
-     * Sets the value of the mouthpiece property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Mouthpiece }
-     *     
-     */
-    public void setMouthpiece(Mouthpiece value) {
-        this.mouthpiece = value;
-    }
+	/**
+	 * Sets the value of the mouthpiece property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link Mouthpiece }
+	 * 
+	 */
+	public void setMouthpiece(Mouthpiece value)
+	{
+		this.mouthpiece = value;
+	}
 
-    /**
-     * Gets the value of the borePoint property.
-     * 
-     * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the borePoint property.
-     * 
-     * <p>
-     * For example, to add a new item, do as follows:
-     * <pre>
-     *    getBorePoint().add(newItem);
-     * </pre>
-     * 
-     * 
-     * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link BorePoint }
-     * 
-     * 
-     */
-    public List<BorePoint> getBorePoint() {
-        if (borePoint == null) {
-            borePoint = new ArrayList<BorePoint>();
-        }
-        return this.borePoint;
-    }
+	/**
+	 * Gets the value of the borePoint property.
+	 * 
+	 * <p>
+	 * This accessor method returns a reference to the live list, not a
+	 * snapshot. Therefore any modification you make to the returned list will
+	 * be present inside the JAXB object. This is why there is not a
+	 * <CODE>set</CODE> method for the borePoint property.
+	 * 
+	 * <p>
+	 * For example, to add a new item, do as follows:
+	 * 
+	 * <pre>
+	 * getBorePoint().add(newItem);
+	 * </pre>
+	 * 
+	 * 
+	 * <p>
+	 * Objects of the following type(s) are allowed in the list
+	 * {@link BorePoint }
+	 * 
+	 * 
+	 */
+	public List<BorePoint> getBorePoint()
+	{
+		if (borePoint == null)
+		{
+			borePoint = new ArrayList<BorePoint>();
+		}
+		return this.borePoint;
+	}
 
-    /**
-     * Gets the value of the hole property.
-     * 
-     * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the hole property.
-     * 
-     * <p>
-     * For example, to add a new item, do as follows:
-     * <pre>
-     *    getHole().add(newItem);
-     * </pre>
-     * 
-     * 
-     * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link Hole }
-     * 
-     * 
-     */
-    public List<Hole> getHole() {
-        if (hole == null) {
-            hole = new ArrayList<Hole>();
-        }
-        return this.hole;
-    }
+	/**
+	 * @param borePoint
+	 *            the borePoint to set
+	 */
+	public void setBorePoint(List<BorePoint> borePoint)
+	{
+		this.borePoint = borePoint;
+	}
 
-    /**
-     * Gets the value of the termination property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Termination }
-     *     
-     */
-    public Termination getTermination() {
-        return termination;
-    }
+	/**
+	 * Gets the value of the hole property.
+	 * 
+	 * <p>
+	 * This accessor method returns a reference to the live list, not a
+	 * snapshot. Therefore any modification you make to the returned list will
+	 * be present inside the JAXB object. This is why there is not a
+	 * <CODE>set</CODE> method for the hole property.
+	 * 
+	 * <p>
+	 * For example, to add a new item, do as follows:
+	 * 
+	 * <pre>
+	 * getHole().add(newItem);
+	 * </pre>
+	 * 
+	 * 
+	 * <p>
+	 * Objects of the following type(s) are allowed in the list {@link Hole }
+	 * 
+	 * 
+	 */
+	public List<Hole> getHole()
+	{
+		if (hole == null)
+		{
+			hole = new ArrayList<Hole>();
+		}
+		return this.hole;
+	}
 
-    /**
-     * Sets the value of the termination property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Termination }
-     *     
-     */
-    public void setTermination(Termination value) {
-        this.termination = value;
-    }
+	/**
+	 * @param hole
+	 *            the hole to set
+	 */
+	public void setHole(List<Hole> hole)
+	{
+		this.hole = hole;
+	}
+
+	/**
+	 * Gets the value of the termination property.
+	 * 
+	 * @return possible object is {@link Termination }
+	 * 
+	 */
+	public Termination getTermination()
+	{
+		return termination;
+	}
+
+	/**
+	 * Sets the value of the termination property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link Termination }
+	 * 
+	 */
+	public void setTermination(Termination value)
+	{
+		this.termination = value;
+	}
 
 }

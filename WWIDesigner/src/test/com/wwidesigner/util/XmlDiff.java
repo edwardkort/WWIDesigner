@@ -39,9 +39,19 @@ public class XmlDiff extends Diff
 	{
 		public int differenceFound(Difference difference)
 		{
-			return DifferenceConstants.NAMESPACE_PREFIX_ID == difference
-					.getId() ? RETURN_IGNORE_DIFFERENCE_NODES_IDENTICAL
-					: RETURN_ACCEPT_DIFFERENCE;
+			if (DifferenceConstants.NAMESPACE_URI_ID == difference.getId()
+					|| DifferenceConstants.SCHEMA_LOCATION_ID == difference
+							.getId()
+					|| DifferenceConstants.NAMESPACE_PREFIX_ID == difference
+							.getId())
+			{
+				return RETURN_IGNORE_DIFFERENCE_NODES_IDENTICAL;
+			}
+			else
+			{
+
+				return RETURN_ACCEPT_DIFFERENCE;
+			}
 		}
 
 		public void skippedComparison(Node control, Node test)

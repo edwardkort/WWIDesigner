@@ -30,7 +30,7 @@ import javax.xml.bind.annotation.XmlType;
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
  *         &lt;element name="name" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
- *         &lt;element name="position" type="{http://www.wwidesigner.com/Instrument}Dimension"/>
+ *         &lt;element name="borePosition" type="{http://www.wwidesigner.com/Instrument}Dimension"/>
  *         &lt;element name="diameter" type="{http://www.wwidesigner.com/Instrument}MoreThanZero"/>
  *         &lt;element name="height" type="{http://www.wwidesigner.com/Instrument}MoreThanZero"/>
  *         &lt;element name="innerCurvatureRadius" type="{http://www.wwidesigner.com/Instrument}ZeroOrMore" minOccurs="0"/>
@@ -46,7 +46,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Hole", propOrder = {
     "name",
-    "position",
+    "borePosition",
     "diameter",
     "height",
     "innerCurvatureRadius",
@@ -55,7 +55,7 @@ import javax.xml.bind.annotation.XmlType;
 public class Hole {
 
     protected String name;
-    protected double position;
+    protected double borePosition;
     protected double diameter;
     protected double height;
     protected Double innerCurvatureRadius;
@@ -89,16 +89,16 @@ public class Hole {
      * Gets the value of the position property.
      * 
      */
-    public double getPosition() {
-        return position;
+    public double getBorePosition() {
+        return borePosition;
     }
 
     /**
      * Sets the value of the position property.
      * 
      */
-    public void setPosition(double value) {
-        this.position = value;
+    public void setBorePosition(double value) {
+        this.borePosition = value;
     }
 
     /**

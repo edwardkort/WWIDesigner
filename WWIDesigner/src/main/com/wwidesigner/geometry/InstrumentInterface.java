@@ -77,7 +77,7 @@ public interface InstrumentInterface
 	 * @return possible object is {@link Mouthpiece }
 	 * 
 	 */
-	public MouthpieceInterface getMouthpiece();
+	public Mouthpiece getMouthpiece();
 
 	/**
 	 * Sets the value of the mouthpiece property.
@@ -86,7 +86,7 @@ public interface InstrumentInterface
 	 *            allowed object is {@link Mouthpiece }
 	 * 
 	 */
-	public void setMouthpiece(MouthpieceInterface value);
+	public void setMouthpiece(Mouthpiece value);
 
 	/**
 	 * Gets the value of the hole property.
@@ -120,7 +120,7 @@ public interface InstrumentInterface
 	 * @return possible object is {@link XmlEndBoreSection }
 	 * 
 	 */
-	public TerminationInterface getTermination();
+	public Termination getTermination();
 
 	/**
 	 * Sets the value of the termination property.
@@ -129,7 +129,7 @@ public interface InstrumentInterface
 	 *            allowed object is {@link XmlEndBoreSection }
 	 * 
 	 */
-	public void setTermination(TerminationInterface value);
+	public void setTermination(Termination value);
 
 	/**
 	 * Creates the instrument Components (BoreSection and filled-out Holes) from

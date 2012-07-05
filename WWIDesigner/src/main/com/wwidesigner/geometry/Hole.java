@@ -7,40 +7,41 @@ import com.wwidesigner.util.PhysicalParameters;
 
 public class Hole implements ComponentInterface, PositionInterface
 {
+	protected String name;
 	protected double height;
 	protected double position;
-	protected boolean openHole;
+	protected double diameter;
 	protected double boreRadius;
+	protected boolean openHole;
+	protected Double innerCurvatureRadius;
 
 	public Hole()
 	{
 
 	}
 
-	public Hole(double position, double radius, double height)
+	public Hole(double position, double diameter, double height)
 	{
 		this.position = position;
-		this.radius = radius;
+		this.diameter = diameter;
 		this.height = height;
 	}
-
-	protected double radius;
 
 	/**
 	 * @return the radius
 	 */
-	public double getRadius()
+	public double getDiameter()
 	{
-		return radius;
+		return diameter;
 	}
 
 	/**
 	 * @param radius
 	 *            the radius to set
 	 */
-	public void setRadius(double radius)
+	public void setDiameter(double diameter)
 	{
-		this.radius = radius;
+		this.diameter = diameter;
 	}
 
 	/**
@@ -94,12 +95,46 @@ public class Hole implements ComponentInterface, PositionInterface
 		this.openHole = openHole;
 	}
 
-	public double getPosition()
+	/**
+	 * @return the name
+	 */
+	public String getName()
+	{
+		return name;
+	}
+
+	/**
+	 * @param name
+	 *            the name to set
+	 */
+	public void setName(String name)
+	{
+		this.name = name;
+	}
+
+	/**
+	 * @return the innerCurvatureRadius
+	 */
+	public Double getInnerCurvatureRadius()
+	{
+		return innerCurvatureRadius;
+	}
+
+	/**
+	 * @param innerCurvatureRadius
+	 *            the innerCurvatureRadius to set
+	 */
+	public void setInnerCurvatureRadius(Double innerCurvatureRadius)
+	{
+		this.innerCurvatureRadius = innerCurvatureRadius;
+	}
+
+	public double getBorePosition()
 	{
 		return position;
 	}
 
-	public void setPosition(double position)
+	public void setBorePosition(double position)
 	{
 		this.position = position;
 	}
@@ -107,6 +142,7 @@ public class Hole implements ComponentInterface, PositionInterface
 	public TransferMatrix calcTransferMatrix(double wave_number,
 			PhysicalParameters mParameters)
 	{
+		double radius = getDiameter() / 2;
 		Complex Zs = null;
 		Complex Za = null;
 

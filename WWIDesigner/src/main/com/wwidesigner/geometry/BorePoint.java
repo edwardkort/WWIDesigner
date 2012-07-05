@@ -3,52 +3,51 @@
  */
 package com.wwidesigner.geometry;
 
-
 /**
  * @author kort
  * 
  */
 public class BorePoint implements PositionInterface
 {
-	protected double position;
-	protected double diameter;
+	protected double borePosition;
+	protected double boreDiameter;
 
 	public BorePoint()
 	{
 	}
 
 	/**
-	 * @return the position
+	 * @return the borePosition
 	 */
-	public double getPosition()
+	public double getBorePosition()
 	{
-		return position;
+		return borePosition;
 	}
 
 	/**
-	 * @param position
-	 *            the position to set
+	 * @param borePosition
+	 *            the borePosition to set
 	 */
-	public void setPosition(double position)
+	public void setBorePosition(double borePosition)
 	{
-		this.position = position;
+		this.borePosition = borePosition;
 	}
 
 	/**
-	 * @return the diameter
+	 * @return the boreDiameter
 	 */
-	public double getDiameter()
+	public double getBoreDiameter()
 	{
-		return diameter;
+		return boreDiameter;
 	}
 
 	/**
-	 * @param diameter
-	 *            the diameter to set
+	 * @param boreDiameter
+	 *            the boreDiameter to set
 	 */
-	public void setDiameter(double diameter)
+	public void setBoreDiameter(double boreDiameter)
 	{
-		this.diameter = diameter;
+		this.boreDiameter = boreDiameter;
 	}
 
 }

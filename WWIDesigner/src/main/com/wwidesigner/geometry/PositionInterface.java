@@ -9,7 +9,7 @@ package com.wwidesigner.geometry;
  */
 public interface PositionInterface
 {
-	public double getPosition();
+	public double getBorePosition();
 
-	public void setPosition(double position);
+	public void setBorePosition(double position);
 }

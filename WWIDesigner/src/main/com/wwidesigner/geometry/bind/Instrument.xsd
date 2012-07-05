@@ -140,7 +140,7 @@
 		</xsd:annotation>
 		<xsd:sequence>
 			<xsd:element name="name" type="xsd:string" minOccurs="0" />
-			<xsd:element name="position" type="wii:Dimension">
+			<xsd:element name="borePosition" type="wii:Dimension">
 				<xsd:annotation>
 					<xsd:documentation>Position of hole, relative to reference
 						position, measured from mouthpiece to bottom end.

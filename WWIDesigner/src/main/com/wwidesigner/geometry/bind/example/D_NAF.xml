@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <wii:instrument xmlns:wii="http://www.wwidesigner.com/Instrument"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.wwidesigner.com/Instrument ../Instrument.xsd ">
 	<name>D NAF</name>
 	<description>7-hole NAF, key of D, A=432</description>
 	<lengthType>in</lengthType>
@@ -26,49 +27,49 @@
 	</borePoint>
 	<hole>
 		<name>7</name>
-		<position>5.6</position>
+		<borePosition>5.6</borePosition>
 		<diameter>0.284</diameter>
 		<height>0.18</height>
 		<innerCurvatureRadius>0.02</innerCurvatureRadius>
 	</hole>
 	<hole>
 		<name>6</name>
-		<position>6.85</position>
+		<borePosition>6.85</borePosition>
 		<diameter>0.328</diameter>
 		<height>0.18</height>
 		<innerCurvatureRadius>0.02</innerCurvatureRadius>
 	</hole>
 	<hole>
 		<name>5</name>
-		<position>8.1</position>
+		<borePosition>8.1</borePosition>
 		<diameter>0.312</diameter>
 		<height>0.18</height>
 		<innerCurvatureRadius>0.02</innerCurvatureRadius>
 	</hole>
 	<hole>
 		<name>4</name>
-		<position>10.3</position>
+		<borePosition>10.3</borePosition>
 		<diameter>0.403</diameter>
 		<height>0.18</height>
 		<innerCurvatureRadius>0.02</innerCurvatureRadius>
 	</hole>
 	<hole>
 		<name>3</name>
-		<position>11.55</position>
+		<borePosition>11.55</borePosition>
 		<diameter>0.337</diameter>
 		<height>0.18</height>
 		<innerCurvatureRadius>0.02</innerCurvatureRadius>
 	</hole>
 	<hole>
 		<name>2</name>
-		<position>12.75</position>
+		<borePosition>12.75</borePosition>
 		<diameter>0.158</diameter>
 		<height>0.10</height>
 		<innerCurvatureRadius>0.02</innerCurvatureRadius>
 	</hole>
 	<hole>
 		<name>1</name>
-		<position>12.80</position>
+		<borePosition>12.80</borePosition>
 		<diameter>0.172</diameter>
 		<height>0.10</height>
 		<innerCurvatureRadius>0.02</innerCurvatureRadius>

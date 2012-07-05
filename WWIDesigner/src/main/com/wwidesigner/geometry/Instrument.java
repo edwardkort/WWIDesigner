@@ -27,12 +27,13 @@ public class Instrument implements InstrumentInterface
 {
 
 	protected String name;
-	protected MouthpieceInterface mouthpiece;
+	protected LengthType lengthType;
+	protected Mouthpiece mouthpiece;
 	protected List<BorePoint> borePoint;
 	protected String description;
 	protected List<Hole> hole;
 	protected List<ComponentInterface> components;
-	protected TerminationInterface termination;
+	protected Termination termination;
 
 	public Instrument()
 	{
@@ -62,6 +63,23 @@ public class Instrument implements InstrumentInterface
 		this.name = value;
 	}
 
+	/**
+	 * @return the lengthType
+	 */
+	public LengthType getLengthType()
+	{
+		return lengthType;
+	}
+
+	/**
+	 * @param lengthType
+	 *            the lengthType to set
+	 */
+	public void setLengthType(LengthType lengthType)
+	{
+		this.lengthType = lengthType;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -84,6 +102,15 @@ public class Instrument implements InstrumentInterface
 	public void setDescription(String value)
 	{
 		description = value;
+	}
+
+	/**
+	 * @param borePoint
+	 *            the borePoint to set
+	 */
+	public void setBorePoint(List<BorePoint> borePoint)
+	{
+		this.borePoint = borePoint;
 	}
 
 	/*
@@ -109,7 +136,7 @@ public class Instrument implements InstrumentInterface
 	 * @see com.wwidesigner.geometry.InstrumentInterface#getMouthpiece()
 	 */
 	@Override
-	public MouthpieceInterface getMouthpiece()
+	public Mouthpiece getMouthpiece()
 	{
 		return mouthpiece;
 	}
@@ -122,9 +149,18 @@ public class Instrument implements InstrumentInterface
 	 * .geometry.bind.XmlMouthpiece)
 	 */
 	@Override
-	public void setMouthpiece(MouthpieceInterface value)
+	public void setMouthpiece(Mouthpiece value)
 	{
 		mouthpiece = value;
+	}
+
+	/**
+	 * @param hole
+	 *            the hole to set
+	 */
+	public void setHole(List<Hole> hole)
+	{
+		this.hole = hole;
 	}
 
 	/*
@@ -150,7 +186,7 @@ public class Instrument implements InstrumentInterface
 	 * @see com.wwidesigner.geometry.InstrumentInterface#getTermination()
 	 */
 	@Override
-	public TerminationInterface getTermination()
+	public Termination getTermination()
 	{
 		return termination;
 	}
@@ -163,7 +199,7 @@ public class Instrument implements InstrumentInterface
 	 * .geometry.bind.XmlEndBoreSection)
 	 */
 	@Override
-	public void setTermination(TerminationInterface value)
+	public void setTermination(Termination value)
 	{
 		termination = value;
 	}
@@ -171,11 +207,20 @@ public class Instrument implements InstrumentInterface
 	@Override
 	public void updateComponents()
 	{
+		// TODO Write recursive validation method and call it here.
+		// Then take out the error checking in all the other methods.
 		components = new ArrayList<ComponentInterface>();
 
 		if (borePoint != null && !borePoint.isEmpty())
 		{
 			SortedMap<Double, BorePoint> borePointMap = makePositionMap(borePoint);
+			// Add the mouthpiece reference position to the map.
+			// I don't believe the optimization routines should care that this
+			// offset
+			// is not subtracted, since the calculations are performed on the
+			// components, which are offset agnostic.
+			// borePointMap.put(mouthpieceOrigin.getBorePosition(),
+			
 			SortedMap<Double, Hole> holeMap = makePositionMap(hole);
 
 			// TODO Deal with the Mouthpiece and the start of the bore:
@@ -209,24 +254,24 @@ public class Instrument implements InstrumentInterface
 		BorePoint leftPoint = points.next();
 		BorePoint rightPoint = points.next();
 
-		double leftPosition = leftPoint.getPosition();
-		double rightPosition = rightPoint.getPosition();
-		double holePosition = currentHole.getPosition();
+		double leftPosition = leftPoint.getBorePosition();
+		double rightPosition = rightPoint.getBorePosition();
+		double holePosition = currentHole.getBorePosition();
 		double holeRelativePosition = (rightPosition - holePosition)
 				/ (rightPosition - leftPosition);
 
-		double leftDiameter = leftPoint.getDiameter();
-		double rightDiameter = rightPoint.getDiameter();
+		double leftDiameter = leftPoint.getBoreDiameter();
+		double rightDiameter = rightPoint.getBoreDiameter();
 		double holeBoreDiameter = leftDiameter + (rightDiameter - leftDiameter)
 				* holeRelativePosition;
-		currentHole.setRadius(holeBoreDiameter / 2);
+		currentHole.setDiameter(holeBoreDiameter);
 
 		// Make new bore section
 		if (rightPosition > holePosition)
 		{
 			rightPoint = new BorePoint();
-			rightPoint.setDiameter(holeBoreDiameter);
-			rightPoint.setPosition(holePosition);
+			rightPoint.setBoreDiameter(holeBoreDiameter);
+			rightPoint.setBorePosition(holePosition);
 			borePointMap.put(holePosition, rightPoint);
 		}
 		addSection(leftPoint, rightPoint);
@@ -248,7 +293,7 @@ public class Instrument implements InstrumentInterface
 			{
 				BorePoint rightPoint = points.next();
 				addSection(leftPoint, rightPoint);
-				borePointMap.remove(leftPoint.getPosition());
+				borePointMap.remove(leftPoint.getBorePosition());
 				leftPoint = rightPoint;
 			}
 		}
@@ -259,9 +304,9 @@ public class Instrument implements InstrumentInterface
 	protected void addSection(BorePoint leftPoint, BorePoint rightPoint)
 	{
 		BoreSection section = new BoreSection();
-		section.setLength(rightPoint.getPosition() - leftPoint.getPosition());
-		section.setLeftRadius(leftPoint.getDiameter() / 2);
-		section.setRightRadius(rightPoint.getDiameter() / 2);
+		section.setLength(rightPoint.getBorePosition() - leftPoint.getBorePosition());
+		section.setLeftRadius(leftPoint.getBoreDiameter() / 2);
+		section.setRightRadius(rightPoint.getBoreDiameter() / 2);
 
 		components.add(section);
 	}
@@ -275,27 +320,32 @@ public class Instrument implements InstrumentInterface
 		SortedMap<Double, P> positionMap = new TreeMap<Double, P>();
 		for (P position : positions)
 		{
-			positionMap.put(position.getPosition(), position);
+			positionMap.put(position.getBorePosition(), position);
 		}
 
 		return positionMap;
 	}
-	
+
 	@SuppressWarnings("unchecked")
-	public static <P extends PositionInterface> P[] sortList(List<P> positions){
+	public static <P extends PositionInterface> P[] sortList(List<P> positions)
+	{
 		P[] sortedPositions = (P[]) positions.toArray();
-		Arrays.sort(sortedPositions, new Comparator<P>(){
-			public int compare(P first, P second){
-				if (first.getPosition() < second.getPosition()){
+		Arrays.sort(sortedPositions, new Comparator<P>()
+		{
+			public int compare(P first, P second)
+			{
+				if (first.getBorePosition() < second.getBorePosition())
+				{
 					return -1;
 				}
-				if (first.getPosition() > second.getPosition()){
+				if (first.getBorePosition() > second.getBorePosition())
+				{
 					return 1;
 				}
 				return 0;
 			}
 		});
-		
+
 		return sortedPositions;
 	}
 
@@ -315,19 +365,19 @@ public class Instrument implements InstrumentInterface
 
 		for (ComponentInterface component : components)
 		{
-			transferMatrix = TransferMatrix.multiply(transferMatrix, component.calcTransferMatrix(waveNumber, physicalParams));
+			transferMatrix = TransferMatrix.multiply(transferMatrix,
+					component.calcTransferMatrix(waveNumber, physicalParams));
 		}
 
-		
 		StateVector sv = TransferMatrix.multiply(transferMatrix,
 				termination.calcStateVector(waveNumber, physicalParams));
 
-		//  TODO This mouthpiece calculation will change
-		double headRadius = ((BoreSection)components.get(0)).getLeftRadius();
+		// TODO This mouthpiece calculation will change
+		double headRadius = ((BoreSection) components.get(0)).getLeftRadius();
 		int reflectanceMultiplier = mouthpiece.calcReflectanceMultiplier();
 		double impedance = physicalParams.calcZ0(headRadius);
 		Complex reflectance = sv.Reflectance(impedance);
-		
+
 		return reflectance.multiply(reflectanceMultiplier);
 	}
 

@@ -25,32 +25,32 @@
 		<boreDiameter>12.4</boreDiameter>
 	</borePoint>
 	<hole>
-		<position>234.0</position>
+		<borePosition>234.0</borePosition>
 		<diameter>6.2</diameter>
 		<height>4.2</height>
 	</hole>
 	<hole>
-		<position>257.0</position>
+		<borePosition>257.0</borePosition>
 		<diameter>7.0</diameter>
 		<height>4.1</height>
 	</hole>
 	<hole>
-		<position>281.0</position>
+		<borePosition>281.0</borePosition>
 		<diameter>7.0</diameter>
 		<height>3.9</height>
 	</hole>
 	<hole>
-		<position>314.0</position>
+		<borePosition>314.0</borePosition>
 		<diameter>6.2</diameter>
 		<height>3.6</height>
 	</hole>
 	<hole>
-		<position>335.5</position>
+		<borePosition>335.5</borePosition>
 		<diameter>8.1</diameter>
 		<height>3.3</height>
 	</hole>
 	<hole>
-		<position>360.5</position>
+		<borePosition>360.5</borePosition>
 		<diameter>6.4</diameter>
 		<height>3.0</height>
 	</hole>

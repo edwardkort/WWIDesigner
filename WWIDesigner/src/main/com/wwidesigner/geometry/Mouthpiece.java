@@ -13,7 +13,7 @@ import com.wwidesigner.util.PhysicalParameters;
 public class Mouthpiece implements ComponentInterface, MouthpieceInterface
 {
 	protected double position;
-	protected double characteristicLength;
+	protected Double beta;
 	protected Mouthpiece.EmbouchureHole embouchureHole;
 	protected Mouthpiece.Fipple fipple;
 
@@ -39,26 +39,20 @@ public class Mouthpiece implements ComponentInterface, MouthpieceInterface
 	}
 
 	/**
-	 * Gets the value of the characteristicLength property.
-	 * 
-	 * @return possible object is {@link XmlMoreThanZero }
-	 * 
+	 * @return the beta
 	 */
-	public double getCharacteristicLength()
+	public Double getBeta()
 	{
-		return characteristicLength;
+		return beta;
 	}
 
 	/**
-	 * Sets the value of the characteristicLength property.
-	 * 
-	 * @param value
-	 *            allowed object is {@link XmlMoreThanZero }
-	 * 
+	 * @param beta
+	 *            the beta to set
 	 */
-	public void setCharacteristicLength(double value)
+	public void setBeta(Double beta)
 	{
-		this.characteristicLength = value;
+		this.beta = beta;
 	}
 
 	/**
@@ -117,7 +111,7 @@ public class Mouthpiece implements ComponentInterface, MouthpieceInterface
 
 		protected double innerDiameter;
 		protected double outerDiameter;
-		protected double length;
+		protected double height;
 
 		/**
 		 * Gets the value of the innerDiameter property.
@@ -156,22 +150,22 @@ public class Mouthpiece implements ComponentInterface, MouthpieceInterface
 		}
 
 		/**
-		 * Gets the value of the length property.
-		 * 
+		 * @return the height
 		 */
-		public double getLength()
+		public double getHeight()
 		{
-			return length;
+			return height;
 		}
 
 		/**
-		 * Sets the value of the length property.
-		 * 
+		 * @param height
+		 *            the height to set
 		 */
-		public void setLength(double value)
+		public void setHeight(double height)
 		{
-			this.length = value;
+			this.height = height;
 		}
+
 
 	}
 
@@ -183,62 +177,113 @@ public class Mouthpiece implements ComponentInterface, MouthpieceInterface
 	public static class Fipple
 	{
 
-		protected double width;
-		protected double length;
-		protected double fippleFactor;
+		protected double windowWidth;
+		protected double windowLength;
+		protected Double fippleFactor;
+		protected Double windowHeight;
+		protected Double windwayLength;
+		protected Double windwayHeight;
 
 		/**
-		 * Gets the value of the width property.
-		 * 
+		 * @return the windowWidth
 		 */
-		public double getWidth()
+		public double getWindowWidth()
 		{
-			return width;
+			return windowWidth;
 		}
 
 		/**
-		 * Sets the value of the width property.
-		 * 
+		 * @param windowWidth
+		 *            the windowWidth to set
 		 */
-		public void setWidth(double value)
+		public void setWindowWidth(double windowWidth)
 		{
-			this.width = value;
+			this.windowWidth = windowWidth;
 		}
 
 		/**
-		 * Gets the value of the length property.
-		 * 
+		 * @return the windowLength
 		 */
-		public double getLength()
+		public double getWindowLength()
 		{
-			return length;
+			return windowLength;
 		}
 
 		/**
-		 * Sets the value of the length property.
-		 * 
+		 * @param windowLength
+		 *            the windowLength to set
 		 */
-		public void setLength(double value)
+		public void setWindowLength(double windowLength)
 		{
-			this.length = value;
+			this.windowLength = windowLength;
 		}
 
 		/**
-		 * Gets the value of the fippleFactor property.
-		 * 
+		 * @return the fippleFactor
 		 */
-		public double getFippleFactor()
+		public Double getFippleFactor()
 		{
 			return fippleFactor;
 		}
 
 		/**
-		 * Sets the value of the fippleFactor property.
-		 * 
+		 * @param fippleFactor
+		 *            the fippleFactor to set
 		 */
-		public void setFippleFactor(double value)
+		public void setFippleFactor(Double fippleFactor)
 		{
-			this.fippleFactor = value;
+			this.fippleFactor = fippleFactor;
+		}
+
+		/**
+		 * @return the windowHeight
+		 */
+		public Double getWindowHeight()
+		{
+			return windowHeight;
+		}
+
+		/**
+		 * @param windowHeight
+		 *            the windowHeight to set
+		 */
+		public void setWindowHeight(Double windowHeight)
+		{
+			this.windowHeight = windowHeight;
+		}
+
+		/**
+		 * @return the windwayLength
+		 */
+		public Double getWindwayLength()
+		{
+			return windwayLength;
+		}
+
+		/**
+		 * @param windwayLength
+		 *            the windwayLength to set
+		 */
+		public void setWindwayLength(Double windwayLength)
+		{
+			this.windwayLength = windwayLength;
+		}
+
+		/**
+		 * @return the windwayHeight
+		 */
+		public Double getWindwayHeight()
+		{
+			return windwayHeight;
+		}
+
+		/**
+		 * @param windwayHeight
+		 *            the windwayHeight to set
+		 */
+		public void setWindwayHeight(Double windwayHeight)
+		{
+			this.windwayHeight = windwayHeight;
 		}
 
 	}

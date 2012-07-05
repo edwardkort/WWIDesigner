@@ -31,13 +31,13 @@ public class OptimizableInstrument2
 
 		double[] state_vector = new double[len];
 		BorePoint lastPoint = sortedPoints[sortedPoints.length - 1];
-		state_vector[0] = lastPoint.getDiameter();
+		state_vector[0] = lastPoint.getBoreDiameter();
 
 		double accumulatedDistance = 0.;
 		for (int i = sortedHoles.length; i > 0; --i)
 		{
 			com.wwidesigner.geometry.Hole hole = sortedHoles[i - 1];
-			state_vector[i] = state_vector[0] - hole.getPosition()
+			state_vector[i] = state_vector[0] - hole.getBorePosition()
 					- accumulatedDistance;
 			accumulatedDistance += state_vector[i];
 		}
@@ -52,13 +52,13 @@ public class OptimizableInstrument2
 				.sortList(baseInstrument.getHole());
 
 		BorePoint lastPoint = sortedPoints[sortedPoints.length - 1];
-		lastPoint.setPosition(state_vector[0]);
+		lastPoint.setBorePosition(state_vector[0]);
 
 		double accumulatedDistance = 0.;
 		for (int i = sortedHoles.length; i > 0; --i)
 		{
 			com.wwidesigner.geometry.Hole hole = sortedHoles[i - 1];
-			hole.setPosition(state_vector[0] - state_vector[i]
+			hole.setBorePosition(state_vector[0] - state_vector[i]
 					- accumulatedDistance);
 			accumulatedDistance += state_vector[i];
 		}

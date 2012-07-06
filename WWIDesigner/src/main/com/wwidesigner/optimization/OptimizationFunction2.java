@@ -6,7 +6,7 @@ import org.apache.commons.math3.analysis.MultivariateFunction;
 import org.apache.commons.math3.complex.Complex;
 
 import com.wwidesigner.note.TuningInterface;
-import com.wwidesigner.note.bind.Fingering;
+import com.wwidesigner.note.Fingering;
 import com.wwidesigner.util.PhysicalParameters;
 
 public class OptimizationFunction2 implements MultivariateFunction

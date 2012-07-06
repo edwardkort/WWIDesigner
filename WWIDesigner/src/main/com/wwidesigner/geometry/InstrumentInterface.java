@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.apache.commons.math3.complex.Complex;
 
-import com.wwidesigner.note.bind.Fingering;
+import com.wwidesigner.note.Fingering;
 import com.wwidesigner.util.PhysicalParameters;
 
 public interface InstrumentInterface

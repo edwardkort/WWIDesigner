@@ -1,23 +1,10 @@
 package com.wwidesigner.note;
 
-import java.math.BigInteger;
 import java.util.List;
 
-//import com.wwidesigner.note.bind.XmlFingering;
-//import com.wwidesigner.note.bind.XmlTuning;
 
 public interface TuningInterface
 {
-
-	/**
-	 * Sets the {@link XmlTuning}
-	 */
-	public void setXmlTuning(com.wwidesigner.note.bind.Tuning value);
-
-	/**
-	 * Gets the {@link XmlTuning}
-	 */
-	public com.wwidesigner.note.bind.Tuning getXmlTuning();
 
 	/**
 	 * Gets the value of the name property.
@@ -56,19 +43,19 @@ public interface TuningInterface
 	/**
 	 * Gets the value of the numberOfHoles property.
 	 * 
-	 * @return possible object is {@link BigInteger }
+	 * @return possible object is {@link int }
 	 * 
 	 */
-	public BigInteger getNumberOfHoles();
+	public int getNumberOfHoles();
 
 	/**
 	 * Sets the value of the numberOfHoles property.
 	 * 
 	 * @param value
-	 *            allowed object is {@link BigInteger }
+	 *            allowed object is {@link int }
 	 * 
 	 */
-	public void setNumberOfHoles(BigInteger value);
+	public void setNumberOfHoles(int value);
 
 	/**
 	 * Gets the value of the fingering property.
@@ -89,10 +76,10 @@ public interface TuningInterface
 	 * 
 	 * <p>
 	 * Objects of the following type(s) are allowed in the list
-	 * {@link XmlFingering }
+	 * {@link Fingering }
 	 * 
 	 * 
 	 */
-	public List<com.wwidesigner.note.bind.Fingering> getFingering();
+	public List<Fingering> getFingering();
 
 }

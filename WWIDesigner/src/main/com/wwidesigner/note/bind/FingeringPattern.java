@@ -5,12 +5,12 @@
 // Generated on: 2012.07.05 at 08:05:26 PM MDT 
 //
 
-
 package com.wwidesigner.note.bind;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -18,11 +18,13 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * <p>Java class for FingeringPattern complex type.
+ * <p>
+ * Java class for FingeringPattern complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
  * 
  * <pre>
  * &lt;complexType name="FingeringPattern">
@@ -44,124 +46,128 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "FingeringPattern", propOrder = {
-    "name",
-    "comment",
-    "numberOfHoles",
-    "fingering"
-})
-@XmlSeeAlso({
-    Tuning.class
-})
-public class FingeringPattern {
+@XmlType(name = "FingeringPattern", propOrder = { "name", "comment",
+		"numberOfHoles", "fingering" })
+@XmlSeeAlso({ Tuning.class })
+public class FingeringPattern
+{
 
-    @XmlElement(required = true)
-    protected String name;
-    protected String comment;
-    @XmlElement(required = true)
-    @XmlSchemaType(name = "nonNegativeInteger")
-    protected BigInteger numberOfHoles;
-    protected List<Fingering> fingering;
+	@XmlElement(required = true)
+	protected String name;
+	protected String comment;
+	@XmlElement(required = true)
+	@XmlSchemaType(name = "nonNegativeInteger")
+	protected BigInteger numberOfHoles;
+	protected List<Fingering> fingering;
 
-    /**
-     * Gets the value of the name property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getName() {
-        return name;
-    }
+	/**
+	 * Gets the value of the name property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
+	public String getName()
+	{
+		return name;
+	}
 
-    /**
-     * Sets the value of the name property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setName(String value) {
-        this.name = value;
-    }
+	/**
+	 * Sets the value of the name property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link String }
+	 * 
+	 */
+	public void setName(String value)
+	{
+		this.name = value;
+	}
 
-    /**
-     * Gets the value of the comment property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getComment() {
-        return comment;
-    }
+	/**
+	 * Gets the value of the comment property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
+	public String getComment()
+	{
+		return comment;
+	}
 
-    /**
-     * Sets the value of the comment property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setComment(String value) {
-        this.comment = value;
-    }
+	/**
+	 * Sets the value of the comment property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link String }
+	 * 
+	 */
+	public void setComment(String value)
+	{
+		this.comment = value;
+	}
 
-    /**
-     * Gets the value of the numberOfHoles property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link BigInteger }
-     *     
-     */
-    public BigInteger getNumberOfHoles() {
-        return numberOfHoles;
-    }
+	/**
+	 * Gets the value of the numberOfHoles property.
+	 * 
+	 * @return possible object is {@link BigInteger }
+	 * 
+	 */
+	public BigInteger getNumberOfHoles()
+	{
+		return numberOfHoles;
+	}
 
-    /**
-     * Sets the value of the numberOfHoles property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link BigInteger }
-     *     
-     */
-    public void setNumberOfHoles(BigInteger value) {
-        this.numberOfHoles = value;
-    }
+	/**
+	 * Sets the value of the numberOfHoles property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link BigInteger }
+	 * 
+	 */
+	public void setNumberOfHoles(BigInteger value)
+	{
+		this.numberOfHoles = value;
+	}
 
-    /**
-     * Gets the value of the fingering property.
-     * 
-     * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the fingering property.
-     * 
-     * <p>
-     * For example, to add a new item, do as follows:
-     * <pre>
-     *    getFingering().add(newItem);
-     * </pre>
-     * 
-     * 
-     * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link Fingering }
-     * 
-     * 
-     */
-    public List<Fingering> getFingering() {
-        if (fingering == null) {
-            fingering = new ArrayList<Fingering>();
-        }
-        return this.fingering;
-    }
+	/**
+	 * Gets the value of the fingering property.
+	 * 
+	 * <p>
+	 * This accessor method returns a reference to the live list, not a
+	 * snapshot. Therefore any modification you make to the returned list will
+	 * be present inside the JAXB object. This is why there is not a
+	 * <CODE>set</CODE> method for the fingering property.
+	 * 
+	 * <p>
+	 * For example, to add a new item, do as follows:
+	 * 
+	 * <pre>
+	 * getFingering().add(newItem);
+	 * </pre>
+	 * 
+	 * 
+	 * <p>
+	 * Objects of the following type(s) are allowed in the list
+	 * {@link Fingering }
+	 * 
+	 * 
+	 */
+	public List<Fingering> getFingering()
+	{
+		if (fingering == null)
+		{
+			fingering = new ArrayList<Fingering>();
+		}
+		return this.fingering;
+	}
+
+	/**
+	 * @param fingering
+	 *            the fingering to set
+	 */
+	public void setFingering(List<Fingering> fingering)
+	{
+		this.fingering = fingering;
+	}
 
 }

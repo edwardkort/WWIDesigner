@@ -16,7 +16,7 @@ import org.apache.commons.math3.complex.Complex;
 
 import com.wwidesigner.math.StateVector;
 import com.wwidesigner.math.TransferMatrix;
-import com.wwidesigner.note.bind.Fingering;
+import com.wwidesigner.note.Fingering;
 import com.wwidesigner.util.PhysicalParameters;
 
 /**

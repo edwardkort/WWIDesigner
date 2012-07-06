@@ -6,8 +6,6 @@ package com.wwidesigner.note;
 import java.math.BigInteger;
 import java.util.List;
 
-import com.wwidesigner.note.bind.XmlFingering;
-import com.wwidesigner.note.bind.XmlTuning;
 
 /**
  * @author kort
@@ -15,7 +13,7 @@ import com.wwidesigner.note.bind.XmlTuning;
  */
 public class Tuning implements TuningInterface
 {
-	protected XmlTuning xmlTuning;
+	protected com.wwidesigner.note.bind.Tuning xmlTuning;
 
 	/*
 	 * (non-Javadoc)
@@ -25,7 +23,7 @@ public class Tuning implements TuningInterface
 	 * .bind.XmlTuning)
 	 */
 	@Override
-	public void setXmlTuning(XmlTuning value)
+	public void setXmlTuning(com.wwidesigner.note.bind.Tuning value)
 	{
 		this.xmlTuning = value;
 	}
@@ -36,7 +34,7 @@ public class Tuning implements TuningInterface
 	 * @see com.wwidesigner.note.TuningInterface#getXmlTuning()
 	 */
 	@Override
-	public XmlTuning getXmlTuning()
+	public com.wwidesigner.note.bind.Tuning getXmlTuning()
 	{
 		return xmlTuning;
 	}
@@ -115,7 +113,7 @@ public class Tuning implements TuningInterface
 	 * @see com.wwidesigner.note.TuningInterface#getFingering()
 	 */
 	@Override
-	public List<XmlFingering> getFingering()
+	public List<com.wwidesigner.note.bind.Fingering> getFingering()
 	{
 		return xmlTuning.getFingering();
 	}

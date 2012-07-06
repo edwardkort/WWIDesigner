@@ -14,7 +14,7 @@ import com.wwidesigner.util.AbstractXmlTest;
  * @author kort
  * 
  */
-public class XmlTemperamentTest extends AbstractXmlTest<XmlTemperament>
+public class TemperamentTest extends AbstractXmlTest<Temperament>
 {
 
 	/**
@@ -76,7 +76,7 @@ public class XmlTemperamentTest extends AbstractXmlTest<XmlTemperament>
 			{
 				unmarshalInput();
 			}
-			double interval = inputElement.getInterval().get(1);
+			double interval = inputElement.getRatio().get(1);
 			assertEquals("Temperament interval incoorect", 1.059, interval,
 					0.001);
 		}

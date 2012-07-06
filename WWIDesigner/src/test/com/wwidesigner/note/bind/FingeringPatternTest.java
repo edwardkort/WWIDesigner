@@ -14,7 +14,8 @@ import com.wwidesigner.util.AbstractXmlTest;
  * @author kort
  * 
  */
-public class XmlTuningTest extends AbstractXmlTest<XmlTuning>
+public class FingeringPatternTest extends
+		AbstractXmlTest<FingeringPattern>
 {
 
 	/**
@@ -32,7 +33,7 @@ public class XmlTuningTest extends AbstractXmlTest<XmlTuning>
 			}
 			String patternName = inputElement.getName();
 			assertEquals("pattern name incorrect",
-					"A 5-hole NAF standard tuning", patternName);
+					"5-hole NAF standard fingering", patternName);
 		}
 		catch (Exception e)
 		{
@@ -54,9 +55,8 @@ public class XmlTuningTest extends AbstractXmlTest<XmlTuning>
 				unmarshalInput();
 			}
 			String patternComment = inputElement.getComment();
-			assertEquals(
-					"Pattern comment incorrect",
-					"Key of A, equal temperament, only the pentatonic minor notes",
+			assertEquals("Pattern comment incorrect",
+					"Only the pentatonic minor notes in Nakai tab",
 					patternComment);
 		}
 		catch (Exception e)
@@ -100,11 +100,9 @@ public class XmlTuningTest extends AbstractXmlTest<XmlTuning>
 			{
 				unmarshalInput();
 			}
-			XmlFingering fingering = inputElement.getFingering().get(3);
-			assertEquals("Fingering note name incorrect", "E", fingering
+			Fingering fingering = inputElement.getFingering().get(3);
+			assertEquals("Fingering note name incorrect", "C#", fingering
 					.getNote().getName());
-			assertEquals("Fingering note frequency incorrect", 659.25,
-					fingering.getNote().getFrequency(), 0.01);
 			assertEquals("Hole 4 status incorrect", false, fingering
 					.getOpenHole().get(3));
 		}
@@ -117,13 +115,15 @@ public class XmlTuningTest extends AbstractXmlTest<XmlTuning>
 	@Override
 	protected void setInputSymbolXML()
 	{
-		inputSymbolXML = "com/wwidesigner/note/bind/example/A_5-hole_NAF_standard_tuning.xml";
+		inputSymbolXML = "com/wwidesigner/note/bind/example/5-hole_NAF_standard_fingering.xml";
+
 	}
 
 	@Override
 	protected void setOutputSymbolXML()
 	{
-		outputSymbolXML = "A_5-hole_NAF_standard_tuning_test.xml";
+		outputSymbolXML = "5-hole_NAF_standard_fingering_test.xml";
+
 	}
 
 	@Override

@@ -3,8 +3,8 @@ package com.wwidesigner.note;
 import java.math.BigInteger;
 import java.util.List;
 
-import com.wwidesigner.note.bind.XmlFingering;
-import com.wwidesigner.note.bind.XmlTuning;
+//import com.wwidesigner.note.bind.XmlFingering;
+//import com.wwidesigner.note.bind.XmlTuning;
 
 public interface TuningInterface
 {
@@ -12,12 +12,12 @@ public interface TuningInterface
 	/**
 	 * Sets the {@link XmlTuning}
 	 */
-	public void setXmlTuning(XmlTuning value);
+	public void setXmlTuning(com.wwidesigner.note.bind.Tuning value);
 
 	/**
 	 * Gets the {@link XmlTuning}
 	 */
-	public XmlTuning getXmlTuning();
+	public com.wwidesigner.note.bind.Tuning getXmlTuning();
 
 	/**
 	 * Gets the value of the name property.
@@ -93,6 +93,6 @@ public interface TuningInterface
 	 * 
 	 * 
 	 */
-	public List<XmlFingering> getFingering();
+	public List<com.wwidesigner.note.bind.Fingering> getFingering();
 
 }

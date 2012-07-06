@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<wit:tuning xmlns:wit="http://www.wwidesigner.com/Tuning">
+<wit:tuning xmlns:wit="http://www.wwidesigner.com/Tuning" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.wwidesigner.com/Tuning ../Tuning.xsd ">
   <name>A 5-hole NAF standard tuning</name>
   <comment>Key of A, equal temperament, only the pentatonic minor notes</comment>
   <numberOfHoles>5</numberOfHoles>
@@ -70,6 +71,7 @@
     <openHole>true</openHole>
   </fingering>
 </wit:tuning>
+
 
 
 

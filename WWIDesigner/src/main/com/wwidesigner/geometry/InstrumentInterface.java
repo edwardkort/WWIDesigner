@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.apache.commons.math3.complex.Complex;
 
-import com.wwidesigner.note.bind.XmlFingering;
+import com.wwidesigner.note.bind.Fingering;
 import com.wwidesigner.util.PhysicalParameters;
 
 public interface InstrumentInterface
@@ -137,7 +137,7 @@ public interface InstrumentInterface
 	 */
 	public void updateComponents();
 
-	public Complex calculateReflectionCoefficient(XmlFingering fingering,
+	public Complex calculateReflectionCoefficient(Fingering fingering,
 			PhysicalParameters physicalParams);
 
 	/*

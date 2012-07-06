@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<wit:fingeringPattern xmlns:wit="http://www.wwidesigner.com/Tuning">
+<wit:fingeringPattern xmlns:wit="http://www.wwidesigner.com/Tuning" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.wwidesigner.com/Tuning ../Tuning.xsd ">
   <name>5-hole NAF standard fingering</name>
   <comment>Only the pentatonic minor notes in Nakai tab</comment>
   <numberOfHoles>5</numberOfHoles>
@@ -64,5 +65,6 @@
     <openHole>true</openHole>
   </fingering>
 </wit:fingeringPattern>
+
 
 

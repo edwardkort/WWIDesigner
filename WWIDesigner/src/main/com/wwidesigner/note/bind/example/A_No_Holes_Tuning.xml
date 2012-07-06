@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<wit:tuning xmlns:wit="http://www.wwidesigner.com/Tuning">
+<wit:tuning xmlns:wit="http://www.wwidesigner.com/Tuning" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.wwidesigner.com/Tuning ../Tuning.xsd ">
   <name>A No Holes Tuning</name>
   <numberOfHoles>0</numberOfHoles>
   <fingering>
@@ -9,4 +10,5 @@
     </note>
   </fingering>
 </wit:tuning>
+
 

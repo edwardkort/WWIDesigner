@@ -16,7 +16,7 @@ import org.apache.commons.math3.complex.Complex;
 
 import com.wwidesigner.math.StateVector;
 import com.wwidesigner.math.TransferMatrix;
-import com.wwidesigner.note.bind.XmlFingering;
+import com.wwidesigner.note.bind.Fingering;
 import com.wwidesigner.util.PhysicalParameters;
 
 /**
@@ -350,7 +350,7 @@ public class Instrument implements InstrumentInterface
 	}
 
 	@Override
-	public Complex calculateReflectionCoefficient(XmlFingering fingering,
+	public Complex calculateReflectionCoefficient(Fingering fingering,
 			PhysicalParameters physicalParams)
 	{
 		TransferMatrix transferMatrix = TransferMatrix.makeIdentity();
@@ -381,7 +381,7 @@ public class Instrument implements InstrumentInterface
 		return reflectance.multiply(reflectanceMultiplier);
 	}
 
-	public void setOpenHoles(XmlFingering fingering)
+	public void setOpenHoles(Fingering fingering)
 	{
 		List<Boolean> openHoles = fingering.getOpenHole();
 		Iterator<Boolean> openHoleIterator = openHoles.iterator();

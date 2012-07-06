@@ -14,8 +14,7 @@ import com.wwidesigner.util.AbstractXmlTest;
  * @author kort
  * 
  */
-public class XmlFingeringPatternTest extends
-		AbstractXmlTest<XmlFingeringPattern>
+public class TuningTest extends AbstractXmlTest<Tuning>
 {
 
 	/**
@@ -33,7 +32,7 @@ public class XmlFingeringPatternTest extends
 			}
 			String patternName = inputElement.getName();
 			assertEquals("pattern name incorrect",
-					"5-hole NAF standard fingering", patternName);
+					"A 5-hole NAF standard tuning", patternName);
 		}
 		catch (Exception e)
 		{
@@ -55,8 +54,9 @@ public class XmlFingeringPatternTest extends
 				unmarshalInput();
 			}
 			String patternComment = inputElement.getComment();
-			assertEquals("Pattern comment incorrect",
-					"Only the pentatonic minor notes in Nakai tab",
+			assertEquals(
+					"Pattern comment incorrect",
+					"Key of A, equal temperament, only the pentatonic minor notes",
 					patternComment);
 		}
 		catch (Exception e)
@@ -100,9 +100,11 @@ public class XmlFingeringPatternTest extends
 			{
 				unmarshalInput();
 			}
-			XmlFingering fingering = inputElement.getFingering().get(3);
-			assertEquals("Fingering note name incorrect", "C#", fingering
+			Fingering fingering = inputElement.getFingering().get(3);
+			assertEquals("Fingering note name incorrect", "E", fingering
 					.getNote().getName());
+			assertEquals("Fingering note frequency incorrect", 659.25,
+					fingering.getNote().getFrequency(), 0.01);
 			assertEquals("Hole 4 status incorrect", false, fingering
 					.getOpenHole().get(3));
 		}
@@ -115,15 +117,13 @@ public class XmlFingeringPatternTest extends
 	@Override
 	protected void setInputSymbolXML()
 	{
-		inputSymbolXML = "com/wwidesigner/note/bind/example/5-hole_NAF_standard_fingering.xml";
-
+		inputSymbolXML = "com/wwidesigner/note/bind/example/A_5-hole_NAF_standard_tuning.xml";
 	}
 
 	@Override
 	protected void setOutputSymbolXML()
 	{
-		outputSymbolXML = "5-hole_NAF_standard_fingering_test.xml";
-
+		outputSymbolXML = "A_5-hole_NAF_standard_tuning_test.xml";
 	}
 
 	@Override

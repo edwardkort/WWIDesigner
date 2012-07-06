@@ -6,13 +6,13 @@ import org.apache.commons.math3.analysis.MultivariateFunction;
 import org.apache.commons.math3.complex.Complex;
 
 import com.wwidesigner.note.TuningInterface;
-import com.wwidesigner.note.bind.XmlFingering;
+import com.wwidesigner.note.bind.Fingering;
 import com.wwidesigner.util.PhysicalParameters;
 
 public class OptimizationFunction2 implements MultivariateFunction
 {
 	private OptimizableInstrument2 instrument;
-	private List<XmlFingering> fingeringTargets;
+	private List<Fingering> fingeringTargets;
 	private PhysicalParameters physicalParams;
 
 	public OptimizationFunction2(OptimizableInstrument2 instrument,
@@ -33,7 +33,7 @@ public class OptimizationFunction2 implements MultivariateFunction
 	public double calculateErrorNorm()
 	{
 		double norm = 0.;
-		for (XmlFingering target : fingeringTargets)
+		for (Fingering target : fingeringTargets)
 		{
 			Complex reflectionCoeff = instrument.getBaseInstrument()
 					.calculateReflectionCoefficient(target, physicalParams);

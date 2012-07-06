@@ -20,22 +20,22 @@ public class NoteBindFactory extends BindFactory
 
 		switch (objName)
 		{
-			case "XmlScaleSymbolList":
+			case "ScaleSymbolList":
 				element = objFactory
-						.createScaleSymbolList((XmlScaleSymbolList) obj);
+						.createScaleSymbolList((ScaleSymbolList) obj);
 				break;
-			case "XmlScale":
-				element = objFactory.createScale((XmlScale) obj);
+			case "Scale":
+				element = objFactory.createScale((Scale) obj);
 				break;
-			case "XmlFingeringPattern":
+			case "FingeringPattern":
 				element = objFactory
-						.createFingeringPattern((XmlFingeringPattern) obj);
+						.createFingeringPattern((FingeringPattern) obj);
 				break;
-			case "XmlTemperament":
-				element = objFactory.createTemperament((XmlTemperament) obj);
+			case "Temperament":
+				element = objFactory.createTemperament((Temperament) obj);
 				break;
-			case "XmlTuning":
-				element = objFactory.createTuning((XmlTuning) obj);
+			case "Tuning":
+				element = objFactory.createTuning((Tuning) obj);
 				break;
 		}
 

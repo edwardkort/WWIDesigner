@@ -14,12 +14,11 @@ import com.wwidesigner.util.AbstractXmlTest;
  * @author kort
  * 
  */
-public class XmlScaleSymbolListTest extends AbstractXmlTest<XmlScaleSymbolList>
+public class ScaleTest extends AbstractXmlTest<Scale>
 {
 
 	/**
-	 * Test method for
-	 * {@link com.wwidesigner.note.bind.XmlScaleSymbolList#getName()}.
+	 * Test method for {@link com.wwidesigner.note.bind.XmlScale#getName()}.
 	 */
 	@Test
 	public final void testGetName()
@@ -30,9 +29,9 @@ public class XmlScaleSymbolListTest extends AbstractXmlTest<XmlScaleSymbolList>
 			{
 				unmarshalInput();
 			}
-			String symbolListName = inputElement.getName();
-			assertEquals("List name incoorect", "Western Chromatic Symbols",
-					symbolListName);
+			String scaleName = inputElement.getName();
+			assertEquals("Scale name incorrect", "A pentatonic minor scale",
+					scaleName);
 		}
 		catch (Exception e)
 		{
@@ -41,8 +40,7 @@ public class XmlScaleSymbolListTest extends AbstractXmlTest<XmlScaleSymbolList>
 	}
 
 	/**
-	 * Test method for
-	 * {@link com.wwidesigner.note.bind.XmlScaleSymbolList#getComment()}.
+	 * Test method for {@link com.wwidesigner.note.bind.XmlScale#getComment()}.
 	 */
 	@Test
 	public final void testGetComment()
@@ -53,10 +51,11 @@ public class XmlScaleSymbolListTest extends AbstractXmlTest<XmlScaleSymbolList>
 			{
 				unmarshalInput();
 			}
-			String symbolListComment = inputElement.getComment();
-			assertEquals("List comment incoorect",
-					"A symbol set with no indication of octave",
-					symbolListComment);
+			String scaleComment = inputElement.getComment();
+			assertEquals(
+					"Scale comment incorrect",
+					"Key of A, equal temperament, only the pentatonic minor notes",
+					scaleComment);
 		}
 		catch (Exception e)
 		{
@@ -65,11 +64,10 @@ public class XmlScaleSymbolListTest extends AbstractXmlTest<XmlScaleSymbolList>
 	}
 
 	/**
-	 * Test method for
-	 * {@link com.wwidesigner.note.bind.XmlScaleSymbolList#getScaleSymbol()}.
+	 * Test method for {@link com.wwidesigner.note.bind.XmlScale#getNote()}.
 	 */
 	@Test
-	public final void testGetScaleSymbol()
+	public final void testGetNote()
 	{
 		try
 		{
@@ -77,8 +75,10 @@ public class XmlScaleSymbolListTest extends AbstractXmlTest<XmlScaleSymbolList>
 			{
 				unmarshalInput();
 			}
-			String firstSymbol = inputElement.getScaleSymbol().get(0);
-			assertEquals("List symbol incoorect", "C", firstSymbol);
+			Note note = inputElement.getNote().get(2);
+			assertEquals("Note name incorrect", "D", note.getName());
+			assertEquals("Note frequency incorrect", 587.33,
+					note.getFrequency(), 0.01);
 		}
 		catch (Exception e)
 		{
@@ -89,13 +89,13 @@ public class XmlScaleSymbolListTest extends AbstractXmlTest<XmlScaleSymbolList>
 	@Override
 	protected void setInputSymbolXML()
 	{
-		inputSymbolXML = "com/wwidesigner/note/bind/example/Western_Chromatic_Symbols.xml";
+		inputSymbolXML = "com/wwidesigner/note/bind/example/A_pentatonic_minor_scale.xml";
 	}
 
 	@Override
 	protected void setOutputSymbolXML()
 	{
-		outputSymbolXML = "Western_Chromatic_Symbols_test.xml";
+		outputSymbolXML = "A_pentatonic_minor_scale_test.xml";
 	}
 
 	@Override

@@ -141,7 +141,8 @@
 														<xsd:restriction base="wit:Note">
 															<xsd:sequence>
 																<xsd:element name="name" type="xsd:string" />
-																<xsd:element name="frequency" type="xsd:double" />
+																<xsd:element name="frequency" type="xsd:double"
+																	minOccurs="0" />
 																<xsd:element name="frequencyMin" type="xsd:double"
 																	minOccurs="0" />
 																<xsd:element name="frequencyMax" type="xsd:double"

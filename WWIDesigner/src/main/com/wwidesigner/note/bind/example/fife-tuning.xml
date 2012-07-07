@@ -1,76 +1,208 @@
 <?xml version="1.0" encoding="utf-8"?>
 <wit:tuning xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xmlns:wit="http://www.wwidesigner.com/Tuning2"
-         xsi:schemaLocation="http://www.wwidesigner.com/Tuning2 ../Tuning2.xsd ">
+         xmlns:wit="http://www.wwidesigner.com/Tuning"
+         xsi:schemaLocation="http://www.wwidesigner.com/Tuning ../Tuning.xsd ">
 
 	<name>Bb Fife</name>
-	<description>6-hole maple fife, cylindrical bore, Bb.
+	<comment>6-hole maple fife, cylindrical bore, Bb.
 		For measured frequencies, embouchure and mouth position
-		not necessarily constant.</description>
-	<temperament>Equal</temperament>
+		not necessarily constant.</comment>
+	<numberOfHoles>6</numberOfHoles>
 
-    <baseNote>466.16</baseNote>
-	<note>
-		<name>low Bb</name>
-		<fingers>1 1 1 1 1 1</fingers>
-		<target>466.16</target>
-		<actualMin>460 927 1378 1838</actualMin>
-		<actualMax>469 941 1407 1869</actualMax>
-	</note>
-	<note>
-		<name>C</name>
-		<fingers>1 1 1 1 1 0</fingers>
-		<target>523.25 1046.5</target>
-		<actualMin>527 1036 1522</actualMin>
-		<actualMax>545 1069 1570</actualMax>
-	</note>
-	<note>
+	<fingering>
+		<note>
+			<name>low Bb</name>
+			<frequency>466.16</frequency>
+			<frequencyMin>460</frequencyMin>
+			<frequencyMax>469</frequencyMax>
+		</note>
+		<openHole>false</openHole><openHole>false</openHole><openHole>false</openHole>
+		<openHole>false</openHole><openHole>false</openHole><openHole>false</openHole>
+	</fingering>
+	<fingering>
+		<note>
+			<name>Bb'</name>
+			<frequencyMin>927</frequencyMin>
+			<frequencyMax>941</frequencyMax>
+		</note>
+		<openHole>false</openHole><openHole>false</openHole><openHole>false</openHole>
+		<openHole>false</openHole><openHole>false</openHole><openHole>false</openHole>
+	</fingering>
+	<fingering>
+		<note>
+			<name>Bb''</name>
+			<frequencyMin>1378</frequencyMin>
+			<frequencyMax>1407</frequencyMax>
+		</note>
+		<openHole>false</openHole><openHole>false</openHole><openHole>false</openHole>
+		<openHole>false</openHole><openHole>false</openHole><openHole>false</openHole>
+	</fingering>
+	<fingering>
+		<note>
+			<name>Bb'''</name>
+			<frequencyMin>1838</frequencyMin>
+			<frequencyMax>1869</frequencyMax>
+		</note>
+		<openHole>false</openHole><openHole>false</openHole><openHole>false</openHole>
+		<openHole>false</openHole><openHole>false</openHole><openHole>false</openHole>
+	</fingering>
+	<fingering>
+		<note>
+			<name>C</name>
+			<frequency>523.25</frequency>
+			<frequencyMin>527</frequencyMin>
+			<frequencyMax>545</frequencyMax>
+		</note>
+		<openHole>false</openHole><openHole>false</openHole><openHole>false</openHole>
+		<openHole>false</openHole><openHole>false</openHole><openHole>true</openHole>
+	</fingering>
+	<fingering>
+		<note>
+			<name>C</name>
+			<frequency>1046.5</frequency>
+			<frequencyMin>1036</frequencyMin>
+			<frequencyMax>1069</frequencyMax>
+		</note>
+		<openHole>false</openHole><openHole>false</openHole><openHole>false</openHole>
+		<openHole>false</openHole><openHole>false</openHole><openHole>true</openHole>
+	</fingering>
+	<fingering>
+		<note>
+			<name>C''</name>
+			<frequencyMin>1522</frequencyMin>
+			<frequencyMax>1570</frequencyMax>
+		</note>
+		<openHole>false</openHole><openHole>false</openHole><openHole>false</openHole>
+		<openHole>false</openHole><openHole>false</openHole><openHole>true</openHole>
+	</fingering>
+	<fingering>
+		<note>
 		<name>D</name>
-		<fingers>1 1 1 1 0 0</fingers>
-		<target>587.33 1174.7</target>
-		<actualMin>586 1157</actualMin>
-		<actualMax>607 1192</actualMax>
-	</note>
-	<note>
+			<frequency>587.33</frequency>
+			<frequencyMin>586</frequencyMin>
+			<frequencyMax>607</frequencyMax>
+		</note>
+		<openHole>false</openHole><openHole>false</openHole><openHole>false</openHole>
+		<openHole>false</openHole><openHole>true</openHole><openHole>true</openHole>
+	</fingering>
+	<fingering>
+		<note>
+		<name>D</name>
+			<frequency>1174.7</frequency>
+			<frequencyMin>1157</frequencyMin>
+			<frequencyMax>1192</frequencyMax>
+		</note>
+		<openHole>false</openHole><openHole>false</openHole><openHole>false</openHole>
+		<openHole>false</openHole><openHole>true</openHole><openHole>true</openHole>
+	</fingering>
+	<fingering>
+		<note>
 		<name>Eb</name>
-		<fingers>1 1 1 0 0 0</fingers>
-		<target>622.25 1244.5</target>
-		<actualMin>620 1224</actualMin>
-		<actualMax>644 1276</actualMax>
-	</note>
-	<note>
+			<frequency>622.25</frequency>
+			<frequencyMin>620</frequencyMin>
+			<frequencyMax>644</frequencyMax>
+		</note>
+		<openHole>false</openHole><openHole>false</openHole><openHole>false</openHole>
+		<openHole>true</openHole><openHole>true</openHole><openHole>true</openHole>
+	</fingering>
+	<fingering>
+		<note>
+		<name>Eb</name>
+			<frequency>1244.5</frequency>
+			<frequencyMin>1224</frequencyMin>
+			<frequencyMax>1276</frequencyMax>
+		</note>
+		<openHole>false</openHole><openHole>false</openHole><openHole>false</openHole>
+		<openHole>true</openHole><openHole>true</openHole><openHole>true</openHole>
+	</fingering>
+	<fingering>
+		<note>
 		<name>F</name>
-		<fingers>1 1 0 0 0 0</fingers>
-		<target>698.46 1396.9</target>
-		<actualMin>705 1374</actualMin>
-		<actualMax>738 1425</actualMax>
-	</note>
-	<note>
+			<frequency>698.46</frequency>
+			<frequencyMin>705</frequencyMin>
+			<frequencyMax>738</frequencyMax>
+		</note>
+		<openHole>false</openHole><openHole>false</openHole><openHole>true</openHole>
+		<openHole>true</openHole><openHole>true</openHole><openHole>true</openHole>
+	</fingering>
+	<fingering>
+		<note>
+		<name>F</name>
+			<frequency>1396.9</frequency>
+			<frequencyMin>1374</frequencyMin>
+			<frequencyMax>1425</frequencyMax>
+		</note>
+		<openHole>false</openHole><openHole>false</openHole><openHole>true</openHole>
+		<openHole>true</openHole><openHole>true</openHole><openHole>true</openHole>
+	</fingering>
+	<fingering>
+		<note>
 		<name>G</name>
-		<fingers>1 0 0 0 0 0</fingers>
-		<target>783.99 1568.0</target>
-		<actualMin>788 1527</actualMin>
-		<actualMax>826 1590</actualMax>
-	</note>
-	<note>
+			<frequency>783.99</frequency>
+			<frequencyMin>788</frequencyMin>
+			<frequencyMax>826</frequencyMax>
+		</note>
+		<openHole>false</openHole><openHole>true</openHole><openHole>true</openHole>
+		<openHole>true</openHole><openHole>true</openHole><openHole>true</openHole>
+	</fingering>
+	<fingering>
+		<note>
+		<name>G</name>
+			<frequency>1568.0</frequency>
+			<frequencyMin>1527</frequencyMin>
+			<frequencyMax>1590</frequencyMax>
+		</note>
+		<openHole>false</openHole><openHole>true</openHole><openHole>true</openHole>
+		<openHole>true</openHole><openHole>true</openHole><openHole>true</openHole>
+	</fingering>
+	<fingering>
+		<note>
 		<name>Ab</name>
-		<fingers>0 1 1 0 0 0</fingers>
-		<target>830.61</target>
-		<actualMin>813</actualMin>
-		<actualMax>851</actualMax>
-	</note>
-	<note>
+			<frequency>830.61</frequency>
+			<frequencyMin>813</frequencyMin>
+			<frequencyMax>851</frequencyMax>
+		</note>
+		<openHole>true</openHole><openHole>false</openHole><openHole>false</openHole>
+		<openHole>true</openHole><openHole>true</openHole><openHole>true</openHole>
+	</fingering>
+	<fingering>
+		<note>
 		<name>A</name>
-		<fingers>0 0 0 0 0 0</fingers>
-		<target>880.00 1760.0</target>
-		<actualMin>848 1639</actualMin>
-		<actualMax>884 1720</actualMax>
-	</note>
-	<note>
+			<frequency>880.00</frequency>
+			<frequencyMin>848</frequencyMin>
+			<frequencyMax>884</frequencyMax>
+		</note>
+		<openHole>true</openHole><openHole>true</openHole><openHole>true</openHole>
+		<openHole>true</openHole><openHole>true</openHole><openHole>true</openHole>
+	</fingering>
+	<fingering>
+		<note>
+		<name>A</name>
+			<frequency>1760.0</frequency>
+			<frequencyMin>1639</frequencyMin>
+			<frequencyMax>1720</frequencyMax>
+		</note>
+		<openHole>true</openHole><openHole>true</openHole><openHole>true</openHole>
+		<openHole>true</openHole><openHole>true</openHole><openHole>true</openHole>
+	</fingering>
+	<fingering>
+		<note>
 		<name>high Bb</name>
-		<fingers>0 1 1 1 1 1</fingers>
-		<target>932.33 1864.6</target>
-		<actualMin>920 1837</actualMin>
-		<actualMax>951 1870</actualMax>
-	</note>
+			<frequency>932.33</frequency>
+			<frequencyMin>920</frequencyMin>
+			<frequencyMax>951</frequencyMax>
+		</note>
+		<openHole>true</openHole><openHole>false</openHole><openHole>false</openHole>
+		<openHole>false</openHole><openHole>false</openHole><openHole>false</openHole>
+	</fingering>
+	<fingering>
+		<note>
+		<name>high Bb</name>
+			<frequency>1864.6</frequency>
+			<frequencyMin>1837</frequencyMin>
+			<frequencyMax>1870</frequencyMax>
+		</note>
+		<openHole>true</openHole><openHole>false</openHole><openHole>false</openHole>
+		<openHole>false</openHole><openHole>false</openHole><openHole>false</openHole>
+	</fingering>
 </wit:tuning>

@@ -16,6 +16,7 @@ public class Mouthpiece implements ComponentInterface, MouthpieceInterface
 	protected Double beta;
 	protected Mouthpiece.EmbouchureHole embouchureHole;
 	protected Mouthpiece.Fipple fipple;
+	protected MouthpieceCalculator mouthpieceCalculator;
 
 	/**
 	 * Gets the value of the position property.
@@ -102,6 +103,16 @@ public class Mouthpiece implements ComponentInterface, MouthpieceInterface
 	}
 
 	/**
+	 * @param mouthpieceCalculator
+	 *            the mouthpieceCalculator to set
+	 */
+	public void setCalculator(
+			MouthpieceCalculator mouthpieceCalculator)
+	{
+		this.mouthpieceCalculator = mouthpieceCalculator;
+	}
+
+	/**
 	 * <p>
 	 * Java class for anonymous complex type.
 	 * 
@@ -165,7 +176,6 @@ public class Mouthpiece implements ComponentInterface, MouthpieceInterface
 		{
 			this.height = height;
 		}
-
 
 	}
 
@@ -292,15 +302,18 @@ public class Mouthpiece implements ComponentInterface, MouthpieceInterface
 	public TransferMatrix calcTransferMatrix(double waveNumber,
 			PhysicalParameters parameters)
 	{
-		// TODO Auto-generated method stub
-		return null;
+		TransferMatrix result = mouthpieceCalculator.calcTransferMatrix(
+				waveNumber, parameters);
+
+		return result;
 	}
 
 	@Override
 	public int calcReflectanceMultiplier()
 	{
-		// TODO Auto-generated method stub
-		return 0;
+		int result = mouthpieceCalculator.calcReflectanceMultiplier();
+
+		return result;
 	}
 
 }

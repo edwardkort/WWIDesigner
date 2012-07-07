@@ -13,6 +13,7 @@ import com.wwidesigner.util.PhysicalParameters;
 public class Termination extends BorePoint implements TerminationInterface
 {
 	protected double flangeDiameter;
+	protected TerminationCalculator calculator;
 
 	/*
 	 * (non-Javadoc)
@@ -25,8 +26,9 @@ public class Termination extends BorePoint implements TerminationInterface
 	public StateVector calcStateVector(double wave_number,
 			PhysicalParameters params)
 	{
-		// TODO Auto-generated method stub
-		return null;
+		StateVector result = calculator.calcStateVector(wave_number, params);
+		
+		return result;
 	}
 
 	/**
@@ -44,6 +46,14 @@ public class Termination extends BorePoint implements TerminationInterface
 	public void setFlangeDiameter(double flangeDiameter)
 	{
 		this.flangeDiameter = flangeDiameter;
+	}
+
+	/**
+	 * @param calculator the calculator to set
+	 */
+	public void setCalculator(TerminationCalculator calculator)
+	{
+		this.calculator = calculator;
 	}
 
 }

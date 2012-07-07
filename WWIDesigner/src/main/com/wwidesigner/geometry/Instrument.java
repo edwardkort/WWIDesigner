@@ -204,6 +204,11 @@ public class Instrument implements InstrumentInterface
 		termination = value;
 	}
 
+	public void setConfiguration(InstrumentConfigurator configurator)
+	{
+		configurator.configureInstrument(this);
+	}
+
 	@Override
 	public void updateComponents()
 	{
@@ -220,7 +225,7 @@ public class Instrument implements InstrumentInterface
 			// is not subtracted, since the calculations are performed on the
 			// components, which are offset agnostic.
 			// borePointMap.put(mouthpieceOrigin.getBorePosition(),
-			
+
 			SortedMap<Double, Hole> holeMap = makePositionMap(hole);
 
 			// TODO Deal with the Mouthpiece and the start of the bore:
@@ -304,7 +309,8 @@ public class Instrument implements InstrumentInterface
 	protected void addSection(BorePoint leftPoint, BorePoint rightPoint)
 	{
 		BoreSection section = new BoreSection();
-		section.setLength(rightPoint.getBorePosition() - leftPoint.getBorePosition());
+		section.setLength(rightPoint.getBorePosition()
+				- leftPoint.getBorePosition());
 		section.setLeftRadius(leftPoint.getBoreDiameter() / 2);
 		section.setRightRadius(rightPoint.getBoreDiameter() / 2);
 

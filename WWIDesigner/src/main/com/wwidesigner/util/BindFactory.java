@@ -4,6 +4,7 @@
 package com.wwidesigner.util;
 
 import java.io.File;
+import java.util.Map;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
@@ -13,6 +14,8 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
 import org.custommonkey.xmlunit.XMLConstants;
+import org.dozer.DozerBeanMapperSingletonWrapper;
+import org.dozer.Mapper;
 
 /**
  * @author kort
@@ -20,6 +23,14 @@ import org.custommonkey.xmlunit.XMLConstants;
  */
 public abstract class BindFactory
 {
+	@SuppressWarnings("rawtypes")
+	protected static Map<String, Class> bindToDomainMap;
+	@SuppressWarnings("rawtypes")
+	protected static Map<String, Class> domainToBindMap;
+
+	protected abstract void createBindToDomaimMap();
+
+	protected abstract void createDomainToBindMap();
 
 	protected abstract void setPackagePath();
 
@@ -34,9 +45,30 @@ public abstract class BindFactory
 	{
 		setPackagePath();
 		setSchemaName();
+		createBindToDomaimMap();
+		createDomainToBindMap();
 	}
 
+	/**
+	 * 
+	 * @param inputFile
+	 * @return The bind JAXBElement representing the root of the XML
+	 * @throws Exception
+	 */
 	public Object unmarshalXml(File inputFile) throws Exception
+	{
+		return unmarshalXml(inputFile, false);
+	}
+
+	public Object unmarshalXml(String inputFileName, boolean toDomainObject)
+			throws Exception
+	{
+		File inputFile = new File(inputFileName);
+		return unmarshalXml(inputFile, toDomainObject);
+	}
+
+	public Object unmarshalXml(File inputFile, boolean toDomainObject)
+			throws Exception
 	{
 		JAXBContext jc = JAXBContext.newInstance(packagePath);
 		Unmarshaller unmarshaller = jc.createUnmarshaller();
@@ -44,15 +76,53 @@ public abstract class BindFactory
 		// Do validation
 		unmarshaller.setSchema(getSchema());
 
-		return ((JAXBElement<?>) unmarshaller.unmarshal(inputFile)).getValue();
+		Object bindObject = ((JAXBElement<?>) unmarshaller.unmarshal(inputFile))
+				.getValue();
+
+		if (!toDomainObject)
+		{
+			return bindObject;
+		}
+
+		Object domainObject = mapObject(bindObject, bindToDomainMap);
+		return domainObject;
+	}
+
+	public void marshalToXml(Object input, String outputXmlName)
+			throws Exception
+	{
+		File outputXml = new File(outputXmlName);
+		marshalToXml(input, outputXml);
 	}
 
 	public void marshalToXml(Object input, File outputXml) throws Exception
 	{
-		JAXBContext context = JAXBContext.newInstance(input.getClass());
+		Object mappedInput = mapObject(input, domainToBindMap);
+		if (mappedInput == null)
+		{
+			mappedInput = input;
+		}
+		JAXBContext context = JAXBContext.newInstance(mappedInput.getClass());
 		Marshaller marshaller = context.createMarshaller();
 		marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-		marshaller.marshal(createElement(input), outputXml);
+		marshaller.marshal(createElement(mappedInput), outputXml);
+	}
+
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	protected Object mapObject(Object source,
+			Map<String, Class> sourceToDestinationClassMap)
+	{
+		String sourceName = source.getClass().getName();
+		Class destinationClass = sourceToDestinationClassMap.get(sourceName);
+		if (destinationClass == null)
+		{
+			return null;
+		}
+
+		Mapper mapper = DozerBeanMapperSingletonWrapper.getInstance();
+		Object destination = mapper.map(source, destinationClass);
+
+		return destination;
 	}
 
 	private Schema getSchema()

@@ -24,9 +24,9 @@ import org.dozer.Mapper;
 public abstract class BindFactory
 {
 	@SuppressWarnings("rawtypes")
-	protected static Map<String, Class> bindToDomainMap;
+	protected Map<String, Class> bindToDomainMap;
 	@SuppressWarnings("rawtypes")
-	protected static Map<String, Class> domainToBindMap;
+	protected Map<String, Class> domainToBindMap;
 
 	protected abstract void createBindToDomaimMap();
 

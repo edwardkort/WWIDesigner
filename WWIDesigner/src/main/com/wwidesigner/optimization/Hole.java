@@ -71,7 +71,9 @@ public class Hole
         Za = Complex.I.multiply( Z0*wave_number*ta );
         Complex Za_Zs = Za.divide(Zs);
         
-        return new TransferMatrix(Za_Zs.divide(2.).add(1.), Za.multiply(Za_Zs.divide(4.).add(1.)), 
+        TransferMatrix result = new TransferMatrix(Za_Zs.divide(2.).add(1.), Za.multiply(Za_Zs.divide(4.).add(1.)), 
         		Complex.ONE.divide(Zs), Za_Zs.divide(2.0).add(1.));
+        
+        return result;
 	}        		
 }

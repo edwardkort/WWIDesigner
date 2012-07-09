@@ -129,7 +129,7 @@ public class TuningTest extends AbstractXmlTest<Tuning>
 	@Override
 	protected void setBindFactory()
 	{
-		bindFactory = new NoteBindFactory();
+		bindFactory = NoteBindFactory.getInstance();
 
 	}
 

@@ -25,8 +25,10 @@ public class OptimizationFunction implements MultivariateFunction
 	@Override
 	public double value(double[] state_vector)
 	{        
-		updateGeometry(state_vector);		
-		return calculateErrorNorm();
+		updateGeometry(state_vector);	
+		double error = calculateErrorNorm();
+		
+		return error;
 	}
 	
 	public List<OptimizationTarget> getTargets()

@@ -2,6 +2,7 @@ package com.wwidesigner.optimization;
 
 import com.wwidesigner.geometry.BorePoint;
 import com.wwidesigner.geometry.Instrument;
+import com.wwidesigner.geometry.PositionInterface;
 
 public class OptimizableInstrument2
 {
@@ -22,21 +23,21 @@ public class OptimizableInstrument2
 
 	public double[] getStateVector()
 	{
-		BorePoint[] sortedPoints = Instrument.sortList(baseInstrument
+		PositionInterface[] sortedPoints = Instrument.sortList(baseInstrument
 				.getBorePoint());
-		com.wwidesigner.geometry.Hole[] sortedHoles = Instrument
-				.sortList(baseInstrument.getHole());
+		PositionInterface[] sortedHoles = Instrument.sortList(baseInstrument
+				.getHole());
 
 		int len = 1 + sortedHoles.length;
 
 		double[] state_vector = new double[len];
-		BorePoint lastPoint = sortedPoints[sortedPoints.length - 1];
-		state_vector[0] = lastPoint.getBoreDiameter();
+		BorePoint lastPoint = (BorePoint) sortedPoints[sortedPoints.length - 1];
+		state_vector[0] = lastPoint.getBorePosition();
 
 		double accumulatedDistance = 0.;
 		for (int i = sortedHoles.length; i > 0; --i)
 		{
-			com.wwidesigner.geometry.Hole hole = sortedHoles[i - 1];
+			com.wwidesigner.geometry.Hole hole = (com.wwidesigner.geometry.Hole) sortedHoles[i - 1];
 			state_vector[i] = state_vector[0] - hole.getBorePosition()
 					- accumulatedDistance;
 			accumulatedDistance += state_vector[i];
@@ -46,18 +47,18 @@ public class OptimizableInstrument2
 
 	public void updateGeometry(double[] state_vector)
 	{
-		BorePoint[] sortedPoints = Instrument.sortList(baseInstrument
+		PositionInterface[] sortedPoints = Instrument.sortList(baseInstrument
 				.getBorePoint());
-		com.wwidesigner.geometry.Hole[] sortedHoles = Instrument
-				.sortList(baseInstrument.getHole());
+		PositionInterface[] sortedHoles = Instrument.sortList(baseInstrument
+				.getHole());
 
-		BorePoint lastPoint = sortedPoints[sortedPoints.length - 1];
+		BorePoint lastPoint = (BorePoint) sortedPoints[sortedPoints.length - 1];
 		lastPoint.setBorePosition(state_vector[0]);
 
 		double accumulatedDistance = 0.;
 		for (int i = sortedHoles.length; i > 0; --i)
 		{
-			com.wwidesigner.geometry.Hole hole = sortedHoles[i - 1];
+			com.wwidesigner.geometry.Hole hole = (com.wwidesigner.geometry.Hole) sortedHoles[i - 1];
 			hole.setBorePosition(state_vector[0] - state_vector[i]
 					- accumulatedDistance);
 			accumulatedDistance += state_vector[i];

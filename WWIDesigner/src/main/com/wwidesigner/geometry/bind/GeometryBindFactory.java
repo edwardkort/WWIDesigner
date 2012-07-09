@@ -14,6 +14,22 @@ import com.wwidesigner.util.BindFactory;
 public class GeometryBindFactory extends BindFactory
 {
 
+	private static GeometryBindFactory instance;
+
+	private GeometryBindFactory()
+	{
+	}
+
+	public static BindFactory getInstance()
+	{
+		if (instance == null)
+		{
+			instance = new GeometryBindFactory();
+		}
+
+		return instance;
+	}
+
 	@Override
 	protected Object createElement(Object obj)
 	{

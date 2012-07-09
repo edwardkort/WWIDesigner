@@ -35,6 +35,8 @@ public class Instrument implements InstrumentInterface
 	protected List<ComponentInterface> components;
 	protected Termination termination;
 
+	private boolean convertedToMetres = false;
+
 	public Instrument()
 	{
 
@@ -207,6 +209,84 @@ public class Instrument implements InstrumentInterface
 	public void setConfiguration(InstrumentConfigurator configurator)
 	{
 		configurator.configureInstrument(this);
+		convertToMetres();
+	}
+
+	public void convertToMetres()
+	{
+		if (convertedToMetres)
+		{
+			return;
+		}
+
+		double multiplier;
+		switch (lengthType)
+		{
+			case MM:
+				multiplier = 0.001;
+				break;
+			case IN:
+				multiplier = 0.0254;
+				break;
+			default:
+				multiplier = 1.;
+		}
+
+		convertDimensions(multiplier);
+		convertedToMetres = true;
+	}
+
+	public void convertToLengthType()
+	{
+		if (!convertedToMetres)
+		{
+			return;
+		}
+
+		double multiplier;
+		switch (lengthType)
+		{
+			case MM:
+				multiplier = 1000.;
+				break;
+			case IN:
+				multiplier = 39.3701;
+				break;
+			default:
+				multiplier = 1.;
+		}
+
+		convertDimensions(multiplier);
+		convertedToMetres = false;
+	}
+
+	protected void convertDimensions(double multiplier)
+	{
+		if (mouthpiece != null)
+		{
+			mouthpiece.convertDimensions(multiplier);
+		}
+
+		if (borePoint != null)
+		{
+			for (BorePoint aPoint : borePoint)
+			{
+				aPoint.convertDimensions(multiplier);
+			}
+		}
+
+		if (hole != null)
+		{
+			for (Hole aHole : hole)
+			{
+				aHole.convertDimensions(multiplier);
+			}
+		}
+
+		if (termination != null)
+		{
+			termination.convertDimensions(multiplier);
+		}
 	}
 
 	@Override
@@ -269,7 +349,7 @@ public class Instrument implements InstrumentInterface
 		double rightDiameter = rightPoint.getBoreDiameter();
 		double holeBoreDiameter = leftDiameter + (rightDiameter - leftDiameter)
 				* holeRelativePosition;
-		currentHole.setDiameter(holeBoreDiameter);
+		currentHole.setBoreRadius(holeBoreDiameter / 2.);
 
 		// Make new bore section
 		if (rightPosition > holePosition)
@@ -332,13 +412,19 @@ public class Instrument implements InstrumentInterface
 		return positionMap;
 	}
 
-	@SuppressWarnings("unchecked")
-	public static <P extends PositionInterface> P[] sortList(List<P> positions)
+	public static <P extends PositionInterface> PositionInterface[] sortList(
+			List<P> positions)
 	{
-		P[] sortedPositions = (P[]) positions.toArray();
-		Arrays.sort(sortedPositions, new Comparator<P>()
+		int numberOfPositions = positions.size();
+		PositionInterface[] sortedPositions = new PositionInterface[numberOfPositions];
+		int i = 0;
+		for (P position : positions)
 		{
-			public int compare(P first, P second)
+			sortedPositions[i++] = position;
+		}
+		Arrays.sort(sortedPositions, new Comparator<PositionInterface>()
+		{
+			public int compare(PositionInterface first, PositionInterface second)
 			{
 				if (first.getBorePosition() < second.getBorePosition())
 				{
@@ -384,7 +470,9 @@ public class Instrument implements InstrumentInterface
 		double impedance = physicalParams.calcZ0(headRadius);
 		Complex reflectance = sv.Reflectance(impedance);
 
-		return reflectance.multiply(reflectanceMultiplier);
+		Complex result = reflectance.multiply(reflectanceMultiplier);
+		
+		return result;
 	}
 
 	public void setOpenHoles(Fingering fingering)

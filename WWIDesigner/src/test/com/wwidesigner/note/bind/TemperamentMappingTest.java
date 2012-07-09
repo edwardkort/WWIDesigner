@@ -67,7 +67,7 @@ public class TemperamentMappingTest extends AbstractXmlTest<Temperament>
 	@Override
 	protected void setBindFactory()
 	{
-		bindFactory = new NoteBindFactory();
+		bindFactory = NoteBindFactory.getInstance();
 
 	}
 

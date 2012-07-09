@@ -50,4 +50,10 @@ public class BorePoint implements PositionInterface
 		this.boreDiameter = boreDiameter;
 	}
 
+	public void convertDimensions(double multiplier)
+	{
+		borePosition *= multiplier;
+		boreDiameter *= multiplier;
+	}
+
 }

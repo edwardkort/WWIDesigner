@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wii:instrument xmlns:wii="http://www.wwidesigner.com/Instrument">
+	<name>Cylinder with 6 holes</name>
+	<description>Test geometry for optimizer</description>
+	<lengthType>mm</lengthType>
+	<mouthpiece>
+		<position>0</position>
+		<fipple>
+			<windowLength>5</windowLength>
+			<windowWidth>8</windowWidth>
+		</fipple>
+	</mouthpiece>
+	<borePoint>
+		<borePosition>0</borePosition>
+		<boreDiameter>15</boreDiameter>
+	</borePoint>
+	<borePoint>
+		<borePosition>300</borePosition>
+		<boreDiameter>15</boreDiameter>
+	</borePoint>
+	<hole>
+		<borePosition>147</borePosition>
+		<diameter>9.75</diameter>
+		<height>8</height>
+	</hole>
+	<hole>
+		<borePosition>174</borePosition>
+		<diameter>9.75</diameter>
+		<height>8</height>
+	</hole>
+	<hole>
+		<borePosition>195</borePosition>
+		<diameter>9.75</diameter>
+		<height>8</height>
+	</hole>
+	<hole>
+		<borePosition>219</borePosition>
+		<diameter>9.75</diameter>
+		<height>8</height>
+	</hole>
+	<hole>
+		<borePosition>243</borePosition>
+		<diameter>9.75</diameter>
+		<height>8</height>
+	</hole>
+	<hole>
+		<borePosition>270</borePosition>
+		<diameter>9.75</diameter>
+		<height>8</height>
+	</hole>
+	<termination>
+		<flangeDiameter>31</flangeDiameter>
+	</termination>
+</wii:instrument>

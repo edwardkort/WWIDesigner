@@ -83,7 +83,9 @@ public class OptimizableInstrument
 		
 		StateVector sv = TransferMatrix.multiply(M, mTermination.stateVector(wave_number, mParameters));
 		
-		return sv.Reflectance( mParameters.calcZ0(mSections.get(0).getLeftRadius() )).multiply( mMouthpiece.reflectanceMultiplier() );
+		Complex result = sv.Reflectance( mParameters.calcZ0(mSections.get(0).getLeftRadius() )).multiply( mMouthpiece.reflectanceMultiplier() );
+		
+		return result;
 	}	
 
 	public double[] getStateVector()

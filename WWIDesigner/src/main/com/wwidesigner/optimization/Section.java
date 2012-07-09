@@ -47,7 +47,10 @@ class Section
 
         Complex sinhL = Gamma.multiply(mLength).sinh();
         Complex coshL = Gamma.multiply(mLength).cosh();
-		return new TransferMatrix(coshL, sinhL.multiply(Zc), sinhL.divide(Zc), coshL);
+        
+        TransferMatrix result = new TransferMatrix(coshL, sinhL.multiply(Zc), sinhL.divide(Zc), coshL);
+        
+		return result;
 	}
 
 	public double radiusAt(double position)

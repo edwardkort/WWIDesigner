@@ -14,6 +14,7 @@ public class Hole implements ComponentInterface, PositionInterface
 	protected double boreRadius;
 	protected boolean openHole;
 	protected Double innerCurvatureRadius;
+	protected Key key;
 
 	public Hole()
 	{
@@ -139,6 +140,39 @@ public class Hole implements ComponentInterface, PositionInterface
 		this.position = position;
 	}
 
+	/**
+	 * @return the key
+	 */
+	public Key getKey()
+	{
+		return key;
+	}
+
+	/**
+	 * @param key
+	 *            the key to set
+	 */
+	public void setKey(Key key)
+	{
+		this.key = key;
+	}
+
+	public void convertDimensions(double multiplier)
+	{
+		height *= multiplier;
+		position *= multiplier;
+		diameter *= multiplier;
+		boreRadius *= multiplier;
+		if (innerCurvatureRadius != null)
+		{
+			innerCurvatureRadius *= multiplier;
+		}
+		if (key != null)
+		{
+			key.convertDimensions(multiplier);
+		}
+	}
+
 	public TransferMatrix calcTransferMatrix(double wave_number,
 			PhysicalParameters mParameters)
 	{
@@ -197,8 +231,10 @@ public class Hole implements ComponentInterface, PositionInterface
 		Za = Complex.I.multiply(Z0 * wave_number * ta);
 		Complex Za_Zs = Za.divide(Zs);
 
-		return new TransferMatrix(Za_Zs.divide(2.).add(1.), Za.multiply(Za_Zs
-				.divide(4.).add(1.)), Complex.ONE.divide(Zs), Za_Zs.divide(2.0)
-				.add(1.));
+		TransferMatrix result = new TransferMatrix(Za_Zs.divide(2.).add(1.),
+				Za.multiply(Za_Zs.divide(4.).add(1.)), Complex.ONE.divide(Zs),
+				Za_Zs.divide(2.0).add(1.));
+
+		return result;
 	}
 }

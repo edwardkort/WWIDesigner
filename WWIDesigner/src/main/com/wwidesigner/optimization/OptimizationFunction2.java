@@ -27,7 +27,9 @@ public class OptimizationFunction2 implements MultivariateFunction
 	public double value(double[] state_vector)
 	{
 		instrument.updateGeometry(state_vector);
-		return calculateErrorNorm();
+		double error = calculateErrorNorm();
+		
+		return error;
 	}
 
 	public double calculateErrorNorm()

@@ -101,7 +101,7 @@ public class ScaleTest extends AbstractXmlTest<Scale>
 	@Override
 	protected void setBindFactory()
 	{
-		bindFactory = new NoteBindFactory();
+		bindFactory = NoteBindFactory.getInstance();
 
 	}
 

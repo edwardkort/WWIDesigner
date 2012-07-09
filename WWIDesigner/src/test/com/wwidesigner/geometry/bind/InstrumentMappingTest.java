@@ -61,7 +61,38 @@ public class InstrumentMappingTest extends AbstractXmlTest<Instrument>
 					inputElement, com.wwidesigner.geometry.Instrument.class);
 			Instrument bindInstrument = mapper.map(domainInstrument,
 					Instrument.class);
-			
+
+			outputFile = new File(writePath + "mapperTest.xml");
+			outputFile.delete();
+			bindFactory.marshalToXml(bindInstrument, outputFile);
+			XmlDiff diff = new XmlDiff(inputFile, outputFile);
+			DetailedDiff detailedDiff = new DetailedDiff(diff);
+			assertTrue(detailedDiff.toString(), detailedDiff.identical());
+		}
+		catch (Exception e)
+		{
+			fail(e.getMessage());
+		}
+
+	}
+
+	@Test
+	public final void testRoundTripWithConversion()
+	{
+		try
+		{
+			if (inputElement == null)
+			{
+				unmarshalInput();
+			}
+			Mapper mapper = DozerBeanMapperSingletonWrapper.getInstance();
+			com.wwidesigner.geometry.Instrument domainInstrument = mapper.map(
+					inputElement, com.wwidesigner.geometry.Instrument.class);
+			domainInstrument.convertToMetres();
+			domainInstrument.convertToLengthType();
+			Instrument bindInstrument = mapper.map(domainInstrument,
+					Instrument.class);
+
 			outputFile = new File(writePath + "mapperTest.xml");
 			outputFile.delete();
 			bindFactory.marshalToXml(bindInstrument, outputFile);
@@ -91,7 +122,7 @@ public class InstrumentMappingTest extends AbstractXmlTest<Instrument>
 	@Override
 	protected void setBindFactory()
 	{
-		bindFactory = new GeometryBindFactory();
+		bindFactory = GeometryBindFactory.getInstance();
 	}
 
 }

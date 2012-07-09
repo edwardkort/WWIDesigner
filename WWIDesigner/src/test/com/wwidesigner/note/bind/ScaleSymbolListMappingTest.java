@@ -68,7 +68,7 @@ public class ScaleSymbolListMappingTest extends
 	@Override
 	protected void setBindFactory()
 	{
-		bindFactory = new NoteBindFactory();
+		bindFactory = NoteBindFactory.getInstance();
 
 	}
 

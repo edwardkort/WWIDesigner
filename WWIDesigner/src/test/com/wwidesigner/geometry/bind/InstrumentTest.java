@@ -114,7 +114,7 @@ public class InstrumentTest extends AbstractXmlTest<Instrument>
 	@Override
 	protected void setBindFactory()
 	{
-		bindFactory = new GeometryBindFactory();
+		bindFactory = GeometryBindFactory.getInstance();
 	}
 
 }

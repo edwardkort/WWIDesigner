@@ -27,7 +27,7 @@ public class Termination extends BorePoint implements TerminationInterface
 			PhysicalParameters params)
 	{
 		StateVector result = calculator.calcStateVector(wave_number, params);
-		
+
 		return result;
 	}
 
@@ -49,11 +49,17 @@ public class Termination extends BorePoint implements TerminationInterface
 	}
 
 	/**
-	 * @param calculator the calculator to set
+	 * @param calculator
+	 *            the calculator to set
 	 */
 	public void setCalculator(TerminationCalculator calculator)
 	{
 		this.calculator = calculator;
+	}
+
+	public void convertDimensions(double multiplier)
+	{
+		flangeDiameter *= multiplier;
 	}
 
 }

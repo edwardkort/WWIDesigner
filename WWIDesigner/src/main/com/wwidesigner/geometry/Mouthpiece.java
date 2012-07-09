@@ -106,10 +106,28 @@ public class Mouthpiece implements ComponentInterface, MouthpieceInterface
 	 * @param mouthpieceCalculator
 	 *            the mouthpieceCalculator to set
 	 */
-	public void setCalculator(
-			MouthpieceCalculator mouthpieceCalculator)
+	public void setCalculator(MouthpieceCalculator mouthpieceCalculator)
 	{
 		this.mouthpieceCalculator = mouthpieceCalculator;
+	}
+
+	public void convertDimensions(double multiplier)
+	{
+		position *= multiplier;
+		if (beta != null)
+		{
+			beta *= multiplier;
+		}
+
+		if (embouchureHole != null)
+		{
+			embouchureHole.convertDimensions(multiplier);
+		}
+
+		if (fipple != null)
+		{
+			fipple.convertDimensions(multiplier);
+		}
 	}
 
 	/**
@@ -175,6 +193,13 @@ public class Mouthpiece implements ComponentInterface, MouthpieceInterface
 		public void setHeight(double height)
 		{
 			this.height = height;
+		}
+
+		public void convertDimensions(double multiplier)
+		{
+			innerDiameter *= multiplier;
+			outerDiameter *= multiplier;
+			height *= multiplier;
 		}
 
 	}
@@ -294,6 +319,28 @@ public class Mouthpiece implements ComponentInterface, MouthpieceInterface
 		public void setWindwayHeight(Double windwayHeight)
 		{
 			this.windwayHeight = windwayHeight;
+		}
+
+		public void convertDimensions(double multiplier)
+		{
+			windowWidth *= multiplier;
+			windowLength *= multiplier;
+			if (fippleFactor != null)
+			{
+				fippleFactor *= multiplier;
+			}
+			if (windowHeight != null)
+			{
+				windowHeight *= multiplier;
+			}
+			if (windwayLength != null)
+			{
+				windwayLength *= multiplier;
+			}
+			if (windwayHeight != null)
+			{
+				windwayHeight *= multiplier;
+			}
 		}
 
 	}

@@ -27,7 +27,7 @@ public class ExplicitTuningMappingTest
 	@Test
 	public final void test()
 	{
-		bindFactory = new NoteBindFactory();
+		bindFactory = NoteBindFactory.getInstance();
 		try
 		{
 			File inputFile = getInputFile();

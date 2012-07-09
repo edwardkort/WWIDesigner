@@ -55,7 +55,7 @@ public class PhysicalParametersTest
         double temp = 20.;
         PhysicalParameters phyPar = new PhysicalParameters( temp,
                                                             TemperatureType.C );
-        assertEquals( 32.8686, phyPar.calcZ0( 2. ), 0.001 );
+        assertEquals( 32.8686, phyPar.calcZ0( 2. ), 0.01 );
     }
 
 }

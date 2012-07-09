@@ -11,8 +11,8 @@ public class InstrumentOptimizer2 extends BOBYQAOptimizer
 	protected OptimizableInstrument2 instrument;
 	protected TuningInterface tuning;
 	protected PhysicalParameters physicalParams;
-	protected double[] lowerBound;
-	protected double[] upperBound;
+	protected double[] lowerBnd;
+	protected double[] upperBnd;
 
 	public InstrumentOptimizer2(OptimizableInstrument2 inst,
 			TuningInterface tuning)
@@ -45,18 +45,18 @@ public class InstrumentOptimizer2 extends BOBYQAOptimizer
 	 * @param lowerBound
 	 *            the lowerBound to set
 	 */
-	public void setLowerBound(double[] lowerBound)
+	public void setLowerBnd(double[] lowerBound)
 	{
-		this.lowerBound = lowerBound;
+		this.lowerBnd = lowerBound;
 	}
 
 	/**
 	 * @param upperBound
 	 *            the upperBound to set
 	 */
-	public void setUpperBound(double[] upperBound)
+	public void setUpperBnd(double[] upperBound)
 	{
-		this.upperBound = upperBound;
+		this.upperBnd = upperBound;
 	}
 
 	public void optimizeInstrument()
@@ -64,8 +64,8 @@ public class InstrumentOptimizer2 extends BOBYQAOptimizer
 		double[] startPoint = instrument.getStateVector();
 		OptimizationFunction2 func = new OptimizationFunction2(instrument,
 				tuning, physicalParams);
-		optimize(5000, func, GoalType.MINIMIZE, startPoint, getLowerBound(),
-				getUpperBound());
+		optimize(5000, func, GoalType.MINIMIZE, startPoint, lowerBnd,
+				upperBnd);
 	}
 
 }

@@ -101,7 +101,7 @@ public class ScaleSymbolListTest extends AbstractXmlTest<ScaleSymbolList>
 	@Override
 	protected void setBindFactory()
 	{
-		bindFactory = new NoteBindFactory();
+		bindFactory = NoteBindFactory.getInstance();
 
 	}
 

@@ -71,7 +71,7 @@ public class FingeringPatternMappingTest extends
 	@Override
 	protected void setBindFactory()
 	{
-		bindFactory = new NoteBindFactory();
+		bindFactory = NoteBindFactory.getInstance();
 
 	}
 

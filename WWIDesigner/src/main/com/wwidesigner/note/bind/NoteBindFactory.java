@@ -13,6 +13,22 @@ import com.wwidesigner.util.BindFactory;
  */
 public class NoteBindFactory extends BindFactory
 {
+	private static NoteBindFactory instance;
+
+	private NoteBindFactory()
+	{
+
+	}
+
+	public static BindFactory getInstance()
+	{
+		if (instance == null)
+		{
+			instance = new NoteBindFactory();
+		}
+
+		return instance;
+	}
 
 	@Override
 	protected Object createElement(Object obj)

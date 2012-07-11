@@ -17,30 +17,6 @@
   </fingering>
   <fingering>
     <note>
-      <name>A4</name>
-      <frequency>440</frequency>
-    </note>
-    <openHole>false</openHole>
-    <openHole>false</openHole>
-    <openHole>false</openHole>
-    <openHole>false</openHole>
-    <openHole>false</openHole>
-    <openHole>false</openHole>
-  </fingering>
-  <fingering>
-    <note>
-      <name>A4</name>
-      <frequency>440</frequency>
-    </note>
-    <openHole>false</openHole>
-    <openHole>false</openHole>
-    <openHole>false</openHole>
-    <openHole>false</openHole>
-    <openHole>false</openHole>
-    <openHole>false</openHole>
-  </fingering>
-  <fingering>
-    <note>
       <name>B4</name>
       <frequency>493.88</frequency>
     </note>

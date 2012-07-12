@@ -44,13 +44,11 @@ public class InstrumentOptimizerTest
 	{
 		Instrument instrument = getInstrumentFromXml(inputInstrumentXML);
 		configureInstrument(instrument);
-		OptimizableInstrument2 optimizableInstrument = new OptimizableInstrument2(
-				instrument);
 
 		Tuning tuning = getTuningFromXml(inputTuningXML);
 
-		InstrumentOptimizer2 optimizer = new InstrumentOptimizer2(
-				optimizableInstrument, tuning);
+		InstrumentOptimizer optimizer = new HolePositionOptimizer(
+				instrument, tuning);
 		setPhysicalParameters(optimizer);
 		setOptimizationBounds(optimizer);
 		optimizer.optimizeInstrument();
@@ -122,14 +120,14 @@ public class InstrumentOptimizerTest
 		return tuning;
 	}
 
-	protected void setPhysicalParameters(InstrumentOptimizer2 optimizer)
+	protected void setPhysicalParameters(InstrumentOptimizer optimizer)
 	{
 		PhysicalParameters parameters = new PhysicalParameters(25.,
 				TemperatureType.C);
 		optimizer.setPhysicalParams(parameters);
 	}
 
-	protected void setOptimizationBounds(InstrumentOptimizer2 optimizer)
+	protected void setOptimizationBounds(InstrumentOptimizer optimizer)
 	{
 		double[] lB = new double[7];
 		double[] uB = new double[7];

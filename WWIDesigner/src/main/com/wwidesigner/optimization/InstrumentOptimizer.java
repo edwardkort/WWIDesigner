@@ -3,23 +3,29 @@ package com.wwidesigner.optimization;
 import org.apache.commons.math3.optimization.GoalType;
 import org.apache.commons.math3.optimization.direct.BOBYQAOptimizer;
 
+import com.wwidesigner.geometry.Instrument;
 import com.wwidesigner.note.TuningInterface;
 import com.wwidesigner.util.PhysicalParameters;
 
-public class InstrumentOptimizer2 extends BOBYQAOptimizer
+public abstract class InstrumentOptimizer extends BOBYQAOptimizer implements
+		InstrumentOptimizerInterface
 {
-	protected OptimizableInstrument2 instrument;
 	protected TuningInterface tuning;
 	protected PhysicalParameters physicalParams;
 	protected double[] lowerBnd;
 	protected double[] upperBnd;
+	protected OptimizationFunctionInterface optimizationFunction;
+	protected Instrument instrument;
 
-	public InstrumentOptimizer2(OptimizableInstrument2 inst,
-			TuningInterface tuning)
+	public abstract void setOptimizationFunction();
+
+	public InstrumentOptimizer(int numberOfInterpolationPoints,
+			Instrument inst, TuningInterface tuning)
 	{
-		super(20); // the number of interpolation point should be set according
-					// to the number of variables in the optimization problem,
-					// which depends on the OptimizableInstrument
+		super(numberOfInterpolationPoints); // the number of interpolation point
+											// should be set according
+		// to the number of variables in the optimization problem,
+		// which depends on the OptimizableInstrument
 		this.instrument = inst;
 		this.tuning = tuning;
 	}
@@ -59,13 +65,20 @@ public class InstrumentOptimizer2 extends BOBYQAOptimizer
 		this.upperBnd = upperBound;
 	}
 
+	/**
+	 * @return the instrument
+	 */
+	public Instrument getInstrument()
+	{
+		return instrument;
+	}
+
 	public void optimizeInstrument()
 	{
-		double[] startPoint = instrument.getStateVector();
-		OptimizationFunction2 func = new OptimizationFunction2(instrument,
-				tuning, physicalParams);
-		optimize(5000, func, GoalType.MINIMIZE, startPoint, lowerBnd,
-				upperBnd);
+		double[] startPoint = getStateVector();
+		setOptimizationFunction();
+		optimize(5000, optimizationFunction, GoalType.MINIMIZE, startPoint,
+				lowerBnd, upperBnd);
 	}
 
 }

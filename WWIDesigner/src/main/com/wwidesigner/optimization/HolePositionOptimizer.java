@@ -1,31 +1,45 @@
+/**
+ * 
+ */
 package com.wwidesigner.optimization;
 
 import com.wwidesigner.geometry.BorePoint;
 import com.wwidesigner.geometry.Instrument;
 import com.wwidesigner.geometry.PositionInterface;
+import com.wwidesigner.note.TuningInterface;
 
-public class OptimizableInstrument2
+/**
+ * @author kort
+ * 
+ */
+public class HolePositionOptimizer extends InstrumentOptimizer
 {
-	protected Instrument baseInstrument;
 
-	public OptimizableInstrument2(Instrument instrument)
-	{
-		baseInstrument = instrument;
-	}
+	static final int numberOfInterpolationPoints = 20;
 
 	/**
-	 * @return the baseInstrument
+	 * @param inst
+	 * @param tuning
 	 */
-	public Instrument getBaseInstrument()
+	public HolePositionOptimizer(Instrument inst, TuningInterface tuning)
 	{
-		return baseInstrument;
+		super(numberOfInterpolationPoints, inst, tuning);
 	}
 
+	@Override
+	public void setOptimizationFunction()
+	{
+		optimizationFunction = new BasicOptimizationFunction(this, tuning,
+				physicalParams);
+
+	}
+
+	@Override
 	public double[] getStateVector()
 	{
-		PositionInterface[] sortedPoints = Instrument.sortList(baseInstrument
+		PositionInterface[] sortedPoints = Instrument.sortList(instrument
 				.getBorePoint());
-		PositionInterface[] sortedHoles = Instrument.sortList(baseInstrument
+		PositionInterface[] sortedHoles = Instrument.sortList(instrument
 				.getHole());
 
 		int len = 1 + sortedHoles.length;
@@ -45,11 +59,19 @@ public class OptimizableInstrument2
 		return state_vector;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.wwidesigner.optimization.InstrumentOptimizerInterface#updateGeometry
+	 * (double[])
+	 */
+	@Override
 	public void updateGeometry(double[] state_vector)
 	{
-		PositionInterface[] sortedPoints = Instrument.sortList(baseInstrument
+		PositionInterface[] sortedPoints = Instrument.sortList(instrument
 				.getBorePoint());
-		PositionInterface[] sortedHoles = Instrument.sortList(baseInstrument
+		PositionInterface[] sortedHoles = Instrument.sortList(instrument
 				.getHole());
 
 		BorePoint lastPoint = (BorePoint) sortedPoints[sortedPoints.length - 1];

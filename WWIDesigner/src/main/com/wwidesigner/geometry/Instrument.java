@@ -5,10 +5,12 @@ package com.wwidesigner.geometry;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 import org.apache.commons.math3.complex.Complex;
 
@@ -16,7 +18,6 @@ import com.wwidesigner.math.StateVector;
 import com.wwidesigner.math.TransferMatrix;
 import com.wwidesigner.note.Fingering;
 import com.wwidesigner.util.PhysicalParameters;
-import com.wwidesigner.util.SortedPositionList;
 
 /**
  * @author kort
@@ -297,7 +298,7 @@ public class Instrument implements InstrumentInterface
 
 		if (borePoint != null && !borePoint.isEmpty())
 		{
-			SortedPositionList<BorePoint> borePointList = makePositionList(borePoint);
+			SortedMap<Double, BorePoint> borePointMap = makePositionMap(borePoint);
 			// Add the mouthpiece reference position to the map.
 			// I don't believe the optimization routines should care that this
 			// offset
@@ -308,31 +309,32 @@ public class Instrument implements InstrumentInterface
 			processMouthpiece(borePointList);
 			components.add(mouthpiece);
 
-			SortedPositionList<Hole> holeList = makePositionList(hole);
+			SortedMap<Double, Hole> holeMap = makePositionMap(hole);
 
 			// TODO Deal with the Mouthpiece and the start of the bore:
 
 			// Process the holes, making sections as needed to include the hole
 			// on the right
-			if (holeList.size() > 0)
+			if (holeMap.size() > 0)
 			{
-				for (Hole currentHole : holeList)
+				for (Map.Entry<Double, Hole> holeEntry : holeMap.entrySet())
 				{
-					double rightPosition = currentHole.getBorePosition();
+					double rightPosition = holeEntry.getKey();
+					Hole currentHole = holeEntry.getValue();
 					makeSections(borePointList, rightPosition);
-					processPosition(borePointList, currentHole);
+					makeSections(borePointMap, rightPosition);
 
-					components.add(currentHole);
+					processHole(borePointMap, currentHole);
 				}
 			}
 
 			// Process the rest of the sections. There must be at least one
-			double lastPosition = borePointList.getLast().getBorePosition() + 1.;
-			makeSections(borePointList, lastPosition);
+			double lastPosition = borePointMap.lastKey() + 1;
+			makeSections(borePointMap, lastPosition);
 		}
 	}
 
-	protected void processMouthpiece(SortedPositionList<BorePoint> borePointList)
+	protected void processHole(SortedMap<Double, BorePoint> borePointMap,
 	{
 		double mouthpiecePosition = mouthpiece.getBorePosition();
 
@@ -363,53 +365,55 @@ public class Instrument implements InstrumentInterface
 	}
 
 	protected void processPosition(SortedPositionList<BorePoint> borePointList,
-			BorePointInterface currentPosition)
+			Hole currentHole)
 	{
 		// Update bore radius at hole
 		// At this stage, the hole must be between the first and second bore
 		// point
-		Iterator<BorePoint> points = borePointList.iterator();
+		Iterator<BorePoint> points = borePointMap.values().iterator();
 		BorePoint leftPoint = points.next();
 		BorePoint rightPoint = points.next();
 
 		double leftPosition = leftPoint.getBorePosition();
 		double rightPosition = rightPoint.getBorePosition();
-		double thisPosition = currentPosition.getBorePosition();
-		double holeRelativePosition = (rightPosition - thisPosition)
+		double holePosition = currentPosition.getBorePosition();
+		double holeRelativePosition = (rightPosition - holePosition)
 				/ (rightPosition - leftPosition);
 
 		double leftDiameter = leftPoint.getBoreDiameter();
 		double rightDiameter = rightPoint.getBoreDiameter();
 		double holeBoreDiameter = leftDiameter + (rightDiameter - leftDiameter)
 				* holeRelativePosition;
-		currentPosition.setBoreDiameter(holeBoreDiameter);
+		currentHole.setBoreRadius(holeBoreDiameter / 2.);
 
 		// Make new bore section
-		if ((rightPosition - thisPosition) > 0.00001d)
+		if (rightPosition > holePosition)
 		{
 			rightPoint = new BorePoint();
 			rightPoint.setBoreDiameter(holeBoreDiameter);
-			rightPoint.setBorePosition(thisPosition);
-			borePointList.add(rightPoint);
+			rightPoint.setBorePosition(holePosition);
+			borePointMap.put(holePosition, rightPoint);
 		}
 		addSection(leftPoint, rightPoint);
-		borePointList.remove(leftPoint);
+		borePointMap.remove(leftPosition);
+
+		components.add(currentHole);
 	}
 
-	protected double makeSections(SortedPositionList<BorePoint> borePointList,
+	protected double makeSections(SortedMap<Double, BorePoint> borePointMap,
 			double rightPosition)
 	{
-		SortedPositionList<BorePoint> unprocessedPoints = borePointList
-				.headList(rightPosition);
+		SortedMap<Double, BorePoint> unprocessedPoints = borePointMap
+				.headMap(rightPosition);
 		if (unprocessedPoints.size() > 1)
 		{
-			Iterator<BorePoint> points = unprocessedPoints.iterator();
+			Iterator<BorePoint> points = unprocessedPoints.values().iterator();
 			BorePoint leftPoint = points.next();
 			for (; points.hasNext();)
 			{
 				BorePoint rightPoint = points.next();
 				addSection(leftPoint, rightPoint);
-				borePointList.remove(leftPoint);
+				borePointMap.remove(leftPoint.getBorePosition());
 				leftPoint = rightPoint;
 			}
 		}
@@ -429,13 +433,19 @@ public class Instrument implements InstrumentInterface
 		components.add(section);
 	}
 
-	public static <P extends PositionInterface> SortedPositionList<P> makePositionList(
-			Collection<P> positions)
+	/**
+	 * Create position map of holes or bore points (PositionInterface)
+	 */
+	public static <P extends PositionInterface> SortedMap<Double, P> makePositionMap(
+			List<P> positions)
 	{
-		SortedPositionList<P> sortedList = new SortedPositionList<P>();
-		sortedList.addAll(positions);
+		SortedMap<Double, P> positionMap = new TreeMap<Double, P>();
+		for (P position : positions)
+		{
+			positionMap.put(position.getBorePosition(), position);
+		}
 
-		return sortedList;
+		return positionMap;
 	}
 
 	public static <P extends PositionInterface> PositionInterface[] sortList(
@@ -491,13 +501,13 @@ public class Instrument implements InstrumentInterface
 				termination.calcStateVector(waveNumber, physicalParams));
 
 		// TODO This mouthpiece calculation will change
-		double headRadius = mouthpiece.getBoreDiameter() / 2.;
+		double headRadius = ((BoreSection) components.get(0)).getLeftRadius();
 		int reflectanceMultiplier = mouthpiece.calcReflectanceMultiplier();
 		double impedance = physicalParams.calcZ0(headRadius);
 		Complex reflectance = sv.Reflectance(impedance);
 
 		Complex result = reflectance.multiply(reflectanceMultiplier);
-
+		
 		return result;
 	}
 

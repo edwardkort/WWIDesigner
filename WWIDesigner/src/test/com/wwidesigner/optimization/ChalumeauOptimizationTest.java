@@ -132,10 +132,10 @@ public class ChalumeauOptimizationTest
 
 	protected void setOptimizationBounds(InstrumentOptimizer optimizer)
 	{
-		double[] lB = new double[11]; // lower bound
-		double[] uB = new double[11]; // upper bound
+		double[] lB = new double[21]; // lower bound
+		double[] uB = new double[21]; // upper bound
 
-		lB[0] = 0.20;
+		lB[0] = 0.15;
 		uB[0] = 0.30;
 		lB[1] = 0.000;
 		uB[1] = 0.020;
@@ -158,8 +158,6 @@ public class ChalumeauOptimizationTest
 		lB[10] = 0.005;
 		uB[10] = 0.100;
 
-		lB[10] = 0.2;
-		uB[10] = 0.5;
 		lB[11] = 0.2;
 		uB[11] = 0.5;
 		lB[12] = 0.2;
@@ -178,6 +176,8 @@ public class ChalumeauOptimizationTest
 		uB[18] = 0.5;
 		lB[19] = 0.2;
 		uB[19] = 0.5;		          
+		lB[20] = 0.2;
+		uB[20] = 0.5;
 		          
 		optimizer.setLowerBnd(lB);
 		optimizer.setUpperBnd(uB);

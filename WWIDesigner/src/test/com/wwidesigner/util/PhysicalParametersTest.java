@@ -37,12 +37,12 @@ public class PhysicalParametersTest
         double temp = 20.;
         PhysicalParameters phyPar = new PhysicalParameters( temp,
                                                             TemperatureType.C );
-        assertEquals( temp + 273.15, phyPar.getTemperature(), 0.001 );
+        assertEquals( temp, phyPar.getTemperature(), 0.001 );
 
         // Fahrenheit temp calculation
         temp = 32.;
         phyPar = new PhysicalParameters( temp, TemperatureType.F );
-        assertEquals( 5. * ( temp + 40 ) / 9 + 233.15, phyPar.getTemperature(), 0.001 );
+        assertEquals( 5. * ( temp + 40 ) / 9 - 40, phyPar.getTemperature(), 0.001 );
     }
 
     /**
@@ -55,7 +55,7 @@ public class PhysicalParametersTest
         double temp = 20.;
         PhysicalParameters phyPar = new PhysicalParameters( temp,
                                                             TemperatureType.C );
-        assertEquals( 32.8686, phyPar.calcZ0( 2. ), 0.01 );
+        assertEquals( 32.95, phyPar.calcZ0( 2. ), 0.01 );
     }
 
 }

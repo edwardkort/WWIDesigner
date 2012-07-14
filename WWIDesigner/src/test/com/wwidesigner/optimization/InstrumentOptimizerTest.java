@@ -71,17 +71,17 @@ public class InstrumentOptimizerTest
 			List<BorePoint> borePoints = optimizedInstrument.getBorePoint();
 			PositionInterface[] sortedPoints = Instrument.sortList(borePoints);
 			PositionInterface lastPoint = sortedPoints[sortedPoints.length - 1];
-			assertEquals("Bore length incorrect", 379.54, lastPoint.getBorePosition(), 0.01);
+			assertEquals("Bore length incorrect", 380.99, lastPoint.getBorePosition(), 0.01);
 			
 			// Test hole positions
 			List<com.wwidesigner.geometry.Hole> holes = optimizedInstrument.getHole();
 			PositionInterface[] sortedHoles = Instrument.sortList(holes);
-			assertEquals("Hole 1 position incorrect", 188.98, sortedHoles[0].getBorePosition(), 0.01);
-			assertEquals("Hole 2 position incorrect", 213.44, sortedHoles[1].getBorePosition(), 0.01);
-			assertEquals("Hole 3 position incorrect", 239.96, sortedHoles[2].getBorePosition(), 0.01);
-			assertEquals("Hole 4 position incorrect", 273.49, sortedHoles[3].getBorePosition(), 0.01);
-			assertEquals("Hole 5 position incorrect", 285.17, sortedHoles[4].getBorePosition(), 0.01);
-			assertEquals("Hole 6 position incorrect", 319.24, sortedHoles[5].getBorePosition(), 0.01);
+			assertEquals("Hole 1 position incorrect", 189.72, sortedHoles[0].getBorePosition(), 0.01);
+			assertEquals("Hole 2 position incorrect", 214.28, sortedHoles[1].getBorePosition(), 0.01);
+			assertEquals("Hole 3 position incorrect", 240.90, sortedHoles[2].getBorePosition(), 0.01);
+			assertEquals("Hole 4 position incorrect", 274.55, sortedHoles[3].getBorePosition(), 0.01);
+			assertEquals("Hole 5 position incorrect", 286.30, sortedHoles[4].getBorePosition(), 0.01);
+			assertEquals("Hole 6 position incorrect", 320.51, sortedHoles[5].getBorePosition(), 0.01);
 		}
 		catch (Exception e)
 		{

@@ -10,7 +10,6 @@ class BoreSection implements ComponentInterface
 	private double mLength;
 	private double mLeftRadius;
 	private double mRightRadius;
-	private double rightBorePosition;
 
 	public BoreSection()
 	{
@@ -62,24 +61,19 @@ class BoreSection implements ComponentInterface
 		mRightRadius = rightRadius;
 	}
 
-	public TransferMatrix calcTransferMatrix(double wave_number,
+	public TransferMatrix calcTransferMatrix(double wave_number, PhysicalParameters params)
 			PhysicalParameters params)
 	{
 		double Zc = params.calcZ0(mLeftRadius);
+		
+	    double alpha = (1/mLeftRadius) * Math.sqrt(wave_number) * params.getAlphaConstant();
+  	    Complex Gamma = Complex.I.multiply(wave_number).add( Complex.valueOf(1, 1).multiply(alpha) );
 
-		// double alpha = (1/mLeftRadius) * Math.sqrt(wave_number) *
-		// params.getAlphaConstant();
-		Complex Gamma = Complex.I.multiply(wave_number); // .add(
-															// Complex.valueOf(1,
-															// 1).multiply(alpha)
-															// );
-
-		Complex sinhL = Gamma.multiply(mLength).sinh();
-		Complex coshL = Gamma.multiply(mLength).cosh();
-
-		TransferMatrix result = new TransferMatrix(coshL, sinhL.multiply(Zc),
-				sinhL.divide(Zc), coshL);
-
+        Complex sinhL = Gamma.multiply(mLength).sinh();
+        Complex coshL = Gamma.multiply(mLength).cosh();
+        
+        TransferMatrix result = new TransferMatrix(coshL, sinhL.multiply(Zc), sinhL.divide(Zc), coshL);
+        
 		return result;
 	}
 

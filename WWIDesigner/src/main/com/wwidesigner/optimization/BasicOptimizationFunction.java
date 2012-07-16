@@ -54,7 +54,10 @@ public class BasicOptimizationFunction implements OptimizationFunctionInterface
 			Complex reflectionCoeff = optimizer.getInstrument()
 					.calculateReflectionCoefficient(target, physicalParams);
 			double reflectance_angle = reflectionCoeff.getArgument();
-			norm += reflectance_angle * reflectance_angle;
+			// we need a way to display this error term during the optimization (one per target)
+			// as well as the error norm
+			double error = reflectance_angle * reflectance_angle;
+			norm += error;
 		}
 		return norm;
 	}

@@ -75,32 +75,40 @@ public class ChalumeauOptimizationTest
 			PositionInterface[] sortedPoints = Instrument.sortList(borePoints);
 			PositionInterface lastPoint = sortedPoints[sortedPoints.length - 1];
 			
-			System.out.print("last point = " + lastPoint.getBorePosition());
-			assertEquals("Bore length incorrect", 336.5, lastPoint.getBorePosition(), 0.1);
 								
 			// Test hole positions
 			List<Hole> holes = optimizedInstrument.getHole();
 			PositionInterface[] sortedHoles = Instrument.sortList(holes);
+			
+			for (int i = 0; i < sortedHoles.length; ++i)
+				System.out.println( sortedHoles[i].getBorePosition() );
+			
+			for (int i = 0; i < sortedHoles.length; ++i)
+				System.out.println( ((DiameterInterface)sortedHoles[i]).getDiameter() );
+
+			System.out.print("last point = " + lastPoint.getBorePosition());
+			assertEquals("Bore length incorrect", 336.6, lastPoint.getBorePosition(), 0.1);
+			
 			assertEquals("Hole 1 position incorrect", 110.6, sortedHoles[0].getBorePosition(), 0.1);
 			assertEquals("Hole 2 position incorrect", 110.6, sortedHoles[1].getBorePosition(), 0.1);
-			assertEquals("Hole 3 position incorrect", 128.6, sortedHoles[2].getBorePosition(), 0.1);
-			assertEquals("Hole 4 position incorrect", 136.4, sortedHoles[3].getBorePosition(), 0.1);
+			assertEquals("Hole 3 position incorrect", 128.2, sortedHoles[2].getBorePosition(), 0.1);
+			assertEquals("Hole 4 position incorrect", 137.3, sortedHoles[3].getBorePosition(), 0.1);
 			assertEquals("Hole 5 position incorrect", 158.4, sortedHoles[4].getBorePosition(), 0.1);
-			assertEquals("Hole 6 position incorrect", 184.5, sortedHoles[5].getBorePosition(), 0.1);
-			assertEquals("Hole 7 position incorrect", 204.5, sortedHoles[6].getBorePosition(), 0.1);
-			assertEquals("Hole 8 position incorrect", 225.6, sortedHoles[7].getBorePosition(), 0.1);
-			assertEquals("Hole 9 position incorrect", 246.9, sortedHoles[8].getBorePosition(), 0.1);
-			assertEquals("Hole 10 position incorrect", 271.8, sortedHoles[9].getBorePosition(), 0.1);
+			assertEquals("Hole 6 position incorrect", 184.7, sortedHoles[5].getBorePosition(), 0.1);
+			assertEquals("Hole 7 position incorrect", 204.3, sortedHoles[6].getBorePosition(), 0.1);
+			assertEquals("Hole 8 position incorrect", 224.8, sortedHoles[7].getBorePosition(), 0.1);
+			assertEquals("Hole 9 position incorrect", 246.3, sortedHoles[8].getBorePosition(), 0.1);
+			assertEquals("Hole 10 position incorrect", 271.7, sortedHoles[9].getBorePosition(), 0.1);
 			
 			assertEquals("Hole 1 diameter incorrect", 5.9, ((DiameterInterface)sortedHoles[0]).getDiameter(), 0.1);
 			assertEquals("Hole 2 diameter incorrect", 5.2, ((DiameterInterface)sortedHoles[1]).getDiameter(), 0.1);
-			assertEquals("Hole 3 diameter incorrect", 5.1, ((DiameterInterface)sortedHoles[2]).getDiameter(), 0.1);
-			assertEquals("Hole 4 diameter incorrect", 5.5, ((DiameterInterface)sortedHoles[3]).getDiameter(), 0.1);
+			assertEquals("Hole 3 diameter incorrect", 5.0, ((DiameterInterface)sortedHoles[2]).getDiameter(), 0.1);
+			assertEquals("Hole 4 diameter incorrect", 5.6, ((DiameterInterface)sortedHoles[3]).getDiameter(), 0.1);
 			assertEquals("Hole 5 diameter incorrect", 6.4, ((DiameterInterface)sortedHoles[4]).getDiameter(), 0.1);
 			assertEquals("Hole 6 diameter incorrect", 7.2, ((DiameterInterface)sortedHoles[5]).getDiameter(), 0.1);
 			assertEquals("Hole 7 diameter incorrect", 6.4, ((DiameterInterface)sortedHoles[6]).getDiameter(), 0.1);
-			assertEquals("Hole 8 diameter incorrect", 6.5, ((DiameterInterface)sortedHoles[7]).getDiameter(), 0.1);
-			assertEquals("Hole 9 diameter incorrect", 6.5, ((DiameterInterface)sortedHoles[8]).getDiameter(), 0.1);
+			assertEquals("Hole 8 diameter incorrect", 6.4, ((DiameterInterface)sortedHoles[7]).getDiameter(), 0.1);
+			assertEquals("Hole 9 diameter incorrect", 6.4, ((DiameterInterface)sortedHoles[8]).getDiameter(), 0.1);
 			assertEquals("Hole 10 diameter incorrect", 6.0, ((DiameterInterface)sortedHoles[9]).getDiameter(), 0.1);
 
 		}
@@ -153,35 +161,35 @@ public class ChalumeauOptimizationTest
 		double[] lB = new double[21]; // lower bound
 		double[] uB = new double[21]; // upper bound
 
-		lB[0] = 0.30	;
-		uB[0] = 0.40;
+		lB[0] = 0.32;
+		uB[0] = 0.38;
 		lB[1] = 0.000;
-		uB[1] = 0.020;
+		uB[1] = 0.001;
 		lB[2] = 0.000;
 		uB[2] = 0.050;
 		lB[3] = 0.000;
 		uB[3] = 0.050;
-		lB[4] = 0.005;
+		lB[4] = 0.015;
 		uB[4] = 0.050;
-		lB[5] = 0.005;
+		lB[5] = 0.015;
 		uB[5] = 0.050;
-		lB[6] = 0.005;
-		uB[6] = 0.100;
-		lB[7] = 0.005;
+		lB[6] = 0.015;
+		uB[6] = 0.050;
+		lB[7] = 0.02;
 		uB[7] = 0.050;
-		lB[8] = 0.005;
+		lB[8] = 0.02;
 		uB[8] = 0.050;
-		lB[9] = 0.005;
-		uB[9] = 0.100;
-		lB[10] = 0.005;
+		lB[9] = 0.02;
+		uB[9] = 0.050;
+		lB[10] = 0.02;
 		uB[10] = 0.100;
 
 		lB[11] = 0.2;
-		uB[11] = 0.5;
+		uB[11] = 0.4;
 		lB[12] = 0.2;
-		uB[12] = 0.5;
+		uB[12] = 0.4;
 		lB[13] = 0.2;
-		uB[13] = 0.5;
+		uB[13] = 0.4;
 		lB[14] = 0.2;
 		uB[14] = 0.5;
 		lB[15] = 0.2;
@@ -194,7 +202,7 @@ public class ChalumeauOptimizationTest
 		uB[18] = 0.5;
 		lB[19] = 0.2;
 		uB[19] = 0.5;		          
-		lB[20] = 0.2;
+		lB[20] = 0.35;
 		uB[20] = 0.5;
 		          
 		optimizer.setLowerBnd(lB);

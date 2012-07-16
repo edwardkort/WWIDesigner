@@ -11,31 +11,31 @@
 		<boreDiameter>15</boreDiameter>
 	</borePoint>
 	<borePoint>
-		<borePosition>350</borePosition>
+		<borePosition>330</borePosition>
 		<boreDiameter>15</boreDiameter>
 	</borePoint>
+	<hole>
+		<borePosition>100.5</borePosition>
+		<diameter>6</diameter>
+		<height>6</height>
+	</hole>
 	<hole>
 		<borePosition>100</borePosition>
 		<diameter>6</diameter>
 		<height>6</height>
 	</hole>
 	<hole>
-		<borePosition>120</borePosition>
+		<borePosition>105</borePosition>
 		<diameter>6</diameter>
 		<height>6</height>
 	</hole>
 	<hole>
-		<borePosition>140</borePosition>
+		<borePosition>145</borePosition>
 		<diameter>6</diameter>
 		<height>6</height>
 	</hole>
 	<hole>
-		<borePosition>160</borePosition>
-		<diameter>6</diameter>
-		<height>6</height>
-	</hole>
-	<hole>
-		<borePosition>170</borePosition>
+		<borePosition>164</borePosition>
 		<diameter>6</diameter>
 		<height>6</height>
 	</hole>
@@ -45,17 +45,17 @@
 		<height>6</height>
 	</hole>
 		<hole>
-		<borePosition>190</borePosition>
+		<borePosition>210</borePosition>
 		<diameter>6</diameter>
 		<height>6</height>
 	</hole>
 		<hole>
-		<borePosition>200</borePosition>
+		<borePosition>240</borePosition>
 		<diameter>6</diameter>
 		<height>6</height>
 	</hole>
 		<hole>
-		<borePosition>250</borePosition>
+		<borePosition>270</borePosition>
 		<diameter>6</diameter>
 		<height>6</height>
 	</hole>

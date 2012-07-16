@@ -29,19 +29,17 @@ public class ThickFlangedOpenEndCalculator  extends TerminationCalculator
         double a = 0.015/2.; //termination.getBoreDiameter()/2;
         double b = termination.getFlangeDiameter()/2;
                 
-        //double t = b-a;
         double a_b = a/b;
         
 		double ka = wave_number*a;
-		//double kb = wave_number*b;
-        double delta_inf = 0.8216 * a;
-        double delta_0 = 0.6133 * a;
+
+		double delta_inf = 0.8216;
+        double delta_0 = 0.6133;
 		
-        double delta_circ = delta_inf + a_b*(delta_0 - delta_inf) + 0.057*a_b*(1-Math.pow(a_b, 5))*a;
+        double delta_circ = delta_inf + a_b*(delta_0 - delta_inf) + 0.057*a_b*(1-Math.pow(a_b, 5));
         double R0 = (1 + 0.2*ka - 0.084*ka*ka)/(1 + 0.2*ka + (0.5 - 0.084)*ka*ka);	
         Complex R = Complex.I.multiply( -2*delta_circ*ka ).exp().multiply(-R0);
 		return R.add(1).divide( R.negate().add(1) );
-
 	
         
       /*  

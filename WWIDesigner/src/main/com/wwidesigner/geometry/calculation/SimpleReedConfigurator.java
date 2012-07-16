@@ -15,7 +15,7 @@ public class SimpleReedConfigurator extends InstrumentConfigurator
 	@Override
 	protected void setTerminationCalculator()
 	{
-		this.terminationCalculator = new IdealOpenEndCalculator(
+		this.terminationCalculator = new ThickFlangedOpenEndCalculator(
 				instrument.getTermination());
 		
 	}

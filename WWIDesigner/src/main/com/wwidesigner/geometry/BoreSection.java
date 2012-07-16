@@ -10,7 +10,8 @@ class BoreSection implements ComponentInterface
 	private double mLength;
 	private double mLeftRadius;
 	private double mRightRadius;
-
+	private double rightBorePosition;
+	
 	public BoreSection()
 	{
 
@@ -62,7 +63,6 @@ class BoreSection implements ComponentInterface
 	}
 
 	public TransferMatrix calcTransferMatrix(double wave_number, PhysicalParameters params)
-			PhysicalParameters params)
 	{
 		double Zc = params.calcZ0(mLeftRadius);
 		

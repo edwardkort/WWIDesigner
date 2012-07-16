@@ -3,6 +3,8 @@
  */
 package com.wwidesigner.geometry;
 
+import java.util.List;
+
 import com.wwidesigner.math.TransferMatrix;
 import com.wwidesigner.util.PhysicalParameters;
 
@@ -10,13 +12,19 @@ import com.wwidesigner.util.PhysicalParameters;
  * @author kort
  * 
  */
-public class Mouthpiece implements ComponentInterface, MouthpieceInterface
+public class Mouthpiece implements ComponentInterface, MouthpieceInterface,
+		BorePointInterface
 {
 	protected double position;
 	protected Double beta;
 	protected Mouthpiece.EmbouchureHole embouchureHole;
 	protected Mouthpiece.Fipple fipple;
+
+	// Values not part of the binding framework
 	protected MouthpieceCalculator mouthpieceCalculator;
+	// List of bore sections whose right position <= mouthpiece position
+	protected List<BoreSection> headspace;
+	protected double boreDiameter;
 
 	/**
 	 * Gets the value of the position property.
@@ -361,6 +369,39 @@ public class Mouthpiece implements ComponentInterface, MouthpieceInterface
 		int result = mouthpieceCalculator.calcReflectanceMultiplier();
 
 		return result;
+	}
+
+	@Override
+	public double getBorePosition()
+	{
+		return position;
+	}
+
+	@Override
+	public void setBorePosition(double position)
+	{
+		this.position = position;
+	}
+
+	@Override
+	public void setBoreDiameter(double boreDiameter)
+	{
+		this.boreDiameter = boreDiameter;
+	}
+
+	@Override
+	public double getBoreDiameter()
+	{
+		return boreDiameter;
+	}
+
+	/**
+	 * @param headspace
+	 *            the headspace to set
+	 */
+	public void setHeadspace(List<BoreSection> headspace)
+	{
+		this.headspace = headspace;
 	}
 
 }

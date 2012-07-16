@@ -31,7 +31,7 @@ public class NoOpMouthpieceCalculator extends MouthpieceCalculator
 	public TransferMatrix calcTransferMatrix(double waveNumber,
 			PhysicalParameters parameters)
 	{
-		return null;
+		return TransferMatrix.makeIdentity();
 	}
 
 	/*

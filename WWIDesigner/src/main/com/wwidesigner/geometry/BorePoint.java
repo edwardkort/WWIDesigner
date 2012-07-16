@@ -7,7 +7,7 @@ package com.wwidesigner.geometry;
  * @author kort
  * 
  */
-public class BorePoint implements PositionInterface
+public class BorePoint implements BorePointInterface
 {
 	protected double borePosition;
 	protected double boreDiameter;

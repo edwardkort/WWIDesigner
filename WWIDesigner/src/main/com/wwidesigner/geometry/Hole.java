@@ -5,16 +5,17 @@ import org.apache.commons.math3.complex.Complex;
 import com.wwidesigner.math.TransferMatrix;
 import com.wwidesigner.util.PhysicalParameters;
 
-public class Hole implements ComponentInterface, PositionInterface
+public class Hole implements ComponentInterface, BorePointInterface
 {
 	protected String name;
 	protected double height;
 	protected double position;
 	protected double diameter;
-	protected double boreRadius;
 	protected boolean openHole;
 	protected Double innerCurvatureRadius;
 	protected Key key;
+	
+	protected double boreDiameter;
 
 	public Hole()
 	{
@@ -43,23 +44,6 @@ public class Hole implements ComponentInterface, PositionInterface
 	public void setDiameter(double diameter)
 	{
 		this.diameter = diameter;
-	}
-
-	/**
-	 * @return the boreRadius
-	 */
-	public double getBoreRadius()
-	{
-		return boreRadius;
-	}
-
-	/**
-	 * @param boreRadius
-	 *            the boreRadius to set
-	 */
-	public void setBoreRadius(double boreRadius)
-	{
-		this.boreRadius = boreRadius;
 	}
 
 	/**
@@ -162,7 +146,7 @@ public class Hole implements ComponentInterface, PositionInterface
 		height *= multiplier;
 		position *= multiplier;
 		diameter *= multiplier;
-		boreRadius *= multiplier;
+		boreDiameter *= multiplier;
 		if (innerCurvatureRadius != null)
 		{
 			innerCurvatureRadius *= multiplier;
@@ -177,6 +161,7 @@ public class Hole implements ComponentInterface, PositionInterface
 			PhysicalParameters mParameters)
 	{
 		double radius = getDiameter() / 2;
+		double boreRadius = getBoreDiameter() / 2;
 		Complex Zs = null;
 		Complex Za = null;
 
@@ -236,5 +221,17 @@ public class Hole implements ComponentInterface, PositionInterface
 				Za_Zs.divide(2.0).add(1.));
 
 		return result;
+	}
+
+	@Override
+	public void setBoreDiameter(double boreDiameter)
+	{
+		this.boreDiameter = boreDiameter;
+	}
+
+	@Override
+	public double getBoreDiameter()
+	{
+		return boreDiameter;
 	}
 }

@@ -11,7 +11,7 @@
 		<boreDiameter>15</boreDiameter>
 	</borePoint>
 	<borePoint>
-		<borePosition>266</borePosition>
+		<borePosition>350</borePosition>
 		<boreDiameter>15</boreDiameter>
 	</borePoint>
 	<hole>
@@ -55,16 +55,16 @@
 		<height>6</height>
 	</hole>
 		<hole>
-		<borePosition>210</borePosition>
+		<borePosition>250</borePosition>
 		<diameter>6</diameter>
 		<height>6</height>
 	</hole>
 		<hole>
-		<borePosition>230</borePosition>
+		<borePosition>300</borePosition>
 		<diameter>6</diameter>
 		<height>6</height>
 	</hole>
 	<termination>
-		<flangeDiameter>31</flangeDiameter>
+		<flangeDiameter>32</flangeDiameter>
 	</termination>
 </wii:instrument>

@@ -77,7 +77,7 @@ public abstract class InstrumentOptimizer extends BOBYQAOptimizer implements
 	{
 		double[] startPoint = getStateVector();
 		setOptimizationFunction();
-		optimize(5000, optimizationFunction, GoalType.MINIMIZE, startPoint,
+		optimize(25000, optimizationFunction, GoalType.MINIMIZE, startPoint,
 				lowerBnd, upperBnd);
 	}
 

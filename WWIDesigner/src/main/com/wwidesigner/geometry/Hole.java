@@ -5,7 +5,7 @@ import org.apache.commons.math3.complex.Complex;
 import com.wwidesigner.math.TransferMatrix;
 import com.wwidesigner.util.PhysicalParameters;
 
-public class Hole implements ComponentInterface, PositionInterface
+public class Hole implements ComponentInterface, PositionInterface, DiameterInterface
 {
 	protected String name;
 	protected double height;
@@ -195,7 +195,7 @@ public class Hole implements ComponentInterface, PositionInterface
 		if (openHole) // open
 		{
 			double kb = wave_number * radius;
-			double ka = kb / delta;
+			double ka = wave_number * boreRadius;
 			double xhi = 0.25 * kb * kb;
 
 			ta = (-0.35 + 0.06 * Math.tanh(2.7 * height / radius)) * radius

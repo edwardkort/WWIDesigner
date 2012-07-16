@@ -12,11 +12,13 @@ import java.util.List;
 import org.junit.Test;
 
 import com.wwidesigner.geometry.BorePoint;
+import com.wwidesigner.geometry.Hole;
 import com.wwidesigner.geometry.Instrument;
 import com.wwidesigner.geometry.InstrumentConfigurator;
 import com.wwidesigner.geometry.PositionInterface;
+import com.wwidesigner.geometry.DiameterInterface;
 import com.wwidesigner.geometry.bind.GeometryBindFactory;
-import com.wwidesigner.geometry.calculation.SimpleTestConfigurator;
+import com.wwidesigner.geometry.calculation.SimpleReedConfigurator;
 import com.wwidesigner.note.Tuning;
 import com.wwidesigner.note.bind.NoteBindFactory;
 import com.wwidesigner.util.BindFactory;
@@ -74,17 +76,33 @@ public class ChalumeauOptimizationTest
 			PositionInterface lastPoint = sortedPoints[sortedPoints.length - 1];
 			
 			System.out.print("last point = " + lastPoint.getBorePosition());
-			//assertEquals("Bore length incorrect", 379.54, lastPoint.getBorePosition(), 0.01);
-			
+			assertEquals("Bore length incorrect", 336.5, lastPoint.getBorePosition(), 0.1);
+								
 			// Test hole positions
-			//List<com.wwidesigner.geometry.Hole> holes = optimizedInstrument.getHole();
-			//PositionInterface[] sortedHoles = Instrument.sortList(holes);
-			//assertEquals("Hole 1 position incorrect", 188.98, sortedHoles[0].getBorePosition(), 0.01);
-			//assertEquals("Hole 2 position incorrect", 213.44, sortedHoles[1].getBorePosition(), 0.01);
-			//assertEquals("Hole 3 position incorrect", 239.96, sortedHoles[2].getBorePosition(), 0.01);
-			//assertEquals("Hole 4 position incorrect", 273.49, sortedHoles[3].getBorePosition(), 0.01);
-			//assertEquals("Hole 5 position incorrect", 285.17, sortedHoles[4].getBorePosition(), 0.01);
-			//assertEquals("Hole 6 position incorrect", 319.24, sortedHoles[5].getBorePosition(), 0.01);
+			List<Hole> holes = optimizedInstrument.getHole();
+			PositionInterface[] sortedHoles = Instrument.sortList(holes);
+			assertEquals("Hole 1 position incorrect", 110.6, sortedHoles[0].getBorePosition(), 0.1);
+			assertEquals("Hole 2 position incorrect", 110.6, sortedHoles[1].getBorePosition(), 0.1);
+			assertEquals("Hole 3 position incorrect", 128.6, sortedHoles[2].getBorePosition(), 0.1);
+			assertEquals("Hole 4 position incorrect", 136.4, sortedHoles[3].getBorePosition(), 0.1);
+			assertEquals("Hole 5 position incorrect", 158.4, sortedHoles[4].getBorePosition(), 0.1);
+			assertEquals("Hole 6 position incorrect", 184.5, sortedHoles[5].getBorePosition(), 0.1);
+			assertEquals("Hole 7 position incorrect", 204.5, sortedHoles[6].getBorePosition(), 0.1);
+			assertEquals("Hole 8 position incorrect", 225.6, sortedHoles[7].getBorePosition(), 0.1);
+			assertEquals("Hole 9 position incorrect", 246.9, sortedHoles[8].getBorePosition(), 0.1);
+			assertEquals("Hole 10 position incorrect", 271.8, sortedHoles[9].getBorePosition(), 0.1);
+			
+			assertEquals("Hole 1 diameter incorrect", 5.9, ((DiameterInterface)sortedHoles[0]).getDiameter(), 0.1);
+			assertEquals("Hole 2 diameter incorrect", 5.2, ((DiameterInterface)sortedHoles[1]).getDiameter(), 0.1);
+			assertEquals("Hole 3 diameter incorrect", 5.1, ((DiameterInterface)sortedHoles[2]).getDiameter(), 0.1);
+			assertEquals("Hole 4 diameter incorrect", 5.5, ((DiameterInterface)sortedHoles[3]).getDiameter(), 0.1);
+			assertEquals("Hole 5 diameter incorrect", 6.4, ((DiameterInterface)sortedHoles[4]).getDiameter(), 0.1);
+			assertEquals("Hole 6 diameter incorrect", 7.2, ((DiameterInterface)sortedHoles[5]).getDiameter(), 0.1);
+			assertEquals("Hole 7 diameter incorrect", 6.4, ((DiameterInterface)sortedHoles[6]).getDiameter(), 0.1);
+			assertEquals("Hole 8 diameter incorrect", 6.5, ((DiameterInterface)sortedHoles[7]).getDiameter(), 0.1);
+			assertEquals("Hole 9 diameter incorrect", 6.5, ((DiameterInterface)sortedHoles[8]).getDiameter(), 0.1);
+			assertEquals("Hole 10 diameter incorrect", 6.0, ((DiameterInterface)sortedHoles[9]).getDiameter(), 0.1);
+
 		}
 		catch (Exception e)
 		{
@@ -105,7 +123,7 @@ public class ChalumeauOptimizationTest
 
 	protected void configureInstrument(Instrument instrument)
 	{
-		InstrumentConfigurator instrumentConfig = new SimpleTestConfigurator();
+		InstrumentConfigurator instrumentConfig = new SimpleReedConfigurator();
 		instrument.setConfiguration(instrumentConfig);
 
 		// This unit-of-measure converter is called in setConfiguration(), but
@@ -135,8 +153,8 @@ public class ChalumeauOptimizationTest
 		double[] lB = new double[21]; // lower bound
 		double[] uB = new double[21]; // upper bound
 
-		lB[0] = 0.15;
-		uB[0] = 0.30;
+		lB[0] = 0.30	;
+		uB[0] = 0.40;
 		lB[1] = 0.000;
 		uB[1] = 0.020;
 		lB[2] = 0.000;

@@ -12,6 +12,7 @@ import java.util.List;
 import org.junit.Test;
 
 import com.wwidesigner.geometry.BorePoint;
+import com.wwidesigner.geometry.Hole;
 import com.wwidesigner.geometry.Instrument;
 import com.wwidesigner.geometry.InstrumentConfigurator;
 import com.wwidesigner.geometry.PositionInterface;
@@ -71,17 +72,17 @@ public class InstrumentOptimizerTest
 			List<BorePoint> borePoints = optimizedInstrument.getBorePoint();
 			PositionInterface[] sortedPoints = Instrument.sortList(borePoints);
 			PositionInterface lastPoint = sortedPoints[sortedPoints.length - 1];
-			assertEquals("Bore length incorrect", 380.99, lastPoint.getBorePosition(), 0.01);
+			assertEquals("Bore length incorrect", 377.10, lastPoint.getBorePosition(), 0.01);
 			
 			// Test hole positions
-			List<com.wwidesigner.geometry.Hole> holes = optimizedInstrument.getHole();
+			List<Hole> holes = optimizedInstrument.getHole();
 			PositionInterface[] sortedHoles = Instrument.sortList(holes);
-			assertEquals("Hole 1 position incorrect", 189.72, sortedHoles[0].getBorePosition(), 0.01);
-			assertEquals("Hole 2 position incorrect", 214.28, sortedHoles[1].getBorePosition(), 0.01);
-			assertEquals("Hole 3 position incorrect", 240.90, sortedHoles[2].getBorePosition(), 0.01);
-			assertEquals("Hole 4 position incorrect", 274.55, sortedHoles[3].getBorePosition(), 0.01);
-			assertEquals("Hole 5 position incorrect", 286.30, sortedHoles[4].getBorePosition(), 0.01);
-			assertEquals("Hole 6 position incorrect", 320.51, sortedHoles[5].getBorePosition(), 0.01);
+			assertEquals("Hole 1 position incorrect", 188.32, sortedHoles[0].getBorePosition(), 0.01);
+			assertEquals("Hole 2 position incorrect", 212.60, sortedHoles[1].getBorePosition(), 0.01);
+			assertEquals("Hole 3 position incorrect", 238.91, sortedHoles[2].getBorePosition(), 0.01);
+			assertEquals("Hole 4 position incorrect", 272.14, sortedHoles[3].getBorePosition(), 0.01);
+			assertEquals("Hole 5 position incorrect", 283.72, sortedHoles[4].getBorePosition(), 0.01);
+			assertEquals("Hole 6 position incorrect", 317.46, sortedHoles[5].getBorePosition(), 0.01);
 		}
 		catch (Exception e)
 		{

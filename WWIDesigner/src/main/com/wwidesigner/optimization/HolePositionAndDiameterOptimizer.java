@@ -34,8 +34,7 @@ public class HolePositionAndDiameterOptimizer extends InstrumentOptimizer
 		double accumulatedDistance = 0.;
 		for (int i = sortedHoles.length; i > 0; --i)
 		{
-			com.wwidesigner.geometry.Hole hole = 
-					(com.wwidesigner.geometry.Hole) sortedHoles[i - 1];
+			Hole hole = (Hole) sortedHoles[i - 1];
 			state_vector[i] = state_vector[0] - hole.getBorePosition()
 					- accumulatedDistance;
 			accumulatedDistance += state_vector[i];
@@ -43,8 +42,7 @@ public class HolePositionAndDiameterOptimizer extends InstrumentOptimizer
 		
 		for (int i = 0; i < sortedHoles.length; ++i) 
 		{
-			com.wwidesigner.geometry.Hole hole = 
-					(com.wwidesigner.geometry.Hole) sortedHoles[i];
+			Hole hole = (Hole) sortedHoles[i];
 		    state_vector[1+sortedHoles.length+i] = hole.getRatio();
 		}
 		

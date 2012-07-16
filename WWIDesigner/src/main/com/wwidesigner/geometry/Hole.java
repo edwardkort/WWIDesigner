@@ -14,7 +14,7 @@ public class Hole implements ComponentInterface, BorePointInterface
 	protected boolean openHole;
 	protected Double innerCurvatureRadius;
 	protected Key key;
-
+	
 	protected double boreDiameter;
 
 	public Hole()
@@ -35,6 +35,15 @@ public class Hole implements ComponentInterface, BorePointInterface
 	public double getDiameter()
 	{
 		return diameter;
+	}
+
+	/**
+	 * @param radius
+	 *            the radius to set
+	 */
+	public void setDiameter(double diameter)
+	{
+		this.diameter = diameter;
 	}
 
 	/**
@@ -214,24 +223,17 @@ public class Hole implements ComponentInterface, BorePointInterface
 		return result;
 	}
 
-	/**
-	 * @param radius
-	 *            the radius to set
-	 */
-	public void setBoreDiameter(double diameter)
+	@Override
+	public void setBoreDiameter(double boreDiameter)
 	{
-		this.boreDiameter = diameter;
+		this.boreDiameter = boreDiameter;
 	}
 
-	/**
-	 * @return the boreRadius
-	 */
+	@Override
 	public double getBoreDiameter()
 	{
 		return boreDiameter;
 	}
-
-	
 	public double getRatio()
 	{
 		return diameter / boreDiameter;

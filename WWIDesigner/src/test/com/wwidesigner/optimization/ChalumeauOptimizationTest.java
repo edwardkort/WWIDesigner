@@ -80,11 +80,11 @@ public class ChalumeauOptimizationTest
 			List<Hole> holes = optimizedInstrument.getHole();
 			PositionInterface[] sortedHoles = Instrument.sortList(holes);
 			
-			for (int i = 0; i < sortedHoles.length; ++i)
-				System.out.println( sortedHoles[i].getBorePosition() );
+			//for (int i = 0; i < sortedHoles.length; ++i)
+			//	System.out.println( sortedHoles[i].getBorePosition() );
 			
-			for (int i = 0; i < sortedHoles.length; ++i)
-				System.out.println( ((DiameterInterface)sortedHoles[i]).getDiameter() );
+			//for (int i = 0; i < sortedHoles.length; ++i)
+			//	System.out.println( ((DiameterInterface)sortedHoles[i]).getDiameter() );
 
 			System.out.print("last point = " + lastPoint.getBorePosition());
 			assertEquals("Bore length incorrect", 336.6, lastPoint.getBorePosition(), 0.1);

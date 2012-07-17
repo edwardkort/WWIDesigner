@@ -12,11 +12,9 @@ import java.util.List;
 import org.junit.Test;
 
 import com.wwidesigner.geometry.BorePoint;
-import com.wwidesigner.geometry.BorePointInterface;
 import com.wwidesigner.geometry.Hole;
 import com.wwidesigner.geometry.Instrument;
 import com.wwidesigner.geometry.InstrumentConfigurator;
-import com.wwidesigner.geometry.PositionInterface;
 import com.wwidesigner.geometry.bind.GeometryBindFactory;
 import com.wwidesigner.geometry.calculation.SimpleReedConfigurator;
 import com.wwidesigner.note.Tuning;

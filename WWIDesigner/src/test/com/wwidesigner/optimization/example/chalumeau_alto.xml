@@ -5,6 +5,10 @@
 	<lengthType>mm</lengthType>
 	<mouthpiece>
 		<position>0</position>
+		<fipple>
+			<windowLength>5</windowLength>
+			<windowWidth>8</windowWidth>
+		</fipple>
 	</mouthpiece>
 	<borePoint>
 		<borePosition>0</borePosition>

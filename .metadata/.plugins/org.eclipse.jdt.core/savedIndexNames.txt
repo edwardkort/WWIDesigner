@@ -1,0 +1,23 @@
+INDEX VERSION 1.126+C:\Development\WWIDesigner\.metadata\.plugins\org.eclipse.jdt.core
+2864743765.index
+3974580528.index
+3631691368.index
+1115467115.index
+1575407554.index
+3065916431.index
+163172794.index
+4173023868.index
+1995173708.index
+2833033984.index
+2363963968.index
+63827482.index
+1697886153.index
+2782282568.index
+1394865946.index
+30765161.index
+3133528496.index
+305854171.index
+4155206848.index
+1498219845.index
+1063468288.index
+2028235323.index

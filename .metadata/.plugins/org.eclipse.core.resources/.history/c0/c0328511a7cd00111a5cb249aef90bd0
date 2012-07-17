@@ -1,0 +1,80 @@
+/**
+ * 
+ */
+package com.wwidesigner.geometry.calculation;
+
+import org.apache.commons.math3.complex.Complex;
+
+import com.wwidesigner.geometry.Mouthpiece;
+import com.wwidesigner.geometry.MouthpieceCalculator;
+import com.wwidesigner.math.StateVector;
+import com.wwidesigner.math.TransferMatrix;
+import com.wwidesigner.util.PhysicalParameters;
+
+/**
+ * Mouthpiece calculation for a fipple mouthpiece.
+ * @author Burton Patkau
+ * 
+ */
+public class FippleMouthpieceCalculator extends MouthpieceCalculator
+{
+
+	public FippleMouthpieceCalculator(Mouthpiece mouthpiece)
+	{
+		super(mouthpiece);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.wwidesigner.geometry.MouthpieceCalculator#calcTransferMatrix(double,
+	 * com.wwidesigner.util.PhysicalParameters)
+	 */
+	@Override
+	public TransferMatrix calcTransferMatrix(double waveNumber,
+			PhysicalParameters parameters)
+	{
+		return null;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.wwidesigner.geometry.MouthpieceCalculator#calcReflectanceMultiplier()
+	 */
+	@Override
+	public int calcReflectanceMultiplier()
+	{
+		return -1;
+	}
+
+	@Override
+	public Complex calcZ(double freq, double radius,
+			PhysicalParameters physicalParams)
+	{
+		// Assume the open window acts as a flanged tube with an effective radius
+		// that corresponds to the window area.
+		double effRadius = Math.sqrt(this.mouthpiece.getFipple().getWindowLength()
+				* this.mouthpiece.getFipple().getWindowWidth() / Math.PI );
+		double radiusRatio = radius / effRadius;
+
+		StateVector sv = new StateVector(physicalParams.calcZflanged(freq, effRadius),
+				new Complex(physicalParams.calcZ0(effRadius),0.0));
+		sv = TransferMatrix.multiply(
+				Tube.calcTransferMatrix(freq, this.mouthpiece.getFipple().getWindowHeight(), 
+						effRadius, physicalParams ), 
+				sv );
+		return sv.Impedance().multiply(radiusRatio*radiusRatio);
+	}
+
+	@Override
+	public Double calcGain(double freq, double radius,
+			Complex Z, PhysicalParameters physicalParams)
+	{
+		double waveNumber = physicalParams.calcWaveNumber(freq);
+		return this.mouthpiece.getGainFactor() * waveNumber * radius*radius
+				/ Z.abs();
+	}
+}

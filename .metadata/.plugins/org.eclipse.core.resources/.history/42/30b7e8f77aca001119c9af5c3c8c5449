@@ -1,0 +1,97 @@
+/**
+ * 
+ */
+package com.wwidesigner;
+
+import java.io.PrintWriter;
+
+import org.custommonkey.xmlunit.DetailedDiff;
+import org.dozer.DozerBeanMapperSingletonWrapper;
+import org.dozer.Mapper;
+
+import com.wwidesigner.util.BindFactory;
+import com.wwidesigner.geometry.Instrument;
+import com.wwidesigner.geometry.bind.GeometryBindFactory;
+
+/**
+ * @author Burton Patkau
+ * 
+ */
+public class TuningReport
+{
+
+    public static void main(String[] args) throws Exception {
+	{
+		PrintWriter out = new PrintWriter(System.out,true);
+		com.wwidesigner.geometry.bind.Instrument  bindInstrument 
+			= new com.wwidesigner.geometry.bind.Instrument();
+		BindFactory binder = new GeometryBindFactory();
+		
+		Instrument bp7 = Instrument(binder.unmarshalXml("com/wwidesigner/geometry/bind/example/BP7.xml", true));
+
+			if (inputElement == null)
+			{
+				unmarshalInput();
+			}
+			Mapper mapper = DozerBeanMapperSingletonWrapper.getInstance();
+			com.wwidesigner.geometry.Instrument domainInstrument = mapper.map(
+					inputElement, com.wwidesigner.geometry.Instrument.class);
+			String instrumentName = domainInstrument.getName();
+			assertEquals("Domain instrument name does not match bind name",
+					"D NAF", instrumentName);
+		}
+		catch (Exception e)
+		{
+			fail(e.getMessage());
+		}
+
+	}
+
+	@Test
+	public final void testRoundtripMapping()
+	{
+		try
+		{
+			if (inputElement == null)
+			{
+				unmarshalInput();
+			}
+			Mapper mapper = DozerBeanMapperSingletonWrapper.getInstance();
+			com.wwidesigner.geometry.Instrument domainInstrument = mapper.map(
+					inputElement, com.wwidesigner.geometry.Instrument.class);
+			Instrument bindInstrument = mapper.map(domainInstrument,
+					Instrument.class);
+			
+			outputFile = new File(writePath + "mapperTest.xml");
+			outputFile.delete();
+			bindFactory.marshalToXml(bindInstrument, outputFile);
+			XmlDiff diff = new XmlDiff(inputFile, outputFile);
+			DetailedDiff detailedDiff = new DetailedDiff(diff);
+			assertTrue(detailedDiff.toString(), detailedDiff.identical());
+		}
+		catch (Exception e)
+		{
+			fail(e.getMessage());
+		}
+
+	}
+
+	@Override
+	protected void setInputSymbolXML()
+	{
+		inputSymbolXML = "com/wwidesigner/geometry/bind/example/D_NAF.xml";
+	}
+
+	@Override
+	protected void setOutputSymbolXML()
+	{
+		outputSymbolXML = "D_NAF_test.xml";
+	}
+
+	@Override
+	protected void setBindFactory()
+	{
+		bindFactory = new GeometryBindFactory();
+	}
+
+}

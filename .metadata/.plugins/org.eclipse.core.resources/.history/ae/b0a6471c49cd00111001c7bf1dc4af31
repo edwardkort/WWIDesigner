@@ -1,0 +1,43 @@
+/**
+ * 
+ */
+package com.wwidesigner.geometry;
+
+import org.apache.commons.math3.complex.Complex;
+
+import com.wwidesigner.math.TransferMatrix;
+import com.wwidesigner.note.Fingering;
+import com.wwidesigner.util.PhysicalParameters;
+
+/**
+ * @author kort
+ * 
+ */
+public abstract class MouthpieceCalculator
+{
+	protected Mouthpiece mouthpiece;
+
+	public MouthpieceCalculator(Mouthpiece mouthpiece)
+	{
+		this.mouthpiece = mouthpiece;
+	}
+
+	public abstract TransferMatrix calcTransferMatrix(double waveNumber,
+			PhysicalParameters parameters);
+
+	public abstract int calcReflectanceMultiplier();
+	
+	/**
+	 * Calculate the impedance of the mouthpiece, as seen from the resonator.
+	 */
+	public abstract Complex calcZ(double freq, double radius,
+			PhysicalParameters physicalParams);
+
+	/**
+	 * Calculate the loop gain of the instrument,
+	 * given a frequency and the total instrument impedance.
+	 */
+	public abstract Double calcGain(double freq, double radius,
+			PhysicalParameters physicalParams);
+
+}

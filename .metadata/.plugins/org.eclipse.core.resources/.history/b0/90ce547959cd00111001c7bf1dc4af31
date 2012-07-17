@@ -1,0 +1,73 @@
+package com.wwidesigner.geometry.calculation;
+
+import org.apache.commons.math3.complex.Complex;
+
+import com.wwidesigner.math.TransferMatrix;
+import com.wwidesigner.util.PhysicalParameters;
+
+class Tube
+{
+	public Tube()
+	{
+	}
+
+	/**
+	 * Calculate the transfer matrix of a cylinder.
+	 * @param freq: frequency in Hz.
+	 * @param length: length of the cylinder, in meters.
+	 * @param radius: radius of the cylinder, in meters.
+	 * @param params: physical parameters
+	 * @return Transfer matrix
+	 */
+	public static TransferMatrix calcTransferMatrix(double freq, 
+			double length, double radius, PhysicalParameters params)
+	{
+		double Zc = params.calcZ0(radius);
+		//double alpha = (1/mLeftRadius) * Math.sqrt(wave_number) * params.getAlphaConstant();
+		double epsilon = 1.68 / (radius * 1000 * Math.sqrt(freq)); // at 33 C
+		double theta = params.calcWaveNumber(freq) * length;
+		Complex gammaL = new Complex( epsilon, (1.0+epsilon) ).multiply( theta );
+		Complex coshL = gammaL.cosh();
+		Complex sinhL = gammaL.sinh();
+        TransferMatrix result = new TransferMatrix(coshL, sinhL.multiply(Zc), sinhL.divide(Zc), coshL);
+        
+		return result;
+	}
+
+	/**
+	 * Calculate the transfer matrix of a conical tube.
+	 * @param freq: frequency in Hz.
+	 * @param length: length of the tube, in meters.
+	 * @param leftRadius: radius of one end the tube, in meters.
+	 * @param rightRadius: radius of other end the tube, in meters.
+	 * @param params: physical parameters
+	 * @return Transfer matrix
+	 */
+	public static TransferMatrix calcTransferMatrix(double freq, 
+			double length, double leftRadius, double rightRadius, PhysicalParameters params)
+	{
+		double ZcLeft  = params.calcZ0(leftRadius);
+		double ZcRight = params.calcZ0(rightRadius);
+
+		double one_over_x_in = (rightRadius-leftRadius) / (leftRadius*length);
+		double one_over_x_out = (rightRadius-leftRadius) / (rightRadius*length);
+
+		// inverse of the equivalent radius at which we calculate the losses
+		double one_over_Req = Math.log(rightRadius/leftRadius) / (rightRadius - leftRadius);
+
+		double waveNumber = params.calcWaveNumber(freq);
+		Complex k_lossy = Complex.valueOf(1,-1).multiply(one_over_Req
+				*Math.sqrt(waveNumber)*params.getAlphaConstant()).add(waveNumber);		
+
+		Complex k_lossy_L = k_lossy.multiply(length);
+
+		Complex A = k_lossy_L.cos().multiply(leftRadius/leftRadius).subtract( k_lossy_L.sin().multiply(one_over_x_in).divide(k_lossy) );
+		Complex B = k_lossy_L.sin().multiply(Complex.I).multiply((rightRadius/leftRadius)*ZcRight);
+		Complex C = Complex.valueOf(rightRadius/leftRadius).multiply(Complex.I.multiply(k_lossy_L.sin()).multiply(k_lossy.pow(-2).multiply(one_over_x_in*one_over_x_out).add(1))
+				.add( k_lossy_L.cos().multiply(one_over_x_in-one_over_x_out).divide(Complex.I.multiply(k_lossy)))).divide(ZcLeft);
+		Complex D = k_lossy_L.cos().multiply(leftRadius/leftRadius).add( k_lossy_L.sin().multiply(one_over_x_out).divide(k_lossy) );
+
+		return new TransferMatrix(A, B, C, D);		
+	}
+
+}

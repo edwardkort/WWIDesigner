@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<qualifiedTypeNameHistroy>
+<fullyQualifiedTypeName name="com.wwidesigner.geometry.Instrument"/>
+<fullyQualifiedTypeName name="com.wwidesigner.geometry.bind.Instrument"/>
+<fullyQualifiedTypeName name="com.wwidesigner.util.BindFactory"/>
+<fullyQualifiedTypeName name="com.wwidesigner.geometry.bind.GeometryBindFactory"/>
+<fullyQualifiedTypeName name="org.apache.commons.math3.analysis.function.Abs"/>
+<fullyQualifiedTypeName name="com.wwidesigner.util.Constants"/>
+<fullyQualifiedTypeName name="com.wwidesigner.math.StateVector"/>
+<fullyQualifiedTypeName name="com.wwidesigner.geometry.TerminationCalculator"/>
+<fullyQualifiedTypeName name="com.wwidesigner.geometry.calculation.IdealOpenEndCalculator"/>
+<fullyQualifiedTypeName name="com.wwidesigner.geometry.calculation.FippleMouthpieceCalculator"/>
+<fullyQualifiedTypeName name="com.wwidesigner.util.PhysicalParameters"/>
+<fullyQualifiedTypeName name="org.apache.commons.math3.complex.Complex"/>
+<fullyQualifiedTypeName name="java.io.FileNotFoundException"/>
+<fullyQualifiedTypeName name="java.util.List"/>
+</qualifiedTypeNameHistroy>

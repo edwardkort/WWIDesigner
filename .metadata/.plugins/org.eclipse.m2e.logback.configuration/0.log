@@ -1,0 +1,26 @@
+2012-06-19 21:08:26,656 [Start Help Server] INFO  org.mortbay.log - Logging to Logger[org.mortbay.log] via org.mortbay.log.Slf4jLog
+2012-06-19 21:08:27,031 [Start Help Server] INFO  org.mortbay.log - jetty-6.1.x
+2012-06-19 21:08:27,421 [Start Help Server] WARN  org.mortbay.log - failed org.mortbay.jetty.nio.SelectChannelConnector$1@16f03a2: java.io.IOException: Unable to establish loopback connection
+2012-06-19 21:08:27,437 [Start Help Server] WARN  org.mortbay.log - failed SelectChannelConnector@127.0.0.1:2422: java.io.IOException: Unable to establish loopback connection
+2012-06-19 21:08:27,437 [Start Help Server] WARN  org.mortbay.log - failed Server@639aba: java.io.IOException: Unable to establish loopback connection
+2012-06-19 21:16:01,906 [Start Help Server] INFO  org.mortbay.log - Logging to Logger[org.mortbay.log] via org.mortbay.log.Slf4jLog
+2012-06-19 21:16:01,984 [Start Help Server] INFO  org.mortbay.log - jetty-6.1.x
+2012-06-19 21:16:04,500 [Start Help Server] INFO  org.mortbay.log - Started SelectChannelConnector@127.0.0.1:2427
+2012-06-24 21:36:40,900 [Start Help Server] INFO  org.mortbay.log - Logging to Logger[org.mortbay.log] via org.mortbay.log.Slf4jLog
+2012-06-24 21:36:41,728 [Start Help Server] INFO  org.mortbay.log - jetty-6.1.x
+2012-06-24 21:36:51,618 [Start Help Server] INFO  org.mortbay.log - Started SelectChannelConnector@127.0.0.1:2978
+2012-06-28 07:52:38,656 [Worker-25] INFO  o.e.m.c.i.i.nexus.NexusIndexManager - Updating index for repository: central|http://repo1.maven.org/maven2
+2012-06-28 08:00:38,984 [Worker-25] INFO  o.e.m.c.i.i.nexus.NexusIndexManager - Updated index for repository: central|http://repo1.maven.org/maven2 in 480359 ms
+2012-06-28 09:15:22,046 [Worker-8] INFO  o.e.m.c.i.i.nexus.NexusIndexManager - Updating index for repository: central|http://repo1.maven.org/maven2
+2012-06-28 09:15:47,859 [Worker-8] INFO  o.e.m.c.i.i.nexus.NexusIndexManager - Updated index for repository: central|http://repo1.maven.org/maven2 in 25813 ms
+2012-07-02 15:43:44,750 [Start Help Server] INFO  org.mortbay.log - Logging to Logger[org.mortbay.log] via org.mortbay.log.Slf4jLog
+2012-07-02 15:43:45,296 [Start Help Server] INFO  org.mortbay.log - jetty-6.1.x
+2012-07-02 15:43:45,437 [Start Help Server] INFO  org.mortbay.log - Started SelectChannelConnector@127.0.0.1:4787
+2012-07-03 20:17:33,593 [Start Help Server] INFO  org.mortbay.log - Logging to Logger[org.mortbay.log] via org.mortbay.log.Slf4jLog
+2012-07-03 20:17:33,687 [Start Help Server] INFO  org.mortbay.log - jetty-6.1.x
+2012-07-03 20:17:33,734 [Start Help Server] INFO  org.mortbay.log - Started SelectChannelConnector@127.0.0.1:1326
+2012-07-05 20:57:08,656 [Worker-27] INFO  o.e.m.c.i.i.nexus.NexusIndexManager - Updating index for repository: central|http://repo1.maven.org/maven2
+2012-07-05 21:05:11,890 [Worker-27] INFO  o.e.m.c.i.i.nexus.NexusIndexManager - Updated index for repository: central|http://repo1.maven.org/maven2 in 483234 ms
+2012-07-14 08:44:54,015 [Start Help Server] INFO  org.mortbay.log - Logging to Logger[org.mortbay.log] via org.mortbay.log.Slf4jLog
+2012-07-14 08:44:54,531 [Start Help Server] INFO  org.mortbay.log - jetty-6.1.x
+2012-07-14 08:44:54,750 [Start Help Server] INFO  org.mortbay.log - Started SelectChannelConnector@127.0.0.1:4371

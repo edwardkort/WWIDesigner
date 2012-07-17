@@ -1,0 +1,65 @@
+/**
+ * 
+ */
+package com.wwidesigner.geometry.calculation;
+
+import org.apache.commons.math3.complex.Complex;
+
+import com.wwidesigner.geometry.Mouthpiece;
+import com.wwidesigner.geometry.MouthpieceCalculator;
+import com.wwidesigner.math.TransferMatrix;
+import com.wwidesigner.util.PhysicalParameters;
+
+/**
+ * @author kort
+ * 
+ */
+public class NoOpMouthpieceCalculator extends MouthpieceCalculator
+{
+
+	public NoOpMouthpieceCalculator(Mouthpiece mouthpiece)
+	{
+		super(mouthpiece);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.wwidesigner.geometry.MouthpieceCalculator#calcTransferMatrix(double,
+	 * com.wwidesigner.util.PhysicalParameters)
+	 */
+	@Override
+	public TransferMatrix calcTransferMatrix(double waveNumber,
+			PhysicalParameters parameters)
+	{
+		return null;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.wwidesigner.geometry.MouthpieceCalculator#calcReflectanceMultiplier()
+	 */
+	@Override
+	public int calcReflectanceMultiplier()
+	{
+		return -1;
+	}
+
+	@Override
+	public Complex calcZ(double freq, double radius,
+			PhysicalParameters physicalParams)
+	{
+		// Defaults to ideal open end.
+		return new Complex(0,0);
+	}
+
+	@Override
+	public Double calcGain(double freq, double radius,
+			PhysicalParameters physicalParams)
+	{
+		return 0.0;
+	}
+}

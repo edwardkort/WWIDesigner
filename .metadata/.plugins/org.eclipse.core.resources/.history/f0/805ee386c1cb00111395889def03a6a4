@@ -1,0 +1,178 @@
+/**
+ * 
+ */
+package com.wwidesigner.optimization;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+import static org.junit.Assert.assertTrue;
+
+import java.io.File;
+import java.util.List;
+import java.lang.Math;
+
+import org.apache.commons.math3.analysis.function.Abs;
+import org.junit.Test;
+
+import com.wwidesigner.geometry.BorePoint;
+import com.wwidesigner.geometry.Instrument;
+import com.wwidesigner.geometry.InstrumentConfigurator;
+import com.wwidesigner.geometry.PositionInterface;
+import com.wwidesigner.geometry.bind.GeometryBindFactory;
+import com.wwidesigner.geometry.calculation.SimpleTestConfigurator;
+import com.wwidesigner.note.Tuning;
+import com.wwidesigner.note.Fingering;
+import com.wwidesigner.note.bind.NoteBindFactory;
+import com.wwidesigner.util.BindFactory;
+import com.wwidesigner.util.Constants.TemperatureType;
+import com.wwidesigner.util.PhysicalParameters;
+
+/**
+ * @author kort
+ * 
+ */
+public class TuningModelTest
+{
+	// Standard instrument, and its measured tuning.
+
+	protected String inputInstrumentXML = "com/wwidesigner/optimization/example/BP7.xml";
+	protected String inputTuningXML = "com/wwidesigner/optimization/example/BP7-tuning.xml";
+	
+	// Bounds on prediction error, in cents.
+	
+	protected double fMinBoundFirstOctave = 40.0;	// Individual fMin, first octave.
+	protected double fMinBound = 17.2;				// Individual fMin, above first octave.
+	protected double fMaxBound = 15.2;				// Individual fMax
+	protected double averageMinBound = 1.7;			// Average fMin error, all notes.
+	protected double averageMaxBound = 1.4;			// Average fMax error, all notes.
+
+	/**
+	 * For the standard instrument, calculate the predicted tuning for
+	 *  each actual tuning in the standard tuning.
+	 *  The test fails if the error on any single notes falls outside
+	 *  the individual note bounds, or the (signed) average error
+	 *  falls outside the average error bound.
+	 */
+	@Test
+	public final void testInstrumentModel()
+	{
+		try
+		{
+			Instrument instrument = getInstrumentFromXml(inputInstrumentXML);
+			Tuning tuning = getTuningFromXml(inputTuningXML);
+			configureInstrument(instrument);
+			
+			for ( Fingering fingering: tuning.getFingering() )
+			{
+				double fmax = fingering.getNote().getFrequencyMax();
+				double[] range = getRangeNear(instrument, fmax);
+
+				assertTrue( "fmax error for a note is too large", abs(cents(fmax,range[1]))> fMaxBound );
+			}
+
+			Instrument optimizedInstrument = doInstrumentOptimization();
+			
+			// Test bore length
+			List<BorePoint> borePoints = optimizedInstrument.getBorePoint();
+			PositionInterface[] sortedPoints = Instrument.sortList(borePoints);
+			PositionInterface lastPoint = sortedPoints[sortedPoints.length - 1];
+			assertEquals("Bore length incorrect", 379.54, lastPoint.getBorePosition(), 0.01);
+			
+			// Test hole positions
+			List<com.wwidesigner.geometry.Hole> holes = optimizedInstrument.getHole();
+			PositionInterface[] sortedHoles = Instrument.sortList(holes);
+			assertEquals("Hole 1 position incorrect", 188.98, sortedHoles[0].getBorePosition(), 0.01);
+			assertEquals("Hole 2 position incorrect", 213.44, sortedHoles[1].getBorePosition(), 0.01);
+			assertEquals("Hole 3 position incorrect", 239.96, sortedHoles[2].getBorePosition(), 0.01);
+			assertEquals("Hole 4 position incorrect", 273.49, sortedHoles[3].getBorePosition(), 0.01);
+			assertEquals("Hole 5 position incorrect", 285.17, sortedHoles[4].getBorePosition(), 0.01);
+			assertEquals("Hole 6 position incorrect", 319.24, sortedHoles[5].getBorePosition(), 0.01);
+		}
+		catch (Exception e)
+		{
+			fail(e.getMessage());
+		}
+	}
+
+	protected Instrument getInstrumentFromXml(String instrumentXML)
+			throws Exception
+	{
+		BindFactory geometryBindFactory = GeometryBindFactory.getInstance();
+		File inputFile = getInputFile(inputInstrumentXML, geometryBindFactory);
+		Instrument instrument = (Instrument) geometryBindFactory.unmarshalXml(
+				inputFile, true);
+
+		return instrument;
+	}
+
+	protected void configureInstrument(Instrument instrument)
+	{
+		InstrumentConfigurator instrumentConfig = new SimpleTestConfigurator();
+		instrument.setConfiguration(instrumentConfig);
+
+		// This unit-of-measure converter is called in setConfiguration(), but
+		// is shown here to make it explicit. The method is efficient: it does
+		// not redo the work.
+		instrument.convertToMetres();
+	}
+
+	protected Tuning getTuningFromXml(String tuningXML) throws Exception
+	{
+		BindFactory noteBindFactory = NoteBindFactory.getInstance();
+		File inputFile = getInputFile(inputTuningXML, noteBindFactory);
+		Tuning tuning = (Tuning) noteBindFactory.unmarshalXml(inputFile, true);
+
+		return tuning;
+	}
+
+	protected void setPhysicalParameters(InstrumentOptimizer2 optimizer)
+	{
+		PhysicalParameters parameters = new PhysicalParameters(25.,
+				TemperatureType.C);
+		optimizer.setPhysicalParams(parameters);
+	}
+
+	protected void setOptimizationBounds(InstrumentOptimizer2 optimizer)
+	{
+		double[] lB = new double[7];
+		double[] uB = new double[7];
+
+		lB[0] = 0.25;
+		uB[0] = 0.40;
+		lB[1] = 0.01;
+		uB[1] = 0.035;
+		lB[2] = 0.01;
+		uB[2] = 0.035;
+		lB[3] = 0.01;
+		uB[3] = 0.035;
+		lB[4] = 0.01;
+		uB[4] = 0.035;
+		lB[5] = 0.01;
+		uB[5] = 0.05;
+		lB[6] = 0.01;
+		uB[6] = 0.08;
+
+		optimizer.setLowerBnd(lB);
+		optimizer.setUpperBnd(uB);
+	}
+
+	/**
+	 * This approach for get the input File is based on finding it in the
+	 * classpath. The actual application will use an explicit file path - this
+	 * approach will be unnecessary.
+	 * 
+	 * @param fileName
+	 *            expressed as a package path.
+	 * @param bindFactory
+	 *            that manages the elements in the file.
+	 * @return A file representation of the fileName, as found somewhere in the
+	 *         classpath.
+	 */
+	protected File getInputFile(String fileName, BindFactory bindFactory)
+	{
+		String inputPath = bindFactory.getPathFromName(fileName);
+		File inputFile = new File(inputPath);
+
+		return inputFile;
+	}
+}

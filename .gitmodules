@@ -1,0 +1,3 @@
+[submodule "WWIDesigner.wiki"]
+	path = WWIDesigner.wiki
+	url = ../WWIDesigner.wiki.git

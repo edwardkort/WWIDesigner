@@ -1,0 +1,69 @@
+/**
+ * 
+ */
+package com.wwidesigner.geometry.calculation;
+
+import org.apache.commons.math3.complex.Complex;
+
+import com.wwidesigner.geometry.Mouthpiece;
+import com.wwidesigner.geometry.MouthpieceCalculator;
+import com.wwidesigner.math.TransferMatrix;
+import com.wwidesigner.util.PhysicalParameters;
+
+/**
+ * @author kort
+ * 
+ */
+public class FippleMouthpieceCalculator extends MouthpieceCalculator
+{
+
+	public FippleMouthpieceCalculator(Mouthpiece mouthpiece)
+	{
+		super(mouthpiece);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.wwidesigner.geometry.MouthpieceCalculator#calcTransferMatrix(double,
+	 * com.wwidesigner.util.PhysicalParameters)
+	 */
+	@Override
+	public TransferMatrix calcTransferMatrix(double waveNumber,
+			PhysicalParameters parameters)
+	{
+		return null;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.wwidesigner.geometry.MouthpieceCalculator#calcReflectanceMultiplier()
+	 */
+	@Override
+	public int calcReflectanceMultiplier()
+	{
+		return -1;
+	}
+
+	@Override
+	public Complex calcZ(double freq, double radius,
+			PhysicalParameters physicalParams)
+	{
+//		double waveNumber = 2.0 * Math.PI * freq
+//				/ physicalParams.getSpeedOfSound();
+		return new Complex(0,0);
+	}
+
+	@Override
+	public Double calcGain(double freq, double radius,
+			Complex Z, PhysicalParameters physicalParams)
+	{
+		double waveNumber = 2.0 * Math.PI * freq
+				/ physicalParams.getSpeedOfSound();
+		return this.mouthpiece.getGainFactor() * waveNumber * radius*radius
+				/ Z.abs();
+	}
+}

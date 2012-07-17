@@ -27,7 +27,7 @@ public class ThickFlangedOpenEndCalculator extends TerminationCalculator
 
 	private Complex Z(double wave_number, PhysicalParameters params)
 	{
-		double a = 0.015 / 2.; // termination.getBoreDiameter()/2;
+		double a = termination.getBoreDiameter() / 2;
 		double b = termination.getFlangeDiameter() / 2;
 
 		double a_b = a / b;

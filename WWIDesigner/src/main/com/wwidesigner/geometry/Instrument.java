@@ -308,6 +308,8 @@ public class Instrument implements InstrumentInterface
 			processMouthpiece(borePointList);
 			components.add(mouthpiece);
 
+			processTermination(borePointList);
+
 			SortedPositionList<Hole> holeList = makePositionList(hole);
 
 			// TODO Deal with the Mouthpiece and the start of the bore:
@@ -330,6 +332,14 @@ public class Instrument implements InstrumentInterface
 			double lastPosition = borePointList.getLast().getBorePosition() + 1.;
 			makeSections(borePointList, lastPosition);
 		}
+	}
+
+	protected void processTermination(
+			SortedPositionList<BorePoint> borePointList)
+	{
+		BorePoint lastPoint = borePointList.getLast();
+		termination.setBoreDiameter(lastPoint.getBoreDiameter());
+		termination.setBorePosition(lastPoint.getBorePosition());
 	}
 
 	protected void processMouthpiece(SortedPositionList<BorePoint> borePointList)
@@ -438,6 +448,13 @@ public class Instrument implements InstrumentInterface
 		return sortedList;
 	}
 
+	/**
+	 * Sorts a list of BorePointInterface objects (BorePoints and Holes) by
+	 * their position.
+	 * 
+	 * @param positions
+	 * @return
+	 */
 	public static <P extends PositionInterface> PositionInterface[] sortList(
 			List<P> positions)
 	{

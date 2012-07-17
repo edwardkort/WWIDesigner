@@ -12,6 +12,7 @@ import java.util.List;
 import org.junit.Test;
 
 import com.wwidesigner.geometry.BorePoint;
+import com.wwidesigner.geometry.BorePointInterface;
 import com.wwidesigner.geometry.Hole;
 import com.wwidesigner.geometry.Instrument;
 import com.wwidesigner.geometry.InstrumentConfigurator;
@@ -23,6 +24,7 @@ import com.wwidesigner.note.bind.NoteBindFactory;
 import com.wwidesigner.util.BindFactory;
 import com.wwidesigner.util.Constants.TemperatureType;
 import com.wwidesigner.util.PhysicalParameters;
+import com.wwidesigner.util.SortedPositionList;
 
 /**
  * @author kort
@@ -71,12 +73,12 @@ public class ChalumeauOptimizationTest
 			
 			// Test bore length
 			List<BorePoint> borePoints = optimizedInstrument.getBorePoint();
-			PositionInterface[] sortedPoints = Instrument.sortList(borePoints);
-			PositionInterface lastPoint = sortedPoints[sortedPoints.length - 1];
+			SortedPositionList<BorePoint> sortedPoints = new SortedPositionList<BorePoint>(borePoints);
+			BorePoint lastPoint = sortedPoints.getLast();
 			
 			// Test hole positions
 			List<Hole> holes = optimizedInstrument.getHole();
-			PositionInterface[] sortedHoles = Instrument.sortList(holes);
+			SortedPositionList<Hole> sortedHoles = new SortedPositionList<Hole>(holes);
 			
 			//for (int i = 0; i < sortedHoles.length; ++i)
 			//	System.out.println( sortedHoles[i].getBorePosition() );
@@ -87,27 +89,27 @@ public class ChalumeauOptimizationTest
 			//System.out.print("last point = " + lastPoint.getBorePosition());
 			assertEquals("Bore length incorrect", 337.5, lastPoint.getBorePosition(), 0.1);
 			
-			assertEquals("Hole 1 position incorrect", 111.2, sortedHoles[0].getBorePosition(), 0.1);
-			assertEquals("Hole 2 position incorrect", 111.9, sortedHoles[1].getBorePosition(), 0.1);
-			assertEquals("Hole 3 position incorrect", 127.0, sortedHoles[2].getBorePosition(), 0.1);
-			assertEquals("Hole 4 position incorrect", 139.8, sortedHoles[3].getBorePosition(), 0.1);
-			assertEquals("Hole 5 position incorrect", 159.0, sortedHoles[4].getBorePosition(), 0.1);
-			assertEquals("Hole 6 position incorrect", 184.7, sortedHoles[5].getBorePosition(), 0.1);
-			assertEquals("Hole 7 position incorrect", 205.2, sortedHoles[6].getBorePosition(), 0.1);
-			assertEquals("Hole 8 position incorrect", 225.2, sortedHoles[7].getBorePosition(), 0.1);
-			assertEquals("Hole 9 position incorrect", 245.3, sortedHoles[8].getBorePosition(), 0.1);
-			assertEquals("Hole 10 position incorrect", 273.9, sortedHoles[9].getBorePosition(), 0.1);
+			assertEquals("Hole 1 position incorrect", 111.2, sortedHoles.get(0).getBorePosition(), 0.1);
+			assertEquals("Hole 2 position incorrect", 111.9, sortedHoles.get(1).getBorePosition(), 0.1);
+			assertEquals("Hole 3 position incorrect", 127.0, sortedHoles.get(2).getBorePosition(), 0.1);
+			assertEquals("Hole 4 position incorrect", 139.8, sortedHoles.get(3).getBorePosition(), 0.1);
+			assertEquals("Hole 5 position incorrect", 159.0, sortedHoles.get(4).getBorePosition(), 0.1);
+			assertEquals("Hole 6 position incorrect", 184.7, sortedHoles.get(5).getBorePosition(), 0.1);
+			assertEquals("Hole 7 position incorrect", 205.2, sortedHoles.get(6).getBorePosition(), 0.1);
+			assertEquals("Hole 8 position incorrect", 225.2, sortedHoles.get(7).getBorePosition(), 0.1);
+			assertEquals("Hole 9 position incorrect", 245.3, sortedHoles.get(8).getBorePosition(), 0.1);
+			assertEquals("Hole 10 position incorrect", 273.9, sortedHoles.get(9).getBorePosition(), 0.1);
 			
-			assertEquals("Hole 1 diameter incorrect", 6.0, ((Hole)sortedHoles[0]).getDiameter(), 0.1);
-			assertEquals("Hole 2 diameter incorrect", 5.4, ((Hole)sortedHoles[1]).getDiameter(), 0.1);
-			assertEquals("Hole 3 diameter incorrect", 4.8, ((Hole)sortedHoles[2]).getDiameter(), 0.1);
-			assertEquals("Hole 4 diameter incorrect", 5.9, ((Hole)sortedHoles[3]).getDiameter(), 0.1);
-			assertEquals("Hole 5 diameter incorrect", 6.4, ((Hole)sortedHoles[4]).getDiameter(), 0.1);
-			assertEquals("Hole 6 diameter incorrect", 7.1, ((Hole)sortedHoles[5]).getDiameter(), 0.1);
-			assertEquals("Hole 7 diameter incorrect", 6.4, ((Hole)sortedHoles[6]).getDiameter(), 0.1);
-			assertEquals("Hole 8 diameter incorrect", 6.3, ((Hole)sortedHoles[7]).getDiameter(), 0.1);
-			assertEquals("Hole 9 diameter incorrect", 6.1, ((Hole)sortedHoles[8]).getDiameter(), 0.1);
-			assertEquals("Hole 10 diameter incorrect", 6.2, ((Hole)sortedHoles[9]).getDiameter(), 0.1);
+			assertEquals("Hole 1 diameter incorrect", 6.0, sortedHoles.get(0).getDiameter(), 0.1);
+			assertEquals("Hole 2 diameter incorrect", 5.4, sortedHoles.get(1).getDiameter(), 0.1);
+			assertEquals("Hole 3 diameter incorrect", 4.8, sortedHoles.get(2).getDiameter(), 0.1);
+			assertEquals("Hole 4 diameter incorrect", 5.9, sortedHoles.get(3).getDiameter(), 0.1);
+			assertEquals("Hole 5 diameter incorrect", 6.4, sortedHoles.get(4).getDiameter(), 0.1);
+			assertEquals("Hole 6 diameter incorrect", 7.1, sortedHoles.get(5).getDiameter(), 0.1);
+			assertEquals("Hole 7 diameter incorrect", 6.4, sortedHoles.get(6).getDiameter(), 0.1);
+			assertEquals("Hole 8 diameter incorrect", 6.3, sortedHoles.get(7).getDiameter(), 0.1);
+			assertEquals("Hole 9 diameter incorrect", 6.1, sortedHoles.get(8).getDiameter(), 0.1);
+			assertEquals("Hole 10 diameter incorrect", 6.2, sortedHoles.get(9).getDiameter(), 0.1);
 
 		}
 		catch (Exception e)

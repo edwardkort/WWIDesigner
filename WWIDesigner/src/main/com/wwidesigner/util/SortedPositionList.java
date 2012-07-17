@@ -18,6 +18,15 @@ import com.wwidesigner.geometry.PositionInterface;
 public class SortedPositionList<T extends PositionInterface> extends
 		LinkedList<T>
 {
+	public SortedPositionList()
+	{
+	}
+
+	public SortedPositionList(Collection<? extends T> collection)
+	{
+		addAll(collection);
+	}
+
 	@Override
 	public boolean add(T element)
 	{

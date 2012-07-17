@@ -10,10 +10,6 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/SLF4J"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/ApacheCommonsBeanUtils"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/ApacheCommonsLang2"/>
-	<classpathentry kind="lib" path="C:/programming/lib/slf4j-1.6.6/slf4j-api-1.6.6.jar"/>
-	<classpathentry kind="lib" path="C:/programming/lib/commons-lang-2.6/commons-lang-2.6.jar"/>
-	<classpathentry kind="lib" path="C:/programming/lib/commons-beanutils-1.8.3/commons-beanutils-1.8.3.jar"/>
-	<classpathentry kind="lib" path="C:/programming/lib/commons-logging-1.1.1/commons-logging-1.1.1.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/ApacheCommonsLogging"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>

@@ -103,6 +103,11 @@ public class PhysicalParameters
 
 	}
 
+	public double getGamma()
+	{
+		return mGamma;
+	}
+
 	/**
 	 * Utility function. Calculate the wave impedance of a bore of nominal
 	 * radius r, given these parameters.

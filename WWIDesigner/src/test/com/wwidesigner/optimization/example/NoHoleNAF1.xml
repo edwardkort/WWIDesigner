@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wii:instrument xmlns:wii="http://www.wwidesigner.com/Instrument"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.wwidesigner.com/Instrument ../../../../../main/com/wwidesigner/geometry/bind/Instrument.xsd ">
+	<name>No hole NAF1</name>
+	<description>Straight bore NAF with no holes</description>
+	<lengthType>in</lengthType>
+	<mouthpiece>
+		<position>0.20</position>
+		<fipple>
+			<windowLength>0.17</windowLength>
+			<windowWidth>0.68</windowWidth>
+			<fippleFactor>0.787</fippleFactor>
+		</fipple>
+	</mouthpiece>
+	<borePoint>
+		<borePosition>0</borePosition>
+		<boreDiameter>1.028</boreDiameter>
+	</borePoint>
+	<borePoint>
+		<borePosition>12.2</borePosition>
+		<boreDiameter>1.041</boreDiameter>
+	</borePoint>
+	<termination>
+		<flangeDiameter>1.041</flangeDiameter>
+	</termination>
+</wii:instrument>

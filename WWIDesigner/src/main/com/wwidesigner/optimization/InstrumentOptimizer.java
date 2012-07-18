@@ -2,12 +2,13 @@ package com.wwidesigner.optimization;
 
 import org.apache.commons.math3.optimization.GoalType;
 import org.apache.commons.math3.optimization.direct.BOBYQAOptimizer;
+import org.apache.commons.math3.optimization.direct.CMAESOptimizer;
 
 import com.wwidesigner.geometry.Instrument;
 import com.wwidesigner.note.TuningInterface;
 import com.wwidesigner.util.PhysicalParameters;
-
-public abstract class InstrumentOptimizer extends BOBYQAOptimizer implements
+// BOBYQAOptimizer CMAESOptimizer
+public abstract class InstrumentOptimizer extends CMAESOptimizer implements
 		InstrumentOptimizerInterface
 {
 	protected TuningInterface tuning;

@@ -35,6 +35,7 @@ public class BasicOptimizationFunction implements OptimizationFunctionInterface
 		optimizer.updateGeometry(state_vector);
 		double error = calculateErrorNorm();
 
+		System.out.println(error);
 		return error;
 	}
 

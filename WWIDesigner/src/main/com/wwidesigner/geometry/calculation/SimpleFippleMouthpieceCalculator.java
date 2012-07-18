@@ -53,6 +53,7 @@ public class SimpleFippleMouthpieceCalculator extends MouthpieceCalculator
 		matrix.setPU(k_delta);
 
 		k_delta = new Complex(0., -1.).multiply(Math.sin(k_delta_l) / z0);
+		matrix.setUP(k_delta);
 
 		return matrix;
 	}

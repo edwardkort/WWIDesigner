@@ -22,6 +22,6 @@
 		<boreDiameter>1.041</boreDiameter>
 	</borePoint>
 	<termination>
-		<flangeDiameter>1.041</flangeDiameter>
+		<flangeDiameter>1.541</flangeDiameter>
 	</termination>
 </wii:instrument>

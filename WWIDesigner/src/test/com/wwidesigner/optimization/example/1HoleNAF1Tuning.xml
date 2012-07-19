@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wit:tuning xmlns:wit="http://www.wwidesigner.com/Tuning"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.wwidesigner.com/Tuning ../../../../../main/com/wwidesigner/note/bind/Tuning.xsd ">
+	<name>1 hole NAF1 tuning</name>
+	<comment>Tuning for 1HoleNAF1.xml</comment>
+	<numberOfHoles>1</numberOfHoles>
+	<fingering>
+		<note>
+			<name>A4</name>
+			<frequency>440</frequency>
+		</note>
+		<openHole>false</openHole>
+	</fingering>
+	<fingering>
+		<note>
+			<name>C5</name>
+			<frequency>523.25</frequency>
+		</note>
+		<openHole>true</openHole>
+	</fingering>
+</wit:tuning>

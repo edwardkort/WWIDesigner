@@ -12,26 +12,31 @@ import java.util.List;
 import org.junit.Test;
 
 import com.wwidesigner.geometry.BorePoint;
+import com.wwidesigner.geometry.Hole;
 import com.wwidesigner.geometry.Instrument;
 import com.wwidesigner.geometry.InstrumentConfigurator;
 import com.wwidesigner.geometry.PositionInterface;
 import com.wwidesigner.geometry.bind.GeometryBindFactory;
 import com.wwidesigner.geometry.calculation.SimpleFippleMouthpieceConfigurator;
-import com.wwidesigner.geometry.calculation.SimpleTestConfigurator;
 import com.wwidesigner.note.Tuning;
 import com.wwidesigner.note.bind.NoteBindFactory;
 import com.wwidesigner.util.BindFactory;
+import com.wwidesigner.util.SortedPositionList;
 import com.wwidesigner.util.Constants.TemperatureType;
 import com.wwidesigner.util.PhysicalParameters;
 
 /**
  * @author kort
- *
+ * 
  */
 public class NafOptimizationTest
 {
-	protected String inputInstrumentXML = "com/wwidesigner/optimization/example/NoHoleNAF1.xml";
-	protected String inputTuningXML = "com/wwidesigner/optimization/example/NoHoleNAF1Tuning.xml";
+	protected String inputInstrumentXML;
+	protected String inputTuningXML;
+	protected double[] lowerBound;
+	protected double[] upperBound;
+	protected InstrumentOptimizer.OptimizerType optimizerType;
+	protected int numberOfInterpolationPoints;
 
 	/**
 	 * Complete workflow for optimizing an XML-defined instrument with the
@@ -43,13 +48,14 @@ public class NafOptimizationTest
 	 */
 	public Instrument doInstrumentOptimization() throws Exception
 	{
-		Instrument instrument = getInstrumentFromXml(inputInstrumentXML);
+		Instrument instrument = getInstrumentFromXml();
 		configureInstrument(instrument);
 
-		Tuning tuning = getTuningFromXml(inputTuningXML);
+		Tuning tuning = getTuningFromXml();
 
-		InstrumentOptimizer optimizer = new HolePositionOptimizer(
+		InstrumentOptimizer optimizer = new HolePositionAndDiameterOptimizer(
 				instrument, tuning);
+		optimizer.setBaseOptimizer(optimizerType, numberOfInterpolationPoints);
 		setPhysicalParameters(optimizer);
 		setOptimizationBounds(optimizer);
 		optimizer.optimizeInstrument();
@@ -62,18 +68,26 @@ public class NafOptimizationTest
 	}
 
 	@Test
-	public final void testInstrumentOptimization()
+	public final void testNoHoleOptimization()
 	{
 		try
 		{
+			inputInstrumentXML = "com/wwidesigner/optimization/example/NoHoleNAF1.xml";
+			inputTuningXML = "com/wwidesigner/optimization/example/NoHoleNAF1Tuning.xml";
+			lowerBound = new double[] { 0.25 };
+			upperBound = new double[] { 0.4 };
+			optimizerType = InstrumentOptimizer.OptimizerType.CMAESOptimizer;
+			numberOfInterpolationPoints = 10;
+
 			Instrument optimizedInstrument = doInstrumentOptimization();
-			
+
 			// Test bore length
 			List<BorePoint> borePoints = optimizedInstrument.getBorePoint();
 			PositionInterface[] sortedPoints = Instrument.sortList(borePoints);
 			PositionInterface lastPoint = sortedPoints[sortedPoints.length - 1];
-			assertEquals("Bore length incorrect", 12.2, lastPoint.getBorePosition(), 0.1);
-			
+			assertEquals("Bore length incorrect", 11.97,
+					lastPoint.getBorePosition(), 0.01);
+
 		}
 		catch (Exception e)
 		{
@@ -81,7 +95,81 @@ public class NafOptimizationTest
 		}
 	}
 
-	protected Instrument getInstrumentFromXml(String instrumentXML)
+	@Test
+	public final void test1HoleOptimization()
+	{
+		try
+		{
+			inputInstrumentXML = "com/wwidesigner/optimization/example/1HoleNAF1.xml";
+			inputTuningXML = "com/wwidesigner/optimization/example/1HoleNAF1Tuning.xml";
+			lowerBound = new double[] { 0.28, 0.05, 0.15 };
+			upperBound = new double[] { 0.5, 0.15, 0.6 };
+			optimizerType = InstrumentOptimizer.OptimizerType.BOBYQAOptimizer;
+			numberOfInterpolationPoints = 10;
+
+			Instrument optimizedInstrument = doInstrumentOptimization();
+
+			// Test bore length
+			List<BorePoint> borePoints = optimizedInstrument.getBorePoint();
+			PositionInterface[] sortedPoints = Instrument.sortList(borePoints);
+			PositionInterface lastPoint = sortedPoints[sortedPoints.length - 1];
+			assertEquals("Bore length incorrect", 11.97,
+					lastPoint.getBorePosition(), 0.05);
+
+			// Test hole positions
+			List<Hole> holes = optimizedInstrument.getHole();
+			SortedPositionList<Hole> sortedHoles = new SortedPositionList<Hole>(
+					holes);
+
+			// This hole diameter is set based on the optimizer's return value:
+			// an
+			// infinite number of position/hole diameter values are possible.
+			assertEquals("Hole 1 diameter incorrect", 0.368, sortedHoles.get(0)
+					.getDiameter(), 0.01);
+
+			// This hole position derives from the actual instrument AND 2 other
+			// calculation algorithms.
+			assertEquals("Hole 1 position incorrect", 7.76, sortedHoles.get(0)
+					.getBorePosition(), 0.1);
+
+		}
+		catch (Exception e)
+		{
+			fail(e.getMessage());
+		}
+	}
+
+	@Test
+	public final void test6HoleOptimization()
+	{
+		try
+		{
+			inputInstrumentXML = "com/wwidesigner/optimization/example/6HoleNAF1.xml";
+			inputTuningXML = "com/wwidesigner/optimization/example/6HoleNAF1Tuning.xml";
+			lowerBound = new double[] { 0.28, 0.01, 0.01, 0.01, 0.01, 0.01,
+					0.05, 0.1, 0.15, 0.15, 0.15, 0.15, 0.15 };
+			upperBound = new double[] { 0.5, 0.03, 0.03, 0.035, 0.035, 0.035,
+					0.15, 0.5, 0.5, 0.5, 0.5, 0.5, 0.6 };
+			optimizerType = InstrumentOptimizer.OptimizerType.BOBYQAOptimizer;
+			numberOfInterpolationPoints = 60;
+
+			Instrument optimizedInstrument = doInstrumentOptimization();
+
+			// Test bore length
+			List<BorePoint> borePoints = optimizedInstrument.getBorePoint();
+			PositionInterface[] sortedPoints = Instrument.sortList(borePoints);
+			PositionInterface lastPoint = sortedPoints[sortedPoints.length - 1];
+			assertEquals("Bore length incorrect", 11.97,
+					lastPoint.getBorePosition(), 0.01);
+
+		}
+		catch (Exception e)
+		{
+			fail(e.getMessage());
+		}
+	}
+
+	protected Instrument getInstrumentFromXml()
 			throws Exception
 	{
 		BindFactory geometryBindFactory = GeometryBindFactory.getInstance();
@@ -103,7 +191,7 @@ public class NafOptimizationTest
 		instrument.convertToMetres();
 	}
 
-	protected Tuning getTuningFromXml(String tuningXML) throws Exception
+	protected Tuning getTuningFromXml() throws Exception
 	{
 		BindFactory noteBindFactory = NoteBindFactory.getInstance();
 		File inputFile = getInputFile(inputTuningXML, noteBindFactory);
@@ -121,14 +209,8 @@ public class NafOptimizationTest
 
 	protected void setOptimizationBounds(InstrumentOptimizer optimizer)
 	{
-		double[] lB = new double[1];
-		double[] uB = new double[1];
-
-		lB[0] = 0.25;
-		uB[0] = 0.40;
-
-		optimizer.setLowerBnd(lB);
-		optimizer.setUpperBnd(uB);
+		optimizer.setLowerBnd(lowerBound);
+		optimizer.setUpperBnd(upperBound);
 	}
 
 	/**

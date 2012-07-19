@@ -16,7 +16,7 @@ import com.wwidesigner.note.TuningInterface;
 public class HolePositionOptimizer extends InstrumentOptimizer
 {
 
-	static final int numberOfInterpolationPoints = 20;
+	static final int defaultNumberOfInterpolationPoints = 20;
 
 	/**
 	 * @param inst
@@ -24,7 +24,7 @@ public class HolePositionOptimizer extends InstrumentOptimizer
 	 */
 	public HolePositionOptimizer(Instrument inst, TuningInterface tuning)
 	{
-		super(numberOfInterpolationPoints, inst, tuning);
+		super(defaultNumberOfInterpolationPoints, inst, tuning);
 	}
 
 	@Override

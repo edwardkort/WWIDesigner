@@ -5,7 +5,7 @@ import org.apache.commons.math3.complex.Complex;
 import com.wwidesigner.math.TransferMatrix;
 import com.wwidesigner.util.PhysicalParameters;
 
-class BoreSection implements ComponentInterface
+public class BoreSection implements ComponentInterface
 {
 	private double mLength;
 	private double mLeftRadius;

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wit:tuning xmlns:wit="http://www.wwidesigner.com/Tuning" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.wwidesigner.com/Tuning ../../../../../main/com/wwidesigner/note/bind/Tuning.xsd ">
+  <name>No hole NAF1 tuning</name>
+  <comment>Tuning for NoHoleNAF1.xml</comment>
+  <numberOfHoles>0</numberOfHoles>
+  <fingering>
+    <note>
+      <name>A</name>
+      <frequency>441.27</frequency>
+    </note>
+  </fingering>
+</wit:tuning>

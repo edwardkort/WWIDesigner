@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wii:instrument xmlns:wii="http://www.wwidesigner.com/Instrument"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.wwidesigner.com/Instrument ../../../../../main/com/wwidesigner/geometry/bind/Instrument.xsd ">
+	<name>6 hole NAF1</name>
+	<description>Straight bore NAF with 6 holes</description>
+	<lengthType>in</lengthType>
+	<mouthpiece>
+		<position>0.20</position>
+		<fipple>
+			<windowLength>0.17</windowLength>
+			<windowWidth>0.68</windowWidth>
+			<fippleFactor>0.71</fippleFactor>
+		</fipple>
+	</mouthpiece>
+	<borePoint>
+		<borePosition>0</borePosition>
+		<boreDiameter>1.028</boreDiameter>
+	</borePoint>
+	<borePoint>
+		<borePosition>11.97</borePosition>
+		<boreDiameter>1.041</boreDiameter>
+	</borePoint>
+	<hole>
+		<borePosition>3.15</borePosition>
+		<diameter>0.308</diameter>
+		<height>0.165</height>
+	</hole>
+	<hole>
+		<borePosition>4.0</borePosition>
+		<diameter>0.361</diameter>
+		<height>0.165</height>
+	</hole>
+	<hole>
+		<borePosition>4.85</borePosition>
+		<diameter>0.352</diameter>
+		<height>0.165</height>
+	</hole>
+	<hole>
+		<borePosition>5.9</borePosition>
+		<diameter>0.357</diameter>
+		<height>0.165</height>
+	</hole>
+	<hole>
+		<borePosition>7.0</borePosition>
+		<diameter>0.379</diameter>
+		<height>0.165</height>
+	</hole>
+	<hole>
+		<borePosition>8.1</borePosition>
+		<diameter>0.398</diameter>
+		<height>0.165</height>
+	</hole>
+	<termination>
+		<flangeDiameter>1.541</flangeDiameter>
+	</termination>
+</wii:instrument>

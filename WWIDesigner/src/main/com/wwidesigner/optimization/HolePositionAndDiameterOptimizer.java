@@ -8,11 +8,11 @@ import com.wwidesigner.note.TuningInterface;
 
 public class HolePositionAndDiameterOptimizer extends InstrumentOptimizer
 {
-	static final int numberOfInterpolationPoints = 60;
+	private static int defaultNumberOfInterpolationPoints = 60;
 
 	public HolePositionAndDiameterOptimizer(Instrument inst, TuningInterface tuning)
 	{
-		super(numberOfInterpolationPoints, inst, tuning);
+		super(defaultNumberOfInterpolationPoints, inst, tuning);
 	}
 
 	public double[] getStateVector()

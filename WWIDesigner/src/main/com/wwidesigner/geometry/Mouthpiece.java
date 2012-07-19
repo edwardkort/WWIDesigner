@@ -396,6 +396,14 @@ public class Mouthpiece implements ComponentInterface, MouthpieceInterface,
 	}
 
 	/**
+	 * @return the headspace
+	 */
+	public List<BoreSection> getHeadspace()
+	{
+		return headspace;
+	}
+
+	/**
 	 * @param headspace
 	 *            the headspace to set
 	 */

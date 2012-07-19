@@ -488,15 +488,28 @@ public class Instrument implements InstrumentInterface
 	public Complex calculateReflectionCoefficient(Fingering fingering,
 			PhysicalParameters physicalParams)
 	{
-		TransferMatrix transferMatrix = TransferMatrix.makeIdentity();
-
 		double frequency = fingering.getNote().getFrequency();
+		
+		
+		setOpenHoles(fingering);
+		
+		Complex reflectance = calculateReflectionCoefficient(frequency, physicalParams);
+		
+		int reflectanceMultiplier = mouthpiece.calcReflectanceMultiplier();
+
+		Complex result = reflectance.multiply(reflectanceMultiplier);
+
+		return result;
+	}
+
+	public Complex calculateReflectionCoefficient(double frequency, PhysicalParameters physicalParams)
+	{
 		double waveNumber = 2 * Math.PI * frequency
 				/ physicalParams.getSpeedOfSound();
-
-		setOpenHoles(fingering);
-
+		
 		updateComponents();
+
+		TransferMatrix transferMatrix = TransferMatrix.makeIdentity();
 
 		for (ComponentInterface component : components)
 		{
@@ -509,15 +522,11 @@ public class Instrument implements InstrumentInterface
 
 		// TODO This mouthpiece calculation will change
 		double headRadius = mouthpiece.getBoreDiameter() / 2.;
-		int reflectanceMultiplier = mouthpiece.calcReflectanceMultiplier();
-		double impedance = physicalParams.calcZ0(headRadius);
-		Complex reflectance = sv.Reflectance(impedance);
-
-		Complex result = reflectance.multiply(reflectanceMultiplier);
-
-		return result;
+		double characteristic_impedance = physicalParams.calcZ0(headRadius);
+		Complex reflectance = sv.Reflectance(characteristic_impedance);
+		return reflectance;
 	}
-
+	
 	public void setOpenHoles(Fingering fingering)
 	{
 		List<Boolean> openHoles = fingering.getOpenHole();

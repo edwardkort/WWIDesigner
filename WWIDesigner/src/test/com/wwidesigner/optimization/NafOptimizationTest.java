@@ -85,7 +85,7 @@ public class NafOptimizationTest
 			List<BorePoint> borePoints = optimizedInstrument.getBorePoint();
 			PositionInterface[] sortedPoints = Instrument.sortList(borePoints);
 			PositionInterface lastPoint = sortedPoints[sortedPoints.length - 1];
-			assertEquals("Bore length incorrect", 11.97,
+			assertEquals("Bore length incorrect", 10.66,
 					lastPoint.getBorePosition(), 0.01);
 
 		}
@@ -102,8 +102,8 @@ public class NafOptimizationTest
 		{
 			inputInstrumentXML = "com/wwidesigner/optimization/example/1HoleNAF1.xml";
 			inputTuningXML = "com/wwidesigner/optimization/example/1HoleNAF1Tuning.xml";
-			lowerBound = new double[] { 0.28, 0.05, 0.15 };
-			upperBound = new double[] { 0.5, 0.15, 0.6 };
+			lowerBound = new double[] { 0.20, 0.05, 0.3 };
+			upperBound = new double[] { 0.4, 0.15, 0.4 };
 			optimizerType = InstrumentOptimizer.OptimizerType.BOBYQAOptimizer;
 			numberOfInterpolationPoints = 10;
 
@@ -113,7 +113,7 @@ public class NafOptimizationTest
 			List<BorePoint> borePoints = optimizedInstrument.getBorePoint();
 			PositionInterface[] sortedPoints = Instrument.sortList(borePoints);
 			PositionInterface lastPoint = sortedPoints[sortedPoints.length - 1];
-			assertEquals("Bore length incorrect", 11.97,
+			assertEquals("Bore length incorrect", 10.69,
 					lastPoint.getBorePosition(), 0.05);
 
 			// Test hole positions
@@ -124,14 +124,17 @@ public class NafOptimizationTest
 			// This hole diameter is set based on the optimizer's return value:
 			// an
 			// infinite number of position/hole diameter values are possible.
-			assertEquals("Hole 1 diameter incorrect", 0.368, sortedHoles.get(0)
+			assertEquals("Hole 1 diameter incorrect", 0.387, sortedHoles.get(0)
 					.getDiameter(), 0.01);
-
+			
 			// This hole position derives from the actual instrument AND 2 other
 			// calculation algorithms.
-			assertEquals("Hole 1 position incorrect", 7.76, sortedHoles.get(0)
-					.getBorePosition(), 0.1);
+			assertEquals("Hole 1 position incorrect", 7.13, sortedHoles.get(0)
+					.getBorePosition(), 0.01);
 
+			double distance = lastPoint.getBorePosition() - sortedHoles.get(0).getBorePosition();
+			
+			System.out.println("didtance " + distance);
 		}
 		catch (Exception e)
 		{
@@ -159,8 +162,38 @@ public class NafOptimizationTest
 			List<BorePoint> borePoints = optimizedInstrument.getBorePoint();
 			PositionInterface[] sortedPoints = Instrument.sortList(borePoints);
 			PositionInterface lastPoint = sortedPoints[sortedPoints.length - 1];
-			assertEquals("Bore length incorrect", 11.97,
+			assertEquals("Bore length incorrect", 11.23,
 					lastPoint.getBorePosition(), 0.01);
+
+			List<Hole> holes = optimizedInstrument.getHole();
+			SortedPositionList<Hole> sortedHoles = new SortedPositionList<Hole>(
+					holes);
+
+			assertEquals("Hole 1 diameter incorrect", 0.282, sortedHoles.get(0)
+					.getDiameter(), 0.01);
+			assertEquals("Hole 2 diameter incorrect", 0.453, sortedHoles.get(1)
+					.getDiameter(), 0.01);
+			assertEquals("Hole 3 diameter incorrect", 0.372, sortedHoles.get(2)
+					.getDiameter(), 0.01);
+			assertEquals("Hole 4 diameter incorrect", 0.351, sortedHoles.get(3)
+					.getDiameter(), 0.01);
+			assertEquals("Hole 5 diameter incorrect", 0.450, sortedHoles.get(4)
+					.getDiameter(), 0.01);
+			assertEquals("Hole 6 diameter incorrect", 0.378, sortedHoles.get(5)
+					.getDiameter(), 0.01);
+
+			assertEquals("Hole 1 position incorrect", 2.935, sortedHoles.get(0)
+					.getBorePosition(), 0.01);
+			assertEquals("Hole 2 position incorrect", 4.116, sortedHoles.get(1)
+					.getBorePosition(), 0.01);
+			assertEquals("Hole 3 position incorrect", 4.510, sortedHoles.get(2)
+					.getBorePosition(), 0.01);
+			assertEquals("Hole 4 position incorrect", 5.189, sortedHoles.get(3)
+					.getBorePosition(), 0.01);
+			assertEquals("Hole 5 position incorrect", 6.410, sortedHoles.get(4)
+					.getBorePosition(), 0.01);
+			assertEquals("Hole 6 position incorrect", 6.804, sortedHoles.get(5)
+					.getBorePosition(), 0.01);
 
 		}
 		catch (Exception e)

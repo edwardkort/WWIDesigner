@@ -42,17 +42,17 @@ public class SimpleFippleMouthpieceCalculator extends MouthpieceCalculator
 		TransferMatrix matrix = new TransferMatrix();
 		params = parameters;
 		double z0 = parameters.calcZ0(mouthpiece.getBoreDiameter() / 2.);
-		double freqInRadians = waveNumber * parameters.getSpeedOfSound();
-		double k_delta_l = calcKDeltaL(freqInRadians, z0);
+		double omega = waveNumber * parameters.getSpeedOfSound();
+		double k_delta_l = calcKDeltaL(omega, z0);
 
 		Complex k_delta = new Complex(Math.cos(k_delta_l));
 		matrix.setPP(k_delta);
 		matrix.setUU(k_delta);
 
-		k_delta = new Complex(0., -1.).multiply(Math.sin(k_delta_l) * z0);
+		k_delta = Complex.I.multiply(Math.sin(k_delta_l) * z0);
 		matrix.setPU(k_delta);
 
-		k_delta = new Complex(0., -1.).multiply(Math.sin(k_delta_l) / z0);
+		k_delta = Complex.I.multiply(Math.sin(k_delta_l) / z0);
 		matrix.setUP(k_delta);
 
 		return matrix;
@@ -67,32 +67,32 @@ public class SimpleFippleMouthpieceCalculator extends MouthpieceCalculator
 	@Override
 	public int calcReflectanceMultiplier()
 	{
-		return 1;
+		return -1;
 	}
 
-	protected double calcKDeltaL(double freqInRadians, double z0)
+	protected double calcKDeltaL(double omega, double z0)
 	{
 		double result = Math
-				.atan(1.0 / (z0 * (calcJYE(freqInRadians) + calcJYC(freqInRadians))));
+				.atan(1.0 / (z0 * (calcJYE(omega) + calcJYC(omega))));
 
 		return result;
 	}
 
-	protected double calcJYE(double freqInRadians)
+	protected double calcJYE(double omega)
 	{
 		double gamma = params.getGamma();
-		double result = getCharacteristicLength() / (gamma * freqInRadians);
+		double result = getCharacteristicLength() / (gamma * omega);
 
 		return result;
 	}
 
-	protected double calcJYC(double freqInRadians)
+	protected double calcJYC(double omega)
 	{
 		double gamma = params.getGamma();
 		double speedOfSound = params.getSpeedOfSound();
 		double v = calcHeadspaceVolume();
 
-		double result = -(freqInRadians * v)
+		double result = -(omega * v)
 				/ (gamma * speedOfSound * speedOfSound);
 
 		return result;

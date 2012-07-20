@@ -85,7 +85,7 @@ public class NafOptimizationTest
 			List<BorePoint> borePoints = optimizedInstrument.getBorePoint();
 			PositionInterface[] sortedPoints = Instrument.sortList(borePoints);
 			PositionInterface lastPoint = sortedPoints[sortedPoints.length - 1];
-			assertEquals("Bore length incorrect", 10.66,
+			assertEquals("Bore length incorrect", 11.97,
 					lastPoint.getBorePosition(), 0.01);
 
 		}
@@ -113,7 +113,7 @@ public class NafOptimizationTest
 			List<BorePoint> borePoints = optimizedInstrument.getBorePoint();
 			PositionInterface[] sortedPoints = Instrument.sortList(borePoints);
 			PositionInterface lastPoint = sortedPoints[sortedPoints.length - 1];
-			assertEquals("Bore length incorrect", 10.69,
+			assertEquals("Bore length incorrect", 11.97,
 					lastPoint.getBorePosition(), 0.05);
 
 			// Test hole positions
@@ -124,12 +124,12 @@ public class NafOptimizationTest
 			// This hole diameter is set based on the optimizer's return value:
 			// an
 			// infinite number of position/hole diameter values are possible.
-			assertEquals("Hole 1 diameter incorrect", 0.387, sortedHoles.get(0)
+			assertEquals("Hole 1 diameter incorrect", 0.363, sortedHoles.get(0)
 					.getDiameter(), 0.01);
 			
 			// This hole position derives from the actual instrument AND 2 other
 			// calculation algorithms.
-			assertEquals("Hole 1 position incorrect", 7.13, sortedHoles.get(0)
+			assertEquals("Hole 1 position incorrect", 7.85, sortedHoles.get(0)
 					.getBorePosition(), 0.01);
 
 			double distance = lastPoint.getBorePosition() - sortedHoles.get(0).getBorePosition();
@@ -162,8 +162,8 @@ public class NafOptimizationTest
 			List<BorePoint> borePoints = optimizedInstrument.getBorePoint();
 			PositionInterface[] sortedPoints = Instrument.sortList(borePoints);
 			PositionInterface lastPoint = sortedPoints[sortedPoints.length - 1];
-			assertEquals("Bore length incorrect", 11.23,
-					lastPoint.getBorePosition(), 0.01);
+			assertEquals("Bore length incorrect", 11.97,
+					lastPoint.getBorePosition(), 0.05);
 
 			List<Hole> holes = optimizedInstrument.getHole();
 			SortedPositionList<Hole> sortedHoles = new SortedPositionList<Hole>(

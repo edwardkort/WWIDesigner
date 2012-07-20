@@ -49,10 +49,10 @@ public class SimpleFippleMouthpieceCalculator extends MouthpieceCalculator
 		matrix.setPP(k_delta);
 		matrix.setUU(k_delta);
 
-		k_delta = Complex.I.multiply(Math.sin(k_delta_l) * z0);
+		k_delta = new Complex(0., -1.).multiply(Math.sin(k_delta_l) * z0);
 		matrix.setPU(k_delta);
 
-		k_delta = Complex.I.multiply(Math.sin(k_delta_l) / z0);
+		k_delta = new Complex(0., -1.).multiply(Math.sin(k_delta_l) / z0);
 		matrix.setUP(k_delta);
 
 		return matrix;
@@ -67,7 +67,7 @@ public class SimpleFippleMouthpieceCalculator extends MouthpieceCalculator
 	@Override
 	public int calcReflectanceMultiplier()
 	{
-		return -1;
+		return 1;
 	}
 
 	protected double calcKDeltaL(double omega, double z0)

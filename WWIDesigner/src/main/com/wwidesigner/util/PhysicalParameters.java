@@ -14,13 +14,14 @@ public class PhysicalParameters
 
 	private double mRho;
 	private double mEta;
-	private double mTemperature;
+	private double mTemperature;		// Absolute temperature, in Kelvin.
 	private double mSpecificHeat;
-	private double mSpeedOfSound;
+	private double mSpeedOfSound;		// in metres per second.
 
 	private double mMu;
 	private double mGamma;
 	private double mNu;
+	private double mWaveNumber1;		// Wave number, k, at 1 Hz: 2*pi/c.
 	private double mAlphaConstant;
 
 	private static final double mRelativeHumidity = 0.45;
@@ -54,6 +55,7 @@ public class PhysicalParameters
 		mGamma = 1.4017 * (1 - 0.00002 * deltaT);
 		mNu = 0.8410 * (1 - 0.00020 * deltaT);
 		// p.c = 3.4723E+2 * (1 + 0.00166*deltaT);
+		mWaveNumber1 = 2.0 * Math.PI / mSpeedOfSound;
 
 		mAlphaConstant = Math.sqrt(mMu / (2 * mRho * mSpeedOfSound))
 				* (1 + (mGamma - 1) / mNu);
@@ -175,5 +177,10 @@ public class PhysicalParameters
 	public double getAlphaConstant()
 	{
 		return mAlphaConstant;
+	}
+	
+	public double calcWaveNumber( double freq )
+	{
+		return freq * mWaveNumber1;
 	}
 }

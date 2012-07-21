@@ -98,15 +98,17 @@ public class BoreSection implements ComponentInterface
 
 		Complex k_lossy_L = k_lossy.multiply(mLength);
 
-		Complex A = k_lossy_L.cos().multiply(mLeftRadius / mLeftRadius)
-				.subtract(k_lossy_L.sin().multiply(one_over_x_in).divide(k_lossy));
+		Complex A = k_lossy_L.cos().multiply(mRightRadius / mLeftRadius)
+				.subtract( k_lossy_L.sin().multiply(one_over_x_in).divide(k_lossy) );
 		Complex B = k_lossy_L.sin().multiply(Complex.I)
 				.multiply((mRightRadius / mLeftRadius) * ZcRight);
 		Complex C = Complex.valueOf(mRightRadius / mLeftRadius)
-				.multiply(Complex.I.multiply(k_lossy_L.sin()).multiply(k_lossy.pow(-2).multiply(one_over_x_in*one_over_x_out).add(1))
-				.add(k_lossy_L.cos().multiply(one_over_x_in - one_over_x_out).divide(Complex.I.multiply(k_lossy))))
+				.multiply(Complex.I.multiply(k_lossy_L.sin()).multiply(
+						k_lossy.pow(-2).multiply(one_over_x_in*one_over_x_out).add(1) ).add(
+								k_lossy_L.cos().multiply(one_over_x_in - one_over_x_out).divide(
+										Complex.I.multiply(k_lossy))))
 				.divide(ZcLeft);
-		Complex D = k_lossy_L.cos().multiply(mLeftRadius / mLeftRadius)
+		Complex D = k_lossy_L.cos().multiply(mLeftRadius / mRightRadius)
 				.add(k_lossy_L.sin().multiply(one_over_x_out).divide(k_lossy));
 
 		return new TransferMatrix(A, B, C, D);

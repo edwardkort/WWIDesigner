@@ -4,6 +4,7 @@
 package com.wwidesigner.util;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.Map;
 
 import javax.xml.bind.JAXBContext;
@@ -139,9 +140,14 @@ public abstract class BindFactory
 		}
 	}
 
-	public String getPathFromName(String name)
+	public String getPathFromName(String name) throws FileNotFoundException
 	{
-		return ClassLoader.getSystemResource(name).getPath();
+		java.net.URL fileUrl = ClassLoader.getSystemResource(name);
+		if ( fileUrl == null )
+		{
+			throw new FileNotFoundException(name + " not found.");
+		}
+		return fileUrl.getPath();
 	}
 
 	private File getFileFromName(String name)

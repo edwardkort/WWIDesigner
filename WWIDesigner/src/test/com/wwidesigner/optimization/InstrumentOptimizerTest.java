@@ -7,6 +7,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.List;
 
 import org.junit.Test;
@@ -163,8 +164,9 @@ public class InstrumentOptimizerTest
 	 *            that manages the elements in the file.
 	 * @return A file representation of the fileName, as found somewhere in the
 	 *         classpath.
+	 * @throws FileNotFoundException 
 	 */
-	protected File getInputFile(String fileName, BindFactory bindFactory)
+	protected File getInputFile(String fileName, BindFactory bindFactory) throws FileNotFoundException
 	{
 		String inputPath = bindFactory.getPathFromName(fileName);
 		File inputFile = new File(inputPath);

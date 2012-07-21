@@ -7,6 +7,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 
 import org.custommonkey.xmlunit.DetailedDiff;
 import org.junit.Test;
@@ -51,7 +52,7 @@ public class ExplicitTuningMappingTest
 
 	}
 
-	private File getInputFile()
+	private File getInputFile() throws FileNotFoundException
 	{
 		String inputXmlPath = bindFactory.getPathFromName(inputXmlName);
 		File inputFile = new File(inputXmlPath);
@@ -59,7 +60,7 @@ public class ExplicitTuningMappingTest
 		return inputFile;
 	}
 
-	private File getOutputFile()
+	private File getOutputFile() throws FileNotFoundException
 	{
 		String inputFilePath = bindFactory.getPathFromName(inputXmlName);
 		String writePath = inputFilePath.substring(0,

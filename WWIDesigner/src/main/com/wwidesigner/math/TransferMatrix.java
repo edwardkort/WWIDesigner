@@ -50,10 +50,30 @@ public class TransferMatrix
                                    lhs.mUP.multiply( rhs.mPU ).add( lhs.mUU.multiply( rhs.mUU ) ) );
     }
 
+    public TransferMatrix multiply( TransferMatrix rhs )
+    {
+        return new TransferMatrix( this.mPP.multiply( rhs.mPP ).add( this.mPU.multiply( rhs.mUP ) ),
+                                   this.mPP.multiply( rhs.mPU ).add( this.mPU.multiply( rhs.mUU ) ),
+                                   this.mUP.multiply( rhs.mPP ).add( this.mUU.multiply( rhs.mUP ) ),
+                                   this.mUP.multiply( rhs.mPU ).add( this.mUU.multiply( rhs.mUU ) ) );
+    }
+
     public static StateVector multiply( TransferMatrix lhs, StateVector rhs )
     {
         return new StateVector( lhs.mPP.multiply( rhs.mP ).add( lhs.mPU.multiply( rhs.mU ) ),
                                 lhs.mUP.multiply( rhs.mP ).add( lhs.mUU.multiply( rhs.mU ) ) );
+    }
+
+    public StateVector multiply( StateVector rhs )
+    {
+        return new StateVector( this.mPP.multiply( rhs.mP ).add( this.mPU.multiply( rhs.mU ) ),
+                                this.mUP.multiply( rhs.mP ).add( this.mUU.multiply( rhs.mU ) ) );
+    }
+    
+    public Complex determinant()
+    {
+    	Complex det = mPP.multiply(mUU).subtract(mPU.multiply(mUP));
+    	return det;
     }
 
     public static Complex copyComplex( Complex in )

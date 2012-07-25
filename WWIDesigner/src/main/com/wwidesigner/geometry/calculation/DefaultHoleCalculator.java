@@ -37,7 +37,8 @@ public class DefaultHoleCalculator extends HoleCalculator
 		Complex Zs = null;
 		Complex Za = null;
 
-		double Z0 = parameters.calcZ0(radius);
+		// double Z0 = parameters.calcZ0(boreRadius);
+		double Z0h = parameters.calcZ0(radius);
 
 		double delta = radius / boreRadius;
 
@@ -75,22 +76,24 @@ public class DefaultHoleCalculator extends HoleCalculator
 							* (0.17 * ka + 0.92 * ka * ka + 0.16 * ka * ka * ka - 0.29
 									* ka * ka * ka * ka));
 
-			Zs = Complex.I.multiply(waveNumber * ti).add(Zo).multiply(Z0);
+			Zs = Complex.I.multiply(waveNumber * ti).add(Zo).multiply(Z0h);
 
 		}
 		else
 		{
 			ta = (-0.12 - 0.17 * Math.tanh(2.4 * hole.getHeight() / radius))
 					* radius * delta * delta * delta * delta;
-			Zs = Complex.valueOf(0, -Z0 / Math.tan(waveNumber * te));
+			Zs = Complex.valueOf(0, -Z0h / Math.tan(waveNumber * te));
 		}
 
-		Za = Complex.I.multiply(Z0 * waveNumber * ta);
+		Za = Complex.I.multiply(Z0h * waveNumber * ta);
 		Complex Za_Zs = Za.divide(Zs);
 
 		TransferMatrix result = new TransferMatrix(Za_Zs.divide(2.).add(1.),
 				Za.multiply(Za_Zs.divide(4.).add(1.)), Complex.ONE.divide(Zs),
 				Za_Zs.divide(2.0).add(1.));
+		
+		assert result.determinant() == Complex.ONE;
 
 		return result;
 	}

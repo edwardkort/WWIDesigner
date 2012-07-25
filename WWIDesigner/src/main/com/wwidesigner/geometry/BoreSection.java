@@ -71,14 +71,20 @@ public class BoreSection implements ComponentInterface
 			double alpha = (1 / mLeftRadius) * Math.sqrt(wave_number)
 					* params.getAlphaConstant();
 
+			// Gamma = alpha + i*omega/v
+			//    alpha =~ omega/c * epsilon
+			//    omega/v =~ omega/c ( 1 + epsilon ) = omega/c + alpha
+			// Gamma = i * omega/c + (1+i) * alpha
 			Complex Gamma = Complex.I.multiply(wave_number).add(
 					Complex.valueOf(1, 1).multiply(alpha));
 
 			Complex sinhL = Gamma.multiply(mLength).sinh();
 			Complex coshL = Gamma.multiply(mLength).cosh();
 
-			return new TransferMatrix(coshL, sinhL.multiply(ZcLeft),
+			TransferMatrix tm = new TransferMatrix(coshL, sinhL.multiply(ZcLeft),
 					sinhL.divide(ZcLeft), coshL);
+			assert tm.determinant() == Complex.valueOf(1.0,0.0);
+			return tm;
 		}
 
 		// the case of a cone
@@ -111,7 +117,9 @@ public class BoreSection implements ComponentInterface
 		Complex D = k_lossy_L.cos().multiply(mLeftRadius / mRightRadius)
 				.add(k_lossy_L.sin().multiply(one_over_x_out).divide(k_lossy));
 
-		return new TransferMatrix(A, B, C, D);
+		TransferMatrix tm = new TransferMatrix(A, B, C, D); 
+		assert tm.determinant() == Complex.valueOf(1.0,0.0);
+		return tm;
 	}
 
 	/**

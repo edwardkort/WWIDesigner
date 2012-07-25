@@ -14,14 +14,14 @@ public class PhysicalParameters
 
 	private double mRho;
 	private double mEta;
-	private double mTemperature;		// Absolute temperature, in Kelvin.
+	private double mTemperature;		// Temperature, in Celsius.
 	private double mSpecificHeat;
 	private double mSpeedOfSound;		// in metres per second.
 
 	private double mMu;
 	private double mGamma;
 	private double mNu;
-	private double mWaveNumber1;		// Wave number, k, at 1 Hz: 2*pi/c.
+	private double mWaveNumber1;		// Wave number, k, at 1 Hz: 2*pi/c, in radians per metre.
 	private double mAlphaConstant;
 
 	private static final double mRelativeHumidity = 0.45;
@@ -111,7 +111,7 @@ public class PhysicalParameters
 	}
 
 	/**
-	 * Utility function. Calculate the wave impedance of a bore of nominal
+	 * Calculate the wave impedance of a bore of nominal
 	 * radius r, given these parameters.
 	 */
 	public double calcZ0(double radius)
@@ -162,13 +162,17 @@ public class PhysicalParameters
 	}
 
 	/**
-	 * @return the temperature
+	 * @return the temperature, in Celsius.
 	 */
 	public double getTemperature()
 	{
 		return mTemperature;
 	}
 
+	/**
+	 * 
+	 * @return the speed of sound, in m/s.
+	 */
 	public double getSpeedOfSound()
 	{
 		return mSpeedOfSound;
@@ -179,8 +183,23 @@ public class PhysicalParameters
 		return mAlphaConstant;
 	}
 	
+	/**
+	 * 
+	 * @param freq: frequency in Hz.
+	 * @return wave number in radians/metre.
+	 */
 	public double calcWaveNumber( double freq )
 	{
 		return freq * mWaveNumber1;
+	}
+
+	/**
+	 * 
+	 * @param wave number in radians/metre.
+	 * @return frequency in Hz.
+	 */
+	public double calcFrequency( double waveNumber )
+	{
+		return waveNumber / mWaveNumber1;
 	}
 }

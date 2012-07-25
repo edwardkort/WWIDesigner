@@ -143,9 +143,7 @@ public interface InstrumentInterface
 	public Complex calculateReflectionCoefficient(double frequency, 
 			PhysicalParameters physicalParams);
 
-	/*
-	 * Added for possible compatibility with Dan Gordon's code.
-	 */
-	public Complex calcZ(double freq);
+	public Complex calcZ(double freq, Fingering fingering,
+			PhysicalParameters physicalParams);
 
 }

@@ -11,6 +11,8 @@ import java.util.TreeMap;
 import org.apache.commons.math3.complex.Complex;
 
 import com.wwidesigner.geometry.InstrumentInterface;
+import com.wwidesigner.note.Fingering;
+import com.wwidesigner.util.PhysicalParameters;
 
 /**
  * Representation of a complex spectrum, along with information about its
@@ -31,7 +33,9 @@ public class ImpedanceSpectrum
         mSpectrum.put( frequency, impedance );
     }
 
-    public void calcImpedance( InstrumentInterface flute, double freqStart, double freqEnd, int nfreq )
+    public void calcImpedance( InstrumentInterface flute,
+    		double freqStart, double freqEnd, int nfreq,
+    		Fingering fingering, PhysicalParameters physicalParams )
     {
         Complex prevZ = Complex.ZERO;
         double absPrevPrevZ = 0;
@@ -40,7 +44,7 @@ public class ImpedanceSpectrum
         for ( int i = 0; i < nfreq; ++i )
         {
             double freq = freqStart + i * freqStep;
-            Complex zAc = flute.calcZ( freq );
+            Complex zAc = flute.calcZ( freq, fingering, physicalParams );
             double absZAc = zAc.abs();
 
             setDataPoint( freq, zAc );

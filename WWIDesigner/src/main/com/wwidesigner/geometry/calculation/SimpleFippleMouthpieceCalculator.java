@@ -8,10 +8,12 @@ import org.apache.commons.math3.complex.Complex;
 import com.wwidesigner.geometry.BoreSection;
 import com.wwidesigner.geometry.Mouthpiece;
 import com.wwidesigner.geometry.MouthpieceCalculator;
+import com.wwidesigner.math.StateVector;
 import com.wwidesigner.math.TransferMatrix;
 import com.wwidesigner.util.PhysicalParameters;
 
 /**
+ * Mouthpiece calculation for a fipple mouthpiece.
  * @author kort
  * 
  */
@@ -135,4 +137,32 @@ public class SimpleFippleMouthpieceCalculator extends MouthpieceCalculator
 		return equivDiameter;
 	}
 
+	@Override
+	public Complex calcZ(double freq, PhysicalParameters physicalParams)
+	{
+		// Assume the open window acts as a flanged tube with an effective radius
+		// that corresponds to the window area.
+		double effRadius = Math.sqrt(this.mouthpiece.getFipple().getWindowLength()
+				* this.mouthpiece.getFipple().getWindowWidth() / Math.PI );
+		double waveNumber = physicalParams.calcWaveNumber(freq);
+
+		StateVector sv = new StateVector(
+				Tube.calcZflanged( freq, effRadius, physicalParams ),
+				Complex.ONE );
+		TransferMatrix tm = Tube.calcCylinderMatrix(waveNumber,
+				this.mouthpiece.getFipple().getWindowHeight(), 
+				effRadius, physicalParams );
+		sv = tm.multiply( sv );
+		return sv.Impedance();
+	}
+
+	@Override
+	public Double calcGain(double freq, Complex Z,
+			PhysicalParameters physicalParams)
+	{
+		double radius = mouthpiece.getBoreDiameter() / 2.;
+		double waveNumber = physicalParams.calcWaveNumber(freq);
+		return this.mouthpiece.getGainFactor() * waveNumber * radius*radius
+				/ Z.abs();
+	}
 }

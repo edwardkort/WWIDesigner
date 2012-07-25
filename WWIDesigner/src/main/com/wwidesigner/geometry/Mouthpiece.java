@@ -21,6 +21,7 @@ public class Mouthpiece implements ComponentInterface, MouthpieceInterface,
 	protected Mouthpiece.Fipple fipple;
 
 	// Values not part of the binding framework
+	protected Double gainFactor;
 	protected MouthpieceCalculator mouthpieceCalculator;
 	// List of bore sections whose right position <= mouthpiece position
 	protected List<BoreSection> headspace;
@@ -56,12 +57,57 @@ public class Mouthpiece implements ComponentInterface, MouthpieceInterface,
 	}
 
 	/**
+	 * Set the jet amplification factor, and the instrument-specific loop gain factor,
+	 * after Auvray, 2012.
+	 * Loop gain G = gainFactor * a^2 * waveNumber / abs(Z).
+	 * 
 	 * @param beta
-	 *            the beta to set
+	 *            the jet amplification factor to set
 	 */
 	public void setBeta(Double beta)
 	{
 		this.beta = beta;
+		if ( this.fipple != null && this.fipple.windwayHeight != null )
+		{
+			this.gainFactor
+				= (4.0 * this.fipple.windwayHeight
+					* Math.sqrt( 2.0 * this.fipple.windwayHeight / this.fipple.windowLength )
+					* Math.exp( this.beta * this.fipple.windowLength / this.fipple.windwayHeight )
+					/( this.fipple.windowLength * this.fipple.windowWidth ));
+		}
+		else
+		{
+			this.gainFactor = 0.0;
+		}
+	}
+
+	/**
+	 * @return the gain factor.
+	 */
+	public Double getGainFactor()
+	{
+		return gainFactor;
+	}
+
+	/**
+	 * Set the jet amplification factor, and the instrument-specific loop gain factor,
+	 * after Auvray, 2012.
+	 * Loop gain G = gainFactor * a^2 * waveNumber / abs(Z).
+	 * 
+	 * @param gainFactor
+	 *            the gain factor to set
+	 */
+	public void setGainFactor(Double gainFactor)
+	{
+		this.gainFactor = gainFactor;
+		if ( this.fipple.windwayHeight != null )
+		{
+			this.beta
+				= this.fipple.windwayHeight / this.fipple.windowLength
+				* Math.log( this.gainFactor /( 4 * this.fipple.windwayHeight )
+					* Math.sqrt( 0.5 * this.fipple.windowLength / this.fipple.windwayHeight)
+					* ( this.fipple.windowLength * this.fipple.windowWidth ) );
+		}
 	}
 
 	/**
@@ -108,6 +154,8 @@ public class Mouthpiece implements ComponentInterface, MouthpieceInterface,
 	public void setFipple(Mouthpiece.Fipple value)
 	{
 		this.fipple = value;
+		// Re-calculate gainFactor when the fipple changes.
+		this.setBeta(this.beta);
 	}
 
 	/**
@@ -266,6 +314,10 @@ public class Mouthpiece implements ComponentInterface, MouthpieceInterface,
 		 */
 		public Double getFippleFactor()
 		{
+			if ( fippleFactor == null )
+			{
+				return 1.0;
+			}
 			return fippleFactor;
 		}
 

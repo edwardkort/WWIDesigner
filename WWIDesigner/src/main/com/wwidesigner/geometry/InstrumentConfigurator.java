@@ -17,7 +17,7 @@ public abstract class InstrumentConfigurator
 	protected Class<? extends HoleCalculator> holeCalculatorClass;
 	protected Class<? extends BoreSectionCalculator> boreSectionCalculatorClass;
 
-	public void configureInstrument(Instrument instrument) throws Exception
+	public void configureInstrument(Instrument instrument)
 	{
 		this.instrument = instrument;
 

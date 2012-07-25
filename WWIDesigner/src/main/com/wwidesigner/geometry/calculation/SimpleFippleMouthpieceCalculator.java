@@ -17,7 +17,7 @@ import com.wwidesigner.util.PhysicalParameters;
  * @author kort
  * 
  */
-public class GordonFippleMouthpieceCalculator extends MouthpieceCalculator
+public class SimpleFippleMouthpieceCalculator extends MouthpieceCalculator
 {
 
 	private PhysicalParameters params;
@@ -25,7 +25,7 @@ public class GordonFippleMouthpieceCalculator extends MouthpieceCalculator
 	/**
 	 * @param mouthpiece
 	 */
-	public GordonFippleMouthpieceCalculator(Mouthpiece mouthpiece)
+	public SimpleFippleMouthpieceCalculator(Mouthpiece mouthpiece)
 	{
 		super(mouthpiece);
 	}
@@ -69,7 +69,7 @@ public class GordonFippleMouthpieceCalculator extends MouthpieceCalculator
 	@Override
 	public int calcReflectanceMultiplier()
 	{
-		return -1;
+		return 1;
 	}
 
 	protected double calcKDeltaL(double omega, double z0)
@@ -94,7 +94,8 @@ public class GordonFippleMouthpieceCalculator extends MouthpieceCalculator
 		double speedOfSound = params.getSpeedOfSound();
 		double v = calcHeadspaceVolume();
 
-		double result = -(omega * v) / (gamma * speedOfSound * speedOfSound);
+		double result = -(omega * v)
+				/ (gamma * speedOfSound * speedOfSound);
 
 		return result;
 	}
@@ -130,13 +131,12 @@ public class GordonFippleMouthpieceCalculator extends MouthpieceCalculator
 		double windowWidth = mouthpiece.getFipple().getWindowWidth();
 		double fippleFactor = mouthpiece.getFipple().getFippleFactor();
 
-		double effectiveArea = windowLength * windowWidth;
-		double equivDiameter = 2. * Math.sqrt(effectiveArea / Math.PI)
-				* fippleFactor;
+		double effectiveArea = windowLength * windowWidth * fippleFactor;
+		double equivDiameter = Math.sqrt(Math.PI * effectiveArea) * 2.;
 
 		return equivDiameter;
 	}
-	
+
 	@Override
 	public Complex calcZ(double freq, PhysicalParameters physicalParams)
 	{

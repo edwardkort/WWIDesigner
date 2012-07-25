@@ -3,7 +3,12 @@
  */
 package com.wwidesigner.util;
 
-import static com.wwidesigner.util.Constants.*;
+import static com.wwidesigner.util.Constants.C_P;
+import static com.wwidesigner.util.Constants.GAMMA;
+import static com.wwidesigner.util.Constants.KAPPA;
+import static com.wwidesigner.util.Constants.NU;
+
+import com.wwidesigner.util.Constants.TemperatureType;
 
 /**
  * @author kort
@@ -14,15 +19,18 @@ public class PhysicalParameters
 
 	private double mRho;
 	private double mEta;
-	private double mTemperature;		// Temperature, in Celsius.
+	private double mTemperature; // Temperature, in Celsius.
 	private double mSpecificHeat;
-	private double mSpeedOfSound;		// in metres per second.
+	private double mSpeedOfSound; // in metres per second.
 
 	private double mMu;
 	private double mGamma;
 	private double mNu;
-	private double mWaveNumber1;		// Wave number, k, at 1 Hz: 2*pi/c, in radians per metre.
+	private double mWaveNumber1; // Wave number, k, at 1 Hz: 2*pi/c, in radians
+									// per metre.
 	private double mAlphaConstant;
+	private double mKappa; // The thermal conductivity of air.
+	private double mC_p; // The specific heat of air at constant pressure.
 
 	private static final double mRelativeHumidity = 0.45;
 
@@ -54,6 +62,8 @@ public class PhysicalParameters
 		mMu = 1.8460E-5 * (1 + 0.00250 * deltaT);
 		mGamma = 1.4017 * (1 - 0.00002 * deltaT);
 		mNu = 0.8410 * (1 - 0.00020 * deltaT);
+		mKappa = 2.6118e-2;
+		mC_p = 1.0063e3;
 		// p.c = 3.4723E+2 * (1 + 0.00166*deltaT);
 		mWaveNumber1 = 2.0 * Math.PI / mSpeedOfSound;
 
@@ -111,8 +121,8 @@ public class PhysicalParameters
 	}
 
 	/**
-	 * Calculate the wave impedance of a bore of nominal
-	 * radius r, given these parameters.
+	 * Calculate the wave impedance of a bore of nominal radius r, given these
+	 * parameters.
 	 */
 	public double calcZ0(double radius)
 	{
@@ -182,24 +192,43 @@ public class PhysicalParameters
 	{
 		return mAlphaConstant;
 	}
-	
+
 	/**
 	 * 
-	 * @param freq: frequency in Hz.
+	 * @param freq
+	 *            : frequency in Hz.
 	 * @return wave number in radians/metre.
 	 */
-	public double calcWaveNumber( double freq )
+	public double calcWaveNumber(double freq)
 	{
 		return freq * mWaveNumber1;
 	}
 
 	/**
 	 * 
-	 * @param wave number in radians/metre.
+	 * @param wave
+	 *            number in radians/metre.
 	 * @return frequency in Hz.
 	 */
-	public double calcFrequency( double waveNumber )
+	public double calcFrequency(double waveNumber)
 	{
 		return waveNumber / mWaveNumber1;
 	}
+
+	/**
+	 * @return the mKappa
+	 */
+	public double getKappa()
+	{
+		return mKappa;
+	}
+
+	/**
+	 * @return the mC_p
+	 */
+	public double getC_p()
+	{
+		return mC_p;
+	}
+
 }

@@ -207,7 +207,6 @@ public class Instrument implements InstrumentInterface
 	}
 
 	public void setConfiguration(InstrumentConfigurator configurator)
-			throws Exception
 	{
 		this.configurator = configurator;
 		configurator.configureInstrument(this);

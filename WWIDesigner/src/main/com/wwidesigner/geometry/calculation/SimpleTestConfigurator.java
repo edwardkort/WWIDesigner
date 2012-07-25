@@ -26,4 +26,16 @@ public class SimpleTestConfigurator extends InstrumentConfigurator
 				instrument.getTermination());
 	}
 
+	@Override
+	protected void setHoleCalculator()
+	{
+		this.holeCalculatorClass = DefaultHoleCalculator.class;
+	}
+
+	@Override
+	protected void setBoreSectionCalculator()
+	{
+		this.boreSectionCalculatorClass = DefaultBoreSectionCalculator.class;
+	}
+
 }

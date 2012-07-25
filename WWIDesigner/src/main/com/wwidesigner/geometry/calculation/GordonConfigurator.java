@@ -9,7 +9,7 @@ import com.wwidesigner.geometry.InstrumentConfigurator;
  * @author kort
  * 
  */
-public class SimpleFippleMouthpieceConfigurator extends InstrumentConfigurator
+public class GordonConfigurator extends InstrumentConfigurator
 {
 
 	/*
@@ -35,20 +35,20 @@ public class SimpleFippleMouthpieceConfigurator extends InstrumentConfigurator
 	@Override
 	protected void setTerminationCalculator()
 	{
-		this.terminationCalculator = new ThickFlangedOpenEndCalculator(
+		this.terminationCalculator = new IdealOpenEndCalculator(
 				instrument.getTermination());
 	}
 
 	@Override
 	protected void setHoleCalculator()
 	{
-		this.holeCalculatorClass = DefaultHoleCalculator.class;
+		this.holeCalculatorClass = GordonHoleCalculator.class;
 	}
 
 	@Override
 	protected void setBoreSectionCalculator()
 	{
-		this.boreSectionCalculatorClass = DefaultBoreSectionCalculator.class;
+		this.boreSectionCalculatorClass = GordonBoreSectionCalculator.class;
 	}
 
 }

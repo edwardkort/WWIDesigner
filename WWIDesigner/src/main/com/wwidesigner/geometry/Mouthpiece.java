@@ -385,10 +385,6 @@ public class Mouthpiece implements ComponentInterface, MouthpieceInterface,
 		{
 			windowWidth *= multiplier;
 			windowLength *= multiplier;
-			if (fippleFactor != null)
-			{
-				fippleFactor *= multiplier;
-			}
 			if (windowHeight != null)
 			{
 				windowHeight *= multiplier;

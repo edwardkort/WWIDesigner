@@ -7,6 +7,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.List;
 
 import org.junit.Test;
@@ -17,11 +18,7 @@ import com.wwidesigner.geometry.Instrument;
 import com.wwidesigner.geometry.InstrumentConfigurator;
 import com.wwidesigner.geometry.PositionInterface;
 import com.wwidesigner.geometry.bind.GeometryBindFactory;
-<<<<<<< HEAD
-import com.wwidesigner.geometry.calculation.SimpleFippleMouthpieceConfigurator;
-=======
 import com.wwidesigner.geometry.calculation.GordonConfigurator;
->>>>>>> 62e4ef8... NafOptimizationTest passes, with some deviations on 6-hole test.
 import com.wwidesigner.note.Tuning;
 import com.wwidesigner.note.bind.NoteBindFactory;
 import com.wwidesigner.util.BindFactory;
@@ -217,7 +214,7 @@ public class NafOptimizationTest
 		return instrument;
 	}
 
-	protected void configureInstrument(Instrument instrument)
+	protected void configureInstrument(Instrument instrument) throws Exception
 	{
 		// InstrumentConfigurator instrumentConfig = new
 		// SimpleFippleMouthpieceConfigurator();

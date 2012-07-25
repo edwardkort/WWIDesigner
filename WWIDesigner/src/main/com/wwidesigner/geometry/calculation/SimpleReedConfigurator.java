@@ -9,7 +9,7 @@ public class SimpleReedConfigurator extends InstrumentConfigurator
 	protected void setMouthpieceCalculator()
 	{
 		this.mouthpieceCalculator = new NoOpReedMouthpieceCalculator(
-				instrument.getMouthpiece());		
+				instrument.getMouthpiece());
 	}
 
 	@Override
@@ -17,7 +17,19 @@ public class SimpleReedConfigurator extends InstrumentConfigurator
 	{
 		this.terminationCalculator = new ThickFlangedOpenEndCalculator(
 				instrument.getTermination());
-		
+
+	}
+
+	@Override
+	protected void setHoleCalculator()
+	{
+		this.holeCalculatorClass = DefaultHoleCalculator.class;
+	}
+
+	@Override
+	protected void setBoreSectionCalculator()
+	{
+		this.boreSectionCalculatorClass = DefaultBoreSectionCalculator.class;
 	}
 
 }

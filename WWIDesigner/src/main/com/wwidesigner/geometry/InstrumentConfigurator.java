@@ -3,7 +3,7 @@
  */
 package com.wwidesigner.geometry;
 
-import com.wwidesigner.geometry.calculation.DefaultHoleCalculator;
+import java.lang.reflect.Constructor;
 
 /**
  * @author kort
@@ -14,34 +14,75 @@ public abstract class InstrumentConfigurator
 	protected Instrument instrument;
 	protected MouthpieceCalculator mouthpieceCalculator;
 	protected TerminationCalculator terminationCalculator;
+	protected Class<? extends HoleCalculator> holeCalculatorClass;
+	protected Class<? extends BoreSectionCalculator> boreSectionCalculatorClass;
 
-	public void configureInstrument(Instrument instrument)
+	public void configureInstrument(Instrument instrument) throws Exception
 	{
 		this.instrument = instrument;
-		setMouthpieceCalculator();
-		instrument.getMouthpiece().setCalculator(mouthpieceCalculator);
-		
-		setHoleCalculator();
 
-		setTerminationCalculator();
-		instrument.getTermination().setCalculator(terminationCalculator);
+		configureMouthpiece();
+
+		configureHoles();
+
+		configureTermination();
+
+		setBoreSectionCalculator();
+	}
+
+	public void configureBoreSectionCalculator(BoreSection section)
+	{
+		try
+		{
+			Constructor<? extends BoreSectionCalculator> constructor = boreSectionCalculatorClass
+					.getConstructor(BoreSection.class);
+			BoreSectionCalculator calculator = constructor.newInstance(section);
+			section.setBoreSectionCalculator(calculator);
+		}
+		catch (Exception e)
+		{
+			throw new RuntimeException(e);
+		}
 	}
 
 	protected abstract void setMouthpieceCalculator();
 
 	protected abstract void setTerminationCalculator();
 
-	/**
-	 * Override this method in concrete configurator to set a different
-	 * HoleCalculator
-	 */
-	protected void setHoleCalculator()
+	protected abstract void setHoleCalculator();
+
+	protected abstract void setBoreSectionCalculator();
+
+	protected void configureMouthpiece()
 	{
-		for (Hole currentHole : instrument.getHole())
+		setMouthpieceCalculator();
+		instrument.getMouthpiece().setCalculator(mouthpieceCalculator);
+	}
+
+	protected void configureHoles()
+	{
+		setHoleCalculator();
+
+		try
 		{
-			HoleCalculator holeCalculator = new DefaultHoleCalculator(
-					currentHole);
-			currentHole.setCalculator(holeCalculator);
+			for (Hole currentHole : instrument.getHole())
+			{
+				Constructor<? extends HoleCalculator> constructor = holeCalculatorClass
+						.getConstructor(Hole.class);
+				HoleCalculator holeCalculator = constructor
+						.newInstance(currentHole);
+				currentHole.setCalculator(holeCalculator);
+			}
 		}
+		catch (Exception e)
+		{
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected void configureTermination()
+	{
+		setTerminationCalculator();
+		instrument.getTermination().setCalculator(terminationCalculator);
 	}
 }

@@ -128,7 +128,7 @@ public class ChalumeauOptimizationTest
 		return instrument;
 	}
 
-	protected void configureInstrument(Instrument instrument)
+	protected void configureInstrument(Instrument instrument) throws Exception
 	{
 		InstrumentConfigurator instrumentConfig = new SimpleReedConfigurator();
 		instrument.setConfiguration(instrumentConfig);

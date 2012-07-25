@@ -102,7 +102,7 @@ public class InstrumentOptimizerTest
 		return instrument;
 	}
 
-	protected void configureInstrument(Instrument instrument)
+	protected void configureInstrument(Instrument instrument) throws Exception
 	{
 		InstrumentConfigurator instrumentConfig = new SimpleTestConfigurator();
 		instrument.setConfiguration(instrumentConfig);

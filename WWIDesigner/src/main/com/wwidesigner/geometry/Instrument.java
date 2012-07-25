@@ -35,6 +35,7 @@ public class Instrument implements InstrumentInterface
 	protected Termination termination;
 
 	private boolean convertedToMetres = false;
+	protected InstrumentConfigurator configurator;
 
 	public Instrument()
 	{
@@ -206,7 +207,9 @@ public class Instrument implements InstrumentInterface
 	}
 
 	public void setConfiguration(InstrumentConfigurator configurator)
+			throws Exception
 	{
+		this.configurator = configurator;
 		configurator.configureInstrument(this);
 		convertToMetres();
 	}
@@ -428,6 +431,7 @@ public class Instrument implements InstrumentInterface
 	}
 
 	protected void addSection(BorePoint leftPoint, BorePoint rightPoint)
+
 	{
 		BoreSection section = new BoreSection();
 		section.setLength(rightPoint.getBorePosition()
@@ -435,6 +439,8 @@ public class Instrument implements InstrumentInterface
 		section.setLeftRadius(leftPoint.getBoreDiameter() / 2);
 		section.setRightRadius(rightPoint.getBoreDiameter() / 2);
 		section.setRightBorePosition(rightPoint.getBorePosition());
+
+		configurator.configureBoreSectionCalculator(section);
 
 		components.add(section);
 	}
@@ -489,12 +495,12 @@ public class Instrument implements InstrumentInterface
 			PhysicalParameters physicalParams)
 	{
 		double frequency = fingering.getNote().getFrequency();
-		
-		
+
 		setOpenHoles(fingering);
-		
-		Complex reflectance = calculateReflectionCoefficient(frequency, physicalParams);
-		
+
+		Complex reflectance = calculateReflectionCoefficient(frequency,
+				physicalParams);
+
 		int reflectanceMultiplier = mouthpiece.calcReflectanceMultiplier();
 
 		Complex result = reflectance.multiply(reflectanceMultiplier);
@@ -502,11 +508,12 @@ public class Instrument implements InstrumentInterface
 		return result;
 	}
 
-	public Complex calculateReflectionCoefficient(double frequency, PhysicalParameters physicalParams)
+	public Complex calculateReflectionCoefficient(double frequency,
+			PhysicalParameters physicalParams)
 	{
 		double waveNumber = 2 * Math.PI * frequency
 				/ physicalParams.getSpeedOfSound();
-		
+
 		updateComponents();
 
 		TransferMatrix transferMatrix = TransferMatrix.makeIdentity();
@@ -526,7 +533,7 @@ public class Instrument implements InstrumentInterface
 		Complex reflectance = sv.Reflectance(characteristic_impedance);
 		return reflectance;
 	}
-	
+
 	public void setOpenHoles(Fingering fingering)
 	{
 		List<Boolean> openHoles = fingering.getOpenHole();

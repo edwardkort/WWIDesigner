@@ -21,7 +21,7 @@ public class SimpleFippleMouthpieceConfigurator extends InstrumentConfigurator
 	@Override
 	protected void setMouthpieceCalculator()
 	{
-		this.mouthpieceCalculator = new SimpleFippleMouthpieceCalculator(
+		this.mouthpieceCalculator = new GordonFippleMouthpieceCalculator(
 				instrument.getMouthpiece());
 	}
 

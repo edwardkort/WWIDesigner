@@ -3,9 +3,6 @@
  */
 package com.wwidesigner.geometry.calculation;
 
-import java.util.List;
-
-import com.wwidesigner.geometry.BorePoint;
 import com.wwidesigner.geometry.InstrumentConfigurator;
 import com.wwidesigner.geometry.Termination;
 
@@ -28,13 +25,6 @@ public class WhistleConfigurator extends InstrumentConfigurator
 	{
 		Termination termination = instrument.getTermination();
 		this.terminationCalculator = new FlangedEndCalculator(termination);
-		if (termination.getBoreDiameter() <= 0.0)
-		{
-			// Retrieve bore diameter from final bore section.
-			List<BorePoint> borePoints = instrument.getBorePoint();
-			termination.setBoreDiameter(borePoints.get(borePoints.size() - 1)
-					.getBoreDiameter());
-		}
 	}
 
 	@Override

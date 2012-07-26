@@ -397,7 +397,7 @@ public class Instrument implements InstrumentInterface
 		currentPosition.setBoreDiameter(holeBoreDiameter);
 
 		// Make new bore section
-		if ((rightPosition - thisPosition) > 0.00001d)
+		if (rightPosition > thisPosition)
 		{
 			rightPoint = new BorePoint();
 			rightPoint.setBoreDiameter(holeBoreDiameter);
@@ -546,7 +546,7 @@ public class Instrument implements InstrumentInterface
 
 	@Override
 	public Complex calcZ(double freq, Fingering fingering,
-			PhysicalParameters physicalParams )
+			PhysicalParameters physicalParams)
 	{
 		setOpenHoles(fingering);
 		updateComponents();
@@ -557,18 +557,21 @@ public class Instrument implements InstrumentInterface
 		// and multiply by transfer matrices of each hole and bore segment
 		// from the termination up to, but not including the mouthpiece.
 
-		StateVector sv = termination.calcStateVector(waveNumber, physicalParams);
+		StateVector sv = termination
+				.calcStateVector(waveNumber, physicalParams);
 		TransferMatrix tm;
 		Complex Zresonator = sv.Impedance();
-		for ( int componentNr = components.size() - 1; componentNr > 0; -- componentNr )
+		for (int componentNr = components.size() - 1; componentNr > 0; --componentNr)
 		{
-			tm = components.get(componentNr).calcTransferMatrix(waveNumber, physicalParams);
-			sv = tm.multiply( sv );
+			tm = components.get(componentNr).calcTransferMatrix(waveNumber,
+					physicalParams);
+			sv = tm.multiply(sv);
 			Zresonator = sv.Impedance();
 		}
-		
-		Complex Zwindow = mouthpiece.mouthpieceCalculator.calcZ(freq, physicalParams);
-		
+
+		Complex Zwindow = mouthpiece.mouthpieceCalculator.calcZ(freq,
+				physicalParams);
+
 		return Zresonator.add(Zwindow);
 	}
 }

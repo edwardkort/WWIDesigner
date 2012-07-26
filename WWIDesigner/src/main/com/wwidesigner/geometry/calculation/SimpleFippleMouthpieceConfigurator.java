@@ -21,7 +21,7 @@ public class SimpleFippleMouthpieceConfigurator extends InstrumentConfigurator
 	@Override
 	protected void setMouthpieceCalculator()
 	{
-		this.mouthpieceCalculator = new GordonFippleMouthpieceCalculator(
+		this.mouthpieceCalculator = new SimpleFippleMouthpieceCalculator(
 				instrument.getMouthpiece());
 	}
 
@@ -35,7 +35,7 @@ public class SimpleFippleMouthpieceConfigurator extends InstrumentConfigurator
 	@Override
 	protected void setTerminationCalculator()
 	{
-		this.terminationCalculator = new ThickFlangedOpenEndCalculator(
+		this.terminationCalculator = new IdealOpenEndCalculator(
 				instrument.getTermination());
 	}
 

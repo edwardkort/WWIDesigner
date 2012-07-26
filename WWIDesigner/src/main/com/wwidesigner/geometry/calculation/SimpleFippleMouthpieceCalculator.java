@@ -69,7 +69,7 @@ public class SimpleFippleMouthpieceCalculator extends MouthpieceCalculator
 	@Override
 	public int calcReflectanceMultiplier()
 	{
-		return 1;
+		return -1;
 	}
 
 	protected double calcKDeltaL(double omega, double z0)
@@ -131,8 +131,9 @@ public class SimpleFippleMouthpieceCalculator extends MouthpieceCalculator
 		double windowWidth = mouthpiece.getFipple().getWindowWidth();
 		double fippleFactor = mouthpiece.getFipple().getFippleFactor();
 
-		double effectiveArea = windowLength * windowWidth * fippleFactor;
-		double equivDiameter = Math.sqrt(Math.PI * effectiveArea) * 2.;
+		double effectiveArea = windowLength * windowWidth;
+		double equivDiameter = 2. * Math.sqrt(effectiveArea / Math.PI)
+				* fippleFactor;
 
 		return equivDiameter;
 	}

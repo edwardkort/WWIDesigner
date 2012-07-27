@@ -6,11 +6,11 @@ import com.wwidesigner.geometry.Instrument;
 import com.wwidesigner.geometry.PositionInterface;
 import com.wwidesigner.note.TuningInterface;
 
-public class HolePositionAndDiameterOptimizer extends InstrumentOptimizer
+public class TuningHolePositionAndDiameterOptimizer extends InstrumentOptimizer
 {
 	private static int defaultNumberOfInterpolationPoints = 60;
 
-	public HolePositionAndDiameterOptimizer(Instrument inst, TuningInterface tuning)
+	public TuningHolePositionAndDiameterOptimizer(Instrument inst, TuningInterface tuning)
 	{
 		super(defaultNumberOfInterpolationPoints, inst, tuning);
 	}
@@ -81,7 +81,7 @@ public class HolePositionAndDiameterOptimizer extends InstrumentOptimizer
 	@Override
 	public void setOptimizationFunction()
 	{
-		optimizationFunction = new BasicOptimizationFunction(this, tuning,
+		optimizationFunction = new TuningOptimizationFunction(this, tuning,
 				physicalParams);
 		
 	}

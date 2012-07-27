@@ -12,6 +12,7 @@ import java.util.List;
 
 import org.apache.commons.math3.complex.Complex;
 
+import com.wwidesigner.math.ImpedanceSpectrum;
 import com.wwidesigner.math.StateVector;
 import com.wwidesigner.math.TransferMatrix;
 import com.wwidesigner.note.Fingering;
@@ -549,7 +550,6 @@ public class Instrument implements InstrumentInterface
 			PhysicalParameters physicalParams)
 	{
 		setOpenHoles(fingering);
-		updateComponents();
 
 		double waveNumber = physicalParams.calcWaveNumber(freq);
 
@@ -573,5 +573,21 @@ public class Instrument implements InstrumentInterface
 				physicalParams);
 
 		return Zresonator.add(Zwindow);
+	}
+
+	public Double getPlayedFrequency(Fingering fingering, double freqRange,
+			int numberOfFrequencies, PhysicalParameters params)
+	{
+		Double playedFreq = null;
+		double targetFreq = fingering.getNote().getFrequency();
+		double freqStart = targetFreq / freqRange;
+		double freqEnd = targetFreq * freqRange;
+		ImpedanceSpectrum spectrum = new ImpedanceSpectrum();
+
+		spectrum.calcImpedance(this, freqStart, freqEnd, numberOfFrequencies,
+				fingering, params);
+		playedFreq = spectrum.getClosestMaximumFrequency(targetFreq);
+
+		return playedFreq;
 	}
 }

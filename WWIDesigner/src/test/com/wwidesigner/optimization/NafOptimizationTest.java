@@ -54,7 +54,9 @@ public class NafOptimizationTest
 
 		Tuning tuning = getTuningFromXml();
 
-		InstrumentOptimizer optimizer = new HolePositionAndDiameterOptimizer(
+//		InstrumentOptimizer optimizer = new HolePositionAndDiameterOptimizer(
+//				instrument, tuning);
+		InstrumentOptimizer optimizer = new TuningHolePositionAndDiameterOptimizer(
 				instrument, tuning);
 		optimizer.setBaseOptimizer(optimizerType, numberOfInterpolationPoints);
 		setPhysicalParameters(optimizer);

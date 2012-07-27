@@ -11,5 +11,6 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/ApacheCommonsBeanUtils"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/ApacheCommonsLang2"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/ApacheCommonsLogging"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/JIDE_Chart"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>

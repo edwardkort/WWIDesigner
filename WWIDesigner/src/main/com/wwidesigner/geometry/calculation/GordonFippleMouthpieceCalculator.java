@@ -150,7 +150,7 @@ public class GordonFippleMouthpieceCalculator extends MouthpieceCalculator
 				Tube.calcZflanged( freq, effRadius, physicalParams ),
 				Complex.ONE );
 		TransferMatrix tm = Tube.calcCylinderMatrix(waveNumber,
-				this.mouthpiece.getFipple().getWindowHeight(), 
+				0.0008,//this.mouthpiece.getFipple().getWindowHeight() is null, so set a representative NAF value.
 				effRadius, physicalParams );
 		sv = tm.multiply( sv );
 		return sv.Impedance();

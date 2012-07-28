@@ -54,16 +54,16 @@ public class ImpedanceSpectrumPlot
 			double targetFreq = fingering.getNote().getFrequency();
 			double freqStart = targetFreq / freqRange;
 			double freqEnd = targetFreq * freqRange;
-			ImpedanceSpectrum spectrum = new ImpedanceSpectrum();
+			ImpedanceSpectrum impSpectrum = new ImpedanceSpectrum();
 
-			spectrum.calcImpedance(instrument, freqStart, freqEnd,
+			impSpectrum.calcImpedance(instrument, freqStart, freqEnd,
 					numberOfFrequencies, fingering, params);
-			spectrum.plotImpedanceSpectrum();
+			impSpectrum.plotImpedanceSpectrum();
 
-			spectrum = new ImpedanceSpectrum();
-			spectrum.calcReflectance(instrument, freqStart, freqEnd,
+			ReflectanceSpectrum reflSpectrum = new ReflectanceSpectrum();
+			reflSpectrum.calcReflectance(instrument, freqStart, freqEnd,
 					numberOfFrequencies, fingering, params);
-			spectrum.plotReflectanceSpectrum();
+			reflSpectrum.plotReflectanceSpectrum();
 		}
 		catch (Exception e)
 		{

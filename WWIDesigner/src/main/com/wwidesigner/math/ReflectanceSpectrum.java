@@ -23,70 +23,76 @@ import com.wwidesigner.note.Fingering;
 import com.wwidesigner.util.PhysicalParameters;
 
 /**
- * Representation of a complex spectrum, along with information about its
- * extreme points.
+ * @author kort
+ * 
  */
-public class ImpedanceSpectrum
+public class ReflectanceSpectrum
 {
-
 	/**
-	 * Holds impedance spectrum (created by calcImpedance()).
+	 * Holds reflectance spectrum (created by calcReflectance().
 	 */
 	private Map<Double, Complex> mSpectrum;
 
 	/**
-	 * Holds impedance minima.
+	 * Holds squared reflectance angle minima.
 	 */
 	private List<Double> mMinima;
 
 	/**
-	 * Holds impedance maxima.
+	 * Holds squared reflectance angle maxima.
 	 */
 	private List<Double> mMaxima;
 
 	/**
 	 * Add or replace a point in the spectrum.
 	 */
-	public void setDataPoint(double frequency, Complex impedance)
+	public void setDataPoint(double frequency, Complex value)
 	{
-		mSpectrum.put(frequency, impedance);
+		mSpectrum.put(frequency, value);
 	}
 
-	public void calcImpedance(InstrumentInterface flute, double freqStart,
+	public void calcReflectance(InstrumentInterface flute, double freqStart,
 			double freqEnd, int nfreq, Fingering fingering,
 			PhysicalParameters physicalParams)
 	{
 		mSpectrum = new TreeMap<Double, Complex>();
 		mMinima = new ArrayList<Double>();
 		mMaxima = new ArrayList<Double>();
-		Complex prevZ = Complex.ZERO;
-		double absPrevPrevZ = 0;
-		double prevFreq = 0;
+		double prevReflAngle = 0.;
+		double prevPrevReflAngle = 0.;
+		double prevFreq = 0.;
 		double freqStep = (freqEnd - freqStart) / (nfreq - 1);
 		for (int i = 0; i < nfreq; ++i)
 		{
 			double freq = freqStart + i * freqStep;
-			Complex zAc = flute.calcZ(freq, fingering, physicalParams);
-			double absZAc = zAc.abs();
+			Complex reflectance = flute.calculateReflectionCoefficient(freq,
+					physicalParams);
+			int reflectanceMultiplier = flute.getMouthpiece()
+					.calcReflectanceMultiplier();
 
-			setDataPoint(freq, zAc);
+			reflectance = reflectance.multiply(reflectanceMultiplier);
 
-			double absPrevZ = prevZ.abs();
+			setDataPoint(freq, reflectance);
 
-			if ((i >= 2) && (absPrevZ < absZAc) && (absPrevZ < absPrevPrevZ))
+			double reflectAngle = reflectance.getArgument();
+			reflectAngle *= reflectAngle;
+
+			if ((i >= 2) && (prevReflAngle < reflectAngle)
+					&& (prevReflAngle < prevPrevReflAngle))
 			{
 				// We have found an impedance minimum.
 				getMinima().add(prevFreq);
 			}
 
-			if ((i >= 2) && (absPrevZ > absZAc) && (absPrevZ > absPrevPrevZ))
+			if ((i >= 2) && (prevReflAngle > reflectAngle)
+					&& (prevReflAngle > prevPrevReflAngle))
 			{
 				// We have found an impedance maximum.
 				getMaxima().add(prevFreq);
 			}
 
-			absPrevPrevZ = absPrevZ;
-			prevZ = zAc;
+			prevPrevReflAngle = prevReflAngle;
+			prevReflAngle = reflectAngle;
 			prevFreq = freq;
 		}
 	}
@@ -155,26 +161,28 @@ public class ImpedanceSpectrum
 		return closestFreq;
 	}
 
-	public void plotImpedanceSpectrum()
+	public void plotReflectanceSpectrum()
 	{
 		SwingUtilities.invokeLater(new Runnable()
 		{
 			public void run()
 			{
-				JFrame frame = new JFrame("Impedance Spectrum");
+				JFrame frame = new JFrame("Reflectance Spectrum");
 				frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 				frame.setSize(800, 600);
 				DefaultChartModel model1 = new DefaultChartModel(
 						"Absolute Value");
 				DefaultChartModel model2 = new DefaultChartModel(
-						"Absolute value, imaginary");
+						"Reflectance angle, squared");
 				for (Map.Entry<Double, Complex> point : mSpectrum.entrySet())
 				{
 					double x = point.getKey();
-					double y = point.getValue().abs();
-					double i = Math.abs(point.getValue().getImaginary());
+					Complex cy = point.getValue();
+					double ra = cy.getArgument();
+					ra *= ra;
+					double y = cy.abs();
 					model1.addPoint(x, y);
-					model2.addPoint(x, i);
+					model2.addPoint(x, ra);
 				}
 				Chart chart = new Chart();
 				chart.setAutoRanging(true);
@@ -183,8 +191,8 @@ public class ImpedanceSpectrum
 				chart.addModel(model1, style1);
 				chart.addModel(model2, style2);
 				chart.getXAxis().setLabel("Frequency");
-				chart.getYAxis().setLabel("Impedance");
-				chart.setTitle("Impedance Spectrum");
+				chart.getYAxis().setLabel("Reflectance");
+				chart.setTitle("Reflectance Spectrum");
 				Legend legend = new Legend(chart);
 				chart.addDrawable(legend);
 				legend.setLocation(200, 50);

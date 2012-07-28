@@ -3,6 +3,7 @@
  */
 package com.wwidesigner.math;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -14,7 +15,9 @@ import javax.swing.SwingUtilities;
 import org.apache.commons.math3.complex.Complex;
 
 import com.jidesoft.chart.Chart;
+import com.jidesoft.chart.Legend;
 import com.jidesoft.chart.model.DefaultChartModel;
+import com.jidesoft.chart.style.ChartStyle;
 import com.wwidesigner.geometry.InstrumentInterface;
 import com.wwidesigner.note.Fingering;
 import com.wwidesigner.util.PhysicalParameters;
@@ -146,8 +149,9 @@ public class ImpedanceSpectrum
 			{
 				JFrame frame = new JFrame("Impedance Spectrum");
 				frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-				frame.setSize(400, 300);
-				DefaultChartModel model = new DefaultChartModel("Model");
+				frame.setSize(800, 600);
+				DefaultChartModel model1 = new DefaultChartModel("Absolute Value");
+				DefaultChartModel model2 = new DefaultChartModel("Absolute value, imaginary");
 				double minX = Double.MAX_VALUE;
 				double maxX = Double.NEGATIVE_INFINITY;
 				double minY = Double.MAX_VALUE;
@@ -156,6 +160,7 @@ public class ImpedanceSpectrum
 				{
 					double x = point.getKey();
 					double y = point.getValue().abs();
+					double i = Math.abs(point.getValue().getImaginary());
 					if (x < minX)
 					{
 						minX = x;
@@ -172,15 +177,22 @@ public class ImpedanceSpectrum
 					{
 						maxY = y;
 					}
-					model.addPoint(x, y);
+					model1.addPoint(x, y);
+					model2.addPoint(x, i);
 				}
 				Chart chart = new Chart();
-				chart.addModel(model);
+				ChartStyle style1 = new ChartStyle(Color.black, false, true);
+				ChartStyle style2 = new ChartStyle(Color.red, false, true);
+				chart.addModel(model1, style1);
+				chart.addModel(model2, style2);
 				chart.getXAxis().setRange(minX, maxX);
 				chart.getXAxis().setLabel("Frequency");
 				chart.getYAxis().setRange(minY, maxY);
 				chart.getYAxis().setLabel("Impedance");
 				chart.setTitle("Impedance Spectrum");
+				Legend legend = new Legend(chart);
+				chart.addDrawable(legend);
+				legend.setLocation(200, 50);
 				frame.setContentPane(chart);
 				frame.setVisible(true);
 			}

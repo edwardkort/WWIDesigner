@@ -139,6 +139,9 @@ public interface InstrumentInterface
 
 	public Complex calculateReflectionCoefficient(Fingering fingering,
 			PhysicalParameters physicalParams);
+	
+	public Complex calculateReflectionCoefficient(double frequency, Fingering fingering,
+			PhysicalParameters physicalParams);
 
 	public Complex calculateReflectionCoefficient(double frequency, 
 			PhysicalParameters physicalParams);

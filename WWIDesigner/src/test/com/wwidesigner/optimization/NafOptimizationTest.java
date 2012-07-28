@@ -19,6 +19,8 @@ import com.wwidesigner.geometry.InstrumentConfigurator;
 import com.wwidesigner.geometry.PositionInterface;
 import com.wwidesigner.geometry.bind.GeometryBindFactory;
 import com.wwidesigner.geometry.calculation.GordonConfigurator;
+import com.wwidesigner.note.Fingering;
+import com.wwidesigner.note.InstrumentTuningTable;
 import com.wwidesigner.note.Tuning;
 import com.wwidesigner.note.bind.NoteBindFactory;
 import com.wwidesigner.util.BindFactory;
@@ -38,6 +40,7 @@ public class NafOptimizationTest
 	protected double[] upperBound;
 	protected InstrumentOptimizer.OptimizerType optimizerType;
 	protected int numberOfInterpolationPoints;
+	protected PhysicalParameters params;
 
 	/**
 	 * Complete workflow for optimizing an XML-defined instrument with the
@@ -47,7 +50,7 @@ public class NafOptimizationTest
 	 *         the original units.
 	 * @throws Exception
 	 */
-	public Instrument doInstrumentOptimization() throws Exception
+	public Instrument doInstrumentOptimization(String title) throws Exception
 	{
 		Instrument instrument = getInstrumentFromXml();
 		configureInstrument(instrument);
@@ -56,18 +59,42 @@ public class NafOptimizationTest
 
 		InstrumentOptimizer optimizer = new HolePositionAndDiameterOptimizer(
 				instrument, tuning);
-//		InstrumentOptimizer optimizer = new TuningHolePositionAndDiameterOptimizer(
-//				instrument, tuning);
+		// InstrumentOptimizer optimizer = new
+		// TuningHolePositionAndDiameterOptimizer(
+		// instrument, tuning);
 		optimizer.setBaseOptimizer(optimizerType, numberOfInterpolationPoints);
 		setPhysicalParameters(optimizer);
 		setOptimizationBounds(optimizer);
+
+		showTuning(instrument, tuning, title + ", before optimization");
+
 		optimizer.optimizeInstrument();
 
 		// Convert back to the input unit-of-measure values
 		instrument.convertToLengthType();
 
+		showTuning(instrument, tuning, title + ", after optimization");
+
 		// The optimizer modifies the input Instrument instance
 		return instrument;
+	}
+
+	public void showTuning(Instrument instrument, Tuning tuning, String title)
+	{
+		double maxFreqRatio = 1.3;
+		// set accuracy to 0.1 cents
+		int numberOfFrequencies = (int)(10. * InstrumentTuningTable.getCents(maxFreqRatio));
+		
+		InstrumentTuningTable table = new InstrumentTuningTable(title);
+
+		for (Fingering fingering : tuning.getFingering())
+		{
+			Double playedFrequency = instrument.getPlayedFrequency(fingering,
+					maxFreqRatio, numberOfFrequencies, params);
+			table.addTuning(fingering, playedFrequency);
+		}
+
+		table.showTuning();
 	}
 
 	@Test
@@ -82,7 +109,7 @@ public class NafOptimizationTest
 			optimizerType = InstrumentOptimizer.OptimizerType.CMAESOptimizer;
 			numberOfInterpolationPoints = 2;
 
-			Instrument optimizedInstrument = doInstrumentOptimization();
+			Instrument optimizedInstrument = doInstrumentOptimization("No-hole");
 
 			// Test bore length
 			List<BorePoint> borePoints = optimizedInstrument.getBorePoint();
@@ -110,7 +137,7 @@ public class NafOptimizationTest
 			optimizerType = InstrumentOptimizer.OptimizerType.BOBYQAOptimizer;
 			numberOfInterpolationPoints = 6;
 
-			Instrument optimizedInstrument = doInstrumentOptimization();
+			Instrument optimizedInstrument = doInstrumentOptimization("One-hole");
 
 			// Test bore length
 			List<BorePoint> borePoints = optimizedInstrument.getBorePoint();
@@ -128,12 +155,12 @@ public class NafOptimizationTest
 			// an
 			// infinite number of position/hole diameter values are possible.
 			assertEquals("Hole 1 diameter incorrect", 0.42, sortedHoles.get(0)
-					.getDiameter(), 0.01); //0.398
+					.getDiameter(), 0.01); // 0.398
 
 			// This hole position derives from the actual instrument AND 2 other
 			// calculation algorithms.
 			assertEquals("Hole 1 position incorrect", 8.0, sortedHoles.get(0)
-					.getBorePosition(), 0.01); //8.1
+					.getBorePosition(), 0.01); // 8.1
 
 			double distance = lastPoint.getBorePosition()
 					- sortedHoles.get(0).getBorePosition();
@@ -160,7 +187,7 @@ public class NafOptimizationTest
 			optimizerType = InstrumentOptimizer.OptimizerType.BOBYQAOptimizer;
 			numberOfInterpolationPoints = 26;
 
-			Instrument optimizedInstrument = doInstrumentOptimization();
+			Instrument optimizedInstrument = doInstrumentOptimization("Six-hole");
 
 			// Test bore length
 			List<BorePoint> borePoints = optimizedInstrument.getBorePoint();
@@ -240,9 +267,8 @@ public class NafOptimizationTest
 
 	protected void setPhysicalParameters(InstrumentOptimizer optimizer)
 	{
-		PhysicalParameters parameters = new PhysicalParameters(22.22,
-				TemperatureType.C);
-		optimizer.setPhysicalParams(parameters);
+		this.params = new PhysicalParameters(22.22, TemperatureType.C);
+		optimizer.setPhysicalParams(params);
 	}
 
 	protected void setOptimizationBounds(InstrumentOptimizer optimizer)
@@ -262,13 +288,22 @@ public class NafOptimizationTest
 	 *            that manages the elements in the file.
 	 * @return A file representation of the fileName, as found somewhere in the
 	 *         classpath.
-	 * @throws FileNotFoundException 
+	 * @throws FileNotFoundException
 	 */
-	protected File getInputFile(String fileName, BindFactory bindFactory) throws FileNotFoundException
+	protected File getInputFile(String fileName, BindFactory bindFactory)
+			throws FileNotFoundException
 	{
 		String inputPath = bindFactory.getPathFromName(fileName);
 		File inputFile = new File(inputPath);
 
 		return inputFile;
+	}
+
+	public static void main(String[] args)
+	{
+		NafOptimizationTest test = new NafOptimizationTest();
+		test.testNoHoleOptimization();
+		test.test1HoleOptimization();
+		test.test6HoleOptimization();
 	}
 }

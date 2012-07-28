@@ -65,12 +65,8 @@ public class ReflectanceSpectrum
 		for (int i = 0; i < nfreq; ++i)
 		{
 			double freq = freqStart + i * freqStep;
-			Complex reflectance = flute.calculateReflectionCoefficient(freq,
+			Complex reflectance = flute.calculateReflectionCoefficient(freq, fingering,
 					physicalParams);
-			int reflectanceMultiplier = flute.getMouthpiece()
-					.calcReflectanceMultiplier();
-
-			reflectance = reflectance.multiply(reflectanceMultiplier);
 
 			setDataPoint(freq, reflectance);
 

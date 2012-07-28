@@ -12,7 +12,7 @@ import java.util.List;
 
 import org.apache.commons.math3.complex.Complex;
 
-import com.wwidesigner.math.ImpedanceSpectrum;
+import com.wwidesigner.math.ReflectanceSpectrum;
 import com.wwidesigner.math.StateVector;
 import com.wwidesigner.math.TransferMatrix;
 import com.wwidesigner.note.Fingering;
@@ -495,7 +495,14 @@ public class Instrument implements InstrumentInterface
 			PhysicalParameters physicalParams)
 	{
 		double frequency = fingering.getNote().getFrequency();
+		
+		return calculateReflectionCoefficient(frequency, fingering, physicalParams);
 
+	}
+
+	public Complex calculateReflectionCoefficient(double frequency, Fingering fingering,
+			PhysicalParameters physicalParams)
+	{
 		setOpenHoles(fingering);
 
 		Complex reflectance = calculateReflectionCoefficient(frequency,
@@ -582,11 +589,11 @@ public class Instrument implements InstrumentInterface
 		double targetFreq = fingering.getNote().getFrequency();
 		double freqStart = targetFreq / freqRange;
 		double freqEnd = targetFreq * freqRange;
-		ImpedanceSpectrum spectrum = new ImpedanceSpectrum();
+		ReflectanceSpectrum spectrum = new ReflectanceSpectrum();
 
-		spectrum.calcImpedance(this, freqStart, freqEnd, numberOfFrequencies,
+		spectrum.calcReflectance(this, freqStart, freqEnd, numberOfFrequencies,
 				fingering, params);
-		playedFreq = spectrum.getClosestMaximumFrequency(targetFreq);
+		playedFreq = spectrum.getClosestMinimumFrequency(targetFreq);
 
 		return playedFreq;
 	}

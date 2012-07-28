@@ -58,7 +58,12 @@ public class ImpedanceSpectrumPlot
 
 			spectrum.calcImpedance(instrument, freqStart, freqEnd,
 					numberOfFrequencies, fingering, params);
-			spectrum.plotSpectrum();
+			spectrum.plotImpedanceSpectrum();
+
+			spectrum = new ImpedanceSpectrum();
+			spectrum.calcReflectance(instrument, freqStart, freqEnd,
+					numberOfFrequencies, fingering, params);
+			spectrum.plotReflectanceSpectrum();
 		}
 		catch (Exception e)
 		{

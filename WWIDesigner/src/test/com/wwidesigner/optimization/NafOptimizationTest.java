@@ -42,6 +42,12 @@ public class NafOptimizationTest
 	protected int numberOfInterpolationPoints;
 	protected PhysicalParameters params;
 
+	// Set this to true to use SimpleHolePositionAndDiameterOptimizer and the
+	// associated bounds.
+	// Set this to false to use HolePositionAndDiameterOptimizer and the
+	// associated bounds.
+	protected static boolean useSimpleOptimizer = false;
+
 	/**
 	 * Complete workflow for optimizing an XML-defined instrument with the
 	 * InstrumentOptimizer2 algorithm.
@@ -57,8 +63,16 @@ public class NafOptimizationTest
 
 		Tuning tuning = getTuningFromXml();
 
-		InstrumentOptimizer optimizer = new HolePositionAndDiameterOptimizer(
-				instrument, tuning);
+		InstrumentOptimizer optimizer;
+		if (useSimpleOptimizer)
+		{
+			optimizer = new SimpleHolePositionAndDiameterOptimizer(instrument,
+					tuning);
+		}
+		else
+		{
+			optimizer = new HolePositionAndDiameterOptimizer(instrument, tuning);
+		}
 		// InstrumentOptimizer optimizer = new
 		// TuningHolePositionAndDiameterOptimizer(
 		// instrument, tuning);
@@ -83,8 +97,9 @@ public class NafOptimizationTest
 	{
 		double maxFreqRatio = 1.3;
 		// set accuracy to 0.1 cents
-		int numberOfFrequencies = (int)(10. * InstrumentTuningTable.getCents(maxFreqRatio));
-		
+		int numberOfFrequencies = (int) (10. * InstrumentTuningTable
+				.getCents(maxFreqRatio));
+
 		InstrumentTuningTable table = new InstrumentTuningTable(title);
 
 		for (Fingering fingering : tuning.getFingering())
@@ -132,8 +147,16 @@ public class NafOptimizationTest
 		{
 			inputInstrumentXML = "com/wwidesigner/optimization/example/1HoleNAF1.xml";
 			inputTuningXML = "com/wwidesigner/optimization/example/1HoleNAF1Tuning.xml";
-			lowerBound = new double[] { 0.20, 0.05, 0.3 };
-			upperBound = new double[] { 0.4, 0.15, 0.4 };
+			if (useSimpleOptimizer)
+			{
+				lowerBound = new double[] { 0.20, 0.1, 0.005 };
+				upperBound = new double[] { 0.4, 0.3, 0.02 };
+			}
+			else
+			{
+				lowerBound = new double[] { 0.20, 0.05, 0.3 };
+				upperBound = new double[] { 0.4, 0.15, 0.4 };
+			}
 			optimizerType = InstrumentOptimizer.OptimizerType.BOBYQAOptimizer;
 			numberOfInterpolationPoints = 6;
 
@@ -155,12 +178,12 @@ public class NafOptimizationTest
 			// an
 			// infinite number of position/hole diameter values are possible.
 			assertEquals("Hole 1 diameter incorrect", 0.42, sortedHoles.get(0)
-					.getDiameter(), 0.01); // 0.398
+					.getDiameter(), 0.015); // 0.398
 
 			// This hole position derives from the actual instrument AND 2 other
 			// calculation algorithms.
 			assertEquals("Hole 1 position incorrect", 8.0, sortedHoles.get(0)
-					.getBorePosition(), 0.01); // 8.1
+					.getBorePosition(), 0.1); // 8.1
 
 			double distance = lastPoint.getBorePosition()
 					- sortedHoles.get(0).getBorePosition();
@@ -180,10 +203,20 @@ public class NafOptimizationTest
 		{
 			inputInstrumentXML = "com/wwidesigner/optimization/example/6HoleNAF1.xml";
 			inputTuningXML = "com/wwidesigner/optimization/example/6HoleNAF1Tuning.xml";
-			lowerBound = new double[] { 0.28, 0.01, 0.01, 0.01, 0.01, 0.01,
-					0.05, 0.1, 0.15, 0.15, 0.15, 0.15, 0.15 };
-			upperBound = new double[] { 0.5, 0.03, 0.03, 0.035, 0.035, 0.035,
-					0.15, 0.5, 0.5, 0.5, 0.5, 0.5, 0.6 };
+			if (useSimpleOptimizer)
+			{
+				lowerBound = new double[] { 0.25, 0.03, 0.04, 0.06, 0.075,
+						0.09, 0.1, 0.003, 0.003, 0.003, 0.003, 0.003, 0.003 };
+				upperBound = new double[] { 0.5, 0.15, 0.18, 0.21, 0.24, 0.27,
+						0.3, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02 };
+			}
+			else
+			{
+				lowerBound = new double[] { 0.28, 0.01, 0.01, 0.01, 0.01, 0.01,
+						0.05, 0.1, 0.15, 0.15, 0.15, 0.15, 0.15 };
+				upperBound = new double[] { 0.5, 0.03, 0.03, 0.035, 0.035,
+						0.035, 0.15, 0.5, 0.5, 0.5, 0.5, 0.5, 0.6 };
+			}
 			optimizerType = InstrumentOptimizer.OptimizerType.BOBYQAOptimizer;
 			numberOfInterpolationPoints = 26;
 
@@ -201,30 +234,30 @@ public class NafOptimizationTest
 					holes);
 
 			assertEquals("Hole 1 diameter incorrect", 0.29, sortedHoles.get(0)
-					.getDiameter(), 0.01); // 0.308
+					.getDiameter(), 0.1); // 0.308
 			assertEquals("Hole 2 diameter incorrect", 0.43, sortedHoles.get(1)
-					.getDiameter(), 0.01); // 0.361
+					.getDiameter(), 0.1); // 0.361
 			assertEquals("Hole 3 diameter incorrect", 0.36, sortedHoles.get(2)
-					.getDiameter(), 0.01); // 0.352
+					.getDiameter(), 0.1); // 0.352
 			assertEquals("Hole 4 diameter incorrect", 0.35, sortedHoles.get(3)
-					.getDiameter(), 0.01); // 0.357
+					.getDiameter(), 0.1); // 0.357
 			assertEquals("Hole 5 diameter incorrect", 0.45, sortedHoles.get(4)
-					.getDiameter(), 0.01); // 0.379
+					.getDiameter(), 0.1); // 0.379
 			assertEquals("Hole 6 diameter incorrect", 0.38, sortedHoles.get(5)
-					.getDiameter(), 0.01); // 0.398
+					.getDiameter(), 0.1); // 0.398
 
 			assertEquals("Hole 1 position incorrect", 3.10, sortedHoles.get(0)
-					.getBorePosition(), 0.01); // 3.15
+					.getBorePosition(), 0.5); // 3.15
 			assertEquals("Hole 2 position incorrect", 4.28, sortedHoles.get(1)
-					.getBorePosition(), 0.01); // 4.0
+					.getBorePosition(), 0.5); // 4.0
 			assertEquals("Hole 3 position incorrect", 4.68, sortedHoles.get(2)
-					.getBorePosition(), 0.01); // 4.85
+					.getBorePosition(), 0.5); // 4.85
 			assertEquals("Hole 4 position incorrect", 5.54, sortedHoles.get(3)
-					.getBorePosition(), 0.01); // 5.9
+					.getBorePosition(), 0.5); // 5.9
 			assertEquals("Hole 5 position incorrect", 6.92, sortedHoles.get(4)
-					.getBorePosition(), 0.01); // 7.0
+					.getBorePosition(), 0.5); // 7.0
 			assertEquals("Hole 6 position incorrect", 7.34, sortedHoles.get(5)
-					.getBorePosition(), 0.01); // 8.1
+					.getBorePosition(), 0.5); // 8.1
 
 		}
 		catch (Exception e)

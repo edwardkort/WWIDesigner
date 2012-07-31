@@ -33,13 +33,12 @@ public class SimpleHolePositionAndDiameterOptimizer extends InstrumentOptimizer
 		BorePoint lastPoint = sortedPoints.getLast();
 		state_vector[0] = lastPoint.getBorePosition();
 
-		// Measure from mouthpiece
-		double topPosition = instrument.getMouthpiece().getBorePosition();
+		// Measure from bore head
 		int i = 1;
 		// Next values are hole positions, from the TOP
 		for (Hole currentHole : sortedHoles)
 		{
-			state_vector[i++] = currentHole.getBorePosition() - topPosition;
+			state_vector[i++] = currentHole.getBorePosition();
 		}
 
 		// Next values are hole diameters, from the TOP
@@ -61,13 +60,12 @@ public class SimpleHolePositionAndDiameterOptimizer extends InstrumentOptimizer
 		BorePoint lastPoint = sortedPoints.getLast();
 		lastPoint.setBorePosition(state_vector[0]);
 
-		// Measure from mouthpiece
-		double topPosition = instrument.getMouthpiece().getBorePosition();
+		// Measure from bore head
 		int i = 1;
 		// Next values are hole positions, from the TOP
 		for (Hole currentHole : sortedHoles)
 		{
-			currentHole.setBorePosition(state_vector[i++] + topPosition);
+			currentHole.setBorePosition(state_vector[i++]);
 		}
 
 		// Next values are hole diameters, from the TOP

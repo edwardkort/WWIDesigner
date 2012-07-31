@@ -101,6 +101,7 @@ public class NafOptimizationTest
 				.getCents(maxFreqRatio));
 
 		InstrumentTuningTable table = new InstrumentTuningTable(title);
+		instrument.updateComponents();
 
 		for (Fingering fingering : tuning.getFingering())
 		{

@@ -5,6 +5,8 @@ package com.wwidesigner.geometry;
 
 import java.util.List;
 
+import org.apache.commons.math3.complex.Complex;
+
 import com.wwidesigner.math.TransferMatrix;
 import com.wwidesigner.util.PhysicalParameters;
 
@@ -57,9 +59,9 @@ public class Mouthpiece implements ComponentInterface, MouthpieceInterface,
 	}
 
 	/**
-	 * Set the jet amplification factor, and the instrument-specific loop gain factor,
-	 * after Auvray, 2012.
-	 * Loop gain G = gainFactor * a^2 * waveNumber / abs(Z).
+	 * Set the jet amplification factor, and the instrument-specific loop gain
+	 * factor, after Auvray, 2012. Loop gain G = gainFactor * a^2 * waveNumber /
+	 * abs(Z).
 	 * 
 	 * @param beta
 	 *            the jet amplification factor to set
@@ -67,13 +69,14 @@ public class Mouthpiece implements ComponentInterface, MouthpieceInterface,
 	public void setBeta(Double beta)
 	{
 		this.beta = beta;
-		if ( this.fipple != null && this.fipple.windwayHeight != null )
+		if (this.fipple != null && this.fipple.windwayHeight != null)
 		{
-			this.gainFactor
-				= (4.0 * this.fipple.windwayHeight
-					* Math.sqrt( 2.0 * this.fipple.windwayHeight / this.fipple.windowLength )
-					* Math.exp( this.beta * this.fipple.windowLength / this.fipple.windwayHeight )
-					/( this.fipple.windowLength * this.fipple.windowWidth ));
+			this.gainFactor = (4.0
+					* this.fipple.windwayHeight
+					* Math.sqrt(2.0 * this.fipple.windwayHeight
+							/ this.fipple.windowLength)
+					* Math.exp(this.beta * this.fipple.windowLength
+							/ this.fipple.windwayHeight) / (this.fipple.windowLength * this.fipple.windowWidth));
 		}
 		else
 		{
@@ -90,9 +93,9 @@ public class Mouthpiece implements ComponentInterface, MouthpieceInterface,
 	}
 
 	/**
-	 * Set the jet amplification factor, and the instrument-specific loop gain factor,
-	 * after Auvray, 2012.
-	 * Loop gain G = gainFactor * a^2 * waveNumber / abs(Z).
+	 * Set the jet amplification factor, and the instrument-specific loop gain
+	 * factor, after Auvray, 2012. Loop gain G = gainFactor * a^2 * waveNumber /
+	 * abs(Z).
 	 * 
 	 * @param gainFactor
 	 *            the gain factor to set
@@ -100,13 +103,15 @@ public class Mouthpiece implements ComponentInterface, MouthpieceInterface,
 	public void setGainFactor(Double gainFactor)
 	{
 		this.gainFactor = gainFactor;
-		if ( this.fipple.windwayHeight != null )
+		if (this.fipple.windwayHeight != null)
 		{
-			this.beta
-				= this.fipple.windwayHeight / this.fipple.windowLength
-				* Math.log( this.gainFactor /( 4 * this.fipple.windwayHeight )
-					* Math.sqrt( 0.5 * this.fipple.windowLength / this.fipple.windwayHeight)
-					* ( this.fipple.windowLength * this.fipple.windowWidth ) );
+			this.beta = this.fipple.windwayHeight
+					/ this.fipple.windowLength
+					* Math.log(this.gainFactor
+							/ (4 * this.fipple.windwayHeight)
+							* Math.sqrt(0.5 * this.fipple.windowLength
+									/ this.fipple.windwayHeight)
+							* (this.fipple.windowLength * this.fipple.windowWidth));
 		}
 	}
 
@@ -314,7 +319,7 @@ public class Mouthpiece implements ComponentInterface, MouthpieceInterface,
 		 */
 		public Double getFippleFactor()
 		{
-			if ( fippleFactor == null )
+			if (fippleFactor == null)
 			{
 				return 1.0;
 			}
@@ -417,6 +422,17 @@ public class Mouthpiece implements ComponentInterface, MouthpieceInterface,
 		int result = mouthpieceCalculator.calcReflectanceMultiplier();
 
 		return result;
+	}
+
+	public Complex calcZ(double freq, PhysicalParameters physicalParams)
+	{
+		return mouthpieceCalculator.calcZ(freq, physicalParams);
+	}
+
+	public Double calcGain(double freq, Complex Z,
+			PhysicalParameters physicalParams)
+	{
+		return mouthpieceCalculator.calcGain(freq, Z, physicalParams);
 	}
 
 	@Override

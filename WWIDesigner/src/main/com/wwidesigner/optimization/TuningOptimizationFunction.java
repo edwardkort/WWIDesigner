@@ -2,8 +2,6 @@ package com.wwidesigner.optimization;
 
 import java.util.List;
 
-import org.apache.commons.math3.complex.Complex;
-
 import com.wwidesigner.note.Fingering;
 import com.wwidesigner.note.TuningInterface;
 import com.wwidesigner.util.PhysicalParameters;

@@ -92,7 +92,7 @@ public class GordonFippleMouthpieceCalculator extends MouthpieceCalculator
 	{
 		double gamma = params.getGamma();
 		double speedOfSound = params.getSpeedOfSound();
-		double v = calcHeadspaceVolume();
+		double v = 2. * calcHeadspaceVolume();
 
 		double result = -(omega * v) / (gamma * speedOfSound * speedOfSound);
 

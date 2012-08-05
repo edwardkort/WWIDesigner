@@ -57,7 +57,7 @@ public class InstrumentImpedanceReport
 			{
 				pw.printf("%2d  %7.2f", i, fmax[i]);
 				Fingering fingering = tuning.getFingering().get(i);
-				Complex Z = instrument.calcZ(fmax[i],fingering,params);
+				Complex Z = instrument.calcRefOrImpCoefficient(fmax[i],fingering,params);
 				Z = Z.divide(Z0);
 				double normalized = Z.getImaginary()/Z.getReal();
 				pw.printf( " %12.4f %12.4f %12.5f", Z.getReal(), Z.getImaginary(), normalized );

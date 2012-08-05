@@ -38,4 +38,11 @@ public class WhistleConfigurator extends InstrumentConfigurator
 	{
 		this.boreSectionCalculatorClass = DefaultBoreSectionCalculator.class;
 	}
+
+	@Override
+	protected void setInstrumentCalculator()
+	{
+		this.instrumentCalculator = new DefaultImpedanceInstrumentCalculator(
+				instrument);
+	}
 }

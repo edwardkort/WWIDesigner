@@ -137,16 +137,10 @@ public interface InstrumentInterface
 	 */
 	public void updateComponents();
 
-	public Complex calculateReflectionCoefficient(Fingering fingering,
-			PhysicalParameters physicalParams);
-	
-	public Complex calculateReflectionCoefficient(double frequency, Fingering fingering,
+	public Complex calcRefOrImpCoefficient(Fingering fingering,
 			PhysicalParameters physicalParams);
 
-	public Complex calculateReflectionCoefficient(double frequency, 
-			PhysicalParameters physicalParams);
-
-	public Complex calcZ(double freq, Fingering fingering,
-			PhysicalParameters physicalParams);
+	public Complex calcRefOrImpCoefficient(double frequency,
+			Fingering fingering, PhysicalParameters physicalParams);
 
 }

@@ -66,7 +66,8 @@ public class ImpedanceSpectrum
 		for (int i = 0; i < nfreq; ++i)
 		{
 			double freq = freqStart + i * freqStep;
-			Complex zAc = flute.calcZ(freq, fingering, physicalParams);
+			Complex zAc = flute.calcRefOrImpCoefficient(freq, fingering,
+					physicalParams);
 			double absZAc = zAc.abs();
 
 			setDataPoint(freq, zAc);

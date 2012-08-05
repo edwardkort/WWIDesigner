@@ -66,7 +66,8 @@ public class PlayingRangeSpectrum
 		for (int i = 0; i < nfreq; ++i)
 		{
 			double freq = freqStart + i * freqStep;
-			Complex zAc = flute.calcZ(freq, fingering, physicalParams);
+			Complex zAc = flute.calcRefOrImpCoefficient(freq, fingering,
+					physicalParams);
 			double absZAc = zAc.abs();
 
 			setDataPoint(freq, zAc);
@@ -164,10 +165,8 @@ public class PlayingRangeSpectrum
 				JFrame frame = new JFrame("Impedance Spectrum");
 				frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 				frame.setSize(800, 600);
-				DefaultChartModel model1 = new DefaultChartModel(
-						"Real");
-				DefaultChartModel model2 = new DefaultChartModel(
-						"Imaginary");
+				DefaultChartModel model1 = new DefaultChartModel("Real");
+				DefaultChartModel model2 = new DefaultChartModel("Imaginary");
 				for (Map.Entry<Double, Complex> point : mSpectrum.entrySet())
 				{
 					double x = point.getKey();
@@ -205,22 +204,22 @@ public class PlayingRangeSpectrum
 				frame.setSize(800, 600);
 				DefaultChartModel model1 = new DefaultChartModel(
 						"Impedance Im/Re");
-//				DefaultChartModel model2 = new DefaultChartModel(
-//						"Loop Gain");
+				// DefaultChartModel model2 = new DefaultChartModel(
+				// "Loop Gain");
 				for (Map.Entry<Double, Complex> point : mSpectrum.entrySet())
 				{
 					double x = point.getKey();
 					double r = point.getValue().getReal();
 					double i = point.getValue().getImaginary();
-					model1.addPoint(x, i/r);
-//					model2.addPoint(x, i);
+					model1.addPoint(x, i / r);
+					// model2.addPoint(x, i);
 				}
 				Chart chart = new Chart();
 				chart.setAutoRanging(true);
 				ChartStyle style1 = new ChartStyle(Color.black, false, true);
-//				ChartStyle style2 = new ChartStyle(Color.red, false, true);
+				// ChartStyle style2 = new ChartStyle(Color.red, false, true);
 				chart.addModel(model1, style1);
-//				chart.addModel(model2, style2);
+				// chart.addModel(model2, style2);
 				chart.getXAxis().setLabel("Frequency");
 				chart.getYAxis().setLabel("Impedance");
 				chart.setTitle("Playing Ranges");

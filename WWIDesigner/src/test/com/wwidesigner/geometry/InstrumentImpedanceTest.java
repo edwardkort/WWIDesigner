@@ -34,8 +34,8 @@ public class InstrumentImpedanceTest
 	protected String inputTuningXML = "com/wwidesigner/note/bind/example/BP7-tuning.xml";
 
 	/**
-	 * For the standard instrument, calculate the impedance for
-	 * selected notes at the known fmax, where Imag(Z) == 0.
+	 * For the standard instrument, calculate the impedance for selected notes
+	 * at the known fmax, where Imag(Z) == 0.
 	 */
 	@Test
 	public final void testInstrumentImpedance()
@@ -44,24 +44,27 @@ public class InstrumentImpedanceTest
 		{
 			Instrument instrument = getInstrumentFromXml(inputInstrumentXML);
 			Tuning tuning = getTuningFromXml(inputTuningXML);
-			PhysicalParameters params = new PhysicalParameters(28.2, TemperatureType.C);
+			PhysicalParameters params = new PhysicalParameters(28.2,
+					TemperatureType.C);
 
-			Double fmax[]
-				  = { 589.49699364,   665.95846589,   740.62596732,   790.25253027,
-			          895.41223635,  1000.04547471,  1080.97410484,  1139.23859984,
-			         1201.28218389,  1336.22103577,  1487.47285037,  1588.12692212,
-			         1787.297483  ,  1992.58680484,  2045.42056261,  2233.64276274,
-			         2433.04456904,   912.91065873};
+			Double fmax[] = { 589.49699364, 665.95846589, 740.62596732,
+					790.25253027, 895.41223635, 1000.04547471, 1080.97410484,
+					1139.23859984, 1201.28218389, 1336.22103577, 1487.47285037,
+					1588.12692212, 1787.297483, 1992.58680484, 2045.42056261,
+					2233.64276274, 2433.04456904, 912.91065873 };
 
 			configureInstrument(instrument);
-			double Z0 = params.calcZ0(instrument.getMouthpiece().getBoreDiameter()/2.0);
+			double Z0 = params.calcZ0(instrument.getMouthpiece()
+					.getBoreDiameter() / 2.0);
 
-			for ( int i = 0; i < fmax.length; ++ i )
+			for (int i = 0; i < fmax.length; ++i)
 			{
 				Fingering fingering = tuning.getFingering().get(i);
-				Complex Z = instrument.calcZ(fmax[i],fingering,params);
+				Complex Z = instrument.calcRefOrImpCoefficient(fmax[i],
+						fingering, params);
 				Z = Z.divide(Z0);
-				assertEquals("Imag(Z) is non-zero at known resonance.", 0.0, Z.getImaginary(), 0.035);
+				assertEquals("Imag(Z) is non-zero at known resonance.", 0.0,
+						Z.getImaginary(), 0.035);
 			}
 		}
 		catch (Exception e)
@@ -113,9 +116,10 @@ public class InstrumentImpedanceTest
 	 *            that manages the elements in the file.
 	 * @return A file representation of the fileName, as found somewhere in the
 	 *         classpath.
-	 * @throws FileNotFoundException 
+	 * @throws FileNotFoundException
 	 */
-	protected File getInputFile(String fileName, BindFactory bindFactory) throws FileNotFoundException
+	protected File getInputFile(String fileName, BindFactory bindFactory)
+			throws FileNotFoundException
 	{
 		String inputPath = bindFactory.getPathFromName(fileName);
 		File inputFile = new File(inputPath);

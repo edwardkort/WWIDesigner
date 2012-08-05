@@ -51,4 +51,11 @@ public class GordonConfigurator extends InstrumentConfigurator
 		this.boreSectionCalculatorClass = GordonBoreSectionCalculator.class;
 	}
 
+	@Override
+	protected void setInstrumentCalculator()
+	{
+		this.instrumentCalculator = new DefaultReflectanceInstrumentCalculator(
+				instrument);
+	}
+
 }

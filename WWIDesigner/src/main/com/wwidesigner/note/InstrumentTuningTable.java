@@ -27,7 +27,7 @@ public class InstrumentTuningTable
 		this.title = title;
 		model.addColumn("Note");
 		model.addColumn("Expected Frequency");
-		model.addColumn("Expected Frequency");
+		model.addColumn("Calculated Frequency");
 		model.addColumn("Tuning Deviation (cents)");
 		format = new DecimalFormat("#0.00");
 	}

@@ -13,8 +13,6 @@ import java.util.List;
 import org.apache.commons.math3.complex.Complex;
 
 import com.wwidesigner.math.ReflectanceSpectrum;
-import com.wwidesigner.math.StateVector;
-import com.wwidesigner.math.TransferMatrix;
 import com.wwidesigner.note.Fingering;
 import com.wwidesigner.util.PhysicalParameters;
 import com.wwidesigner.util.SortedPositionList;
@@ -37,6 +35,7 @@ public class Instrument implements InstrumentInterface
 
 	private boolean convertedToMetres = false;
 	protected InstrumentConfigurator configurator;
+	protected InstrumentCalculator instrumentCalculator;
 
 	public Instrument()
 	{
@@ -214,6 +213,15 @@ public class Instrument implements InstrumentInterface
 		convertToMetres();
 	}
 
+	/**
+	 * @param instrumentCalculator
+	 *            the instrumentCalculator to set
+	 */
+	public void setCalculator(InstrumentCalculator instrumentCalculator)
+	{
+		this.instrumentCalculator = instrumentCalculator;
+	}
+
 	public void convertToMetres()
 	{
 		if (convertedToMetres)
@@ -335,6 +343,14 @@ public class Instrument implements InstrumentInterface
 			double lastPosition = borePointList.getLast().getBorePosition() + 1.;
 			makeSections(borePointList, lastPosition);
 		}
+	}
+
+	/**
+	 * @return the components
+	 */
+	public List<ComponentInterface> getComponents()
+	{
+		return components;
 	}
 
 	protected void processTermination(
@@ -490,55 +506,19 @@ public class Instrument implements InstrumentInterface
 		return sortedPositions;
 	}
 
-	@Override
-	public Complex calculateReflectionCoefficient(Fingering fingering,
+	public Complex calcRefOrImpCoefficient(Fingering fingering,
 			PhysicalParameters physicalParams)
 	{
-		double frequency = fingering.getNote().getFrequency();
-		
-		return calculateReflectionCoefficient(frequency, fingering, physicalParams);
-
-	}
-
-	public Complex calculateReflectionCoefficient(double frequency, Fingering fingering,
-			PhysicalParameters physicalParams)
-	{
-		setOpenHoles(fingering);
-
-		Complex reflectance = calculateReflectionCoefficient(frequency,
+		return instrumentCalculator.calcRefOrImpCoefficient(fingering,
 				physicalParams);
 
-		int reflectanceMultiplier = mouthpiece.calcReflectanceMultiplier();
-
-		Complex result = reflectance.multiply(reflectanceMultiplier);
-
-		return result;
 	}
 
-	public Complex calculateReflectionCoefficient(double frequency,
-			PhysicalParameters physicalParams)
+	public Complex calcRefOrImpCoefficient(double frequency,
+			Fingering fingering, PhysicalParameters physicalParams)
 	{
-		double waveNumber = 2 * Math.PI * frequency
-				/ physicalParams.getSpeedOfSound();
-
-		updateComponents();
-
-		TransferMatrix transferMatrix = TransferMatrix.makeIdentity();
-
-		for (ComponentInterface component : components)
-		{
-			transferMatrix = TransferMatrix.multiply(transferMatrix,
-					component.calcTransferMatrix(waveNumber, physicalParams));
-		}
-
-		StateVector sv = TransferMatrix.multiply(transferMatrix,
-				termination.calcStateVector(waveNumber, physicalParams));
-
-		// TODO This mouthpiece calculation will change
-		double headRadius = mouthpiece.getBoreDiameter() / 2.;
-		double characteristic_impedance = physicalParams.calcZ0(headRadius);
-		Complex reflectance = sv.Reflectance(characteristic_impedance);
-		return reflectance;
+		return instrumentCalculator.calcRefOrImpCoefficent(frequency,
+				fingering, physicalParams);
 	}
 
 	public void setOpenHoles(Fingering fingering)
@@ -550,36 +530,6 @@ public class Instrument implements InstrumentInterface
 			boolean isOpen = openHoleIterator.next();
 			iHole.setOpenHole(isOpen);
 		}
-	}
-
-	@Override
-	public Complex calcZ(double freq, Fingering fingering,
-			PhysicalParameters physicalParams)
-	{
-		setOpenHoles(fingering);
-
-		double waveNumber = physicalParams.calcWaveNumber(freq);
-
-		// Start with the state vector of the termination,
-		// and multiply by transfer matrices of each hole and bore segment
-		// from the termination up to, but not including the mouthpiece.
-
-		StateVector sv = termination
-				.calcStateVector(waveNumber, physicalParams);
-		TransferMatrix tm;
-		Complex Zresonator = sv.Impedance();
-		for (int componentNr = components.size() - 1; componentNr > 0; --componentNr)
-		{
-			tm = components.get(componentNr).calcTransferMatrix(waveNumber,
-					physicalParams);
-			sv = tm.multiply(sv);
-			Zresonator = sv.Impedance();
-		}
-
-		Complex Zwindow = mouthpiece.mouthpieceCalculator.calcZ(freq,
-				physicalParams);
-
-		return Zresonator.add(Zwindow);
 	}
 
 	public Double getPlayedFrequency(Fingering fingering, double freqRange,

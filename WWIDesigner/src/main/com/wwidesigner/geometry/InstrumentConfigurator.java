@@ -12,6 +12,7 @@ import java.lang.reflect.Constructor;
 public abstract class InstrumentConfigurator
 {
 	protected Instrument instrument;
+	protected InstrumentCalculator instrumentCalculator;
 	protected MouthpieceCalculator mouthpieceCalculator;
 	protected TerminationCalculator terminationCalculator;
 	protected Class<? extends HoleCalculator> holeCalculatorClass;
@@ -20,6 +21,8 @@ public abstract class InstrumentConfigurator
 	public void configureInstrument(Instrument instrument)
 	{
 		this.instrument = instrument;
+
+		configureInstrument();
 
 		configureMouthpiece();
 
@@ -45,6 +48,8 @@ public abstract class InstrumentConfigurator
 		}
 	}
 
+	protected abstract void setInstrumentCalculator();
+
 	protected abstract void setMouthpieceCalculator();
 
 	protected abstract void setTerminationCalculator();
@@ -52,6 +57,12 @@ public abstract class InstrumentConfigurator
 	protected abstract void setHoleCalculator();
 
 	protected abstract void setBoreSectionCalculator();
+
+	protected void configureInstrument()
+	{
+		setInstrumentCalculator();
+		instrument.setCalculator(instrumentCalculator);
+	}
 
 	protected void configureMouthpiece()
 	{

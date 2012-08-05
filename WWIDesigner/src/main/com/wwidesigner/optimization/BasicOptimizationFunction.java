@@ -53,7 +53,7 @@ public class BasicOptimizationFunction implements OptimizationFunctionInterface
 		for (Fingering target : fingeringTargets)
 		{
 			Complex reflectionCoeff = optimizer.getInstrument()
-					.calculateReflectionCoefficient(target, physicalParams);
+					.calcRefOrImpCoefficient(target, physicalParams);
 			double reflectance_angle = reflectionCoeff.getArgument();
 			// we need a way to display this error term during the optimization (one per target)
 			// as well as the error norm

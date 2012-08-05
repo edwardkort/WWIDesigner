@@ -301,7 +301,7 @@ public class NafOptimizationTest
 
 	protected void setPhysicalParameters(InstrumentOptimizer optimizer)
 	{
-		this.params = new PhysicalParameters(22.22, TemperatureType.C);
+		this.params = new PhysicalParameters(20.5, TemperatureType.C);
 		optimizer.setPhysicalParams(params);
 	}
 
@@ -337,7 +337,7 @@ public class NafOptimizationTest
 	{
 		NafOptimizationTest test = new NafOptimizationTest();
 		test.testNoHoleOptimization();
-		test.test1HoleOptimization();
-		test.test6HoleOptimization();
+//		test.test1HoleOptimization();
+//		test.test6HoleOptimization();
 	}
 }

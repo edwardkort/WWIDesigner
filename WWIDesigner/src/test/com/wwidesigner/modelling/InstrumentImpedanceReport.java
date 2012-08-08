@@ -1,16 +1,16 @@
-package com.wwidesigner.geometry;
+package com.wwidesigner.modelling;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
+
 import org.apache.commons.math3.complex.Complex;
 
 import com.wwidesigner.geometry.Instrument;
-import com.wwidesigner.geometry.InstrumentConfigurator;
 import com.wwidesigner.geometry.bind.GeometryBindFactory;
-import com.wwidesigner.geometry.calculation.WhistleConfigurator;
-import com.wwidesigner.note.Tuning;
+import com.wwidesigner.modelling.InstrumentCalculator;
 import com.wwidesigner.note.Fingering;
+import com.wwidesigner.note.Tuning;
 import com.wwidesigner.note.bind.NoteBindFactory;
 import com.wwidesigner.util.BindFactory;
 import com.wwidesigner.util.Constants.TemperatureType;
@@ -36,6 +36,7 @@ public class InstrumentImpedanceReport
 		try
 		{
 			Instrument instrument = getInstrumentFromXml(inputInstrumentXML);
+			InstrumentCalculator calculator = new WhistleCalculator(instrument);
 			Tuning tuning = getTuningFromXml(inputTuningXML);
 			double temperature = 28.2;
 			PhysicalParameters params = new PhysicalParameters(temperature, TemperatureType.C);
@@ -48,7 +49,7 @@ public class InstrumentImpedanceReport
 			         1787.297483  ,  1992.58680484,  2045.42056261,  2233.64276274,
 			         2433.04456904,   912.91065873};
 
-			configureInstrument(instrument);
+			instrument.convertToMetres();
 			double Z0 = params.calcZ0(instrument.getMouthpiece().getBoreDiameter()/2.0);
 
 			pw.println("Note  fmax       Z.real       Z.imag      imag/real");
@@ -57,7 +58,7 @@ public class InstrumentImpedanceReport
 			{
 				pw.printf("%2d  %7.2f", i, fmax[i]);
 				Fingering fingering = tuning.getFingering().get(i);
-				Complex Z = instrument.calcRefOrImpCoefficient(fmax[i],fingering,params);
+				Complex Z = calculator.calcZ(fmax[i],fingering,params);
 				Z = Z.divide(Z0);
 				double normalized = Z.getImaginary()/Z.getReal();
 				pw.printf( " %12.4f %12.4f %12.5f", Z.getReal(), Z.getImaginary(), normalized );
@@ -79,20 +80,9 @@ public class InstrumentImpedanceReport
 		File inputFile = getInputFile(inputInstrumentXML, geometryBindFactory);
 		Instrument instrument = (Instrument) geometryBindFactory.unmarshalXml(
 				inputFile, true);
+		instrument.updateComponents();
 
 		return instrument;
-	}
-
-	protected static void configureInstrument(Instrument instrument)
-	{
-		InstrumentConfigurator instrumentConfig = new WhistleConfigurator();
-		instrument.setConfiguration(instrumentConfig);
-
-		// This unit-of-measure converter is called in setConfiguration(), but
-		// is shown here to make it explicit. The method is efficient: it does
-		// not redo the work.
-		instrument.convertToMetres();
-		instrument.updateComponents();
 	}
 
 	protected static Tuning getTuningFromXml(String tuningXML) throws Exception

@@ -4,21 +4,21 @@ import com.wwidesigner.geometry.BorePoint;
 import com.wwidesigner.geometry.Hole;
 import com.wwidesigner.geometry.Instrument;
 import com.wwidesigner.geometry.PositionInterface;
+import com.wwidesigner.modelling.InstrumentCalculator;
 import com.wwidesigner.note.TuningInterface;
 
 public class HolePositionAndDiameterOptimizer extends InstrumentOptimizer
 {
 	private static int defaultNumberOfInterpolationPoints = 60;
 
-	public HolePositionAndDiameterOptimizer(Instrument inst, TuningInterface tuning)
+	public HolePositionAndDiameterOptimizer(Instrument inst,
+			InstrumentCalculator calculator, TuningInterface tuning)
 	{
-		super(defaultNumberOfInterpolationPoints, inst, tuning);
+		super(defaultNumberOfInterpolationPoints, inst, calculator, tuning);
 	}
 
 	public double[] getStateVector()
 	{
-		instrument.updateComponents();
-
 		PositionInterface[] sortedPoints = Instrument.sortList(instrument
 				.getBorePoint());
 		PositionInterface[] sortedHoles = Instrument.sortList(instrument
@@ -73,9 +73,8 @@ public class HolePositionAndDiameterOptimizer extends InstrumentOptimizer
 			Hole hole = (Hole) sortedHoles[i];
 			hole.setRatio(state_vector[1+sortedHoles.length+i]);
 		}
-		
-		instrument.updateComponents();
 
+		instrument.updateComponents();
 	}
 
 	@Override

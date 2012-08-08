@@ -6,6 +6,7 @@ import org.apache.commons.math3.optimization.direct.BaseAbstractMultivariateSimp
 import org.apache.commons.math3.optimization.direct.CMAESOptimizer;
 
 import com.wwidesigner.geometry.Instrument;
+import com.wwidesigner.modelling.InstrumentCalculator;
 import com.wwidesigner.note.TuningInterface;
 import com.wwidesigner.util.PhysicalParameters;
 
@@ -18,6 +19,7 @@ public abstract class InstrumentOptimizer implements
 	protected double[] upperBnd;
 	protected OptimizationFunctionInterface optimizationFunction;
 	protected Instrument instrument;
+	protected InstrumentCalculator instrumentCalculator;
 	@SuppressWarnings("rawtypes")
 	protected BaseAbstractMultivariateSimpleBoundsOptimizer baseOptimizer;
 	protected OptimizerType baseOptimizerType;
@@ -26,7 +28,7 @@ public abstract class InstrumentOptimizer implements
 	public abstract void setOptimizationFunction();
 
 	public InstrumentOptimizer(int numberOfInterpolationPoints,
-			Instrument inst, TuningInterface tuning)
+			Instrument inst, InstrumentCalculator calculator, TuningInterface tuning)
 	{
 		// Default to a BOBYQAOptimizer
 		// The number of interpolation point
@@ -36,6 +38,7 @@ public abstract class InstrumentOptimizer implements
 		setBaseOptimizer(OptimizerType.BOBYQAOptimizer, numberOfInterpolationPoints);
 
 		this.instrument = inst;
+		this.instrumentCalculator = calculator;
 		this.tuning = tuning;
 	}
 
@@ -90,13 +93,21 @@ public abstract class InstrumentOptimizer implements
 				break;
 		}
 	}
-	
+
 	/**
 	 * @return the instrument
 	 */
 	public Instrument getInstrument()
 	{
 		return instrument;
+	}
+
+	/**
+	 * @return the instrument calculator
+	 */
+	public InstrumentCalculator getInstrumentCalculator()
+	{
+		return instrumentCalculator;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -106,6 +117,9 @@ public abstract class InstrumentOptimizer implements
 		setOptimizationFunction();
 		baseOptimizer.optimize(25000, optimizationFunction, GoalType.MINIMIZE,
 				startPoint, lowerBnd, upperBnd);
+		double error = optimizationFunction.calculateErrorNorm();
+		System.out.print("Final optimization error: ");
+		System.out.println(error);
 	}
 
 	public enum OptimizerType

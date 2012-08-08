@@ -52,8 +52,9 @@ public class PlayingRangeSpectrum
 		mSpectrum.put(frequency, impedance);
 	}
 
-	public void calcImpedance(InstrumentInterface flute, double freqStart,
-			double freqEnd, int nfreq, Fingering fingering,
+	public void calcImpedance(InstrumentInterface flute, 
+			InstrumentCalculator calculator,
+			double freqStart, double freqEnd, int nfreq, Fingering fingering,
 			PhysicalParameters physicalParams)
 	{
 		mSpectrum = new TreeMap<Double, Complex>();
@@ -66,7 +67,7 @@ public class PlayingRangeSpectrum
 		for (int i = 0; i < nfreq; ++i)
 		{
 			double freq = freqStart + i * freqStep;
-			Complex zAc = flute.calcRefOrImpCoefficient(freq, fingering,
+			Complex zAc = calculator.calcZ(freq, fingering,
 					physicalParams);
 			double absZAc = zAc.abs();
 

@@ -14,7 +14,7 @@ import com.wwidesigner.util.PhysicalParameters;
  * @author kort
  *
  */
-public class FlangedEndCalculator extends TerminationCalculator
+public class UnflangedEndCalculator extends TerminationCalculator
 {
 	/* (non-Javadoc)
 	 * @see com.wwidesigner.geometry.TerminationCalculator#calcStateVector(double, com.wwidesigner.util.PhysicalParameters)
@@ -23,7 +23,7 @@ public class FlangedEndCalculator extends TerminationCalculator
 	public StateVector calcStateVector(Termination termination,
 			double wave_number, PhysicalParameters params)
 	{
-		Complex Zend = Tube.calcZflanged(params.calcFrequency(wave_number),
+		Complex Zend = Tube.calcZload(params.calcFrequency(wave_number),
 				0.5*termination.getBoreDiameter(), params);
 		return new StateVector( Zend, Complex.ONE );
 	}

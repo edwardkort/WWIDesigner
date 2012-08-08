@@ -1,7 +1,7 @@
 /**
  * Test instrument impedance calculation on whistle BP7.
  */
-package com.wwidesigner.geometry;
+package com.wwidesigner.modelling;
 
 import static org.junit.Assert.fail;
 import static org.junit.Assert.assertEquals;
@@ -12,9 +12,8 @@ import org.apache.commons.math3.complex.Complex;
 import org.junit.Test;
 
 import com.wwidesigner.geometry.Instrument;
-import com.wwidesigner.geometry.InstrumentConfigurator;
 import com.wwidesigner.geometry.bind.GeometryBindFactory;
-import com.wwidesigner.geometry.calculation.WhistleConfigurator;
+import com.wwidesigner.modelling.WhistleCalculator;
 import com.wwidesigner.note.Tuning;
 import com.wwidesigner.note.Fingering;
 import com.wwidesigner.note.bind.NoteBindFactory;
@@ -43,6 +42,7 @@ public class InstrumentImpedanceTest
 		try
 		{
 			Instrument instrument = getInstrumentFromXml(inputInstrumentXML);
+			InstrumentCalculator calculator = new WhistleCalculator(instrument);
 			Tuning tuning = getTuningFromXml(inputTuningXML);
 			PhysicalParameters params = new PhysicalParameters(28.2,
 					TemperatureType.C);
@@ -53,14 +53,14 @@ public class InstrumentImpedanceTest
 					1588.12692212, 1787.297483, 1992.58680484, 2045.42056261,
 					2233.64276274, 2433.04456904, 912.91065873 };
 
-			configureInstrument(instrument);
+			instrument.convertToMetres();
 			double Z0 = params.calcZ0(instrument.getMouthpiece()
 					.getBoreDiameter() / 2.0);
 
 			for (int i = 0; i < fmax.length; ++i)
 			{
 				Fingering fingering = tuning.getFingering().get(i);
-				Complex Z = instrument.calcRefOrImpCoefficient(fmax[i],
+				Complex Z = calculator.calcZ(fmax[i],
 						fingering, params);
 				Z = Z.divide(Z0);
 				assertEquals("Imag(Z) is non-zero at known resonance.", 0.0,
@@ -80,20 +80,9 @@ public class InstrumentImpedanceTest
 		File inputFile = getInputFile(inputInstrumentXML, geometryBindFactory);
 		Instrument instrument = (Instrument) geometryBindFactory.unmarshalXml(
 				inputFile, true);
+		instrument.updateComponents();
 
 		return instrument;
-	}
-
-	protected void configureInstrument(Instrument instrument)
-	{
-		InstrumentConfigurator instrumentConfig = new WhistleConfigurator();
-		instrument.setConfiguration(instrumentConfig);
-
-		// This unit-of-measure converter is called in setConfiguration(), but
-		// is shown here to make it explicit. The method is efficient: it does
-		// not redo the work.
-		instrument.convertToMetres();
-		instrument.updateComponents();
 	}
 
 	protected Tuning getTuningFromXml(String tuningXML) throws Exception

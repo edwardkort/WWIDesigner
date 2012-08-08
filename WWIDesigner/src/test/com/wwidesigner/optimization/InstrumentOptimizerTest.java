@@ -15,10 +15,10 @@ import org.junit.Test;
 import com.wwidesigner.geometry.BorePoint;
 import com.wwidesigner.geometry.Hole;
 import com.wwidesigner.geometry.Instrument;
-import com.wwidesigner.geometry.InstrumentConfigurator;
 import com.wwidesigner.geometry.PositionInterface;
 import com.wwidesigner.geometry.bind.GeometryBindFactory;
-import com.wwidesigner.geometry.calculation.SimpleTestConfigurator;
+import com.wwidesigner.modelling.InstrumentCalculator;
+import com.wwidesigner.modelling.SimpleTestCalculator;
 import com.wwidesigner.note.Tuning;
 import com.wwidesigner.note.bind.NoteBindFactory;
 import com.wwidesigner.util.BindFactory;
@@ -45,12 +45,13 @@ public class InstrumentOptimizerTest
 	public Instrument doInstrumentOptimization() throws Exception
 	{
 		Instrument instrument = getInstrumentFromXml(inputInstrumentXML);
-		configureInstrument(instrument);
+		InstrumentCalculator calculator = new SimpleTestCalculator(instrument);
+		instrument.convertToMetres();
 
 		Tuning tuning = getTuningFromXml(inputTuningXML);
 
 		InstrumentOptimizer optimizer = new HolePositionOptimizer(
-				instrument, tuning);
+				instrument, calculator, tuning);
 		setPhysicalParameters(optimizer);
 		setOptimizationBounds(optimizer);
 		optimizer.optimizeInstrument();
@@ -98,19 +99,9 @@ public class InstrumentOptimizerTest
 		File inputFile = getInputFile(inputInstrumentXML, geometryBindFactory);
 		Instrument instrument = (Instrument) geometryBindFactory.unmarshalXml(
 				inputFile, true);
+		instrument.updateComponents();
 
 		return instrument;
-	}
-
-	protected void configureInstrument(Instrument instrument) throws Exception
-	{
-		InstrumentConfigurator instrumentConfig = new SimpleTestConfigurator();
-		instrument.setConfiguration(instrumentConfig);
-
-		// This unit-of-measure converter is called in setConfiguration(), but
-		// is shown here to make it explicit. The method is efficient: it does
-		// not redo the work.
-		instrument.convertToMetres();
 	}
 
 	protected Tuning getTuningFromXml(String tuningXML) throws Exception

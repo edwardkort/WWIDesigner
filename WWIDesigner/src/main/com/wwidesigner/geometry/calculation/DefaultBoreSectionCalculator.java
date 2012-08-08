@@ -6,7 +6,6 @@ package com.wwidesigner.geometry.calculation;
 import org.apache.commons.math3.complex.Complex;
 
 import com.wwidesigner.geometry.BoreSection;
-import com.wwidesigner.geometry.BoreSectionCalculator;
 import com.wwidesigner.math.TransferMatrix;
 import com.wwidesigner.util.PhysicalParameters;
 
@@ -16,11 +15,6 @@ import com.wwidesigner.util.PhysicalParameters;
  */
 public class DefaultBoreSectionCalculator extends BoreSectionCalculator
 {
-	public DefaultBoreSectionCalculator(BoreSection section)
-	{
-		super(section);
-	}
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -29,8 +23,8 @@ public class DefaultBoreSectionCalculator extends BoreSectionCalculator
 	 * com.wwidesigner.util.PhysicalParameters)
 	 */
 	@Override
-	public TransferMatrix calcTransferMatrix(double waveNumber,
-			PhysicalParameters params)
+	public TransferMatrix calcTransferMatrix(BoreSection section,
+			double waveNumber, PhysicalParameters params)
 	{
 		double leftRadius = section.getLeftRadius();
 		double rightRadius = section.getRightRadius();

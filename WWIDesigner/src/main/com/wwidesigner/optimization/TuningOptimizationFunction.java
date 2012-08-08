@@ -51,7 +51,7 @@ public class TuningOptimizationFunction implements
 		double norm = 0.;
 		for (Fingering target : fingeringTargets)
 		{
-			Double freqDeviation = optimizer.getInstrument()
+			Double freqDeviation = optimizer.getInstrumentCalculator()
 					.getPlayedFrequency(target, 2., 500, physicalParams);
 			if (freqDeviation == null)
 			{

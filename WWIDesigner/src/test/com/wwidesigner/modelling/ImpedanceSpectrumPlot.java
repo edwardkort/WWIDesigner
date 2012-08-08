@@ -1,15 +1,16 @@
 /**
  * 
  */
-package com.wwidesigner.math;
+package com.wwidesigner.modelling;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 
 import com.wwidesigner.geometry.Instrument;
-import com.wwidesigner.geometry.InstrumentConfigurator;
 import com.wwidesigner.geometry.bind.GeometryBindFactory;
-import com.wwidesigner.geometry.calculation.GordonConfigurator;
+import com.wwidesigner.modelling.ImpedanceSpectrum;
+import com.wwidesigner.modelling.GordonCalculator;
+import com.wwidesigner.modelling.ReflectanceSpectrum;
 import com.wwidesigner.note.Fingering;
 import com.wwidesigner.note.Tuning;
 import com.wwidesigner.note.bind.NoteBindFactory;
@@ -40,8 +41,9 @@ public class ImpedanceSpectrumPlot
 
 			PhysicalParameters params = new PhysicalParameters(22.22,
 					TemperatureType.C);
-			Instrument instrument = plot
-					.getInstrumentFromXml(inputInstrumentXML);
+			Instrument instrument = plot.getInstrumentFromXml(inputInstrumentXML);
+			InstrumentCalculator calculator = new GordonCalculator(instrument);
+
 			Tuning tuning = plot.getTuningFromXml(inputTuningXML);
 			Fingering fingering = tuning.getFingering().get(0);
 
@@ -56,12 +58,12 @@ public class ImpedanceSpectrumPlot
 			double freqEnd = targetFreq * freqRange;
 			ImpedanceSpectrum impSpectrum = new ImpedanceSpectrum();
 
-			impSpectrum.calcImpedance(instrument, freqStart, freqEnd,
+			impSpectrum.calcImpedance(instrument, calculator, freqStart, freqEnd,
 					numberOfFrequencies, fingering, params);
 			impSpectrum.plotImpedanceSpectrum();
 
 			ReflectanceSpectrum reflSpectrum = new ReflectanceSpectrum();
-			reflSpectrum.calcReflectance(instrument, freqStart, freqEnd,
+			reflSpectrum.calcReflectance(instrument, calculator, freqStart, freqEnd,
 					numberOfFrequencies, fingering, params);
 			reflSpectrum.plotReflectanceSpectrum();
 		}
@@ -78,17 +80,13 @@ public class ImpedanceSpectrumPlot
 		File inputFile = getInputFile(inputInstrumentXML, geometryBindFactory);
 		Instrument instrument = (Instrument) geometryBindFactory.unmarshalXml(
 				inputFile, true);
+		instrument.updateComponents();
 
 		return instrument;
 	}
 
 	protected void configureInstrument(Instrument instrument) throws Exception
 	{
-		// InstrumentConfigurator instrumentConfig = new
-		// SimpleFippleMouthpieceConfigurator();
-		InstrumentConfigurator instrumentConfig = new GordonConfigurator();
-		instrument.setConfiguration(instrumentConfig);
-
 		// This unit-of-measure converter is called in setConfiguration(), but
 		// is shown here to make it explicit. The method is efficient: it does
 		// not redo the work.

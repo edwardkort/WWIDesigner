@@ -5,11 +5,6 @@ package com.wwidesigner.geometry;
 
 import java.util.List;
 
-import org.apache.commons.math3.complex.Complex;
-
-import com.wwidesigner.math.TransferMatrix;
-import com.wwidesigner.util.PhysicalParameters;
-
 /**
  * @author kort
  * 
@@ -24,7 +19,6 @@ public class Mouthpiece implements ComponentInterface, MouthpieceInterface,
 
 	// Values not part of the binding framework
 	protected Double gainFactor;
-	protected MouthpieceCalculator mouthpieceCalculator;
 	// List of bore sections whose right position <= mouthpiece position
 	protected List<BoreSection> headspace;
 	protected double boreDiameter;
@@ -161,15 +155,6 @@ public class Mouthpiece implements ComponentInterface, MouthpieceInterface,
 		this.fipple = value;
 		// Re-calculate gainFactor when the fipple changes.
 		this.setBeta(this.beta);
-	}
-
-	/**
-	 * @param mouthpieceCalculator
-	 *            the mouthpieceCalculator to set
-	 */
-	public void setCalculator(MouthpieceCalculator mouthpieceCalculator)
-	{
-		this.mouthpieceCalculator = mouthpieceCalculator;
 	}
 
 	public void convertDimensions(double multiplier)
@@ -404,35 +389,6 @@ public class Mouthpiece implements ComponentInterface, MouthpieceInterface,
 			}
 		}
 
-	}
-
-	@Override
-	public TransferMatrix calcTransferMatrix(double waveNumber,
-			PhysicalParameters parameters)
-	{
-		TransferMatrix result = mouthpieceCalculator.calcTransferMatrix(
-				waveNumber, parameters);
-
-		return result;
-	}
-
-	@Override
-	public int calcReflectanceMultiplier()
-	{
-		int result = mouthpieceCalculator.calcReflectanceMultiplier();
-
-		return result;
-	}
-
-	public Complex calcZ(double freq, PhysicalParameters physicalParams)
-	{
-		return mouthpieceCalculator.calcZ(freq, physicalParams);
-	}
-
-	public Double calcGain(double freq, Complex Z,
-			PhysicalParameters physicalParams)
-	{
-		return mouthpieceCalculator.calcGain(freq, Z, physicalParams);
 	}
 
 	@Override

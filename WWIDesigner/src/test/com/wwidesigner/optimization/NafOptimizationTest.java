@@ -15,10 +15,10 @@ import org.junit.Test;
 import com.wwidesigner.geometry.BorePoint;
 import com.wwidesigner.geometry.Hole;
 import com.wwidesigner.geometry.Instrument;
-import com.wwidesigner.geometry.InstrumentConfigurator;
 import com.wwidesigner.geometry.PositionInterface;
 import com.wwidesigner.geometry.bind.GeometryBindFactory;
-import com.wwidesigner.geometry.calculation.GordonConfigurator;
+import com.wwidesigner.modelling.GordonCalculator;
+import com.wwidesigner.modelling.InstrumentCalculator;
 import com.wwidesigner.note.Fingering;
 import com.wwidesigner.note.InstrumentTuningTable;
 import com.wwidesigner.note.Tuning;
@@ -59,6 +59,7 @@ public class NafOptimizationTest
 	public Instrument doInstrumentOptimization(String title) throws Exception
 	{
 		Instrument instrument = getInstrumentFromXml();
+		InstrumentCalculator calculator = new GordonCalculator(instrument);
 		configureInstrument(instrument);
 
 		Tuning tuning = getTuningFromXml();
@@ -67,11 +68,12 @@ public class NafOptimizationTest
 		if (useSimpleOptimizer)
 		{
 			optimizer = new SimpleHolePositionAndDiameterOptimizer(instrument,
-					tuning);
+					calculator, tuning);
 		}
 		else
 		{
-			optimizer = new HolePositionAndDiameterOptimizer(instrument, tuning);
+			optimizer = new HolePositionAndDiameterOptimizer(instrument, 
+					calculator, tuning);
 		}
 		// InstrumentOptimizer optimizer = new
 		// TuningHolePositionAndDiameterOptimizer(
@@ -80,20 +82,21 @@ public class NafOptimizationTest
 		setPhysicalParameters(optimizer);
 		setOptimizationBounds(optimizer);
 
-		showTuning(instrument, tuning, title + ", before optimization");
+		showTuning(instrument, calculator, tuning, title + ", before optimization");
 
 		optimizer.optimizeInstrument();
 
 		// Convert back to the input unit-of-measure values
 		instrument.convertToLengthType();
 
-		showTuning(instrument, tuning, title + ", after optimization");
+		showTuning(instrument, calculator, tuning, title + ", after optimization");
 
 		// The optimizer modifies the input Instrument instance
 		return instrument;
 	}
 
-	public void showTuning(Instrument instrument, Tuning tuning, String title)
+	public void showTuning(Instrument instrument, InstrumentCalculator calculator,
+			Tuning tuning, String title)
 	{
 		double maxFreqRatio = 1.3;
 		// set accuracy to 0.1 cents
@@ -105,7 +108,7 @@ public class NafOptimizationTest
 
 		for (Fingering fingering : tuning.getFingering())
 		{
-			Double playedFrequency = instrument.getPlayedFrequency(fingering,
+			Double playedFrequency = calculator.getPlayedFrequency(fingering,
 					maxFreqRatio, numberOfFrequencies, params);
 			table.addTuning(fingering, playedFrequency);
 		}
@@ -273,17 +276,13 @@ public class NafOptimizationTest
 		File inputFile = getInputFile(inputInstrumentXML, geometryBindFactory);
 		Instrument instrument = (Instrument) geometryBindFactory.unmarshalXml(
 				inputFile, true);
+		instrument.updateComponents();
 
 		return instrument;
 	}
 
 	protected void configureInstrument(Instrument instrument) throws Exception
 	{
-		// InstrumentConfigurator instrumentConfig = new
-		// SimpleFippleMouthpieceConfigurator();
-		InstrumentConfigurator instrumentConfig = new GordonConfigurator();
-		instrument.setConfiguration(instrumentConfig);
-
 		// This unit-of-measure converter is called in setConfiguration(), but
 		// is shown here to make it explicit. The method is efficient: it does
 		// not redo the work.

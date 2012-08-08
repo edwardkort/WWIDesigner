@@ -10,11 +10,7 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.commons.math3.complex.Complex;
-
-import com.wwidesigner.math.ReflectanceSpectrum;
 import com.wwidesigner.note.Fingering;
-import com.wwidesigner.util.PhysicalParameters;
 import com.wwidesigner.util.SortedPositionList;
 
 /**
@@ -34,8 +30,6 @@ public class Instrument implements InstrumentInterface
 	protected Termination termination;
 
 	private boolean convertedToMetres = false;
-	protected InstrumentConfigurator configurator;
-	protected InstrumentCalculator instrumentCalculator;
 
 	public Instrument()
 	{
@@ -204,22 +198,6 @@ public class Instrument implements InstrumentInterface
 	public void setTermination(Termination value)
 	{
 		termination = value;
-	}
-
-	public void setConfiguration(InstrumentConfigurator configurator)
-	{
-		this.configurator = configurator;
-		configurator.configureInstrument(this);
-		convertToMetres();
-	}
-
-	/**
-	 * @param instrumentCalculator
-	 *            the instrumentCalculator to set
-	 */
-	public void setCalculator(InstrumentCalculator instrumentCalculator)
-	{
-		this.instrumentCalculator = instrumentCalculator;
 	}
 
 	public void convertToMetres()
@@ -456,8 +434,6 @@ public class Instrument implements InstrumentInterface
 		section.setRightRadius(rightPoint.getBoreDiameter() / 2);
 		section.setRightBorePosition(rightPoint.getBorePosition());
 
-		configurator.configureBoreSectionCalculator(section);
-
 		components.add(section);
 	}
 
@@ -506,21 +482,6 @@ public class Instrument implements InstrumentInterface
 		return sortedPositions;
 	}
 
-	public Complex calcRefOrImpCoefficient(Fingering fingering,
-			PhysicalParameters physicalParams)
-	{
-		return instrumentCalculator.calcRefOrImpCoefficient(fingering,
-				physicalParams);
-
-	}
-
-	public Complex calcRefOrImpCoefficient(double frequency,
-			Fingering fingering, PhysicalParameters physicalParams)
-	{
-		return instrumentCalculator.calcRefOrImpCoefficent(frequency,
-				fingering, physicalParams);
-	}
-
 	public void setOpenHoles(Fingering fingering)
 	{
 		List<Boolean> openHoles = fingering.getOpenHole();
@@ -530,21 +491,5 @@ public class Instrument implements InstrumentInterface
 			boolean isOpen = openHoleIterator.next();
 			iHole.setOpenHole(isOpen);
 		}
-	}
-
-	public Double getPlayedFrequency(Fingering fingering, double freqRange,
-			int numberOfFrequencies, PhysicalParameters params)
-	{
-		Double playedFreq = null;
-		double targetFreq = fingering.getNote().getFrequency();
-		double freqStart = targetFreq / freqRange;
-		double freqEnd = targetFreq * freqRange;
-		ReflectanceSpectrum spectrum = new ReflectanceSpectrum();
-
-		spectrum.calcReflectance(this, freqStart, freqEnd, numberOfFrequencies,
-				fingering, params);
-		playedFreq = spectrum.getClosestMinimumFrequency(targetFreq);
-
-		return playedFreq;
 	}
 }

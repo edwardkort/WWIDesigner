@@ -3,6 +3,7 @@ package com.wwidesigner.optimization;
 import com.wwidesigner.geometry.BorePoint;
 import com.wwidesigner.geometry.Hole;
 import com.wwidesigner.geometry.Instrument;
+import com.wwidesigner.modelling.InstrumentCalculator;
 import com.wwidesigner.note.TuningInterface;
 import com.wwidesigner.util.SortedPositionList;
 
@@ -11,9 +12,9 @@ public class SimpleHolePositionAndDiameterOptimizer extends InstrumentOptimizer
 	private static int defaultNumberOfInterpolationPoints = 60;
 
 	public SimpleHolePositionAndDiameterOptimizer(Instrument inst,
-			TuningInterface tuning)
+			InstrumentCalculator calculator, TuningInterface tuning)
 	{
-		super(defaultNumberOfInterpolationPoints, inst, tuning);
+		super(defaultNumberOfInterpolationPoints, inst, calculator, tuning);
 	}
 
 	public double[] getStateVector()
@@ -75,7 +76,6 @@ public class SimpleHolePositionAndDiameterOptimizer extends InstrumentOptimizer
 		}
 
 		instrument.updateComponents();
-
 	}
 
 	@Override

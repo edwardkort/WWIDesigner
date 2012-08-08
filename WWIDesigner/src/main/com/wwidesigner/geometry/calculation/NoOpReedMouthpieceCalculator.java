@@ -1,18 +1,13 @@
 package com.wwidesigner.geometry.calculation;
 
+import org.apache.commons.math3.complex.Complex;
+
 import com.wwidesigner.geometry.Mouthpiece;
-import com.wwidesigner.geometry.MouthpieceCalculator;
 import com.wwidesigner.math.TransferMatrix;
 import com.wwidesigner.util.PhysicalParameters;
 
 public class NoOpReedMouthpieceCalculator extends MouthpieceCalculator
 {
-
-	public NoOpReedMouthpieceCalculator(Mouthpiece mouthpiece)
-	{
-		super(mouthpiece);
-	}
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -21,8 +16,8 @@ public class NoOpReedMouthpieceCalculator extends MouthpieceCalculator
 	 * com.wwidesigner.util.PhysicalParameters)
 	 */
 	@Override
-	public TransferMatrix calcTransferMatrix(double waveNumber,
-			PhysicalParameters parameters)
+	public TransferMatrix calcTransferMatrix(Mouthpiece mouthpiece,
+			double waveNumber, PhysicalParameters parameters)
 	{
 		return TransferMatrix.makeIdentity();
 	}
@@ -37,6 +32,20 @@ public class NoOpReedMouthpieceCalculator extends MouthpieceCalculator
 	public int calcReflectanceMultiplier()
 	{
 		return 1;
+	}
+
+	@Override
+	public Complex calcZ(Mouthpiece mouthpiece, double freq,
+			PhysicalParameters physicalParams)
+	{
+		return Complex.ONE;
+	}
+
+	@Override
+	public Double calcGain(Mouthpiece mouthpiece, double freq, Complex Z,
+			PhysicalParameters physicalParams)
+	{
+		return 1.0;
 	}
 
 }

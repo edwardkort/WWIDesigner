@@ -1,7 +1,5 @@
 package com.wwidesigner.geometry;
 
-import com.wwidesigner.math.TransferMatrix;
-import com.wwidesigner.util.PhysicalParameters;
 
 public class Hole implements ComponentInterface, BorePointInterface
 {
@@ -14,7 +12,6 @@ public class Hole implements ComponentInterface, BorePointInterface
 	protected Key key;
 
 	protected double boreDiameter;
-	protected HoleCalculator holeCalculator;
 
 	public Hole()
 	{
@@ -156,12 +153,6 @@ public class Hole implements ComponentInterface, BorePointInterface
 		}
 	}
 
-	public TransferMatrix calcTransferMatrix(double wave_number,
-			PhysicalParameters mParameters)
-	{
-		return holeCalculator.calcTransferMatrix(wave_number, mParameters);
-	}
-
 	@Override
 	public void setBoreDiameter(double boreDiameter)
 	{
@@ -182,10 +173,5 @@ public class Hole implements ComponentInterface, BorePointInterface
 	public void setRatio(double alpha)
 	{
 		diameter = alpha * boreDiameter;
-	}
-
-	public void setCalculator(HoleCalculator holeCalculator)
-	{
-		this.holeCalculator = holeCalculator;
 	}
 }

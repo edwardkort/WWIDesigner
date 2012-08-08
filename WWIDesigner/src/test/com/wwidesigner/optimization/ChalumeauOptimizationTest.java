@@ -15,9 +15,9 @@ import org.junit.Test;
 import com.wwidesigner.geometry.BorePoint;
 import com.wwidesigner.geometry.Hole;
 import com.wwidesigner.geometry.Instrument;
-import com.wwidesigner.geometry.InstrumentConfigurator;
 import com.wwidesigner.geometry.bind.GeometryBindFactory;
-import com.wwidesigner.geometry.calculation.SimpleReedConfigurator;
+import com.wwidesigner.modelling.InstrumentCalculator;
+import com.wwidesigner.modelling.SimpleReedCalculator;
 import com.wwidesigner.note.Tuning;
 import com.wwidesigner.note.bind.NoteBindFactory;
 import com.wwidesigner.util.BindFactory;
@@ -45,12 +45,13 @@ public class ChalumeauOptimizationTest
 	public Instrument doInstrumentOptimization() throws Exception
 	{
 		Instrument instrument = getInstrumentFromXml(inputInstrumentXML);
+		InstrumentCalculator calculator = new SimpleReedCalculator(instrument);
 		configureInstrument(instrument);
 
 		Tuning tuning = getTuningFromXml(inputTuningXML);
 
 		HolePositionAndDiameterOptimizer optimizer =
-				new HolePositionAndDiameterOptimizer(instrument, tuning);
+				new HolePositionAndDiameterOptimizer(instrument, calculator, tuning);
 
 		setPhysicalParameters(optimizer);
 		setOptimizationBounds(optimizer);
@@ -79,11 +80,13 @@ public class ChalumeauOptimizationTest
 			List<Hole> holes = optimizedInstrument.getHole();
 			SortedPositionList<Hole> sortedHoles = new SortedPositionList<Hole>(holes);
 			
-			//for (int i = 0; i < sortedHoles.length; ++i)
-			//	System.out.println( sortedHoles[i].getBorePosition() );
-			
-			//for (int i = 0; i < sortedHoles.length; ++i)
-			//	System.out.println( ((Hole)sortedHoles[i]).getDiameter() );
+			System.out.println("Hole position and diameter:");
+			for (int i = 0; i < sortedHoles.size(); ++i)
+			{
+				System.out.print( sortedHoles.get(i).getBorePosition() );
+				System.out.print("  ");
+				System.out.println( sortedHoles.get(i).getDiameter() );
+			}
 
 			//System.out.print("last point = " + lastPoint.getBorePosition());
 			assertEquals("Bore length incorrect", 337.5, lastPoint.getBorePosition(), 0.1);
@@ -124,15 +127,13 @@ public class ChalumeauOptimizationTest
 		File inputFile = getInputFile(inputInstrumentXML, geometryBindFactory);
 		Instrument instrument = (Instrument) geometryBindFactory.unmarshalXml(
 				inputFile, true);
+		instrument.updateComponents();
 
 		return instrument;
 	}
 
 	protected void configureInstrument(Instrument instrument) throws Exception
 	{
-		InstrumentConfigurator instrumentConfig = new SimpleReedConfigurator();
-		instrument.setConfiguration(instrumentConfig);
-
 		// This unit-of-measure converter is called in setConfiguration(), but
 		// is shown here to make it explicit. The method is efficient: it does
 		// not redo the work.

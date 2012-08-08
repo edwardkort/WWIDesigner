@@ -6,7 +6,6 @@ package com.wwidesigner.geometry.calculation;
 import org.apache.commons.math3.complex.Complex;
 
 import com.wwidesigner.geometry.Hole;
-import com.wwidesigner.geometry.HoleCalculator;
 import com.wwidesigner.math.TransferMatrix;
 import com.wwidesigner.util.PhysicalParameters;
 
@@ -24,12 +23,7 @@ public class GordonHoleCalculator extends HoleCalculator
 	private double mCHLB;
 	private PhysicalParameters mParams;
 
-	public GordonHoleCalculator(Hole hole)
-	{
-		super(hole);
-	}
-
-	protected void updateGeometry()
+	protected void updateGeometry(Hole hole)
 	{
 		mRB = hole.getBoreDiameter() / 2.;
 		mRH = hole.getDiameter() / 2.;
@@ -99,11 +93,11 @@ public class GordonHoleCalculator extends HoleCalculator
 	 * com.wwidesigner.util.PhysicalParameters)
 	 */
 	@Override
-	public TransferMatrix calcTransferMatrix(double waveNumber,
-			PhysicalParameters parameters)
+	public TransferMatrix calcTransferMatrix(Hole hole,
+			double waveNumber, PhysicalParameters parameters)
 	{
 		mParams = parameters;
-		updateGeometry();
+		updateGeometry(hole);
 		TransferMatrix matrix = new TransferMatrix();
 		double omega = waveNumber * mParams.getSpeedOfSound();
 		double freq = omega / (2. * Math.PI);

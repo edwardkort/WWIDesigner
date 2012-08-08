@@ -7,9 +7,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 
 import com.wwidesigner.geometry.Instrument;
-import com.wwidesigner.geometry.InstrumentConfigurator;
 import com.wwidesigner.geometry.bind.GeometryBindFactory;
-import com.wwidesigner.geometry.calculation.WhistleConfigurator;
+import com.wwidesigner.modelling.WhistleCalculator;
 import com.wwidesigner.modelling.PlayingRangeSpectrum;
 import com.wwidesigner.note.Fingering;
 import com.wwidesigner.note.Tuning;
@@ -41,8 +40,8 @@ public class BP7ImpedancePlot
 
 			PhysicalParameters params = new PhysicalParameters(28.2,
 					TemperatureType.C);
-			Instrument instrument = plot
-					.getInstrumentFromXml(inputInstrumentXML);
+			Instrument instrument = plot.getInstrumentFromXml(inputInstrumentXML);
+			InstrumentCalculator calculator = new WhistleCalculator(instrument);
 			Tuning tuning = plot.getTuningFromXml(inputTuningXML);
 			Fingering fingering = tuning.getFingering().get(0);
 
@@ -57,7 +56,7 @@ public class BP7ImpedancePlot
 			double freqEnd = targetFreq * freqRange;
 			PlayingRangeSpectrum spectrum = new PlayingRangeSpectrum();
 
-			spectrum.calcImpedance(instrument, freqStart, freqEnd,
+			spectrum.calcImpedance(instrument, calculator, freqStart, freqEnd,
 					numberOfFrequencies, fingering, params);
 			spectrum.plotImpedanceSpectrum();
 			spectrum.plotPlayingRange();
@@ -75,17 +74,13 @@ public class BP7ImpedancePlot
 		File inputFile = getInputFile(inputInstrumentXML, geometryBindFactory);
 		Instrument instrument = (Instrument) geometryBindFactory.unmarshalXml(
 				inputFile, true);
+		instrument.updateComponents();
 
 		return instrument;
 	}
 
 	protected void configureInstrument(Instrument instrument) throws Exception
 	{
-		// InstrumentConfigurator instrumentConfig = new
-		// SimpleFippleMouthpieceConfigurator();
-		InstrumentConfigurator instrumentConfig = new WhistleConfigurator();
-		instrument.setConfiguration(instrumentConfig);
-
 		// This unit-of-measure converter is called in setConfiguration(), but
 		// is shown here to make it explicit. The method is efficient: it does
 		// not redo the work.

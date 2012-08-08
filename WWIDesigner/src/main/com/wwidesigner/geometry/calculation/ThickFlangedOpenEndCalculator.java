@@ -3,29 +3,23 @@ package com.wwidesigner.geometry.calculation;
 import org.apache.commons.math3.complex.Complex;
 
 import com.wwidesigner.geometry.Termination;
-import com.wwidesigner.geometry.TerminationCalculator;
 import com.wwidesigner.math.StateVector;
 import com.wwidesigner.util.PhysicalParameters;
 
 public class ThickFlangedOpenEndCalculator extends TerminationCalculator
 {
-
-	public ThickFlangedOpenEndCalculator(Termination termination)
-	{
-		super(termination);
-	}
-
 	@Override
-	public StateVector calcStateVector(double wave_number,
-			PhysicalParameters params)
+	public StateVector calcStateVector(Termination termination,
+			double wave_number, PhysicalParameters params)
 	{
-		Complex P = Z(wave_number, params).multiply(
+		Complex P = calcZ(termination, wave_number, params).multiply(
 				params.calcZ0(termination.getBoreDiameter() / 2.));
 
 		return new StateVector(P, Complex.ONE);
 	}
 
-	private Complex Z(double wave_number, PhysicalParameters params)
+	private Complex calcZ(Termination termination,
+			double wave_number, PhysicalParameters params)
 	{
 		double a = termination.getBoreDiameter() / 2;
 		double b = termination.getFlangeDiameter() / 2;

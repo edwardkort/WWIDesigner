@@ -6,7 +6,6 @@ package com.wwidesigner.geometry.calculation;
 import org.apache.commons.math3.complex.Complex;
 
 import com.wwidesigner.geometry.BoreSection;
-import com.wwidesigner.geometry.BoreSectionCalculator;
 import com.wwidesigner.math.TransferMatrix;
 import com.wwidesigner.util.PhysicalParameters;
 
@@ -24,11 +23,6 @@ public class GordonBoreSectionCalculator extends BoreSectionCalculator
 	private double mX0Inv;
 	private boolean mIsConv;
 
-	public GordonBoreSectionCalculator(BoreSection section)
-	{
-		super(section);
-	}
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -37,10 +31,10 @@ public class GordonBoreSectionCalculator extends BoreSectionCalculator
 	 * com.wwidesigner.util.PhysicalParameters)
 	 */
 	@Override
-	public TransferMatrix calcTransferMatrix(double waveNumber,
-			PhysicalParameters params)
+	public TransferMatrix calcTransferMatrix(BoreSection section,
+			double waveNumber, PhysicalParameters params)
 	{
-		setVariables();
+		setVariables(section);
 		// See Scavone, PhD Thesis.
 
 		double omega = waveNumber * params.getSpeedOfSound();
@@ -132,7 +126,7 @@ public class GordonBoreSectionCalculator extends BoreSectionCalculator
 		return matrix;
 	}
 
-	protected void setVariables()
+	protected void setVariables(BoreSection section)
 	{
 		mRBL = section.getLeftRadius();
 		mRBR = section.getRightRadius();

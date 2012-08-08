@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.wwidesigner.math;
+package com.wwidesigner.modelling;
 
 import java.awt.Color;
 import java.util.ArrayList;
@@ -51,8 +51,9 @@ public class ReflectanceSpectrum
 		mSpectrum.put(frequency, value);
 	}
 
-	public void calcReflectance(InstrumentInterface flute, double freqStart,
-			double freqEnd, int nfreq, Fingering fingering,
+	public void calcReflectance(InstrumentInterface flute,
+			InstrumentCalculator calculator,
+			double freqStart, double freqEnd, int nfreq, Fingering fingering,
 			PhysicalParameters physicalParams)
 	{
 		mSpectrum = new TreeMap<Double, Complex>();
@@ -65,7 +66,7 @@ public class ReflectanceSpectrum
 		for (int i = 0; i < nfreq; ++i)
 		{
 			double freq = freqStart + i * freqStep;
-			Complex reflectance = flute.calcRefOrImpCoefficient(freq,
+			Complex reflectance = calculator.calcReflectionCoefficient(freq,
 					fingering, physicalParams);
 
 			setDataPoint(freq, reflectance);

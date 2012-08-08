@@ -35,7 +35,7 @@ public class BasicOptimizationFunction implements OptimizationFunctionInterface
 		optimizer.updateGeometry(state_vector);
 		double error = calculateErrorNorm();
 
-		System.out.println(error);
+//		System.out.println(error);
 		return error;
 	}
 
@@ -52,8 +52,8 @@ public class BasicOptimizationFunction implements OptimizationFunctionInterface
 		double norm = 0.;
 		for (Fingering target : fingeringTargets)
 		{
-			Complex reflectionCoeff = optimizer.getInstrument()
-					.calcRefOrImpCoefficient(target, physicalParams);
+			Complex reflectionCoeff = optimizer.getInstrumentCalculator()
+					.calcReflectionCoefficient(target, physicalParams);
 			double reflectance_angle = reflectionCoeff.getArgument();
 			// we need a way to display this error term during the optimization (one per target)
 			// as well as the error norm

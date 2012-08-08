@@ -1,7 +1,5 @@
 package com.wwidesigner.geometry;
 
-import com.wwidesigner.math.TransferMatrix;
-import com.wwidesigner.util.PhysicalParameters;
 
 public class BoreSection implements ComponentInterface
 {
@@ -9,8 +7,6 @@ public class BoreSection implements ComponentInterface
 	private double mLeftRadius;
 	private double mRightRadius;
 	private double rightBorePosition;
-
-	protected BoreSectionCalculator boreSectionCalculator;
 
 	public BoreSection()
 	{
@@ -62,12 +58,6 @@ public class BoreSection implements ComponentInterface
 		mRightRadius = rightRadius;
 	}
 
-	public TransferMatrix calcTransferMatrix(double wave_number,
-			PhysicalParameters params)
-	{
-		return boreSectionCalculator.calcTransferMatrix(wave_number, params);
-	}
-
 	/**
 	 * @return the rightBorePosition
 	 */
@@ -83,16 +73,6 @@ public class BoreSection implements ComponentInterface
 	public void setRightBorePosition(double rightBorePosition)
 	{
 		this.rightBorePosition = rightBorePosition;
-	}
-
-	/**
-	 * @param sectionCalculator
-	 *            the sectionCalculator to set
-	 */
-	public void setBoreSectionCalculator(
-			BoreSectionCalculator boreSectionCalculator)
-	{
-		this.boreSectionCalculator = boreSectionCalculator;
 	}
 
 }

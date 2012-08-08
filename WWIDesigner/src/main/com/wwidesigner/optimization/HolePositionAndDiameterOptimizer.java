@@ -19,8 +19,6 @@ public class HolePositionAndDiameterOptimizer extends InstrumentOptimizer
 
 	public double[] getStateVector()
 	{
-		instrument.updateComponents();
-
 		PositionInterface[] sortedPoints = Instrument.sortList(instrument
 				.getBorePoint());
 		PositionInterface[] sortedHoles = Instrument.sortList(instrument

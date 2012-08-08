@@ -60,7 +60,7 @@ public class NafOptimizationTest
 	{
 		Instrument instrument = getInstrumentFromXml();
 		InstrumentCalculator calculator = new GordonCalculator(instrument);
-		configureInstrument(instrument);
+		instrument.convertToMetres();
 
 		Tuning tuning = getTuningFromXml();
 
@@ -104,7 +104,7 @@ public class NafOptimizationTest
 				.getCents(maxFreqRatio));
 
 		InstrumentTuningTable table = new InstrumentTuningTable(title);
-		instrument.updateComponents();
+//		instrument.updateComponents();
 
 		for (Fingering fingering : tuning.getFingering())
 		{
@@ -279,14 +279,6 @@ public class NafOptimizationTest
 		instrument.updateComponents();
 
 		return instrument;
-	}
-
-	protected void configureInstrument(Instrument instrument) throws Exception
-	{
-		// This unit-of-measure converter is called in setConfiguration(), but
-		// is shown here to make it explicit. The method is efficient: it does
-		// not redo the work.
-		instrument.convertToMetres();
 	}
 
 	protected Tuning getTuningFromXml() throws Exception

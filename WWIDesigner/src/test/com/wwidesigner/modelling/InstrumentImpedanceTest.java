@@ -53,7 +53,7 @@ public class InstrumentImpedanceTest
 					1588.12692212, 1787.297483, 1992.58680484, 2045.42056261,
 					2233.64276274, 2433.04456904, 912.91065873 };
 
-			configureInstrument(instrument);
+			instrument.convertToMetres();
 			double Z0 = params.calcZ0(instrument.getMouthpiece()
 					.getBoreDiameter() / 2.0);
 
@@ -83,15 +83,6 @@ public class InstrumentImpedanceTest
 		instrument.updateComponents();
 
 		return instrument;
-	}
-
-	protected void configureInstrument(Instrument instrument)
-	{
-		// This unit-of-measure converter is called in setConfiguration(), but
-		// is shown here to make it explicit. The method is efficient: it does
-		// not redo the work.
-		instrument.convertToMetres();
-		instrument.updateComponents();
 	}
 
 	protected Tuning getTuningFromXml(String tuningXML) throws Exception

@@ -60,8 +60,6 @@ public class DefaultInstrumentCalculator extends InstrumentCalculator
 	public Complex calculateReflectionCoefficient(double frequency,
 			PhysicalParameters physicalParams)
 	{
-		instrument.updateComponents();
-
 		double waveNumber = physicalParams.calcWaveNumber(frequency);
 
 		// Start with the state vector of the termination,

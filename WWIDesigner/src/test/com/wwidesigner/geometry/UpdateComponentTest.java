@@ -37,7 +37,7 @@ public class UpdateComponentTest
 			inputTuningXML = "com/wwidesigner/optimization/example/NoHoleNAF1Tuning.xml";
 
 			Instrument instrument = getInstrumentFromXml();
-			configureInstrument(instrument);
+			instrument.convertToMetres();
 
 			instrument.updateComponents();
 			printComponents("No Holes, first update", instrument.components);
@@ -124,7 +124,7 @@ public class UpdateComponentTest
 			inputTuningXML = "com/wwidesigner/optimization/example/1HoleNAF1Tuning.xml";
 
 			Instrument instrument = getInstrumentFromXml();
-			configureInstrument(instrument);
+			instrument.convertToMetres();
 
 			instrument.updateComponents();
 			printComponents("\n\nOne Hole, first update", instrument.components);
@@ -149,7 +149,7 @@ public class UpdateComponentTest
 			inputTuningXML = "com/wwidesigner/optimization/example/6HoleNAF1Tuning.xml";
 
 			Instrument instrument = getInstrumentFromXml();
-			configureInstrument(instrument);
+			instrument.convertToMetres();
 
 			instrument.updateComponents();
 			printComponents("\n\nSix Holes, first update", instrument.components);
@@ -196,14 +196,6 @@ public class UpdateComponentTest
 		File inputFile = new File(inputPath);
 
 		return inputFile;
-	}
-
-	protected void configureInstrument(Instrument instrument) throws Exception
-	{
-		// This unit-of-measure converter is called in setConfiguration(), but
-		// is shown here to make it explicit. The method is efficient: it does
-		// not redo the work.
-		instrument.convertToMetres();
 	}
 
 	/**

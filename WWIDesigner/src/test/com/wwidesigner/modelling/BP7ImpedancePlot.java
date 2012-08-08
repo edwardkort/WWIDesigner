@@ -45,8 +45,7 @@ public class BP7ImpedancePlot
 			Tuning tuning = plot.getTuningFromXml(inputTuningXML);
 			Fingering fingering = tuning.getFingering().get(0);
 
-			plot.configureInstrument(instrument);
-			instrument.updateComponents();
+			instrument.convertToMetres();
 			instrument.setOpenHoles(fingering);
 
 			double freqRange = 2.;
@@ -77,14 +76,6 @@ public class BP7ImpedancePlot
 		instrument.updateComponents();
 
 		return instrument;
-	}
-
-	protected void configureInstrument(Instrument instrument) throws Exception
-	{
-		// This unit-of-measure converter is called in setConfiguration(), but
-		// is shown here to make it explicit. The method is efficient: it does
-		// not redo the work.
-		instrument.convertToMetres();
 	}
 
 	protected Tuning getTuningFromXml(String inputTuningXML) throws Exception

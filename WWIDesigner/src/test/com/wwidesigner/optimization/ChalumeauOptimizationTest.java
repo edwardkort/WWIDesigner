@@ -46,7 +46,7 @@ public class ChalumeauOptimizationTest
 	{
 		Instrument instrument = getInstrumentFromXml(inputInstrumentXML);
 		InstrumentCalculator calculator = new SimpleReedCalculator(instrument);
-		configureInstrument(instrument);
+		instrument.convertToMetres();
 
 		Tuning tuning = getTuningFromXml(inputTuningXML);
 
@@ -130,14 +130,6 @@ public class ChalumeauOptimizationTest
 		instrument.updateComponents();
 
 		return instrument;
-	}
-
-	protected void configureInstrument(Instrument instrument) throws Exception
-	{
-		// This unit-of-measure converter is called in setConfiguration(), but
-		// is shown here to make it explicit. The method is efficient: it does
-		// not redo the work.
-		instrument.convertToMetres();
 	}
 
 	protected Tuning getTuningFromXml(String tuningXML) throws Exception

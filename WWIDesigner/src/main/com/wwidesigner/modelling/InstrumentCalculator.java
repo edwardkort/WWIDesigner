@@ -36,6 +36,7 @@ public abstract class InstrumentCalculator
 	{
 		this.instrument = instrument;
 		this.instrument.convertToMetres();
+		this.instrument.updateComponents();
 		this.mouthpieceCalculator = new NoOpMouthpieceCalculator();
 		this.terminationCalculator = new IdealOpenEndCalculator();
 		this.holeCalculator = new DefaultHoleCalculator();
@@ -50,6 +51,7 @@ public abstract class InstrumentCalculator
 	{
 		this.instrument = instrument;
 		this.instrument.convertToMetres();
+		this.instrument.updateComponents();
 		this.mouthpieceCalculator = mouthpieceCalculator;
 		this.terminationCalculator = terminationCalculator;
 		this.holeCalculator = holeCalculator;

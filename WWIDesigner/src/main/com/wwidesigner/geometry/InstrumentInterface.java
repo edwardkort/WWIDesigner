@@ -2,11 +2,6 @@ package com.wwidesigner.geometry;
 
 import java.util.List;
 
-import org.apache.commons.math3.complex.Complex;
-
-import com.wwidesigner.note.Fingering;
-import com.wwidesigner.util.PhysicalParameters;
-
 public interface InstrumentInterface
 {
 
@@ -136,11 +131,5 @@ public interface InstrumentInterface
 	 * the raw BorePoints and Holes.
 	 */
 	public void updateComponents();
-
-	public Complex calcRefOrImpCoefficient(Fingering fingering,
-			PhysicalParameters physicalParams);
-
-	public Complex calcRefOrImpCoefficient(double frequency,
-			Fingering fingering, PhysicalParameters physicalParams);
 
 }

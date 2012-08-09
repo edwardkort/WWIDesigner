@@ -1,6 +1,7 @@
 package com.wwidesigner.optimization;
 
 import com.wwidesigner.geometry.Instrument;
+import com.wwidesigner.modelling.InstrumentCalculator;
 
 public interface InstrumentOptimizerInterface
 {
@@ -11,4 +12,5 @@ public interface InstrumentOptimizerInterface
 	
 	public abstract Instrument getInstrument();
 
+	public abstract InstrumentCalculator getInstrumentCalculator();
 }

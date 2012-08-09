@@ -7,7 +7,6 @@ import org.apache.commons.math3.complex.Complex;
 
 import com.wwidesigner.geometry.BoreSection;
 import com.wwidesigner.geometry.Mouthpiece;
-import com.wwidesigner.geometry.MouthpieceCalculator;
 import com.wwidesigner.math.StateVector;
 import com.wwidesigner.math.TransferMatrix;
 import com.wwidesigner.util.PhysicalParameters;
@@ -19,16 +18,7 @@ import com.wwidesigner.util.PhysicalParameters;
  */
 public class SimpleFippleMouthpieceCalculator extends MouthpieceCalculator
 {
-
 	private PhysicalParameters params;
-
-	/**
-	 * @param mouthpiece
-	 */
-	public SimpleFippleMouthpieceCalculator(Mouthpiece mouthpiece)
-	{
-		super(mouthpiece);
-	}
 
 	/*
 	 * (non-Javadoc)
@@ -38,14 +28,14 @@ public class SimpleFippleMouthpieceCalculator extends MouthpieceCalculator
 	 * com.wwidesigner.util.PhysicalParameters)
 	 */
 	@Override
-	public TransferMatrix calcTransferMatrix(double waveNumber,
-			PhysicalParameters parameters)
+	public TransferMatrix calcTransferMatrix(Mouthpiece mouthpiece,
+			double waveNumber, PhysicalParameters parameters)
 	{
 		TransferMatrix matrix = new TransferMatrix();
 		params = parameters;
 		double z0 = parameters.calcZ0(mouthpiece.getBoreDiameter() / 2.);
 		double omega = waveNumber * parameters.getSpeedOfSound();
-		double k_delta_l = calcKDeltaL(omega, z0);
+		double k_delta_l = calcKDeltaL(mouthpiece, omega, z0);
 
 		Complex k_delta = new Complex(Math.cos(k_delta_l));
 		matrix.setPP(k_delta);
@@ -72,27 +62,27 @@ public class SimpleFippleMouthpieceCalculator extends MouthpieceCalculator
 		return -1;
 	}
 
-	protected double calcKDeltaL(double omega, double z0)
+	protected double calcKDeltaL(Mouthpiece mouthpiece, double omega, double z0)
 	{
 		double result = Math
-				.atan(1.0 / (z0 * (calcJYE(omega) + calcJYC(omega))));
+				.atan(1.0 / (z0 * (calcJYE(mouthpiece, omega) + calcJYC(mouthpiece, omega))));
 
 		return result;
 	}
 
-	protected double calcJYE(double omega)
+	protected double calcJYE(Mouthpiece mouthpiece, double omega)
 	{
 		double gamma = params.getGamma();
-		double result = getCharacteristicLength() / (gamma * omega);
+		double result = getCharacteristicLength(mouthpiece) / (gamma * omega);
 
 		return result;
 	}
 
-	protected double calcJYC(double omega)
+	protected double calcJYC(Mouthpiece mouthpiece, double omega)
 	{
 		double gamma = params.getGamma();
 		double speedOfSound = params.getSpeedOfSound();
-		double v = calcHeadspaceVolume();
+		double v = calcHeadspaceVolume(mouthpiece);
 
 		double result = -(omega * v)
 				/ (gamma * speedOfSound * speedOfSound);
@@ -100,7 +90,7 @@ public class SimpleFippleMouthpieceCalculator extends MouthpieceCalculator
 		return result;
 	}
 
-	protected double calcHeadspaceVolume()
+	protected double calcHeadspaceVolume(Mouthpiece mouthpiece)
 	{
 		double volume = 0.;
 		for (BoreSection section : mouthpiece.getHeadspace())
@@ -125,7 +115,7 @@ public class SimpleFippleMouthpieceCalculator extends MouthpieceCalculator
 		return volume;
 	}
 
-	protected double getCharacteristicLength()
+	protected double getCharacteristicLength(Mouthpiece mouthpiece)
 	{
 		double windowLength = mouthpiece.getFipple().getWindowLength();
 		double windowWidth = mouthpiece.getFipple().getWindowWidth();
@@ -139,31 +129,33 @@ public class SimpleFippleMouthpieceCalculator extends MouthpieceCalculator
 	}
 
 	@Override
-	public Complex calcZ(double freq, PhysicalParameters physicalParams)
+	public Complex calcZ(Mouthpiece mouthpiece,
+			double freq, PhysicalParameters physicalParams)
 	{
 		// Assume the open window acts as a flanged tube with an effective radius
 		// that corresponds to the window area.
-		double effRadius = Math.sqrt(this.mouthpiece.getFipple().getWindowLength()
-				* this.mouthpiece.getFipple().getWindowWidth() / Math.PI );
+		double effRadius = Math.sqrt(mouthpiece.getFipple().getWindowLength()
+				* mouthpiece.getFipple().getWindowWidth() / Math.PI );
 		double waveNumber = physicalParams.calcWaveNumber(freq);
 
 		StateVector sv = new StateVector(
 				Tube.calcZflanged( freq, effRadius, physicalParams ),
 				Complex.ONE );
 		TransferMatrix tm = Tube.calcCylinderMatrix(waveNumber,
-				this.mouthpiece.getFipple().getWindowHeight(), 
+				mouthpiece.getFipple().getWindowHeight(), 
 				effRadius, physicalParams );
 		sv = tm.multiply( sv );
 		return sv.Impedance();
 	}
 
 	@Override
-	public Double calcGain(double freq, Complex Z,
+	public Double calcGain(Mouthpiece mouthpiece,
+			double freq, Complex Z,
 			PhysicalParameters physicalParams)
 	{
 		double radius = mouthpiece.getBoreDiameter() / 2.;
 		double waveNumber = physicalParams.calcWaveNumber(freq);
-		return this.mouthpiece.getGainFactor() * waveNumber * radius*radius
+		return mouthpiece.getGainFactor() * waveNumber * radius*radius
 				/ Z.abs();
 	}
 }

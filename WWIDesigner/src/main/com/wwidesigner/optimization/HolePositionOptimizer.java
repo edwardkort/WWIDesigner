@@ -7,6 +7,7 @@ import com.wwidesigner.geometry.BorePoint;
 import com.wwidesigner.geometry.Hole;
 import com.wwidesigner.geometry.Instrument;
 import com.wwidesigner.geometry.PositionInterface;
+import com.wwidesigner.modelling.InstrumentCalculator;
 import com.wwidesigner.note.TuningInterface;
 
 /**
@@ -22,9 +23,9 @@ public class HolePositionOptimizer extends InstrumentOptimizer
 	 * @param inst
 	 * @param tuning
 	 */
-	public HolePositionOptimizer(Instrument inst, TuningInterface tuning)
+	public HolePositionOptimizer(Instrument inst, InstrumentCalculator calculator, TuningInterface tuning)
 	{
-		super(defaultNumberOfInterpolationPoints, inst, tuning);
+		super(defaultNumberOfInterpolationPoints, inst, calculator, tuning);
 	}
 
 	@Override
@@ -86,5 +87,7 @@ public class HolePositionOptimizer extends InstrumentOptimizer
 					- accumulatedDistance);
 			accumulatedDistance += state_vector[i];
 		}
+
+		instrument.updateComponents();
 	}
 }

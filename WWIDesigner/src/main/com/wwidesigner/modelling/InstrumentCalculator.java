@@ -44,10 +44,10 @@ public abstract class InstrumentCalculator
 	}
 
 	public InstrumentCalculator(Instrument instrument,
-								MouthpieceCalculator mouthpieceCalculator,
-								TerminationCalculator terminationCalculator,
-								HoleCalculator holeCalculator,
-								BoreSectionCalculator boreSectionCalculator )
+			MouthpieceCalculator mouthpieceCalculator,
+			TerminationCalculator terminationCalculator,
+			HoleCalculator holeCalculator,
+			BoreSectionCalculator boreSectionCalculator)
 	{
 		this.instrument = instrument;
 		this.instrument.convertToMetres();
@@ -55,6 +55,56 @@ public abstract class InstrumentCalculator
 		this.mouthpieceCalculator = mouthpieceCalculator;
 		this.terminationCalculator = terminationCalculator;
 		this.holeCalculator = holeCalculator;
+		this.boreSectionCalculator = boreSectionCalculator;
+	}
+
+	/**
+	 * @param instrument
+	 *            the instrument to set
+	 */
+	public void setInstrument(Instrument instrument)
+	{
+		this.instrument = instrument;
+		this.instrument.convertToMetres();
+		this.instrument.updateComponents();
+	}
+
+	/**
+	 * @param mouthpieceCalculator
+	 *            the mouthpieceCalculator to set
+	 */
+	public void setMouthpieceCalculator(
+			MouthpieceCalculator mouthpieceCalculator)
+	{
+		this.mouthpieceCalculator = mouthpieceCalculator;
+	}
+
+	/**
+	 * @param terminationCalculator
+	 *            the terminationCalculator to set
+	 */
+	public void setTerminationCalculator(
+			TerminationCalculator terminationCalculator)
+	{
+		this.terminationCalculator = terminationCalculator;
+	}
+
+	/**
+	 * @param holeCalculator
+	 *            the holeCalculator to set
+	 */
+	public void setHoleCalculator(HoleCalculator holeCalculator)
+	{
+		this.holeCalculator = holeCalculator;
+	}
+
+	/**
+	 * @param boreSectionCalculator
+	 *            the boreSectionCalculator to set
+	 */
+	public void setBoreSectionCalculator(
+			BoreSectionCalculator boreSectionCalculator)
+	{
 		this.boreSectionCalculator = boreSectionCalculator;
 	}
 
@@ -69,17 +119,16 @@ public abstract class InstrumentCalculator
 	public abstract Complex calcReflectionCoefficient(double freq,
 			Fingering fingering, PhysicalParameters params);
 
-	public Complex calcZ(Fingering fingering,
-			PhysicalParameters params)
+	public Complex calcZ(Fingering fingering, PhysicalParameters params)
 	{
 		double freq = fingering.getNote().getFrequency();
 
 		return calcZ(freq, fingering, params);
 	}
 
-	public abstract Complex calcZ(double freq,
-			Fingering fingering, PhysicalParameters params);
+	public abstract Complex calcZ(double freq, Fingering fingering,
+			PhysicalParameters params);
 
-	public abstract Double getPlayedFrequency(Fingering fingering, double freqRange,
-			int numberOfFrequencies, PhysicalParameters params);
+	public abstract Double getPlayedFrequency(Fingering fingering,
+			double freqRange, int numberOfFrequencies, PhysicalParameters params);
 }

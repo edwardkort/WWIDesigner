@@ -3,6 +3,8 @@
  */
 package com.wwidesigner.note;
 
+import com.wwidesigner.util.Constants;
+
 /**
  * @author kort
  * 
@@ -81,5 +83,10 @@ public class Note
 	{
 		this.frequencyMax = frequencyMax;
 	}
+
+    public static double cents(double f1, double f2)
+    {
+    	return Math.log(f2/f1)/Constants.LOG2 * Constants.CENTS_IN_OCTAVE;
+    }
 
 }

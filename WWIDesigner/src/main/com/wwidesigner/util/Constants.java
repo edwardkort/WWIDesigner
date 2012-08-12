@@ -34,7 +34,7 @@ public interface Constants
     int A_SEMITONE = 9;
     double A440 = 440.0;
     
-    double LOG2 = Math.log10(2);
+    double LOG2 = Math.log(2);
     double BIG_DBL = 1e10;
-
+    
 }

@@ -8,12 +8,15 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.List;
+
 import org.apache.commons.math3.complex.Complex;
 import org.junit.Test;
 
 import com.wwidesigner.geometry.Instrument;
 import com.wwidesigner.geometry.bind.GeometryBindFactory;
 import com.wwidesigner.modelling.WhistleCalculator;
+import com.wwidesigner.note.Note;
 import com.wwidesigner.note.Tuning;
 import com.wwidesigner.note.Fingering;
 import com.wwidesigner.note.bind.NoteBindFactory;
@@ -44,8 +47,9 @@ public class InstrumentImpedanceTest
 			Instrument instrument = getInstrumentFromXml(inputInstrumentXML);
 			InstrumentCalculator calculator = new WhistleCalculator(instrument);
 			Tuning tuning = getTuningFromXml(inputTuningXML);
-			PhysicalParameters params = new PhysicalParameters(28.2,
-					TemperatureType.C);
+			double temperature = 28.2;
+			PhysicalParameters params = new PhysicalParameters(temperature, TemperatureType.C);
+			List<Fingering>  noteList = tuning.getFingering();
 
 			Double fmax[] = { 589.49699364, 665.95846589, 740.62596732,
 					790.25253027, 895.41223635, 1000.04547471, 1080.97410484,
@@ -59,12 +63,35 @@ public class InstrumentImpedanceTest
 
 			for (int i = 0; i < fmax.length; ++i)
 			{
-				Fingering fingering = tuning.getFingering().get(i);
+				Fingering fingering = noteList.get(i);
 				Complex Z = calculator.calcZ(fmax[i],
 						fingering, params);
 				Z = Z.divide(Z0);
 				assertEquals("Imag(Z) is non-zero at known resonance.", 0.0,
 						Z.getImaginary(), 0.035);
+			}
+			for ( int i = 0; i < noteList.size(); ++ i )
+			{
+				Fingering fingering = noteList.get(i);
+				double actual = 0.0;
+				if ( fingering.getNote().getFrequencyMax() != null )
+				{
+					actual = fingering.getNote().getFrequencyMax();
+				}
+				else if ( fingering.getNote().getFrequency() != null )
+				{
+					actual = fingering.getNote().getFrequency();
+				}
+				if ( actual != 0.0 )
+				{
+					PlayingRange range = new PlayingRange(instrument,calculator, fingering, params);
+					double predicted = range.findFmax(actual);
+					if ( predicted > 0.0 )
+					{
+						assertEquals("Predicted fmax does not agree with actual at note " + i, 0.0,
+								Note.cents(actual, predicted), 20.0 );
+					}
+				}
 			}
 		}
 		catch (Exception e)

@@ -24,6 +24,9 @@ import com.wwidesigner.util.PhysicalParameters;
  */
 public class BP7ImpedancePlot
 {
+	protected static final int NoteIndex = 0;			// Index of fingering to plot.
+	protected static final double FreqRange = 2.;		// Plot one octave above and below.
+	protected static final int NumberOfPoints = 600;	// Number of points to plot.
 
 	/**
 	 * @param args
@@ -43,20 +46,33 @@ public class BP7ImpedancePlot
 			Instrument instrument = plot.getInstrumentFromXml(inputInstrumentXML);
 			InstrumentCalculator calculator = new WhistleCalculator(instrument);
 			Tuning tuning = plot.getTuningFromXml(inputTuningXML);
-			Fingering fingering = tuning.getFingering().get(0);
+			Fingering fingering = tuning.getFingering().get(NoteIndex);
 
 			instrument.convertToMetres();
 			instrument.setOpenHoles(fingering);
 
-			double freqRange = 2.;
-			int numberOfFrequencies = 2400;
-			double targetFreq = fingering.getNote().getFrequency();
-			double freqStart = targetFreq / freqRange;
-			double freqEnd = targetFreq * freqRange;
+			double targetFreq;
+			if ( fingering.getNote().getFrequency() != null )
+			{
+				targetFreq = fingering.getNote().getFrequency();
+			}
+			else if ( fingering.getNote().getFrequencyMax() != null )
+			{
+				targetFreq = fingering.getNote().getFrequencyMax();
+			}
+			else {
+				targetFreq = 1000.0;
+			}
+			double freqStart = targetFreq / FreqRange;
+			double freqEnd = targetFreq * FreqRange;
+			if ( freqEnd > 4000.0 )
+			{
+				freqEnd = 4000.0;
+			}
 			PlayingRangeSpectrum spectrum = new PlayingRangeSpectrum();
 
 			spectrum.calcImpedance(instrument, calculator, freqStart, freqEnd,
-					numberOfFrequencies, fingering, params);
+					NumberOfPoints, fingering, params);
 			spectrum.plotImpedanceSpectrum();
 			spectrum.plotPlayingRange();
 		}

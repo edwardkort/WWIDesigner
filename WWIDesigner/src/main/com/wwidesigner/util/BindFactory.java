@@ -5,6 +5,8 @@ package com.wwidesigner.util;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.Writer;
 import java.util.Map;
 
 import javax.xml.bind.JAXBContext;
@@ -96,7 +98,7 @@ public abstract class BindFactory
 		marshalToXml(input, outputXml);
 	}
 
-	public void marshalToXml(Object input, File outputXml) throws Exception
+	public void marshalToXml(Object input, Writer writer) throws Exception
 	{
 		Object mappedInput = mapObject(input, domainToBindMap);
 		if (mappedInput == null)
@@ -106,7 +108,14 @@ public abstract class BindFactory
 		JAXBContext context = JAXBContext.newInstance(mappedInput.getClass());
 		Marshaller marshaller = context.createMarshaller();
 		marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-		marshaller.marshal(createElement(mappedInput), outputXml);
+		marshaller.marshal(createElement(mappedInput), writer);
+
+	}
+
+	public void marshalToXml(Object input, File outputXml) throws Exception
+	{
+		Writer writer = new FileWriter(outputXml);
+		marshalToXml(input, writer);
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
@@ -143,7 +152,7 @@ public abstract class BindFactory
 	public String getPathFromName(String name) throws FileNotFoundException
 	{
 		java.net.URL fileUrl = ClassLoader.getSystemResource(name);
-		if ( fileUrl == null )
+		if (fileUrl == null)
 		{
 			throw new FileNotFoundException(name + " not found.");
 		}

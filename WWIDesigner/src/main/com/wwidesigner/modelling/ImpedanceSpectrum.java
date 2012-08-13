@@ -69,11 +69,11 @@ public class ImpedanceSpectrum
 			double freq = freqStart + i * freqStep;
 			Complex zAc = calculator.calcZ(freq, fingering,
 					physicalParams);
-			double absZAc = zAc.abs();
+			double absZAc = Math.abs(zAc.getImaginary()); //zAc.abs();
 
 			setDataPoint(freq, zAc);
 
-			double absPrevZ = prevZ.abs();
+			double absPrevZ = Math.abs(prevZ.getImaginary()); //prevZ.abs();
 
 			if ((i >= 2) && (absPrevZ < absZAc) && (absPrevZ < absPrevPrevZ))
 			{

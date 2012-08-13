@@ -79,7 +79,7 @@ public class SimpleHolePositionAndDiameterOptimizer extends InstrumentOptimizer
 	@Override
 	public void setOptimizationFunction()
 	{
-		optimizationFunction = new BasicOptimizationFunction(this, tuning,
+		optimizationFunction = new BasicImpedanceOptimizationFunction(this, tuning,
 				physicalParams);
 
 	}

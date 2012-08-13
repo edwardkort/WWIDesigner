@@ -10,7 +10,7 @@
 		<fipple>
 			<windowLength>0.17</windowLength>
 			<windowWidth>0.68</windowWidth>
-			<fippleFactor>0.732</fippleFactor>
+			<fippleFactor>0.800</fippleFactor>
 		</fipple>
 	</mouthpiece>
 	<borePoint>
@@ -22,6 +22,6 @@
 		<boreDiameter>1.041</boreDiameter>
 	</borePoint>
 	<termination>
-		<flangeDiameter>1.541</flangeDiameter>
+		<flangeDiameter>1.041</flangeDiameter>
 	</termination>
 </wii:instrument>

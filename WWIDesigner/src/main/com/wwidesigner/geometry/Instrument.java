@@ -382,7 +382,7 @@ public class Instrument implements InstrumentInterface
 		double leftPosition = leftPoint.getBorePosition();
 		double rightPosition = rightPoint.getBorePosition();
 		double thisPosition = currentPosition.getBorePosition();
-		double holeRelativePosition = (rightPosition - thisPosition)
+		double holeRelativePosition = (thisPosition - leftPosition)
 				/ (rightPosition - leftPosition);
 
 		double leftDiameter = leftPoint.getBoreDiameter();

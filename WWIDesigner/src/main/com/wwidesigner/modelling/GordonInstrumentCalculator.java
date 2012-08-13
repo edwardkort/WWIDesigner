@@ -91,8 +91,17 @@ public class GordonInstrumentCalculator extends InstrumentCalculator
 	public Double getPlayedFrequency(Fingering fingering, double freqRange,
 			int numberOfFrequencies, PhysicalParameters params)
 	{
-		// TODO Auto-generated method stub
-		return null;
+		Double playedFreq = null;
+		double targetFreq = fingering.getNote().getFrequency();
+		double freqStart = targetFreq / freqRange;
+		double freqEnd = targetFreq * freqRange;
+		ImpedanceSpectrum spectrum = new ImpedanceSpectrum();
+
+		spectrum.calcImpedance(this.instrument, this, freqStart, freqEnd, numberOfFrequencies,
+				fingering, params);
+		playedFreq = spectrum.getClosestMinimumFrequency(targetFreq);
+
+		return playedFreq;
 	}
 
 }

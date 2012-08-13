@@ -8,6 +8,7 @@ import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.OutputStreamWriter;
 import java.util.List;
 
 import org.junit.Test;
@@ -46,7 +47,7 @@ public class NafOptimizationTest
 	// associated bounds.
 	// Set this to false to use HolePositionAndDiameterOptimizer and the
 	// associated bounds.
-	protected static boolean useSimpleOptimizer = false;
+	protected static boolean useSimpleOptimizer = true;
 
 	/**
 	 * Complete workflow for optimizing an XML-defined instrument with the
@@ -85,11 +86,14 @@ public class NafOptimizationTest
 		showTuning(instrument, calculator, tuning, title + ", before optimization");
 
 		optimizer.optimizeInstrument();
+		showTuning(instrument, calculator, tuning, title + ", after optimization");
 
 		// Convert back to the input unit-of-measure values
 		instrument.convertToLengthType();
 
-		showTuning(instrument, calculator, tuning, title + ", after optimization");
+		
+		BindFactory bindFactory = GeometryBindFactory.getInstance();
+		bindFactory.marshalToXml(instrument, new OutputStreamWriter(System.out));
 
 		// The optimizer modifies the input Instrument instance
 		return instrument;
@@ -98,7 +102,7 @@ public class NafOptimizationTest
 	public void showTuning(Instrument instrument, InstrumentCalculator calculator,
 			Tuning tuning, String title)
 	{
-		double maxFreqRatio = 1.3;
+		double maxFreqRatio = 2.;
 		// set accuracy to 0.1 cents
 		int numberOfFrequencies = (int) (10. * InstrumentTuningTable
 				.getCents(maxFreqRatio));
@@ -135,7 +139,35 @@ public class NafOptimizationTest
 			PositionInterface[] sortedPoints = Instrument.sortList(borePoints);
 			PositionInterface lastPoint = sortedPoints[sortedPoints.length - 1];
 			assertEquals("Bore length incorrect", 11.97,
-					lastPoint.getBorePosition(), 0.01);
+					lastPoint.getBorePosition(), 0.1);
+
+		}
+		catch (Exception e)
+		{
+			fail(e.getMessage());
+		}
+	}
+
+	@Test
+	public final void testNoHoleTaperOptimization()
+	{
+		try
+		{
+			inputInstrumentXML = "com/wwidesigner/optimization/example/NoHoleTaperNAF.xml";
+			inputTuningXML = "com/wwidesigner/optimization/example/NoHoleTaperNAFTuning.xml";
+			lowerBound = new double[] { 0.3 };
+			upperBound = new double[] { 0.6 };
+			optimizerType = InstrumentOptimizer.OptimizerType.CMAESOptimizer;
+			numberOfInterpolationPoints = 2;
+
+			Instrument optimizedInstrument = doInstrumentOptimization("No-hole");
+
+			// Test bore length
+			List<BorePoint> borePoints = optimizedInstrument.getBorePoint();
+			PositionInterface[] sortedPoints = Instrument.sortList(borePoints);
+			PositionInterface lastPoint = sortedPoints[sortedPoints.length - 1];
+			assertEquals("Bore length incorrect", 17.19,
+					lastPoint.getBorePosition(), 0.1);
 
 		}
 		catch (Exception e)
@@ -327,7 +359,8 @@ public class NafOptimizationTest
 	public static void main(String[] args)
 	{
 		NafOptimizationTest test = new NafOptimizationTest();
-		test.testNoHoleOptimization();
+//		test.testNoHoleOptimization();
+		test.testNoHoleTaperOptimization();
 //		test.test1HoleOptimization();
 //		test.test6HoleOptimization();
 	}

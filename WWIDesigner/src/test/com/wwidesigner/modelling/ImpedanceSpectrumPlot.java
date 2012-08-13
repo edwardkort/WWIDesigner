@@ -6,6 +6,8 @@ package com.wwidesigner.modelling;
 import java.io.File;
 import java.io.FileNotFoundException;
 
+import org.apache.commons.math3.complex.Complex;
+
 import com.wwidesigner.geometry.Instrument;
 import com.wwidesigner.geometry.bind.GeometryBindFactory;
 import com.wwidesigner.modelling.ImpedanceSpectrum;
@@ -41,7 +43,8 @@ public class ImpedanceSpectrumPlot
 
 			PhysicalParameters params = new PhysicalParameters(22.22,
 					TemperatureType.C);
-			Instrument instrument = plot.getInstrumentFromXml(inputInstrumentXML);
+			Instrument instrument = plot
+					.getInstrumentFromXml(inputInstrumentXML);
 			InstrumentCalculator calculator = new GordonCalculator(instrument);
 
 			Tuning tuning = plot.getTuningFromXml(inputTuningXML);
@@ -50,21 +53,28 @@ public class ImpedanceSpectrumPlot
 			instrument.convertToMetres();
 			instrument.setOpenHoles(fingering);
 
-			double freqRange = 2.;
+			double freqRange = 1.1;
 			int numberOfFrequencies = 2400;
 			double targetFreq = fingering.getNote().getFrequency();
 			double freqStart = targetFreq / freqRange;
 			double freqEnd = targetFreq * freqRange;
 			ImpedanceSpectrum impSpectrum = new ImpedanceSpectrum();
 
-			impSpectrum.calcImpedance(instrument, calculator, freqStart, freqEnd,
-					numberOfFrequencies, fingering, params);
+			impSpectrum.calcImpedance(instrument, calculator, freqStart,
+					freqEnd, numberOfFrequencies, fingering, params);
 			impSpectrum.plotImpedanceSpectrum();
 
-			ReflectanceSpectrum reflSpectrum = new ReflectanceSpectrum();
-			reflSpectrum.calcReflectance(instrument, calculator, freqStart, freqEnd,
-					numberOfFrequencies, fingering, params);
-			reflSpectrum.plotReflectanceSpectrum();
+			Complex fluteImpedance = calculator.calcZ(fingering, params);
+			String outStr = "Flute impedance: " + fluteImpedance.getReal()
+					+ ", " + fluteImpedance.getImaginary() + "at " + targetFreq
+					+ " Hz";
+			System.out.println(outStr);
+
+			// ReflectanceSpectrum reflSpectrum = new ReflectanceSpectrum();
+			// reflSpectrum.calcReflectance(instrument, calculator, freqStart,
+			// freqEnd,
+			// numberOfFrequencies, fingering, params);
+			// reflSpectrum.plotReflectanceSpectrum();
 		}
 		catch (Exception e)
 		{

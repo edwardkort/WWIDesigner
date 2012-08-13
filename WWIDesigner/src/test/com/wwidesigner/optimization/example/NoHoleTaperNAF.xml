@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wii:instrument xmlns:wii="http://www.wwidesigner.com/Instrument"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.wwidesigner.com/Instrument ../../../../../main/com/wwidesigner/geometry/bind/Instrument.xsd ">
+	<name>No hole NAF with taper</name>
+	<description>Tapered bore NAF with no holes</description>
+	<lengthType>in</lengthType>
+	<mouthpiece>
+		<position>0.18</position>
+		<fipple>
+			<windowLength>0.15</windowLength>
+			<windowWidth>0.693</windowWidth>
+			<fippleFactor>0.882</fippleFactor>
+		</fipple>
+	</mouthpiece>
+	<borePoint>
+		<borePosition>0</borePosition>
+		<boreDiameter>1.079</boreDiameter>
+	</borePoint>
+	<borePoint>
+		<borePosition>8.2</borePosition>
+		<boreDiameter>1.078</boreDiameter>
+	</borePoint>
+	<borePoint>
+		<borePosition>11.8</borePosition>
+		<boreDiameter>1.022</boreDiameter>
+	</borePoint>
+	<borePoint>
+		<borePosition>17.19</borePosition>
+		<boreDiameter>1.029</boreDiameter>
+	</borePoint>
+	<termination>
+		<flangeDiameter>1.420</flangeDiameter>
+	</termination>
+</wii:instrument>

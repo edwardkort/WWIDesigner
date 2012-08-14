@@ -44,8 +44,10 @@ public class ChalumeauOptimizationTest
 	 */
 	public Instrument doInstrumentOptimization() throws Exception
 	{
+		PhysicalParameters parameters = new PhysicalParameters(25.,
+				TemperatureType.C);
 		Instrument instrument = getInstrumentFromXml(inputInstrumentXML);
-		InstrumentCalculator calculator = new SimpleReedCalculator(instrument);
+		InstrumentCalculator calculator = new SimpleReedCalculator(instrument,parameters);
 		instrument.convertToMetres();
 
 		Tuning tuning = getTuningFromXml(inputTuningXML);
@@ -53,7 +55,6 @@ public class ChalumeauOptimizationTest
 		HolePositionAndDiameterOptimizer optimizer =
 				new HolePositionAndDiameterOptimizer(instrument, calculator, tuning);
 
-		setPhysicalParameters(optimizer);
 		setOptimizationBounds(optimizer);
 		optimizer.optimizeInstrument();
 
@@ -143,9 +144,6 @@ public class ChalumeauOptimizationTest
 
 	protected void setPhysicalParameters(InstrumentOptimizer optimizer)
 	{
-		PhysicalParameters parameters = new PhysicalParameters(25.,
-				TemperatureType.C);
-		optimizer.setPhysicalParams(parameters);
 	}
 
 	protected void setOptimizationBounds(InstrumentOptimizer optimizer)

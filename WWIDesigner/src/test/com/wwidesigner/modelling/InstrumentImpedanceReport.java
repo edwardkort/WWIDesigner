@@ -37,11 +37,11 @@ public class InstrumentImpedanceReport
 	{
 		try
 		{
-			Instrument instrument = getInstrumentFromXml(inputInstrumentXML);
-			InstrumentCalculator calculator = new WhistleCalculator(instrument);
-			Tuning tuning = getTuningFromXml(inputTuningXML);
 			double temperature = 28.2;
 			PhysicalParameters params = new PhysicalParameters(temperature, TemperatureType.C);
+			Instrument instrument = getInstrumentFromXml(inputInstrumentXML);
+			InstrumentCalculator calculator = new WhistleCalculator(instrument,params);
+			Tuning tuning = getTuningFromXml(inputTuningXML);
 			PrintWriter pw = new PrintWriter( System.out );
 			List<Fingering>  noteList = tuning.getFingering();
 
@@ -60,7 +60,7 @@ public class InstrumentImpedanceReport
 			{
 				pw.printf("%2d  %7.2f", i, fmax[i]);
 				Fingering fingering = noteList.get(i);
-				Complex Z = calculator.calcZ(fmax[i],fingering,params);
+				Complex Z = calculator.calcZ(fmax[i],fingering);
 				Z = Z.divide(Z0);
 				double normalized = Z.getImaginary()/Z.getReal();
 				pw.printf( " %12.4f %12.4f %12.5f", Z.getReal(), Z.getImaginary(), normalized );
@@ -89,13 +89,13 @@ public class InstrumentImpedanceReport
 				}
 				if ( actual != 0.0 )
 				{
-					PlayingRange range = new PlayingRange(instrument,calculator, fingering, params);
+					PlayingRange range = new PlayingRange(instrument,calculator, fingering);
 					double predicted = range.findFmax(actual);
 					pw.printf("%2d   %7.2f  %7.2f   %7.2f", i, fnom, actual, predicted);
 					if ( predicted > 0.0 )
 					{
 						pw.printf( "  %7.2f", Note.cents(actual, predicted) );
-						Complex Z = calculator.calcZ(predicted,fingering,params);
+						Complex Z = calculator.calcZ(predicted,fingering);
 						Z = Z.divide(Z0);
 						double normalized = Z.getImaginary()/Z.getReal();
 						pw.printf( " %12.4f %12.4f %12.5f", Z.getReal(), Z.getImaginary(), normalized );

@@ -26,9 +26,9 @@ public class GordonInstrumentCalculator extends InstrumentCalculator
 	/**
 	 * @param instrument
 	 */
-	public GordonInstrumentCalculator(Instrument instrument)
+	public GordonInstrumentCalculator(Instrument instrument, PhysicalParameters physicalParams)
 	{
-		super(instrument);
+		super(instrument,physicalParams);
 	}
 
 	/*
@@ -40,14 +40,12 @@ public class GordonInstrumentCalculator extends InstrumentCalculator
 	 * com.wwidesigner.util.PhysicalParameters)
 	 */
 	@Override
-	public Complex calcZ(double freq, Fingering fingering,
-			PhysicalParameters params)
+	public Complex calcZ(double freq)
 	{
 		TransferMatrix fluteTM = new TransferMatrix(Complex.ONE, Complex.ZERO,
 				Complex.ZERO, Complex.ONE);
 
 		double waveNumber = params.calcWaveNumber(freq);
-		instrument.setOpenHoles(fingering);
 
 		for (ComponentInterface component : instrument.getComponents())
 		{
@@ -80,16 +78,15 @@ public class GordonInstrumentCalculator extends InstrumentCalculator
 	}
 
 	@Override
-	public Complex calcReflectionCoefficient(double freq, Fingering fingering,
-			PhysicalParameters params)
+	public Complex calcReflectionCoefficient(double freq)
 	{
 		// TODO Auto-generated method stub
-		return null;
+		return Complex.ONE;
 	}
 
 	@Override
 	public Double getPlayedFrequency(Fingering fingering, double freqRange,
-			int numberOfFrequencies, PhysicalParameters params)
+			int numberOfFrequencies)
 	{
 		Double playedFreq = null;
 		double targetFreq = fingering.getNote().getFrequency();

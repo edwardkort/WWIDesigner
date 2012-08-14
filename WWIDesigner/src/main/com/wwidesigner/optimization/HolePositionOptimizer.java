@@ -31,8 +31,7 @@ public class HolePositionOptimizer extends InstrumentOptimizer
 	@Override
 	public void setOptimizationFunction()
 	{
-		optimizationFunction = new BasicOptimizationFunction(this, tuning,
-				physicalParams);
+		optimizationFunction = new BasicOptimizationFunction(this, tuning);
 
 	}
 

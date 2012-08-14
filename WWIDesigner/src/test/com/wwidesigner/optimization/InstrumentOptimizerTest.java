@@ -44,15 +44,16 @@ public class InstrumentOptimizerTest
 	 */
 	public Instrument doInstrumentOptimization() throws Exception
 	{
+		PhysicalParameters parameters = new PhysicalParameters(25.,
+				TemperatureType.C);
 		Instrument instrument = getInstrumentFromXml(inputInstrumentXML);
-		InstrumentCalculator calculator = new SimpleTestCalculator(instrument);
+		InstrumentCalculator calculator = new SimpleTestCalculator(instrument,parameters);
 		instrument.convertToMetres();
 
 		Tuning tuning = getTuningFromXml(inputTuningXML);
 
 		InstrumentOptimizer optimizer = new HolePositionOptimizer(
 				instrument, calculator, tuning);
-		setPhysicalParameters(optimizer);
 		setOptimizationBounds(optimizer);
 		optimizer.optimizeInstrument();
 
@@ -111,13 +112,6 @@ public class InstrumentOptimizerTest
 		Tuning tuning = (Tuning) noteBindFactory.unmarshalXml(inputFile, true);
 
 		return tuning;
-	}
-
-	protected void setPhysicalParameters(InstrumentOptimizer optimizer)
-	{
-		PhysicalParameters parameters = new PhysicalParameters(25.,
-				TemperatureType.C);
-		optimizer.setPhysicalParams(parameters);
 	}
 
 	protected void setOptimizationBounds(InstrumentOptimizer optimizer)

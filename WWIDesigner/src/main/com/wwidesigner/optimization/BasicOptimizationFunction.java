@@ -6,20 +6,17 @@ import org.apache.commons.math3.complex.Complex;
 
 import com.wwidesigner.note.Fingering;
 import com.wwidesigner.note.TuningInterface;
-import com.wwidesigner.util.PhysicalParameters;
 
 public class BasicOptimizationFunction implements OptimizationFunctionInterface
 {
 	private InstrumentOptimizerInterface optimizer;
 	private List<Fingering> fingeringTargets;
-	private PhysicalParameters physicalParams;
 
 	public BasicOptimizationFunction(InstrumentOptimizerInterface optimizer,
-			TuningInterface tuning, PhysicalParameters physicalParameters)
+			TuningInterface tuning)
 	{
 		this.optimizer = optimizer;
 		fingeringTargets = tuning.getFingering();
-		physicalParams = physicalParameters;
 	}
 
 	/*
@@ -51,7 +48,7 @@ public class BasicOptimizationFunction implements OptimizationFunctionInterface
 		for (Fingering target : fingeringTargets)
 		{
 			Complex reflectionCoeff = optimizer.getInstrumentCalculator()
-					.calcReflectionCoefficient(target, physicalParams);
+					.calcReflectionCoefficient(target);
 			double reflectance_angle = reflectionCoeff.getArgument();
 			// we need a way to display this error term during the optimization (one per target)
 			// as well as the error norm

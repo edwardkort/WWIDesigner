@@ -20,7 +20,6 @@ import com.jidesoft.chart.model.DefaultChartModel;
 import com.jidesoft.chart.style.ChartStyle;
 import com.wwidesigner.geometry.InstrumentInterface;
 import com.wwidesigner.note.Fingering;
-import com.wwidesigner.util.PhysicalParameters;
 
 /**
  * Representation of a complex spectrum, along with information about its
@@ -54,9 +53,9 @@ public class PlayingRangeSpectrum
 
 	public void calcImpedance(InstrumentInterface flute, 
 			InstrumentCalculator calculator,
-			double freqStart, double freqEnd, int nfreq, Fingering fingering,
-			PhysicalParameters physicalParams)
+			double freqStart, double freqEnd, int nfreq, Fingering fingering)
 	{
+		calculator.setFingering(fingering);
 		mSpectrum = new TreeMap<Double, Complex>();
 		mMinima = new ArrayList<Double>();
 		mMaxima = new ArrayList<Double>();
@@ -67,8 +66,7 @@ public class PlayingRangeSpectrum
 		for (int i = 0; i < nfreq; ++i)
 		{
 			double freq = freqStart + i * freqStep;
-			Complex zAc = calculator.calcZ(freq, fingering,
-					physicalParams);
+			Complex zAc = calculator.calcZ(freq);
 			double absZAc = zAc.abs();
 
 			setDataPoint(freq, zAc);

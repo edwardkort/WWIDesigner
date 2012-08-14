@@ -13,7 +13,6 @@ import com.wwidesigner.modelling.PlayingRangeSpectrum;
 import com.wwidesigner.note.Fingering;
 import com.wwidesigner.note.Tuning;
 import com.wwidesigner.note.bind.NoteBindFactory;
-import com.wwidesigner.optimization.InstrumentOptimizer;
 import com.wwidesigner.util.BindFactory;
 import com.wwidesigner.util.Constants.TemperatureType;
 import com.wwidesigner.util.PhysicalParameters;
@@ -44,7 +43,7 @@ public class BP7ImpedancePlot
 			PhysicalParameters params = new PhysicalParameters(28.2,
 					TemperatureType.C);
 			Instrument instrument = plot.getInstrumentFromXml(inputInstrumentXML);
-			InstrumentCalculator calculator = new WhistleCalculator(instrument);
+			InstrumentCalculator calculator = new WhistleCalculator(instrument,params);
 			Tuning tuning = plot.getTuningFromXml(inputTuningXML);
 			Fingering fingering = tuning.getFingering().get(NoteIndex);
 
@@ -72,7 +71,7 @@ public class BP7ImpedancePlot
 			PlayingRangeSpectrum spectrum = new PlayingRangeSpectrum();
 
 			spectrum.calcImpedance(instrument, calculator, freqStart, freqEnd,
-					NumberOfPoints, fingering, params);
+					NumberOfPoints, fingering);
 			spectrum.plotImpedanceSpectrum();
 			spectrum.plotPlayingRange();
 		}
@@ -101,13 +100,6 @@ public class BP7ImpedancePlot
 		Tuning tuning = (Tuning) noteBindFactory.unmarshalXml(inputFile, true);
 
 		return tuning;
-	}
-
-	protected void setPhysicalParameters(InstrumentOptimizer optimizer)
-	{
-		PhysicalParameters parameters = new PhysicalParameters(22.22,
-				TemperatureType.C);
-		optimizer.setPhysicalParams(parameters);
 	}
 
 	/**

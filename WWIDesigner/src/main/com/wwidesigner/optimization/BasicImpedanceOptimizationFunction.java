@@ -9,7 +9,6 @@ import org.apache.commons.math3.complex.Complex;
 
 import com.wwidesigner.note.Fingering;
 import com.wwidesigner.note.TuningInterface;
-import com.wwidesigner.util.PhysicalParameters;
 
 /**
  * @author kort
@@ -20,15 +19,12 @@ public class BasicImpedanceOptimizationFunction implements
 {
 	private InstrumentOptimizerInterface optimizer;
 	private List<Fingering> fingeringTargets;
-	private PhysicalParameters physicalParams;
 
 	public BasicImpedanceOptimizationFunction(
-			InstrumentOptimizerInterface optimizer, TuningInterface tuning,
-			PhysicalParameters physicalParameters)
+			InstrumentOptimizerInterface optimizer, TuningInterface tuning)
 	{
 		this.optimizer = optimizer;
 		fingeringTargets = tuning.getFingering();
-		physicalParams = physicalParameters;
 	}
 
 	/*
@@ -60,8 +56,7 @@ public class BasicImpedanceOptimizationFunction implements
 		double norm = 0.;
 		for (Fingering target : fingeringTargets)
 		{
-			Complex impedance = optimizer.getInstrumentCalculator().calcZ(
-					target, physicalParams);
+			Complex impedance = optimizer.getInstrumentCalculator().calcZ(target);
 			// we need a way to display this error term during the optimization
 			// (one per target)
 			// as well as the error norm

@@ -41,7 +41,6 @@ public class NafOptimizationTest
 	protected double[] upperBound;
 	protected InstrumentOptimizer.OptimizerType optimizerType;
 	protected int numberOfInterpolationPoints;
-	protected PhysicalParameters params;
 
 	// Set this to true to use SimpleHolePositionAndDiameterOptimizer and the
 	// associated bounds.
@@ -59,8 +58,9 @@ public class NafOptimizationTest
 	 */
 	public Instrument doInstrumentOptimization(String title) throws Exception
 	{
+		PhysicalParameters params = new PhysicalParameters(20.5, TemperatureType.C);
 		Instrument instrument = getInstrumentFromXml();
-		InstrumentCalculator calculator = new GordonCalculator(instrument);
+		InstrumentCalculator calculator = new GordonCalculator(instrument,params);
 		instrument.convertToMetres();
 
 		Tuning tuning = getTuningFromXml();
@@ -80,7 +80,6 @@ public class NafOptimizationTest
 		// TuningHolePositionAndDiameterOptimizer(
 		// instrument, tuning);
 		optimizer.setBaseOptimizer(optimizerType, numberOfInterpolationPoints);
-		setPhysicalParameters(optimizer);
 		setOptimizationBounds(optimizer);
 
 		showTuning(instrument, calculator, tuning, title + ", before optimization");
@@ -113,7 +112,7 @@ public class NafOptimizationTest
 		for (Fingering fingering : tuning.getFingering())
 		{
 			Double playedFrequency = calculator.getPlayedFrequency(fingering,
-					maxFreqRatio, numberOfFrequencies, params);
+					maxFreqRatio, numberOfFrequencies);
 			table.addTuning(fingering, playedFrequency);
 		}
 
@@ -320,12 +319,6 @@ public class NafOptimizationTest
 		Tuning tuning = (Tuning) noteBindFactory.unmarshalXml(inputFile, true);
 
 		return tuning;
-	}
-
-	protected void setPhysicalParameters(InstrumentOptimizer optimizer)
-	{
-		this.params = new PhysicalParameters(20.5, TemperatureType.C);
-		optimizer.setPhysicalParams(params);
 	}
 
 	protected void setOptimizationBounds(InstrumentOptimizer optimizer)

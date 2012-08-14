@@ -57,6 +57,7 @@ public class ImpedanceSpectrum
 			double freqStart, double freqEnd, int nfreq, Fingering fingering,
 			PhysicalParameters physicalParams)
 	{
+		calculator.setFingering(fingering);
 		mSpectrum = new TreeMap<Double, Complex>();
 		mMinima = new ArrayList<Double>();
 		mMaxima = new ArrayList<Double>();
@@ -67,8 +68,7 @@ public class ImpedanceSpectrum
 		for (int i = 0; i < nfreq; ++i)
 		{
 			double freq = freqStart + i * freqStep;
-			Complex zAc = calculator.calcZ(freq, fingering,
-					physicalParams);
+			Complex zAc = calculator.calcZ(freq);
 			double absZAc = Math.abs(zAc.getImaginary()); //zAc.abs();
 
 			setDataPoint(freq, zAc);

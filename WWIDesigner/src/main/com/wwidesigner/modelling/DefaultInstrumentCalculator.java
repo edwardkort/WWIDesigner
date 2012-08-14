@@ -26,47 +26,32 @@ import com.wwidesigner.util.PhysicalParameters;
 public class DefaultInstrumentCalculator extends InstrumentCalculator
 {
 
-	public DefaultInstrumentCalculator(Instrument instrument)
+	public DefaultInstrumentCalculator(Instrument instrument, PhysicalParameters physicalParams)
 	{
-		super(instrument);
+		super(instrument, physicalParams);
 	}
 
 	public DefaultInstrumentCalculator(Instrument instrument,
 			MouthpieceCalculator mouthpieceCalculator,
 			TerminationCalculator terminationCalculator,
 			HoleCalculator holeCalculator,
-			BoreSectionCalculator boreSectionCalculator)
+			BoreSectionCalculator boreSectionCalculator,
+			PhysicalParameters physicalParams)
 	{
 		super(instrument, mouthpieceCalculator, terminationCalculator, holeCalculator,
-				boreSectionCalculator);
+				boreSectionCalculator, physicalParams);
 	}
 
 	@Override
-	public Complex calcReflectionCoefficient(double freq, Fingering fingering,
-			PhysicalParameters params)
+	public Complex calcReflectionCoefficient(double frequency)
 	{
-		instrument.setOpenHoles(fingering);
-
-		Complex reflectance = calculateReflectionCoefficient(freq,
-				params);
-
-		int reflectanceMultiplier = mouthpieceCalculator.calcReflectanceMultiplier();
-
-		Complex result = reflectance.multiply(reflectanceMultiplier);
-
-		return result;
-	}
-
-	public Complex calculateReflectionCoefficient(double frequency,
-			PhysicalParameters physicalParams)
-	{
-		double waveNumber = physicalParams.calcWaveNumber(frequency);
+		double waveNumber = params.calcWaveNumber(frequency);
 
 		// Start with the state vector of the termination,
 		// and multiply by transfer matrices of each hole and bore segment
 		// from the termination up to and including the mouthpiece.
 
-		StateVector sv = terminationCalculator.calcStateVector( instrument.getTermination(), waveNumber, physicalParams );
+		StateVector sv = terminationCalculator.calcStateVector( instrument.getTermination(), waveNumber, params );
 		TransferMatrix tm;
 		for (int componentNr = instrument.getComponents().size() - 1; componentNr >= 0; --componentNr)
 		{
@@ -74,27 +59,31 @@ public class DefaultInstrumentCalculator extends InstrumentCalculator
 			if (component instanceof BoreSection)
 			{
 				tm = boreSectionCalculator.calcTransferMatrix((BoreSection) component,
-						waveNumber, physicalParams);
+						waveNumber, params);
 			}
 			else if (component instanceof Hole)
 			{
 				tm = holeCalculator.calcTransferMatrix((Hole) component,
-						waveNumber, physicalParams);
+						waveNumber, params);
 			}
 			else
 			{
 				assert component instanceof Mouthpiece;
 				tm = mouthpieceCalculator.calcTransferMatrix((Mouthpiece) component,
-						waveNumber, physicalParams);
+						waveNumber, params);
 			}
 			sv = tm.multiply(sv);
 		}
 
 		// TODO This mouthpiece calculation will change
 		double headRadius = instrument.getMouthpiece().getBoreDiameter() / 2.;
-		double characteristic_impedance = physicalParams.calcZ0(headRadius);
+		double characteristic_impedance = params.calcZ0(headRadius);
 		Complex reflectance = sv.Reflectance(characteristic_impedance);
-		return reflectance;
+		int reflectanceMultiplier = mouthpieceCalculator.calcReflectanceMultiplier();
+
+		Complex result = reflectance.multiply(reflectanceMultiplier);
+
+		return result;
 	}
 
 	/*
@@ -106,11 +95,8 @@ public class DefaultInstrumentCalculator extends InstrumentCalculator
 	 * com.wwidesigner.util.PhysicalParameters)
 	 */
 	@Override
-	public Complex calcZ(double freq, Fingering fingering,
-			PhysicalParameters params)
+	public Complex calcZ(double freq)
 	{
-		instrument.setOpenHoles(fingering);
-
 		double waveNumber = params.calcWaveNumber(freq);
 
 		// Start with the state vector of the termination,
@@ -149,7 +135,7 @@ public class DefaultInstrumentCalculator extends InstrumentCalculator
 
 	@Override
 	public Double getPlayedFrequency(Fingering fingering, double freqRange,
-			int numberOfFrequencies, PhysicalParameters params)
+			int numberOfFrequencies)
 	{
 		Double playedFreq = null;
 		double targetFreq = fingering.getNote().getFrequency();

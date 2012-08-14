@@ -44,11 +44,11 @@ public class InstrumentImpedanceTest
 	{
 		try
 		{
-			Instrument instrument = getInstrumentFromXml(inputInstrumentXML);
-			InstrumentCalculator calculator = new WhistleCalculator(instrument);
-			Tuning tuning = getTuningFromXml(inputTuningXML);
 			double temperature = 28.2;
 			PhysicalParameters params = new PhysicalParameters(temperature, TemperatureType.C);
+			Instrument instrument = getInstrumentFromXml(inputInstrumentXML);
+			InstrumentCalculator calculator = new WhistleCalculator(instrument,params);
+			Tuning tuning = getTuningFromXml(inputTuningXML);
 			List<Fingering>  noteList = tuning.getFingering();
 
 			Double fmax[] = { 589.49699364, 665.95846589, 740.62596732,
@@ -64,8 +64,7 @@ public class InstrumentImpedanceTest
 			for (int i = 0; i < fmax.length; ++i)
 			{
 				Fingering fingering = noteList.get(i);
-				Complex Z = calculator.calcZ(fmax[i],
-						fingering, params);
+				Complex Z = calculator.calcZ(fmax[i],fingering);
 				Z = Z.divide(Z0);
 				assertEquals("Imag(Z) is non-zero at known resonance.", 0.0,
 						Z.getImaginary(), 0.035);
@@ -84,7 +83,7 @@ public class InstrumentImpedanceTest
 				}
 				if ( actual != 0.0 )
 				{
-					PlayingRange range = new PlayingRange(instrument,calculator, fingering, params);
+					PlayingRange range = new PlayingRange(instrument,calculator, fingering);
 					double predicted = range.findFmax(actual);
 					if ( predicted > 0.0 )
 					{

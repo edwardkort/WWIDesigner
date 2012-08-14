@@ -80,8 +80,7 @@ public class TuningHolePositionAndDiameterOptimizer extends InstrumentOptimizer
 	@Override
 	public void setOptimizationFunction()
 	{
-		optimizationFunction = new TuningOptimizationFunction(this, tuning,
-				physicalParams);
+		optimizationFunction = new TuningOptimizationFunction(this, tuning);
 		
 	}
 

@@ -23,7 +23,7 @@ import com.wwidesigner.geometry.calculation.IdealOpenEndCalculator;
  */
 public abstract class InstrumentCalculator
 {
-	// The instrument being modelled.
+	// The instrument being modeled.
 	protected Instrument instrument;
 
 	// Calculators used to model the instrument.
@@ -31,8 +31,10 @@ public abstract class InstrumentCalculator
 	protected TerminationCalculator terminationCalculator;
 	protected HoleCalculator holeCalculator;
 	protected BoreSectionCalculator boreSectionCalculator;
+	
+	protected PhysicalParameters params;
 
-	public InstrumentCalculator(Instrument instrument)
+	public InstrumentCalculator(Instrument instrument, PhysicalParameters physicalParams)
 	{
 		this.instrument = instrument;
 		this.instrument.convertToMetres();
@@ -41,13 +43,15 @@ public abstract class InstrumentCalculator
 		this.terminationCalculator = new IdealOpenEndCalculator();
 		this.holeCalculator = new DefaultHoleCalculator();
 		this.boreSectionCalculator = new DefaultBoreSectionCalculator();
+		this.params = physicalParams;
 	}
 
 	public InstrumentCalculator(Instrument instrument,
 			MouthpieceCalculator mouthpieceCalculator,
 			TerminationCalculator terminationCalculator,
 			HoleCalculator holeCalculator,
-			BoreSectionCalculator boreSectionCalculator)
+			BoreSectionCalculator boreSectionCalculator,
+			PhysicalParameters physicalParams)
 	{
 		this.instrument = instrument;
 		this.instrument.convertToMetres();
@@ -56,6 +60,7 @@ public abstract class InstrumentCalculator
 		this.terminationCalculator = terminationCalculator;
 		this.holeCalculator = holeCalculator;
 		this.boreSectionCalculator = boreSectionCalculator;
+		this.params = physicalParams;
 	}
 
 	/**
@@ -108,27 +113,51 @@ public abstract class InstrumentCalculator
 		this.boreSectionCalculator = boreSectionCalculator;
 	}
 
-	public Complex calcReflectionCoefficient(Fingering fingering,
-			PhysicalParameters params)
+	public PhysicalParameters getPhysicalParameters()
 	{
-		double freq = fingering.getNote().getFrequency();
-
-		return calcReflectionCoefficient(freq, fingering, params);
+		return this.params;
 	}
 
-	public abstract Complex calcReflectionCoefficient(double freq,
-			Fingering fingering, PhysicalParameters params);
-
-	public Complex calcZ(Fingering fingering, PhysicalParameters params)
+	public void setPhysicalParameters( PhysicalParameters physicalParams )
 	{
-		double freq = fingering.getNote().getFrequency();
-
-		return calcZ(freq, fingering, params);
+		this.params = physicalParams;
+	}
+	
+	public void setFingering(Fingering fingering)
+	{
+		instrument.setOpenHoles(fingering);
 	}
 
-	public abstract Complex calcZ(double freq, Fingering fingering,
-			PhysicalParameters params);
+	public Complex calcReflectionCoefficient(Fingering fingering)
+	{
+		double freq = fingering.getNote().getFrequency();
+		instrument.setOpenHoles(fingering);
+		return calcReflectionCoefficient(freq);
+	}
+
+	public Complex calcReflectionCoefficient(double freq, Fingering fingering)
+	{
+		instrument.setOpenHoles(fingering);
+		return calcReflectionCoefficient(freq);
+	}
+
+	public abstract Complex calcReflectionCoefficient(double freq);
+
+	public Complex calcZ(Fingering fingering)
+	{
+		double freq = fingering.getNote().getFrequency();
+		instrument.setOpenHoles(fingering);
+		return calcZ(freq);
+	}
+
+	public Complex calcZ(double freq, Fingering fingering)
+	{
+		instrument.setOpenHoles(fingering);
+		return calcZ(freq);
+	}
+
+	public abstract Complex calcZ(double freq);
 
 	public abstract Double getPlayedFrequency(Fingering fingering,
-			double freqRange, int numberOfFrequencies, PhysicalParameters params);
+			double freqRange, int numberOfFrequencies);
 }

@@ -8,13 +8,11 @@ import org.apache.commons.math3.optimization.direct.CMAESOptimizer;
 import com.wwidesigner.geometry.Instrument;
 import com.wwidesigner.modelling.InstrumentCalculator;
 import com.wwidesigner.note.TuningInterface;
-import com.wwidesigner.util.PhysicalParameters;
 
 public abstract class InstrumentOptimizer implements
 		InstrumentOptimizerInterface
 {
 	protected TuningInterface tuning;
-	protected PhysicalParameters physicalParams;
 	protected double[] lowerBnd;
 	protected double[] upperBnd;
 	protected OptimizationFunctionInterface optimizationFunction;
@@ -40,23 +38,6 @@ public abstract class InstrumentOptimizer implements
 		this.instrument = inst;
 		this.instrumentCalculator = calculator;
 		this.tuning = tuning;
-	}
-
-	/**
-	 * @return the physicalParams
-	 */
-	public PhysicalParameters getPhysicalParams()
-	{
-		return physicalParams;
-	}
-
-	/**
-	 * @param physicalParams
-	 *            the physicalParams to set
-	 */
-	public void setPhysicalParams(PhysicalParameters physicalParams)
-	{
-		this.physicalParams = physicalParams;
 	}
 
 	/**

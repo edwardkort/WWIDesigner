@@ -4,21 +4,18 @@ import java.util.List;
 
 import com.wwidesigner.note.Fingering;
 import com.wwidesigner.note.TuningInterface;
-import com.wwidesigner.util.PhysicalParameters;
 
 public class TuningOptimizationFunction implements
 		OptimizationFunctionInterface
 {
 	private InstrumentOptimizerInterface optimizer;
 	private List<Fingering> fingeringTargets;
-	private PhysicalParameters physicalParams;
 
 	public TuningOptimizationFunction(InstrumentOptimizerInterface optimizer,
-			TuningInterface tuning, PhysicalParameters physicalParameters)
+			TuningInterface tuning)
 	{
 		this.optimizer = optimizer;
 		fingeringTargets = tuning.getFingering();
-		physicalParams = physicalParameters;
 	}
 
 	/*
@@ -52,7 +49,7 @@ public class TuningOptimizationFunction implements
 		for (Fingering target : fingeringTargets)
 		{
 			Double freqDeviation = optimizer.getInstrumentCalculator()
-					.getPlayedFrequency(target, 2., 500, physicalParams);
+					.getPlayedFrequency(target, 2., 500);
 			if (freqDeviation == null)
 			{
 				norm += 1.;

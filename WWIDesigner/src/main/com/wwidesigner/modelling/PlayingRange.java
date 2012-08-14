@@ -10,7 +10,6 @@ import org.apache.commons.math3.complex.Complex;
 
 import com.wwidesigner.geometry.Instrument;
 import com.wwidesigner.note.Fingering;
-import com.wwidesigner.util.PhysicalParameters;
 
 /**
  * Representation of a complex spectrum, along with information about its
@@ -28,8 +27,6 @@ public class PlayingRange
 	// The instrument being modeled.
 	protected Instrument instrument;
 	protected InstrumentCalculator calculator;
-	protected Fingering fingering;
-	protected PhysicalParameters params;
 
 	// Classes used to find solutions.
 
@@ -38,7 +35,7 @@ public class PlayingRange
 	{
 		public double value(double f)
 		{
-			Complex z = calculator.calcZ(f, fingering, params);
+			Complex z = calculator.calcZ(f);
 			return z.getImaginary();
 		}
 	}
@@ -62,13 +59,11 @@ public class PlayingRange
 	}
 
 	public PlayingRange(Instrument instrument, 
-			InstrumentCalculator calculator, Fingering fingering,
-			PhysicalParameters physicalParams)
+			InstrumentCalculator calculator, Fingering fingering)
 	{
 		this.instrument = instrument;
 		this.calculator = calculator;
-		this.fingering = fingering;
-		this.params = physicalParams;
+		this.calculator.setFingering(fingering);
 		this.zImag = new ZImag();
 		this.solver = new BrentSolver();
 	}
@@ -91,8 +86,8 @@ public class PlayingRange
 		double upperFreq; 
 		Complex z1, z2;
 		upperFreq = nearFreq + delta;
-		z1 = calculator.calcZ(nearFreq, fingering, params);
-		z2 = calculator.calcZ(upperFreq, fingering, params);
+		z1 = calculator.calcZ(nearFreq);
+		z2 = calculator.calcZ(upperFreq);
 
 		// Upper bound on fmax has Im(Z) > 0 and d/df Im(Z) > 0.
 		// If Im(Z) > 0 and d/df Im(Z) < 0, search lower for upper bound.
@@ -110,8 +105,8 @@ public class PlayingRange
 				{
 					throw new NoPlayingRange(nearFreq);
 				}
-				z2 = calculator.calcZ(upperFreq, fingering, params);
-				z1 = calculator.calcZ(upperFreq-delta, fingering, params);
+				z2 = calculator.calcZ(upperFreq);
+				z1 = calculator.calcZ(upperFreq-delta);
 			}
 			lowerFreq = upperFreq;
 			// For lowerFreq, Im(Z) > 0 and d/df Im(Z) > 0.
@@ -125,7 +120,7 @@ public class PlayingRange
 				{
 					throw new NoPlayingRange(nearFreq);
 				}
-				z2 = calculator.calcZ(upperFreq, fingering, params);
+				z2 = calculator.calcZ(upperFreq);
 			}
 			lowerFreq = nearFreq;
 			// For lowerFreq, d/df Im(Z) > 0.
@@ -134,7 +129,7 @@ public class PlayingRange
 		// Lower bound on fmax has Im(Z) < 0 and d/df Im(Z) > 0.
 		// At this point, we know that d/df Im(Z) > 0.
 		// Search lower for lower bound, if necessary.
-		z2 = calculator.calcZ(lowerFreq, fingering, params);
+		z2 = calculator.calcZ(lowerFreq);
 		while ( z2.getImaginary() >= 0.0 )
 		{
 			lowerFreq -= stepSize;
@@ -142,7 +137,7 @@ public class PlayingRange
 			{
 				throw new NoPlayingRange(nearFreq);
 			}
-			z2 = calculator.calcZ(lowerFreq, fingering, params);
+			z2 = calculator.calcZ(lowerFreq);
 		}
 		double[] bracket = {lowerFreq, upperFreq};
 		return bracket;

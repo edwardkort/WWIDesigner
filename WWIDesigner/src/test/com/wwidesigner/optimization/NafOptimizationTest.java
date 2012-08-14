@@ -58,7 +58,7 @@ public class NafOptimizationTest
 	 */
 	public Instrument doInstrumentOptimization(String title) throws Exception
 	{
-		PhysicalParameters params = new PhysicalParameters(20.5, TemperatureType.C);
+		PhysicalParameters params = new PhysicalParameters(22.22, TemperatureType.C);
 		Instrument instrument = getInstrumentFromXml();
 		InstrumentCalculator calculator = new GordonCalculator(instrument,params);
 		instrument.convertToMetres();
@@ -352,8 +352,8 @@ public class NafOptimizationTest
 	public static void main(String[] args)
 	{
 		NafOptimizationTest test = new NafOptimizationTest();
-//		test.testNoHoleOptimization();
-		test.testNoHoleTaperOptimization();
+		test.testNoHoleOptimization();
+//		test.testNoHoleTaperOptimization();
 //		test.test1HoleOptimization();
 //		test.test6HoleOptimization();
 	}

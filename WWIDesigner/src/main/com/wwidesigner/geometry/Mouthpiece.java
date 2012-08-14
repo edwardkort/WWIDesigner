@@ -63,7 +63,7 @@ public class Mouthpiece implements ComponentInterface, MouthpieceInterface,
 	public void setBeta(Double beta)
 	{
 		this.beta = beta;
-		if (this.fipple != null && this.fipple.windwayHeight != null)
+		if (this.fipple != null && this.fipple.windwayHeight != null && beta != null)
 		{
 			this.gainFactor = (4.0
 					* this.fipple.windwayHeight

@@ -11,6 +11,9 @@
 			<windowLength>0.15</windowLength>
 			<windowWidth>0.64</windowWidth>
 			<fippleFactor>0.91</fippleFactor>
+			<windowHeight>0.20</windowHeight>
+			<windwayLength>1.50</windwayLength>
+			<windwayHeight>0.031</windwayHeight>
 		</fipple>
 	</mouthpiece>
 	<borePoint>

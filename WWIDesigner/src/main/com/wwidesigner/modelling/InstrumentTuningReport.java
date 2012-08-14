@@ -5,8 +5,6 @@ import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.List;
 
-import org.apache.commons.math3.complex.Complex;
-
 import com.wwidesigner.geometry.Instrument;
 import com.wwidesigner.geometry.bind.GeometryBindFactory;
 import com.wwidesigner.modelling.InstrumentCalculator;
@@ -19,58 +17,31 @@ import com.wwidesigner.util.Constants.TemperatureType;
 import com.wwidesigner.util.PhysicalParameters;
 
 /**
+ * For a specified instrument and tuning, print a report listing
+ * the predicted tuning of the instrument, and the deviation from measured values.
  * @author Burton Patkau
  * 
  */
-public class InstrumentImpedanceReport
+public class InstrumentTuningReport
 {
-	// Standard instrument, and its measured tuning.
-
-	protected static String inputInstrumentXML = "com/wwidesigner/geometry/bind/example/BP7.xml";
-	protected static String inputTuningXML = "com/wwidesigner/note/bind/example/BP7-tuning.xml";
-
-	/**
-	 * For the standard instrument, calculate the impedance for
-	 * selected notes at the known fmax, where Imag(Z) == 0.
-	 * Predict fmax, and compare to measured values.
-	 */
-	public static void main(String[] args)
+	public void printReport(String instrumentFile, String tuningFile)
 	{
 		try
 		{
 			double temperature = 28.2;
 			PhysicalParameters params = new PhysicalParameters(temperature, TemperatureType.C);
-			Instrument instrument = getInstrumentFromXml(inputInstrumentXML);
+			Instrument instrument = getInstrumentFromXml(instrumentFile);
 			InstrumentCalculator calculator = new WhistleCalculator(instrument,params);
-			Tuning tuning = getTuningFromXml(inputTuningXML);
+			Tuning tuning = getTuningFromXml(tuningFile);
 			PrintWriter pw = new PrintWriter( System.out );
 			List<Fingering>  noteList = tuning.getFingering();
 
-			Double fmax[]
-				  = { 589.49699364,   665.95846589,   740.62596732,   790.25253027,
-			          895.41223635,  1000.04547471,  1080.97410484,  1139.23859984,
-			         1201.28218389,  1336.22103577,  1487.47285037,  1588.12692212,
-			         1787.297483  ,  1992.58680484,  2045.42056261,  2233.64276274,
-			         2433.04456904,   912.91065873};
-
 			instrument.convertToMetres();
-			double Z0 = params.calcZ0(instrument.getMouthpiece().getBoreDiameter()/2.0);
+			double totalError = 0.0;
+			int nrPredictions = 0;
 
-			pw.println("Note  fmax       Z.real       Z.imag      imag/real");
-			for ( int i = 0; i < fmax.length; ++ i )
-			{
-				pw.printf("%2d  %7.2f", i, fmax[i]);
-				Fingering fingering = noteList.get(i);
-				Complex Z = calculator.calcZ(fmax[i],fingering);
-				Z = Z.divide(Z0);
-				double normalized = Z.getImaginary()/Z.getReal();
-				pw.printf( " %12.4f %12.4f %12.5f", Z.getReal(), Z.getImaginary(), normalized );
-				pw.println();
-			}
-			pw.println();
-			pw.flush();
-			
-			pw.println("Note  Nominal   fmax   Pred fmax   cents       Z.real       Z.imag      imag/real");
+			pw.println(instrumentFile);
+			pw.println("Note  Nominal   fmax   Pred fmax   cents");
 			for ( int i = 0; i < noteList.size(); ++ i )
 			{
 				Fingering fingering = tuning.getFingering().get(i);
@@ -92,30 +63,37 @@ public class InstrumentImpedanceReport
 				{
 					PlayingRange range = new PlayingRange(instrument,calculator, fingering);
 					double predicted = range.findFmax(actual);
+					double cents;
 					pw.printf("%2d   %7.2f  %7.2f   %7.2f", i, fnom, actual, predicted);
 					if ( predicted > 0.0 )
 					{
-						pw.printf( "  %7.2f", Note.cents(actual, predicted) );
-						Complex Z = calculator.calcZ(predicted,fingering);
-						Z = Z.divide(Z0);
-						double normalized = Z.getImaginary()/Z.getReal();
-						pw.printf( " %12.4f %12.4f %12.5f", Z.getReal(), Z.getImaginary(), normalized );
+						cents = Note.cents(actual, predicted);
+						pw.printf( "  %7.2f", cents );
+						totalError += cents;
+						nrPredictions += 1;
 					}
 					pw.println();
 					pw.flush();
 				}
 			}
 			pw.println();
+			if ( nrPredictions > 0 )
+			{
+				pw.printf("Average error: %7.2f cents", totalError/nrPredictions);
+				pw.println();
+			}
+			pw.println();
+			pw.flush();
 			
 		}
 		catch (Exception e)
 		{
 			System.out.println("Exception: " + e.getMessage());
-			System.out.println(e.getStackTrace());
+			e.printStackTrace();
 		}
 	}
 
-	protected static Instrument getInstrumentFromXml(String instrumentXML)
+	protected Instrument getInstrumentFromXml(String instrumentXML)
 			throws Exception
 	{
 		BindFactory geometryBindFactory = GeometryBindFactory.getInstance();
@@ -127,7 +105,7 @@ public class InstrumentImpedanceReport
 		return instrument;
 	}
 
-	protected static Tuning getTuningFromXml(String tuningXML) throws Exception
+	protected Tuning getTuningFromXml(String tuningXML) throws Exception
 	{
 		BindFactory noteBindFactory = NoteBindFactory.getInstance();
 		File inputFile = getInputFile(tuningXML, noteBindFactory);
@@ -149,7 +127,7 @@ public class InstrumentImpedanceReport
 	 *         classpath.
 	 * @throws FileNotFoundException 
 	 */
-	protected static File getInputFile(String fileName, BindFactory bindFactory) throws FileNotFoundException
+	protected File getInputFile(String fileName, BindFactory bindFactory) throws FileNotFoundException
 	{
 		String inputPath = bindFactory.getPathFromName(fileName);
 		File inputFile = new File(inputPath);

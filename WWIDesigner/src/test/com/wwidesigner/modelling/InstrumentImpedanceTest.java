@@ -5,6 +5,7 @@ package com.wwidesigner.modelling;
 
 import static org.junit.Assert.fail;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -36,8 +37,8 @@ public class InstrumentImpedanceTest
 	protected String inputTuningXML = "com/wwidesigner/note/bind/example/BP7-tuning.xml";
 
 	/**
-	 * For the standard instrument, calculate the impedance for selected notes
-	 * at the known fmax, where Imag(Z) == 0.
+	 * For the standard instrument, test the calculation of impedance against known zeros,
+	 * and compare predicted fmax to measured values.
 	 */
 	@Test
 	public final void testInstrumentImpedance()
@@ -61,6 +62,8 @@ public class InstrumentImpedanceTest
 			double Z0 = params.calcZ0(instrument.getMouthpiece()
 					.getBoreDiameter() / 2.0);
 
+			// Test that impedance is zero at known zeros in the calculated impedance.
+
 			for (int i = 0; i < fmax.length; ++i)
 			{
 				Fingering fingering = noteList.get(i);
@@ -69,10 +72,16 @@ public class InstrumentImpedanceTest
 				assertEquals("Imag(Z) is non-zero at known resonance.", 0.0,
 						Z.getImaginary(), 0.035);
 			}
+
+			// Test that zeros of the calculated impedance are close to the measured values of fmax.
+			double totalError = 0.0;
+			int nrPredictions = 0;
+
 			for ( int i = 0; i < noteList.size(); ++ i )
 			{
 				Fingering fingering = noteList.get(i);
 				double actual = 0.0;
+				double cents;
 				if ( fingering.getNote().getFrequencyMax() != null )
 				{
 					actual = fingering.getNote().getFrequencyMax();
@@ -85,13 +94,18 @@ public class InstrumentImpedanceTest
 				{
 					PlayingRange range = new PlayingRange(instrument,calculator, fingering);
 					double predicted = range.findFmax(actual);
-					if ( predicted > 0.0 )
-					{
-						assertEquals("Predicted fmax does not agree with actual at note " + i, 0.0,
-								Note.cents(actual, predicted), 20.0 );
-					}
+					assertTrue("No prediction for note " + i, predicted > 0.0 );
+					cents = Note.cents(actual, predicted);
+					assertEquals("Predicted fmax does not agree with actual at note " + i, 0.0,
+								cents, 20.0 );
+					totalError += cents;
+					nrPredictions += 1;
 				}
 			}
+			
+			// Test that the average prediction error is close to zero.
+			
+			assertEquals("Average prediction error is not small.", 0.0, totalError/nrPredictions, 0.30 );
 		}
 		catch (Exception e)
 		{
@@ -103,7 +117,7 @@ public class InstrumentImpedanceTest
 			throws Exception
 	{
 		BindFactory geometryBindFactory = GeometryBindFactory.getInstance();
-		File inputFile = getInputFile(inputInstrumentXML, geometryBindFactory);
+		File inputFile = getInputFile(instrumentXML, geometryBindFactory);
 		Instrument instrument = (Instrument) geometryBindFactory.unmarshalXml(
 				inputFile, true);
 		instrument.updateComponents();
@@ -114,7 +128,7 @@ public class InstrumentImpedanceTest
 	protected Tuning getTuningFromXml(String tuningXML) throws Exception
 	{
 		BindFactory noteBindFactory = NoteBindFactory.getInstance();
-		File inputFile = getInputFile(inputTuningXML, noteBindFactory);
+		File inputFile = getInputFile(tuningXML, noteBindFactory);
 		Tuning tuning = (Tuning) noteBindFactory.unmarshalXml(inputFile, true);
 
 		return tuning;

@@ -96,7 +96,7 @@ public class PlayingRange
 		this.gainOne = new GainOne();
 		this.zRatio = new ZRatio();
 		this.solver = new BrentSolver();
-		this.optimizer = new BrentOptimizer(0.01, 0.01);	// Approximate minimum is sufficient.
+		this.optimizer = new BrentOptimizer(0.0001, 0.0001);	// Approximate minimum is sufficient.
 	}
 
 	/**

@@ -111,7 +111,7 @@ public class InstrumentImpedanceReport
 		catch (Exception e)
 		{
 			System.out.println("Exception: " + e.getMessage());
-			System.out.println(e.getStackTrace());
+			e.printStackTrace();
 		}
 	}
 

@@ -78,6 +78,7 @@ public class BP7ImpedancePlot
 		catch (Exception e)
 		{
 			System.out.println("Exception: " + e);
+			e.printStackTrace();
 		}
 	}
 

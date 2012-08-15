@@ -134,6 +134,20 @@ public class DefaultInstrumentCalculator extends InstrumentCalculator
 	}
 
 	@Override
+	public double calcGain(double freq, Complex Z)
+	{
+        // Magnitude of loop gain for a given note, after Auvray, 2012.
+		// Loop gain G = gainFactor * freq * rho / abs(Z).
+		
+		Double G0 = instrument.getMouthpiece().getGainFactor();
+		if ( G0 == null ) {
+			return 1.0;
+		}
+		double gain = ( G0  * freq * params.getRho() ) / Z.abs();
+		return gain;
+	}
+
+	@Override
 	public Double getPlayedFrequency(Fingering fingering, double freqRange,
 			int numberOfFrequencies)
 	{

@@ -8,6 +8,7 @@ import java.util.List;
 import com.wwidesigner.geometry.Instrument;
 import com.wwidesigner.geometry.bind.GeometryBindFactory;
 import com.wwidesigner.modelling.InstrumentCalculator;
+import com.wwidesigner.modelling.PlayingRange.NoPlayingRange;
 import com.wwidesigner.note.Fingering;
 import com.wwidesigner.note.Note;
 import com.wwidesigner.note.Tuning;
@@ -37,49 +38,94 @@ public class InstrumentTuningReport
 			List<Fingering>  noteList = tuning.getFingering();
 
 			instrument.convertToMetres();
-			double totalError = 0.0;
-			int nrPredictions = 0;
+			double totalMaxError = 0.0;		// Net error in predicting fmax, in cents.
+			double varianceMax = 0.0;		// Sum of squared error in predicting fmax.
+			int nrMaxPredictions = 0;		// Number of predictions of fmax.
+			double totalMinError = 0.0;		// Net error in predicting fmin, in cents.
+			double varianceMin = 0.0;		// Sum of squared error in predicting fmin.
+			int nrMinPredictions = 0;		// Number of predictions of fmin.
 
 			pw.println(instrumentFile);
-			pw.println("Note  Nominal   fmax   Pred fmax   cents");
+			pw.println("Note  Nominal   fmin   Pred fmin   cents    fmax   Pred fmax   cents");
 			for ( int i = 0; i < noteList.size(); ++ i )
 			{
 				Fingering fingering = tuning.getFingering().get(i);
-				double fnom = 0.0;
-				double actual = 0.0;
-				if ( fingering.getNote().getFrequencyMax() != null )
+				Double fnom = fingering.getNote().getFrequency();
+				Double actualMax = fingering.getNote().getFrequencyMax();
+				Double actualMin = fingering.getNote().getFrequencyMin();
+				double target = 0.0;
+				if ( fnom != null )
 				{
-					actual = fingering.getNote().getFrequencyMax();
+					target = fnom;
 				}
-				if ( fingering.getNote().getFrequency() != null )
+				else if ( actualMax != null )
 				{
-					fnom = fingering.getNote().getFrequency();
-					if ( actual == 0.0 )
-					{
-						actual = fnom;
-					}
+					target = actualMax;
 				}
-				if ( actual != 0.0 )
+				else if ( actualMin != null )
+				{
+					target = actualMin;
+				}
+				if ( target != 0.0 )
 				{
 					PlayingRange range = new PlayingRange(instrument,calculator, fingering);
-					double predicted = range.findFmax(actual);
-					double cents;
-					pw.printf("%2d   %7.2f  %7.2f   %7.2f", i, fnom, actual, predicted);
-					if ( predicted > 0.0 )
+					double fmax, fmin;
+					try {
+						fmax = range.findFmax(target);
+					}
+					catch (NoPlayingRange e)
 					{
-						cents = Note.cents(actual, predicted);
+						fmax = 0.0;
+					}
+					try {
+						fmin = range.findFmin(fmax);
+					}
+					catch (NoPlayingRange e)
+					{
+						fmin = 0.0;
+					}
+					double cents;
+					pw.printf("%2d   %7.2f  %7.2f   %7.2f", i, fnom, actualMin, fmin);
+					if ( actualMin != null && fmin > 0.0 )
+					{
+						cents = Note.cents(actualMin, fmin);
 						pw.printf( "  %7.2f", cents );
-						totalError += cents;
-						nrPredictions += 1;
+						totalMinError += cents;
+						varianceMin   += cents*cents;
+						nrMinPredictions += 1;
+					}
+					else
+					{
+						pw.print("         ");
+					}
+					pw.printf("  %7.2f   %7.2f", actualMax, fmax);
+					if ( actualMax != null && fmax > 0.0 )
+					{
+						cents = Note.cents(actualMax, fmax);
+						pw.printf( "  %7.2f", cents );
+						totalMaxError += cents;
+						varianceMax   += cents*cents;
+						nrMaxPredictions += 1;
+					}
+					else
+					{
+						pw.print("         ");
 					}
 					pw.println();
 					pw.flush();
 				}
 			}
 			pw.println();
-			if ( nrPredictions > 0 )
+			if ( nrMaxPredictions > 0 )
 			{
-				pw.printf("Average error: %7.2f cents", totalError/nrPredictions);
+				pw.printf("Error in fmax: net %7.2f cents, deviation %7.2f cents", 
+						totalMaxError/nrMaxPredictions, Math.sqrt(varianceMax/nrMaxPredictions));
+				pw.println();
+			}
+			if ( nrMinPredictions > 0 )
+			{
+				pw.printf("Error in fmin: net %7.2f cents, deviation %7.2f cents", 
+						totalMinError/nrMinPredictions, Math.sqrt(varianceMin/nrMinPredictions));
 				pw.println();
 			}
 			pw.println();

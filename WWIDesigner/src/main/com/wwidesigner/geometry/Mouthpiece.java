@@ -54,8 +54,8 @@ public class Mouthpiece implements ComponentInterface, MouthpieceInterface,
 
 	/**
 	 * Set the jet amplification factor, and the instrument-specific loop gain
-	 * factor, after Auvray, 2012. Loop gain G = gainFactor * a^2 * waveNumber /
-	 * abs(Z).
+	 * factor, after Auvray, 2012. 
+	 * Loop gain G = gainFactor * freq * rho / abs(Z).
 	 * 
 	 * @param beta
 	 *            the jet amplification factor to set
@@ -65,16 +65,17 @@ public class Mouthpiece implements ComponentInterface, MouthpieceInterface,
 		this.beta = beta;
 		if (this.fipple != null && this.fipple.windwayHeight != null && beta != null)
 		{
-			this.gainFactor = (4.0
+			this.gainFactor = (8.0
 					* this.fipple.windwayHeight
 					* Math.sqrt(2.0 * this.fipple.windwayHeight
 							/ this.fipple.windowLength)
 					* Math.exp(this.beta * this.fipple.windowLength
-							/ this.fipple.windwayHeight) / (this.fipple.windowLength * this.fipple.windowWidth));
+							/ this.fipple.windwayHeight)
+					/ (this.fipple.windowLength * this.fipple.windowWidth));
 		}
 		else
 		{
-			this.gainFactor = 0.0;
+			this.gainFactor = 1.0;
 		}
 	}
 
@@ -88,8 +89,8 @@ public class Mouthpiece implements ComponentInterface, MouthpieceInterface,
 
 	/**
 	 * Set the jet amplification factor, and the instrument-specific loop gain
-	 * factor, after Auvray, 2012. Loop gain G = gainFactor * a^2 * waveNumber /
-	 * abs(Z).
+	 * factor, after Auvray, 2012.
+	 * Loop gain G = gainFactor * freq * rho / abs(Z).
 	 * 
 	 * @param gainFactor
 	 *            the gain factor to set
@@ -97,15 +98,19 @@ public class Mouthpiece implements ComponentInterface, MouthpieceInterface,
 	public void setGainFactor(Double gainFactor)
 	{
 		this.gainFactor = gainFactor;
-		if (this.fipple.windwayHeight != null)
+		if (this.fipple.windwayHeight != null && this.gainFactor != null )
 		{
 			this.beta = this.fipple.windwayHeight
 					/ this.fipple.windowLength
 					* Math.log(this.gainFactor
-							/ (4 * this.fipple.windwayHeight)
+							/ (8.0 * this.fipple.windwayHeight)
 							* Math.sqrt(0.5 * this.fipple.windowLength
 									/ this.fipple.windwayHeight)
 							* (this.fipple.windowLength * this.fipple.windowWidth));
+		}
+		else
+		{
+			this.beta = 0.3;
 		}
 	}
 
@@ -160,9 +165,10 @@ public class Mouthpiece implements ComponentInterface, MouthpieceInterface,
 	public void convertDimensions(double multiplier)
 	{
 		position *= multiplier;
-		if (beta != null)
+		if (gainFactor != null)
 		{
-			beta *= multiplier;
+			// The gain factor has dimensions 1/length.
+			gainFactor /= multiplier;
 		}
 
 		if (embouchureHole != null)

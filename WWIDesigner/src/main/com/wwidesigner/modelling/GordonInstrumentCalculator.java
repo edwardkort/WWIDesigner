@@ -101,4 +101,14 @@ public class GordonInstrumentCalculator extends InstrumentCalculator
 		return playedFreq;
 	}
 
+	@Override
+	public double calcGain(double freq, Complex Z)
+	{
+        // Magnitude of loop gain for a given note, after Auvray, 2012.
+		if ( instrument.getMouthpiece().getGainFactor() == null ) {
+			return 0.0;
+		}
+        return ( freq * instrument.getMouthpiece().getGainFactor() )
+        		/ Z.abs();
+	}
 }

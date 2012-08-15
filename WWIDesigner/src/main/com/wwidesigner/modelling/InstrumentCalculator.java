@@ -128,6 +128,11 @@ public abstract class InstrumentCalculator
 		instrument.setOpenHoles(fingering);
 	}
 
+	/** Calculate the reflection coefficient at the nominal frequency
+	 * for a specified fingering.
+	 * @param fingering
+	 * @return reflection coefficient
+	 */
 	public Complex calcReflectionCoefficient(Fingering fingering)
 	{
 		double freq = fingering.getNote().getFrequency();
@@ -135,14 +140,30 @@ public abstract class InstrumentCalculator
 		return calcReflectionCoefficient(freq);
 	}
 
+	/** Calculate the reflection coefficient at a specified frequency
+	 * and fingering.
+	 * @param freq
+	 * @param fingering
+	 * @return reflection coefficient
+	 */
 	public Complex calcReflectionCoefficient(double freq, Fingering fingering)
 	{
 		instrument.setOpenHoles(fingering);
 		return calcReflectionCoefficient(freq);
 	}
 
+	/** Calculate the reflection coefficient at a specified frequency
+	 * for the instrument's current fingering.
+	 * @param freq
+	 * @return reflection coefficient
+	 */
 	public abstract Complex calcReflectionCoefficient(double freq);
 
+	/** Calculate the overall impedance at the nominal frequency
+	 * for a specified fingering.
+	 * @param fingering
+	 * @return impedance
+	 */
 	public Complex calcZ(Fingering fingering)
 	{
 		double freq = fingering.getNote().getFrequency();
@@ -150,13 +171,67 @@ public abstract class InstrumentCalculator
 		return calcZ(freq);
 	}
 
+	/** Calculate the overall impedance at a specified frequency
+	 * and fingering.
+	 * @param freq
+	 * @param fingering
+	 * @return impedance
+	 */
 	public Complex calcZ(double freq, Fingering fingering)
 	{
 		instrument.setOpenHoles(fingering);
 		return calcZ(freq);
 	}
 
+	/** Calculate the overall impedance at a specified frequency
+	 * for the instrument's current fingering.
+	 * @param freq
+	 * @return impedance
+	 */
 	public abstract Complex calcZ(double freq);
+
+	/** Calculate the loop gain at the nominal frequency
+	 * for a specified fingering.
+	 * @param fingering
+	 * @return loop gain
+	 */
+	public double calcGain(Fingering fingering)
+	{
+		double freq = fingering.getNote().getFrequency();
+		instrument.setOpenHoles(fingering);
+		return calcGain(freq);
+	}
+
+	/** Calculate the loop gain at a specified frequency
+	 * and fingering.
+	 * @param freq
+	 * @param fingering
+	 * @return loop gain
+	 */
+	public double calcGain(double freq, Fingering fingering)
+	{
+		instrument.setOpenHoles(fingering);
+		return calcGain(freq);
+	}
+
+	/** Calculate the loop gain at a specified frequency
+	 * for the instrument's current fingering.
+	 * @param freq
+	 * @return loop gain
+	 */
+	public double calcGain(double freq)
+	{
+		return calcGain( freq, calcZ(freq) );
+	}
+
+	/** Calculate the loop gain at a specified frequency
+	 * for the instrument's current fingering, given the
+	 * overall impedance at the same frequency and fingering.
+	 * @param freq
+	 * @param impedance
+	 * @return loop gain
+	 */
+	public abstract double calcGain(double freq, Complex Z);
 
 	public abstract Double getPlayedFrequency(Fingering fingering,
 			double freqRange, int numberOfFrequencies);

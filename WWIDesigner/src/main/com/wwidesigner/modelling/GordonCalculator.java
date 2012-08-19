@@ -10,10 +10,21 @@ import com.wwidesigner.util.PhysicalParameters;
 public class GordonCalculator extends GordonInstrumentCalculator
 {
 
-	public GordonCalculator(Instrument instrument, PhysicalParameters physicalParams)
+	public GordonCalculator()
 	{
-		super(instrument,physicalParams);
-		
+		super();
+
+		setMouthpieceCalculator(new GordonFippleMouthpieceCalculator());
+		setTerminationCalculator(new GordonTerminationCalculator());
+		setHoleCalculator(new GordonHoleCalculator());
+		setBoreSectionCalculator(new GordonBoreSectionCalculator());
+	}
+
+	public GordonCalculator(Instrument instrument,
+			PhysicalParameters physicalParams)
+	{
+		super(instrument, physicalParams);
+
 		setMouthpieceCalculator(new GordonFippleMouthpieceCalculator());
 		setTerminationCalculator(new GordonTerminationCalculator());
 		setHoleCalculator(new GordonHoleCalculator());

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wii:instrument xmlns:wii="http://www.wwidesigner.com/Instrument"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.wwidesigner.com/Instrument ../../../../../main/com/wwidesigner/geometry/bind/Instrument.xsd ">
+	<name>Ken Light G, 6 hole NAF</name>
+	<description>Ken Light straight bore NAF with 6 holes</description>
+	<lengthType>mm</lengthType>
+	<mouthpiece>
+		<position>6.3</position>
+		<fipple>
+			<windowLength>6.3</windowLength>
+			<windowWidth>9.54</windowWidth>
+		 	<fippleFactor>0.843</fippleFactor>
+			<windowHeight>7</windowHeight>
+		</fipple>
+	</mouthpiece>
+	<borePoint>
+		<borePosition>0</borePosition>
+		<boreDiameter>21.62</boreDiameter>
+	</borePoint>
+	<borePoint>
+		<borePosition>369.32</borePosition>
+		<boreDiameter>21.62</boreDiameter>
+	</borePoint>
+	<hole>
+		<borePosition>104.2</borePosition>
+		<diameter>7.76</diameter>
+		<height>3.33</height>
+	</hole>
+	<hole>
+		<borePosition>135.7</borePosition>
+		<diameter>7.76</diameter>
+		<height>3.33</height>
+	</hole>
+	<hole>
+		<borePosition>167.2</borePosition>
+		<diameter>7.76</diameter>
+		<height>3.33</height>
+	</hole>
+	<hole>
+		<borePosition>198.7</borePosition>
+		<diameter>7.76</diameter>
+		<height>3.33</height>
+	</hole>
+	<hole>
+		<borePosition>230.2</borePosition>
+		<diameter>7.76</diameter>
+		<height>3.33</height>
+	</hole>
+	<hole>
+		<borePosition>261.7</borePosition>
+		<diameter>7.76</diameter>
+		<height>3.33</height>
+	</hole>
+	<termination>
+		<flangeDiameter>28.36</flangeDiameter>
+	</termination>
+</wii:instrument>

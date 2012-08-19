@@ -18,24 +18,31 @@ import com.wwidesigner.util.PhysicalParameters;
 public class SimpleReedCalculator extends DefaultInstrumentCalculator
 {
 
-	public SimpleReedCalculator(Instrument instrument, PhysicalParameters physicalParams)
+	public SimpleReedCalculator(Instrument instrument,
+			PhysicalParameters physicalParams)
 	{
 		super(instrument, new NoOpReedMouthpieceCalculator(),
 				new ThickFlangedOpenEndCalculator(),
-				new DefaultHoleCalculator(), new DefaultBoreSectionCalculator(),
-				physicalParams);
+				new DefaultHoleCalculator(),
+				new DefaultBoreSectionCalculator(), physicalParams);
+	}
+
+	public SimpleReedCalculator()
+	{
+		super(new NoOpReedMouthpieceCalculator(),
+				new ThickFlangedOpenEndCalculator(),
+				new DefaultHoleCalculator(), new DefaultBoreSectionCalculator());
 	}
 
 	// TODO: Remove this override.
 	// ChalumeauOptimizationTest is highly sensitive to floating-point
-	// inaccuracy, and passes only with this method for calculating  
+	// inaccuracy, and passes only with this method for calculating
 	// the reflection coefficient.
 
 	@Override
 	public Complex calcReflectionCoefficient(double frequency)
 	{
-		double waveNumber = 2 * Math.PI * frequency
-				/ params.getSpeedOfSound();
+		double waveNumber = 2 * Math.PI * frequency / params.getSpeedOfSound();
 
 		TransferMatrix transferMatrix = TransferMatrix.makeIdentity();
 		TransferMatrix tm;
@@ -44,8 +51,8 @@ public class SimpleReedCalculator extends DefaultInstrumentCalculator
 		{
 			if (component instanceof BoreSection)
 			{
-				tm = boreSectionCalculator.calcTransferMatrix((BoreSection) component,
-						waveNumber, params);
+				tm = boreSectionCalculator.calcTransferMatrix(
+						(BoreSection) component, waveNumber, params);
 			}
 			else if (component instanceof Hole)
 			{
@@ -55,14 +62,16 @@ public class SimpleReedCalculator extends DefaultInstrumentCalculator
 			else
 			{
 				assert component instanceof Mouthpiece;
-				tm = mouthpieceCalculator.calcTransferMatrix((Mouthpiece) component,
-						waveNumber, params);
+				tm = mouthpieceCalculator.calcTransferMatrix(
+						(Mouthpiece) component, waveNumber, params);
 			}
 			transferMatrix = TransferMatrix.multiply(transferMatrix, tm);
 		}
 
-		StateVector sv = TransferMatrix.multiply(transferMatrix,
-				terminationCalculator.calcStateVector(instrument.getTermination(), waveNumber, params));
+		StateVector sv = TransferMatrix.multiply(
+				transferMatrix,
+				terminationCalculator.calcStateVector(
+						instrument.getTermination(), waveNumber, params));
 
 		// TODO This mouthpiece calculation will change
 		double headRadius = instrument.getMouthpiece().getBoreDiameter() / 2.;

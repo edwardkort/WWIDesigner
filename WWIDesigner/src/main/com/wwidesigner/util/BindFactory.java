@@ -52,6 +52,17 @@ public abstract class BindFactory
 		createDomainToBindMap();
 	}
 
+	public Object unmarshalXml(String inputFileName, boolean fileInClasspath,
+			boolean toDomainObject) throws Exception
+	{
+		if (fileInClasspath)
+		{
+			inputFileName = getPathFromName(inputFileName);
+		}
+
+		return unmarshalXml(inputFileName, toDomainObject);
+	}
+
 	/**
 	 * 
 	 * @param inputFile
@@ -159,9 +170,9 @@ public abstract class BindFactory
 		return fileUrl.getPath();
 	}
 
-	private File getFileFromName(String name)
+	public File getFileFromName(String name) throws FileNotFoundException
 	{
-		String filePath = ClassLoader.getSystemResource(name).getPath();
+		String filePath = getPathFromName(name);
 
 		return new File(filePath);
 	}

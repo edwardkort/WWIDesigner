@@ -23,12 +23,18 @@ import com.wwidesigner.util.PhysicalParameters;
 public class GordonInstrumentCalculator extends InstrumentCalculator
 {
 
+	public GordonInstrumentCalculator()
+	{
+		super();
+	}
+
 	/**
 	 * @param instrument
 	 */
-	public GordonInstrumentCalculator(Instrument instrument, PhysicalParameters physicalParams)
+	public GordonInstrumentCalculator(Instrument instrument,
+			PhysicalParameters physicalParams)
 	{
-		super(instrument,physicalParams);
+		super(instrument, physicalParams);
 	}
 
 	/*
@@ -52,8 +58,8 @@ public class GordonInstrumentCalculator extends InstrumentCalculator
 			TransferMatrix compTM = null;
 			if (component instanceof BoreSection)
 			{
-				compTM = boreSectionCalculator.calcTransferMatrix((BoreSection) component,
-						waveNumber, params);
+				compTM = boreSectionCalculator.calcTransferMatrix(
+						(BoreSection) component, waveNumber, params);
 			}
 			else if (component instanceof Hole)
 			{
@@ -62,14 +68,15 @@ public class GordonInstrumentCalculator extends InstrumentCalculator
 			}
 			else if (component instanceof Mouthpiece)
 			{
-				compTM = mouthpieceCalculator.calcTransferMatrix((Mouthpiece) component,
-						waveNumber, params);
+				compTM = mouthpieceCalculator.calcTransferMatrix(
+						(Mouthpiece) component, waveNumber, params);
 			}
-			
+
 			fluteTM = fluteTM.multiply(compTM);
 		}
 
-		StateVector sv = terminationCalculator.calcStateVector(instrument.getTermination(), waveNumber, params);
+		StateVector sv = terminationCalculator.calcStateVector(
+				instrument.getTermination(), waveNumber, params);
 		Complex termImp = sv.Impedance();
 
 		Complex result = termImp.multiply(fluteTM.getPP()).add(fluteTM.getPU())
@@ -94,8 +101,8 @@ public class GordonInstrumentCalculator extends InstrumentCalculator
 		double freqEnd = targetFreq * freqRange;
 		ImpedanceSpectrum spectrum = new ImpedanceSpectrum();
 
-		spectrum.calcImpedance(this.instrument, this, freqStart, freqEnd, numberOfFrequencies,
-				fingering, params);
+		spectrum.calcImpedance(this.instrument, this, freqStart, freqEnd,
+				numberOfFrequencies, fingering, params);
 		playedFreq = spectrum.getClosestMinimumFrequency(targetFreq);
 
 		return playedFreq;
@@ -104,11 +111,11 @@ public class GordonInstrumentCalculator extends InstrumentCalculator
 	@Override
 	public double calcGain(double freq, Complex Z)
 	{
-        // Magnitude of loop gain for a given note, after Auvray, 2012.
-		if ( instrument.getMouthpiece().getGainFactor() == null ) {
+		// Magnitude of loop gain for a given note, after Auvray, 2012.
+		if (instrument.getMouthpiece().getGainFactor() == null)
+		{
 			return 0.0;
 		}
-        return ( freq * instrument.getMouthpiece().getGainFactor() )
-        		/ Z.abs();
+		return (freq * instrument.getMouthpiece().getGainFactor()) / Z.abs();
 	}
 }

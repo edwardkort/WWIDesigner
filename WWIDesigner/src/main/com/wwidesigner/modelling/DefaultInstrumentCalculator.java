@@ -26,7 +26,8 @@ import com.wwidesigner.util.PhysicalParameters;
 public class DefaultInstrumentCalculator extends InstrumentCalculator
 {
 
-	public DefaultInstrumentCalculator(Instrument instrument, PhysicalParameters physicalParams)
+	public DefaultInstrumentCalculator(Instrument instrument,
+			PhysicalParameters physicalParams)
 	{
 		super(instrument, physicalParams);
 	}
@@ -38,8 +39,18 @@ public class DefaultInstrumentCalculator extends InstrumentCalculator
 			BoreSectionCalculator boreSectionCalculator,
 			PhysicalParameters physicalParams)
 	{
-		super(instrument, mouthpieceCalculator, terminationCalculator, holeCalculator,
-				boreSectionCalculator, physicalParams);
+		super(instrument, mouthpieceCalculator, terminationCalculator,
+				holeCalculator, boreSectionCalculator, physicalParams);
+	}
+
+	public DefaultInstrumentCalculator(
+			MouthpieceCalculator mouthpieceCalculator,
+			TerminationCalculator terminationCalculator,
+			HoleCalculator holeCalculator,
+			BoreSectionCalculator boreSectionCalculator)
+	{
+		super(mouthpieceCalculator, terminationCalculator, holeCalculator,
+				boreSectionCalculator);
 	}
 
 	@Override
@@ -51,15 +62,17 @@ public class DefaultInstrumentCalculator extends InstrumentCalculator
 		// and multiply by transfer matrices of each hole and bore segment
 		// from the termination up to and including the mouthpiece.
 
-		StateVector sv = terminationCalculator.calcStateVector( instrument.getTermination(), waveNumber, params );
+		StateVector sv = terminationCalculator.calcStateVector(
+				instrument.getTermination(), waveNumber, params);
 		TransferMatrix tm;
 		for (int componentNr = instrument.getComponents().size() - 1; componentNr >= 0; --componentNr)
 		{
-			ComponentInterface component = instrument.getComponents().get(componentNr);
+			ComponentInterface component = instrument.getComponents().get(
+					componentNr);
 			if (component instanceof BoreSection)
 			{
-				tm = boreSectionCalculator.calcTransferMatrix((BoreSection) component,
-						waveNumber, params);
+				tm = boreSectionCalculator.calcTransferMatrix(
+						(BoreSection) component, waveNumber, params);
 			}
 			else if (component instanceof Hole)
 			{
@@ -69,8 +82,8 @@ public class DefaultInstrumentCalculator extends InstrumentCalculator
 			else
 			{
 				assert component instanceof Mouthpiece;
-				tm = mouthpieceCalculator.calcTransferMatrix((Mouthpiece) component,
-						waveNumber, params);
+				tm = mouthpieceCalculator.calcTransferMatrix(
+						(Mouthpiece) component, waveNumber, params);
 			}
 			sv = tm.multiply(sv);
 		}
@@ -79,7 +92,8 @@ public class DefaultInstrumentCalculator extends InstrumentCalculator
 		double headRadius = instrument.getMouthpiece().getBoreDiameter() / 2.;
 		double characteristic_impedance = params.calcZ0(headRadius);
 		Complex reflectance = sv.Reflectance(characteristic_impedance);
-		int reflectanceMultiplier = mouthpieceCalculator.calcReflectanceMultiplier();
+		int reflectanceMultiplier = mouthpieceCalculator
+				.calcReflectanceMultiplier();
 
 		Complex result = reflectance.multiply(reflectanceMultiplier);
 
@@ -103,15 +117,17 @@ public class DefaultInstrumentCalculator extends InstrumentCalculator
 		// and multiply by transfer matrices of each hole and bore segment
 		// from the termination up to, but not including the mouthpiece.
 
-		StateVector sv = terminationCalculator.calcStateVector( instrument.getTermination(), waveNumber, params );
+		StateVector sv = terminationCalculator.calcStateVector(
+				instrument.getTermination(), waveNumber, params);
 		TransferMatrix tm;
 		for (int componentNr = instrument.getComponents().size() - 1; componentNr > 0; --componentNr)
 		{
-			ComponentInterface component = instrument.getComponents().get(componentNr);
+			ComponentInterface component = instrument.getComponents().get(
+					componentNr);
 			if (component instanceof BoreSection)
 			{
-				tm = boreSectionCalculator.calcTransferMatrix((BoreSection) component,
-						waveNumber, params);
+				tm = boreSectionCalculator.calcTransferMatrix(
+						(BoreSection) component, waveNumber, params);
 			}
 			else if (component instanceof Hole)
 			{
@@ -121,14 +137,15 @@ public class DefaultInstrumentCalculator extends InstrumentCalculator
 			else
 			{
 				assert component instanceof Mouthpiece;
-				tm = mouthpieceCalculator.calcTransferMatrix((Mouthpiece) component,
-						waveNumber, params);
+				tm = mouthpieceCalculator.calcTransferMatrix(
+						(Mouthpiece) component, waveNumber, params);
 			}
 			sv = tm.multiply(sv);
 		}
 		Complex Zresonator = sv.Impedance();
 
-		Complex Zwindow = mouthpieceCalculator.calcZ(instrument.getMouthpiece(), freq, params);
+		Complex Zwindow = mouthpieceCalculator.calcZ(
+				instrument.getMouthpiece(), freq, params);
 
 		return Zresonator.add(Zwindow);
 	}
@@ -136,14 +153,15 @@ public class DefaultInstrumentCalculator extends InstrumentCalculator
 	@Override
 	public double calcGain(double freq, Complex Z)
 	{
-        // Magnitude of loop gain for a given note, after Auvray, 2012.
+		// Magnitude of loop gain for a given note, after Auvray, 2012.
 		// Loop gain G = gainFactor * freq * rho / abs(Z).
-		
+
 		Double G0 = instrument.getMouthpiece().getGainFactor();
-		if ( G0 == null ) {
+		if (G0 == null)
+		{
 			return 1.0;
 		}
-		double gain = ( G0  * freq * params.getRho() ) / Z.abs();
+		double gain = (G0 * freq * params.getRho()) / Z.abs();
 		return gain;
 	}
 
@@ -157,8 +175,8 @@ public class DefaultInstrumentCalculator extends InstrumentCalculator
 		double freqEnd = targetFreq * freqRange;
 		ReflectanceSpectrum spectrum = new ReflectanceSpectrum();
 
-		spectrum.calcReflectance(this.instrument, this, freqStart, freqEnd, numberOfFrequencies,
-				fingering, params);
+		spectrum.calcReflectance(this.instrument, this, freqStart, freqEnd,
+				numberOfFrequencies, fingering, params);
 		playedFreq = spectrum.getClosestMinimumFrequency(targetFreq);
 
 		return playedFreq;

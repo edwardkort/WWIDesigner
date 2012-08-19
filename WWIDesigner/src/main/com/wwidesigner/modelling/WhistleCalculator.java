@@ -10,11 +10,18 @@ import com.wwidesigner.util.PhysicalParameters;
 public class WhistleCalculator extends DefaultInstrumentCalculator
 {
 
-	public WhistleCalculator(Instrument instrument, PhysicalParameters physicalParams)
+	public WhistleCalculator(Instrument instrument,
+			PhysicalParameters physicalParams)
 	{
 		super(instrument, new SimpleFippleMouthpieceCalculator(),
-				new FlangedEndCalculator(),
-				new WhistleHoleCalculator(), new DefaultBoreSectionCalculator(),
-				physicalParams);
+				new FlangedEndCalculator(), new WhistleHoleCalculator(),
+				new DefaultBoreSectionCalculator(), physicalParams);
+	}
+
+	public WhistleCalculator()
+	{
+		super(new SimpleFippleMouthpieceCalculator(),
+				new FlangedEndCalculator(), new WhistleHoleCalculator(),
+				new DefaultBoreSectionCalculator());
 	}
 }

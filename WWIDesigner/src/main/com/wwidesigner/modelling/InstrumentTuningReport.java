@@ -27,9 +27,13 @@ public class InstrumentTuningReport
 {
 	public void printReport(String instrumentFile, String tuningFile)
 	{
+		printReport( instrumentFile, tuningFile, 28.2 );
+	}
+
+	public void printReport(String instrumentFile, String tuningFile, double temperature)
+	{
 		try
 		{
-			double temperature = 28.2;
 			PhysicalParameters params = new PhysicalParameters(temperature, TemperatureType.C);
 			Instrument instrument = getInstrumentFromXml(instrumentFile);
 			InstrumentCalculator calculator = new WhistleCalculator(instrument,params);
@@ -46,10 +50,15 @@ public class InstrumentTuningReport
 			int nrMinPredictions = 0;		// Number of predictions of fmin.
 
 			pw.println(instrumentFile);
-			pw.println("Note  Nominal   fmin   Pred fmin   cents    fmax   Pred fmax   cents");
+			pw.println("Note Name       Nominal   fmin   Pred fmin   cents    fmax   Pred fmax   cents");
 			for ( int i = 0; i < noteList.size(); ++ i )
 			{
 				Fingering fingering = tuning.getFingering().get(i);
+				String name = " ";
+				if ( fingering.getNote().getName() != null )
+				{
+					name = fingering.getNote().getName();
+				}
 				Double fnom = fingering.getNote().getFrequency();
 				Double actualMax = fingering.getNote().getFrequencyMax();
 				Double actualMin = fingering.getNote().getFrequencyMin();
@@ -85,7 +94,7 @@ public class InstrumentTuningReport
 						fmin = 0.0;
 					}
 					double cents;
-					pw.printf("%2d   %7.2f  %7.2f   %7.2f", i, fnom, actualMin, fmin);
+					pw.printf("%2d   %-8s  %7.2f  %7.2f   %7.2f", i, name, fnom, actualMin, fmin);
 					if ( actualMin != null && fmin > 0.0 )
 					{
 						cents = Note.cents(actualMin, fmin);

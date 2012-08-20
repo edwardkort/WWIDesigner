@@ -21,5 +21,7 @@ public class PrintTuningReports
 				"com/wwidesigner/optimization/example/NoHoleNAF1Tuning.xml");
 		reporter.printReport("com/wwidesigner/optimization/example/1HoleNAF1.xml",
 				"com/wwidesigner/optimization/example/1HoleNAF1Tuning.xml");
+		reporter.printReport("com/wwidesigner/optimization/example/LightG6HoleNAF.xml",
+				"com/wwidesigner/optimization/example/LightG6HoleNAFTuning.xml", 24);
 	}
 }

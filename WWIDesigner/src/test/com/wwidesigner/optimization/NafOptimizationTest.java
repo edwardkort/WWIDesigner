@@ -352,9 +352,9 @@ public class NafOptimizationTest
 	public static void main(String[] args)
 	{
 		NafOptimizationTest test = new NafOptimizationTest();
-		test.testNoHoleOptimization();
+//		test.testNoHoleOptimization();
 //		test.testNoHoleTaperOptimization();
 //		test.test1HoleOptimization();
-//		test.test6HoleOptimization();
+		test.test6HoleOptimization();
 	}
 }

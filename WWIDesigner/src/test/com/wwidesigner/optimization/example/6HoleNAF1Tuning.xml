@@ -137,7 +137,7 @@
 		<openHole>true</openHole>
 		<openHole>true</openHole>
 	</fingering>
-	<fingering>
+<!-- 	<fingering>
 		<note>
 			<name>A#5</name>
 			<frequency>932.33</frequency>
@@ -148,7 +148,7 @@
 		<openHole>false</openHole>
 		<openHole>false</openHole>
 		<openHole>false</openHole>
-	</fingering>
+	</fingering> -->
 	<fingering>
 		<note>
 			<name>B5</name>

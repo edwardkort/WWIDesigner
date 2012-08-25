@@ -56,12 +56,13 @@ public class BasicImpedanceOptimizationFunction implements
 		double norm = 0.;
 		for (Fingering target : fingeringTargets)
 		{
-			Complex impedance = optimizer.getInstrumentCalculator().calcZ(target);
+			Complex impedance = optimizer.getInstrumentCalculator().calcZ(
+					target);
 			// we need a way to display this error term during the optimization
 			// (one per target)
 			// as well as the error norm
-			double error = Math.abs(impedance.getImaginary());//impedance.abs();
-			norm += error;
+			double error = Math.abs(impedance.getImaginary());// impedance.abs();
+			norm += error * error;
 		}
 		return norm;
 	}

@@ -367,6 +367,11 @@ public class Instrument implements InstrumentInterface
 		}
 
 		mouthpiece.setHeadspace(headspace);
+		
+		// Move the first borepoint to top of TSH
+//		BorePoint firstPoint = borePointList.getFirst();
+//		double newPosition = firstPoint.getBorePosition() - mouthpiece.getFipple().getWindowLength();
+//		firstPoint.setBorePosition(newPosition);
 	}
 
 	protected void processPosition(SortedPositionList<BorePoint> borePointList,

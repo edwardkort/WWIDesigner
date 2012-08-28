@@ -10,7 +10,6 @@ import com.wwidesigner.geometry.Instrument;
 import com.wwidesigner.geometry.bind.GeometryBindFactory;
 import com.wwidesigner.modelling.WhistleCalculator;
 import com.wwidesigner.modelling.PlayingRangeSpectrum;
-import com.wwidesigner.note.Fingering;
 import com.wwidesigner.note.Tuning;
 import com.wwidesigner.note.bind.NoteBindFactory;
 import com.wwidesigner.util.BindFactory;
@@ -23,9 +22,9 @@ import com.wwidesigner.util.PhysicalParameters;
  */
 public class NafImpedancePlot
 {
-	protected static final int NoteIndex = 10;			// Index of fingering to plot.
-	protected static final double FreqRange = 2.;		// Plot one octave above and below.
-	protected static final int NumberOfPoints = 600;	// Number of points to plot.
+	// List of note indexes in the list of fingerings to plot.
+	protected static final int[] NoteIndexList = {9,10,11,12};
+	protected static final double FreqRange = 1.5;		// Plot a fifth above and below.
 
 	/**
 	 * @param args
@@ -45,35 +44,12 @@ public class NafImpedancePlot
 			Instrument instrument = plot.getInstrumentFromXml(inputInstrumentXML);
 			InstrumentCalculator calculator = new WhistleCalculator(instrument,params);
 			Tuning tuning = plot.getTuningFromXml(inputTuningXML);
-			Fingering fingering = tuning.getFingering().get(NoteIndex);
 
-			instrument.convertToMetres();
-			instrument.setOpenHoles(fingering);
-
-			double targetFreq;
-			if ( fingering.getNote().getFrequency() != null )
+			for ( int noteIndex : NoteIndexList )
 			{
-				targetFreq = fingering.getNote().getFrequency();
+				PlayingRangeSpectrum spectrum = new PlayingRangeSpectrum();
+				spectrum.plot(calculator, tuning.getFingering().get(noteIndex), FreqRange);
 			}
-			else if ( fingering.getNote().getFrequencyMax() != null )
-			{
-				targetFreq = fingering.getNote().getFrequencyMax();
-			}
-			else {
-				targetFreq = 1000.0;
-			}
-			double freqStart = targetFreq / FreqRange;
-			double freqEnd = targetFreq * FreqRange;
-			if ( freqEnd > 4000.0 )
-			{
-				freqEnd = 4000.0;
-			}
-			PlayingRangeSpectrum spectrum = new PlayingRangeSpectrum();
-
-			spectrum.calcImpedance(instrument, calculator, freqStart, freqEnd,
-					NumberOfPoints, fingering);
-			spectrum.plotImpedanceSpectrum();
-			spectrum.plotPlayingRange();
 		}
 		catch (Exception e)
 		{

@@ -6,9 +6,6 @@ package com.wwidesigner.optimization;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.OutputStreamWriter;
 import java.util.List;
 
 import org.junit.Test;
@@ -17,14 +14,7 @@ import com.wwidesigner.geometry.BorePoint;
 import com.wwidesigner.geometry.Hole;
 import com.wwidesigner.geometry.Instrument;
 import com.wwidesigner.geometry.PositionInterface;
-import com.wwidesigner.geometry.bind.GeometryBindFactory;
 import com.wwidesigner.modelling.GordonCalculator;
-import com.wwidesigner.modelling.InstrumentCalculator;
-import com.wwidesigner.note.Fingering;
-import com.wwidesigner.note.InstrumentTuningTable;
-import com.wwidesigner.note.Tuning;
-import com.wwidesigner.note.bind.NoteBindFactory;
-import com.wwidesigner.util.BindFactory;
 import com.wwidesigner.util.Constants.TemperatureType;
 import com.wwidesigner.util.PhysicalParameters;
 import com.wwidesigner.util.SortedPositionList;
@@ -33,107 +23,23 @@ import com.wwidesigner.util.SortedPositionList;
  * @author kort
  * 
  */
-public class NafOptimizationTest
+public class NafOptimizationTest extends AbstractOptimizationTest
 {
-	protected String inputInstrumentXML;
-	protected String inputTuningXML;
-	protected double[] lowerBound;
-	protected double[] upperBound;
-	protected InstrumentOptimizer.OptimizerType optimizerType;
-	protected int numberOfInterpolationPoints;
-
-	// Set this to true to use SimpleHolePositionAndDiameterOptimizer and the
-	// associated bounds.
-	// Set this to false to use HolePositionAndDiameterOptimizer and the
-	// associated bounds.
-	protected static boolean useSimpleOptimizer = true;
-
-	/**
-	 * Complete workflow for optimizing an XML-defined instrument with the
-	 * InstrumentOptimizer2 algorithm.
-	 * 
-	 * @return An Instrument object after optimization, with all dimensions in
-	 *         the original units.
-	 * @throws Exception
-	 */
-	public Instrument doInstrumentOptimization(String title) throws Exception
-	{
-		PhysicalParameters params = new PhysicalParameters(22.22,
-				TemperatureType.C);
-		Instrument instrument = getInstrumentFromXml();
-		InstrumentCalculator calculator = new GordonCalculator(instrument,
-				params);
-		instrument.convertToMetres();
-
-		Tuning tuning = getTuningFromXml();
-
-		InstrumentOptimizer optimizer;
-		if (useSimpleOptimizer)
-		{
-			optimizer = new SimpleHolePositionAndDiameterOptimizer(instrument,
-					calculator, tuning);
-		}
-		else
-		{
-			optimizer = new HolePosAndDiamImpedanceOptimizer(instrument,
-					calculator, tuning);
-		}
-		// InstrumentOptimizer optimizer = new
-		// TuningHolePositionAndDiameterOptimizer(
-		// instrument, tuning);
-		optimizer.setBaseOptimizer(optimizerType, numberOfInterpolationPoints);
-		setOptimizationBounds(optimizer);
-
-		showTuning(instrument, calculator, tuning, title
-				+ ", before optimization");
-
-		optimizer.optimizeInstrument();
-		showTuning(instrument, calculator, tuning, title
-				+ ", after optimization");
-
-		// Convert back to the input unit-of-measure values
-		instrument.convertToLengthType();
-
-		BindFactory bindFactory = GeometryBindFactory.getInstance();
-		bindFactory
-				.marshalToXml(instrument, new OutputStreamWriter(System.out));
-
-		// The optimizer modifies the input Instrument instance
-		return instrument;
-	}
-
-	public void showTuning(Instrument instrument,
-			InstrumentCalculator calculator, Tuning tuning, String title)
-	{
-		double maxFreqRatio = 2.;
-		// set accuracy to 0.1 cents
-		int numberOfFrequencies = (int) (10. * InstrumentTuningTable
-				.getCents(maxFreqRatio));
-
-		InstrumentTuningTable table = new InstrumentTuningTable(title);
-		// instrument.updateComponents();
-
-		for (Fingering fingering : tuning.getFingering())
-		{
-			Double playedFrequency = calculator.getPlayedFrequency(fingering,
-					maxFreqRatio, numberOfFrequencies);
-			table.addTuning(fingering, playedFrequency);
-		}
-
-		table.showTuning();
-	}
 
 	@Test
 	public final void testNoHoleOptimization()
 	{
 		try
 		{
-			inputInstrumentXML = "com/wwidesigner/optimization/example/NoHoleNAF1.xml";
-			inputTuningXML = "com/wwidesigner/optimization/example/NoHoleNAF1Tuning.xml";
-			lowerBound = new double[] { 0.25 };
-			upperBound = new double[] { 0.4 };
-			optimizerType = InstrumentOptimizer.OptimizerType.CMAESOptimizer;
-			numberOfInterpolationPoints = 2;
+			setInputInstrumentXML("com/wwidesigner/optimization/example/NoHoleNAF1.xml");
+			setInputTuningXML("com/wwidesigner/optimization/example/NoHoleNAF1Tuning.xml");
+			setParams(new PhysicalParameters(22.22, TemperatureType.C));
+			setCalculator(new GordonCalculator());
+			setOptimizerClass(SimpleHolePositionAndDiameterOptimizer.class);
+			setLowerBound(new double[] { 0.25 });
+			setUpperBound(new double[] { 0.4 });
+			setOptimizerType(InstrumentOptimizer.OptimizerType.CMAESOptimizer);
+			setNumberOfInterpolationPoints(2);
 
 			Instrument optimizedInstrument = doInstrumentOptimization("No-hole");
 
@@ -156,12 +62,15 @@ public class NafOptimizationTest
 	{
 		try
 		{
-			inputInstrumentXML = "com/wwidesigner/optimization/example/NoHoleTaperNAF.xml";
-			inputTuningXML = "com/wwidesigner/optimization/example/NoHoleTaperNAFTuning.xml";
-			lowerBound = new double[] { 0.3 };
-			upperBound = new double[] { 0.6 };
-			optimizerType = InstrumentOptimizer.OptimizerType.CMAESOptimizer;
-			numberOfInterpolationPoints = 2;
+			setInputInstrumentXML("com/wwidesigner/optimization/example/NoHoleTaperNAF.xml");
+			setInputTuningXML("com/wwidesigner/optimization/example/NoHoleTaperNAFTuning.xml");
+			setParams(new PhysicalParameters(22.22, TemperatureType.C));
+			setCalculator(new GordonCalculator());
+			setOptimizerClass(SimpleHolePositionAndDiameterOptimizer.class);
+			setLowerBound(new double[] { 0.3 });
+			setUpperBound(new double[] { 0.6 });
+			setOptimizerType(InstrumentOptimizer.OptimizerType.CMAESOptimizer);
+			setNumberOfInterpolationPoints(2);
 
 			Instrument optimizedInstrument = doInstrumentOptimization("No-hole");
 
@@ -184,15 +93,18 @@ public class NafOptimizationTest
 	{
 		try
 		{
-			inputInstrumentXML = "com/wwidesigner/optimization/example/G7HoleNAF.xml";
-			inputTuningXML = "com/wwidesigner/optimization/example/G7HoleNAFTuning.xml";
-			lowerBound = new double[] { 0.25, 0.03, 0.04, 0.06, 0.075, 0.09,
+			setInputInstrumentXML("com/wwidesigner/optimization/example/G7HoleNAF.xml");
+			setInputTuningXML("com/wwidesigner/optimization/example/G7HoleNAFTuning.xml");
+			setParams(new PhysicalParameters(22.22, TemperatureType.C));
+			setCalculator(new GordonCalculator());
+			setOptimizerClass(SimpleHolePositionAndDiameterOptimizer.class);
+			setLowerBound(new double[] { 0.25, 0.03, 0.04, 0.06, 0.075, 0.09,
 					0.1, 0.001, 0.003, 0.003, 0.003, 0.003, 0.003, 0.0015,
-					0.0015 };
-			upperBound = new double[] { 0.5, 0.15, 0.18, 0.21, 0.24, 0.27, 0.3,
-					0.3, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02 };
-			optimizerType = InstrumentOptimizer.OptimizerType.BOBYQAOptimizer;
-			numberOfInterpolationPoints = 30;
+					0.0015 });
+			setUpperBound(new double[] { 0.5, 0.15, 0.18, 0.21, 0.24, 0.27, 0.3,
+					0.3, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02 });
+			setOptimizerType(InstrumentOptimizer.OptimizerType.BOBYQAOptimizer);
+			setNumberOfInterpolationPoints(30);
 
 			Instrument optimizedInstrument = doInstrumentOptimization("7-hole taper");
 
@@ -215,15 +127,17 @@ public class NafOptimizationTest
 	{
 		try
 		{
-			inputInstrumentXML = "com/wwidesigner/optimization/example/G7HoleNAF.xml";
-			inputTuningXML = "com/wwidesigner/optimization/example/G7HoleNAFTuning.xml";
-			lowerBound = new double[] { 0.2, 0.012, 0.012, 0.012, 0.012, 0.012,
-					0.0005, 0.05, 0.1, 0.1, 0.1, 0.1, 0.1, 0.05, 0.05 };
-			upperBound = new double[] { 0.5, 0.05, 0.05, 0.1, 0.05, 0.05,
-					0.003, 0.2, 0.7, 0.7, 0.7, 0.7, 0.7, 0.4, 0.4 };
-			optimizerType = InstrumentOptimizer.OptimizerType.BOBYQAOptimizer;
-			numberOfInterpolationPoints = 30;
-			useSimpleOptimizer = false;
+			setInputInstrumentXML("com/wwidesigner/optimization/example/G7HoleNAF.xml");
+			setInputTuningXML("com/wwidesigner/optimization/example/G7HoleNAFTuning.xml");
+			setParams(new PhysicalParameters(22.22, TemperatureType.C));
+			setCalculator(new GordonCalculator());
+			setOptimizerClass(HolePosAndDiamImpedanceOptimizer.class);
+			setLowerBound(new double[] { 0.2, 0.012, 0.012, 0.012, 0.012, 0.012,
+					0.0005, 0.05, 0.1, 0.1, 0.1, 0.1, 0.1, 0.05, 0.05 });
+			setUpperBound(new double[] { 0.5, 0.05, 0.05, 0.1, 0.05, 0.05,
+					0.003, 0.2, 0.7, 0.7, 0.7, 0.7, 0.7, 0.4, 0.4 });
+			setOptimizerType(InstrumentOptimizer.OptimizerType.BOBYQAOptimizer);
+			setNumberOfInterpolationPoints(30);
 
 			Instrument optimizedInstrument = doInstrumentOptimization("7-hole taper2");
 
@@ -239,10 +153,6 @@ public class NafOptimizationTest
 		{
 			fail(e.getMessage());
 		}
-		finally
-		{
-			useSimpleOptimizer = true;
-		}
 	}
 
 	@Test
@@ -250,20 +160,15 @@ public class NafOptimizationTest
 	{
 		try
 		{
-			inputInstrumentXML = "com/wwidesigner/optimization/example/1HoleNAF1.xml";
-			inputTuningXML = "com/wwidesigner/optimization/example/1HoleNAF1Tuning.xml";
-			if (useSimpleOptimizer)
-			{
-				lowerBound = new double[] { 0.20, 0.1, 0.005 };
-				upperBound = new double[] { 0.4, 0.3, 0.02 };
-			}
-			else
-			{
-				lowerBound = new double[] { 0.20, 0.05, 0.3 };
-				upperBound = new double[] { 0.4, 0.15, 0.4 };
-			}
-			optimizerType = InstrumentOptimizer.OptimizerType.BOBYQAOptimizer;
-			numberOfInterpolationPoints = 6;
+			setInputInstrumentXML("com/wwidesigner/optimization/example/1HoleNAF1.xml");
+			setInputTuningXML("com/wwidesigner/optimization/example/1HoleNAF1Tuning.xml");
+			setParams(new PhysicalParameters(22.22, TemperatureType.C));
+			setCalculator(new GordonCalculator());
+			setOptimizerClass(HolePosAndDiamImpedanceOptimizer.class);
+			setLowerBound(new double[] { 0.20, 0.05, 0.3 });
+			setUpperBound(new double[] { 0.4, 0.15, 0.4 });
+			setOptimizerType(InstrumentOptimizer.OptimizerType.BOBYQAOptimizer);
+			setNumberOfInterpolationPoints(6);
 
 			Instrument optimizedInstrument = doInstrumentOptimization("One-hole");
 
@@ -306,24 +211,17 @@ public class NafOptimizationTest
 	{
 		try
 		{
-			inputInstrumentXML = "com/wwidesigner/optimization/example/6HoleNAF1.xml";
-			inputTuningXML = "com/wwidesigner/optimization/example/6HoleNAF1Tuning.xml";
-			if (useSimpleOptimizer)
-			{
-				lowerBound = new double[] { 0.25, 0.03, 0.04, 0.06, 0.075,
-						0.09, 0.1, 0.003, 0.003, 0.003, 0.003, 0.003, 0.003 };
-				upperBound = new double[] { 0.5, 0.15, 0.18, 0.21, 0.24, 0.27,
-						0.3, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02 };
-			}
-			else
-			{
-				lowerBound = new double[] { 0.28, 0.01, 0.01, 0.01, 0.01, 0.01,
-						0.05, 0.1, 0.15, 0.15, 0.15, 0.15, 0.15 };
-				upperBound = new double[] { 0.5, 0.03, 0.03, 0.035, 0.035,
-						0.035, 0.15, 0.5, 0.5, 0.5, 0.5, 0.5, 0.6 };
-			}
-			optimizerType = InstrumentOptimizer.OptimizerType.BOBYQAOptimizer;
-			numberOfInterpolationPoints = 26;
+			setInputInstrumentXML("com/wwidesigner/optimization/example/6HoleNAF1.xml");
+			setInputTuningXML("com/wwidesigner/optimization/example/6HoleNAF1Tuning.xml");
+			setParams(new PhysicalParameters(22.22, TemperatureType.C));
+			setCalculator(new GordonCalculator());
+			setOptimizerClass(HolePosAndDiamImpedanceOptimizer.class);
+			setLowerBound(new double[] { 0.28, 0.01, 0.01, 0.01, 0.01, 0.01,
+						0.05, 0.1, 0.15, 0.15, 0.15, 0.15, 0.15 });
+			setUpperBound(new double[] { 0.5, 0.03, 0.03, 0.035, 0.035,
+						0.035, 0.15, 0.5, 0.5, 0.5, 0.5, 0.5, 0.6 });
+			setOptimizerType(InstrumentOptimizer.OptimizerType.BOBYQAOptimizer);
+			setNumberOfInterpolationPoints(26);
 
 			Instrument optimizedInstrument = doInstrumentOptimization("Six-hole");
 
@@ -371,61 +269,13 @@ public class NafOptimizationTest
 		}
 	}
 
-	protected Instrument getInstrumentFromXml() throws Exception
-	{
-		BindFactory geometryBindFactory = GeometryBindFactory.getInstance();
-		File inputFile = getInputFile(inputInstrumentXML, geometryBindFactory);
-		Instrument instrument = (Instrument) geometryBindFactory.unmarshalXml(
-				inputFile, true);
-		instrument.updateComponents();
-
-		return instrument;
-	}
-
-	protected Tuning getTuningFromXml() throws Exception
-	{
-		BindFactory noteBindFactory = NoteBindFactory.getInstance();
-		File inputFile = getInputFile(inputTuningXML, noteBindFactory);
-		Tuning tuning = (Tuning) noteBindFactory.unmarshalXml(inputFile, true);
-
-		return tuning;
-	}
-
-	protected void setOptimizationBounds(InstrumentOptimizer optimizer)
-	{
-		optimizer.setLowerBnd(lowerBound);
-		optimizer.setUpperBnd(upperBound);
-	}
-
-	/**
-	 * This approach for get the input File is based on finding it in the
-	 * classpath. The actual application will use an explicit file path - this
-	 * approach will be unnecessary.
-	 * 
-	 * @param fileName
-	 *            expressed as a package path.
-	 * @param bindFactory
-	 *            that manages the elements in the file.
-	 * @return A file representation of the fileName, as found somewhere in the
-	 *         classpath.
-	 * @throws FileNotFoundException
-	 */
-	protected File getInputFile(String fileName, BindFactory bindFactory)
-			throws FileNotFoundException
-	{
-		String inputPath = bindFactory.getPathFromName(fileName);
-		File inputFile = new File(inputPath);
-
-		return inputFile;
-	}
-
 	public static void main(String[] args)
 	{
 		NafOptimizationTest test = new NafOptimizationTest();
-		// test.testNoHoleOptimization();
-		// test.testNoHoleTaperOptimization();
-		// test.test1HoleOptimization();
-		// test.test6HoleOptimization();
+//		test.testNoHoleOptimization();
+//		test.testNoHoleTaperOptimization();
+//		test.test1HoleOptimization();
+//		test.test6HoleOptimization();
 //		test.test7HoleTaperOptimization();
 		test.test7HoleTaperOptimization2();
 	}

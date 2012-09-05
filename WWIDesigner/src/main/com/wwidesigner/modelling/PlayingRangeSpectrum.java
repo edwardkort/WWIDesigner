@@ -16,10 +16,12 @@ import org.apache.commons.math3.complex.Complex;
 
 import com.jidesoft.chart.Chart;
 import com.jidesoft.chart.Legend;
+import com.jidesoft.chart.PointShape;
 import com.jidesoft.chart.model.DefaultChartModel;
 import com.jidesoft.chart.style.ChartStyle;
-import com.wwidesigner.geometry.InstrumentInterface;
 import com.wwidesigner.note.Fingering;
+import com.wwidesigner.note.Note;
+import com.wwidesigner.note.Tuning;
 
 /**
  * Representation of a complex spectrum, along with information about its
@@ -27,132 +29,78 @@ import com.wwidesigner.note.Fingering;
  */
 public class PlayingRangeSpectrum
 {
-
+	protected String mName;
+	protected List<Double> actuals;
 	/**
 	 * Holds impedance spectrum (created by calcImpedance()).
 	 */
-	private Map<Double, Complex> mSpectrum;
+	protected Map<Double, Complex> mImpedance;
 
 	/**
-	 * Holds impedance minima.
+	 * Holds loop gain spectrum (created by calcImpedance()).
 	 */
-	private List<Double> mMinima;
-
-	/**
-	 * Holds impedance maxima.
-	 */
-	private List<Double> mMaxima;
+	protected Map<Double, Double> mGain;
 
 	/**
 	 * Add or replace a point in the spectrum.
 	 */
-	public void setDataPoint(double frequency, Complex impedance)
+	public void setDataPoint(double frequency, Complex impedance, Double loopGain)
 	{
-		mSpectrum.put(frequency, impedance);
+		mImpedance.put(frequency, impedance);
+		mGain.put(frequency, loopGain);
 	}
 
-	public void calcImpedance(InstrumentInterface flute, 
-			InstrumentCalculator calculator,
-			double freqStart, double freqEnd, int nfreq, Fingering fingering)
+	public void calcImpedance(InstrumentCalculator calculator, Fingering fingering,
+			double freqStart, double freqEnd, int nfreq)
 	{
+		Note myNote = fingering.getNote();
+		if ( myNote.getName() != null )
+		{
+			mName = myNote.getName();
+		}
+		else if ( calculator.instrument.getName() != null )
+		{
+			mName = calculator.instrument.getName();
+		}
+		else 
+		{
+			mName = "Instrument";
+		}
+		actuals = new ArrayList<Double>();
+
+		if ( myNote.getFrequencyMin() != null )
+		{
+			actuals.add(myNote.getFrequencyMin());
+		}
+		if ( myNote.getFrequencyMax() != null )
+		{
+			actuals.add(myNote.getFrequencyMax());
+		}
+		if ( actuals.size() < 2 && myNote.getFrequency() != null )
+		{
+			actuals.add(myNote.getFrequency());
+		}
 		calculator.setFingering(fingering);
-		mSpectrum = new TreeMap<Double, Complex>();
-		mMinima = new ArrayList<Double>();
-		mMaxima = new ArrayList<Double>();
-		Complex prevZ = Complex.ZERO;
-		double absPrevPrevZ = 0;
-		double prevFreq = 0;
+		mImpedance = new TreeMap<Double, Complex>();
+		mGain = new TreeMap<Double, Double>();
 		double freqStep = (freqEnd - freqStart) / (nfreq - 1);
 		for (int i = 0; i < nfreq; ++i)
 		{
 			double freq = freqStart + i * freqStep;
 			Complex zAc = calculator.calcZ(freq);
-			double absZAc = zAc.abs();
-
-			setDataPoint(freq, zAc);
-
-			double absPrevZ = prevZ.abs();
-
-			if ((i >= 2) && (absPrevZ < absZAc) && (absPrevZ < absPrevPrevZ))
-			{
-				// We have found an impedance minimum.
-				getMinima().add(prevFreq);
-			}
-
-			if ((i >= 2) && (absPrevZ > absZAc) && (absPrevZ > absPrevPrevZ))
-			{
-				// We have found an impedance maximum.
-				getMaxima().add(prevFreq);
-			}
-
-			absPrevPrevZ = absPrevZ;
-			prevZ = zAc;
-			prevFreq = freq;
+			Double gain = calculator.calcGain(freq, zAc);
+			setDataPoint(freq, zAc, gain );
 		}
-	}
-
-	public List<Double> getMaxima()
-	{
-		return mMaxima;
-	}
-
-	public void setMaxima(List<Double> maxima)
-	{
-		mMaxima = maxima;
-	}
-
-	public List<Double> getMinima()
-	{
-		return mMinima;
-	}
-
-	public void setMinima(List<Double> minima)
-	{
-		mMinima = minima;
 	}
 
 	public Map<Double, Complex> getSpectrum()
 	{
-		return mSpectrum;
+		return mImpedance;
 	}
 
 	public void setSpectrum(Map<Double, Complex> spectrum)
 	{
-		mSpectrum = spectrum;
-	}
-
-	public Double getClosestMinimumFrequency(double frequency)
-	{
-		Double closestFreq = null;
-		double deviation = Double.MAX_VALUE;
-		for (double minVal : mMinima)
-		{
-			double thisDeviation = Math.abs(frequency - minVal);
-			if (thisDeviation < deviation)
-			{
-				closestFreq = minVal;
-				deviation = thisDeviation;
-			}
-		}
-
-		return closestFreq;
-	}
-
-	public Double getClosestMaximumFrequency(double frequency)
-	{
-		Double closestFreq = null;
-		double deviation = Double.MAX_VALUE;
-		for (double maxVal : mMaxima)
-		{
-			double thisDeviation = Math.abs(frequency - maxVal);
-			if (thisDeviation < deviation)
-			{
-				closestFreq = maxVal;
-				deviation = thisDeviation;
-			}
-		}
-
-		return closestFreq;
+		mImpedance = spectrum;
 	}
 
 	public void plotImpedanceSpectrum()
@@ -161,25 +109,25 @@ public class PlayingRangeSpectrum
 		{
 			public void run()
 			{
-				JFrame frame = new JFrame("Impedance Spectrum");
+				JFrame frame = new JFrame("Impedance Spectrum for " + mName);
 				frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 				frame.setSize(800, 600);
-				DefaultChartModel model1 = new DefaultChartModel("Real");
-				DefaultChartModel model2 = new DefaultChartModel("Imaginary");
-				for (Map.Entry<Double, Complex> point : mSpectrum.entrySet())
+				DefaultChartModel modelReal = new DefaultChartModel("Real");
+				DefaultChartModel modelImag = new DefaultChartModel("Imaginary");
+				for (Map.Entry<Double, Complex> point : mImpedance.entrySet())
 				{
 					double x = point.getKey();
 					double r = point.getValue().getReal();
 					double i = point.getValue().getImaginary();
-					model1.addPoint(x, r);
-					model2.addPoint(x, i);
+					modelReal.addPoint(x, r);
+					modelImag.addPoint(x, i);
 				}
 				Chart chart = new Chart();
 				chart.setAutoRanging(true);
-				ChartStyle style1 = new ChartStyle(Color.blue, false, true);
-				ChartStyle style2 = new ChartStyle(Color.red, false, true);
-				chart.addModel(model1, style1);
-				chart.addModel(model2, style2);
+				ChartStyle styleReal = new ChartStyle(Color.blue, false, true);
+				ChartStyle styleImag = new ChartStyle(Color.red, false, true);
+				chart.addModel(modelReal, styleReal);
+				chart.addModel(modelImag, styleImag);
 				chart.getXAxis().setLabel("Frequency");
 				chart.getYAxis().setLabel("Impedance");
 				chart.setTitle("Impedance Spectrum");
@@ -198,29 +146,57 @@ public class PlayingRangeSpectrum
 		{
 			public void run()
 			{
-				JFrame frame = new JFrame("Playing Ranges");
+				JFrame frame = new JFrame("Playing Ranges for " + mName);
 				frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 				frame.setSize(800, 600);
-				DefaultChartModel model1 = new DefaultChartModel(
+				DefaultChartModel modelRatio = new DefaultChartModel(
 						"Impedance Im/Re");
-				// DefaultChartModel model2 = new DefaultChartModel(
-				// "Loop Gain");
-				for (Map.Entry<Double, Complex> point : mSpectrum.entrySet())
+				DefaultChartModel modelGain = new DefaultChartModel(
+						"Loop Gain >= 1");
+				DefaultChartModel modelGainLow = new DefaultChartModel(
+						"Loop Gain < 1");
+				DefaultChartModel modelActuals = new DefaultChartModel(
+						"Actual Freq");
+				for (Map.Entry<Double, Complex> point : mImpedance.entrySet())
 				{
 					double x = point.getKey();
 					double r = point.getValue().getReal();
 					double i = point.getValue().getImaginary();
-					model1.addPoint(x, i / r);
-					// model2.addPoint(x, i);
+					modelRatio.addPoint(x, i / r);
 				}
+				for (Map.Entry<Double, Double> point : mGain.entrySet())
+				{
+					double x = point.getKey();
+					double g = point.getValue();
+					if ( g >= 1.0 )
+					{
+						modelGain.addPoint(x, g);
+					}
+					else
+					{
+						modelGainLow.addPoint(x, g);
+					}
+				}
+				for ( Double freq : actuals )
+				{
+					modelActuals.addPoint(freq,-1.0);
+				}
+
 				Chart chart = new Chart();
 				chart.setAutoRanging(true);
-				ChartStyle style1 = new ChartStyle(Color.black, false, true);
-				// ChartStyle style2 = new ChartStyle(Color.red, false, true);
-				chart.addModel(model1, style1);
-				// chart.addModel(model2, style2);
+				ChartStyle styleRatio = new ChartStyle(Color.black, false, true);
+				ChartStyle styleGain  = new ChartStyle(Color.green, PointShape.CIRCLE);
+				ChartStyle styleGainLow  = new ChartStyle(Color.red, PointShape.CIRCLE);
+				chart.addModel(modelRatio, styleRatio);
+				chart.addModel(modelGain, styleGain);
+				chart.addModel(modelGainLow, styleGainLow);
+				if ( actuals.size() > 0 )
+				{
+					ChartStyle styleActuals  = new ChartStyle(Color.yellow, PointShape.DIAMOND, Color.yellow);
+					chart.addModel(modelActuals,styleActuals);
+				}
 				chart.getXAxis().setLabel("Frequency");
-				chart.getYAxis().setLabel("Impedance");
+				chart.getYAxis().setLabel("Impedance Ratio/Gain");
 				chart.setTitle("Playing Ranges");
 				Legend legend = new Legend(chart);
 				chart.addDrawable(legend);
@@ -229,6 +205,75 @@ public class PlayingRangeSpectrum
 				frame.setVisible(true);
 			}
 		});
+	}
+
+	/**
+	 * Plot the impedance and playing ranges for a given calculator
+	 * and fingering, using default plot parameters.
+	 * @param calculator
+	 * @param fingering
+	 */
+	public void plot(InstrumentCalculator calculator, Fingering fingering )
+	{
+		plot(calculator, fingering, 4./3., 600);
+	}
+
+	/**
+	 * Plot the impedance and playing ranges for a given calculator
+	 * and fingering, using default number of points.
+	 * @param calculator
+	 * @param fingering
+	 * @param freqRange - Relative range of frequencies to plot above and below fingering.
+	 */
+	public void plot(InstrumentCalculator calculator, Fingering fingering, 
+			double freqRange )
+	{
+		plot(calculator, fingering, freqRange, 600);
+	}
+
+	/**
+	 * Plot the impedance and playing ranges for a given calculator and fingering.
+	 * @param calculator
+	 * @param fingering
+	 * @param freqRange - Relative range of frequencies to plot above and below fingering.
+	 * @param numberPoints - number of points to calculate for plotting.
+	 */
+	public void plot(InstrumentCalculator calculator, Fingering fingering, 
+			double freqRange, int numberPoints )
+	{
+		double targetFreq;
+		if ( fingering.getNote().getFrequency() != null )
+		{
+			targetFreq = fingering.getNote().getFrequency();
+		}
+		else if ( fingering.getNote().getFrequencyMax() != null )
+		{
+			targetFreq = fingering.getNote().getFrequencyMax();
+		}
+		else {
+			targetFreq = 1000.0;
+		}
+		double freqStart = targetFreq / freqRange;
+		double freqEnd = targetFreq * freqRange;
+		if ( freqEnd > 4000.0 )
+		{
+			freqEnd = 4000.0;
+		}
+		calcImpedance(calculator, fingering, freqStart, freqEnd,
+				numberPoints);
+		// plotImpedanceSpectrum();
+		plotPlayingRange();
+
+	}
+	
+	public static void plotNotes( InstrumentCalculator calculator, Tuning tuning,
+			int[] noteList )
+	{
+		for ( int noteIndex : noteList )
+		{
+			PlayingRangeSpectrum spectrum = new PlayingRangeSpectrum();
+			spectrum.plot(calculator, tuning.getFingering().get(noteIndex));
+		}
 	}
 
 }

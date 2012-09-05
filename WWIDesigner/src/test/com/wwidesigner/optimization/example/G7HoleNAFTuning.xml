@@ -2,77 +2,122 @@
 <wit:tuning xmlns:wit="http://www.wwidesigner.com/Tuning"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.wwidesigner.com/Tuning ../../../../../main/com/wwidesigner/note/bind/Tuning.xsd ">
-	<name>6 hole NAF1 tuning</name>
-	<comment>Tuning for 6HoleNAF1.xml</comment>
+	<name>G verdi 7 hole NAF tuning</name>
+	<comment>Verdi tuning for G 7 Hole NAF.xml</comment>
 	<numberOfHoles>6</numberOfHoles>
 	<fingering>
 		<note>
-			<name>A4</name>
-			<frequency>440</frequency>
+			<name>G4</name>
+			<frequency>384.82</frequency>
 		</note>
 		<openHole>false</openHole>
 		<openHole>false</openHole>
 		<openHole>false</openHole>
 		<openHole>false</openHole>
+		<openHole>false</openHole>
+		<openHole>false</openHole>
+		<openHole>false</openHole>
+	</fingering>
+	<fingering>
+		<note>
+			<name>A5</name>
+			<frequency>432.0</frequency>
+		</note>
+		<openHole>false</openHole>
+		<openHole>false</openHole>
+		<openHole>false</openHole>
+		<openHole>false</openHole>
+		<openHole>false</openHole>
+		<openHole>false</openHole>
+		<openHole>true</openHole>
+	</fingering>
+ 	<fingering>
+		<note>
+			<name>A#5</name>
+			<frequency>457.63</frequency>
+		</note>
+		<openHole>false</openHole>
+		<openHole>false</openHole>
+		<openHole>false</openHole>
+		<openHole>false</openHole>
+		<openHole>false</openHole>
+		<openHole>true</openHole>
+		<openHole>true</openHole>
+	</fingering>
+	<fingering>
+		<note>
+			<name>B5</name>
+			<frequency>484.84</frequency>
+		</note>
+		<openHole>false</openHole>
+		<openHole>false</openHole>
+		<openHole>false</openHole>
+		<openHole>false</openHole>
+		<openHole>true</openHole>
 		<openHole>false</openHole>
 		<openHole>false</openHole>
 	</fingering>
 	<fingering>
 		<note>
 			<name>C5</name>
-			<frequency>523.25</frequency>
+			<frequency>513.67</frequency>
 		</note>
 		<openHole>false</openHole>
 		<openHole>false</openHole>
 		<openHole>false</openHole>
 		<openHole>false</openHole>
-		<openHole>false</openHole>
+		<openHole>true</openHole>
+		<openHole>true</openHole>
 		<openHole>true</openHole>
 	</fingering>
- 	<fingering>
+  	<fingering>
 		<note>
 			<name>C#5</name>
-			<frequency>554.37</frequency>
+			<frequency>544.21</frequency>
 		</note>
-		<openHole>false</openHole>
 		<openHole>false</openHole>
 		<openHole>false</openHole>
 		<openHole>false</openHole>
 		<openHole>true</openHole>
 		<openHole>false</openHole>
+		<openHole>false</openHole>
+		<openHole>true</openHole>
 	</fingering>
 	<fingering>
 		<note>
 			<name>D5</name>
-			<frequency>587.33</frequency>
+			<frequency>576.57</frequency>
 		</note>
 		<openHole>false</openHole>
 		<openHole>false</openHole>
 		<openHole>false</openHole>
-		<openHole>false</openHole>
+		<openHole>true</openHole>
+		<openHole>true</openHole>
 		<openHole>true</openHole>
 		<openHole>true</openHole>
 	</fingering>
  	<fingering>
 		<note>
 			<name>D#5</name>
-			<frequency>622.25</frequency>
+			<frequency>610.86</frequency>
 		</note>
-		<openHole>false</openHole>
 		<openHole>false</openHole>
 		<openHole>false</openHole>
 		<openHole>true</openHole>
 		<openHole>false</openHole>
+		<openHole>true</openHole>
+		<openHole>true</openHole>
 		<openHole>true</openHole>
 	</fingering>
 	<fingering>
 		<note>
 			<name>E5</name>
-			<frequency>659.26</frequency>
+			<frequency>647.18</frequency>
 		</note>
 		<openHole>false</openHole>
 		<openHole>false</openHole>
-		<openHole>false</openHole>
+		<openHole>true</openHole>
+		<openHole>true</openHole>
 		<openHole>true</openHole>
 		<openHole>true</openHole>
 		<openHole>true</openHole>
@@ -80,22 +125,24 @@
 	<fingering>
 		<note>
 			<name>F5</name>
-			<frequency>698.46</frequency>
+			<frequency>685.66</frequency>
 		</note>
-		<openHole>false</openHole>
 		<openHole>false</openHole>
 		<openHole>true</openHole>
 		<openHole>false</openHole>
+		<openHole>true</openHole>
+		<openHole>true</openHole>
 		<openHole>true</openHole>
 		<openHole>true</openHole>
 	</fingering>
 	<fingering>
 		<note>
 			<name>F#5</name>
-			<frequency>739.99</frequency>
+			<frequency>726.44</frequency>
 		</note>
 		<openHole>false</openHole>
-		<openHole>false</openHole>
+		<openHole>true</openHole>
+		<openHole>true</openHole>
 		<openHole>true</openHole>
 		<openHole>true</openHole>
 		<openHole>true</openHole>
@@ -104,21 +151,23 @@
 	<fingering>
 		<note>
 			<name>G5</name>
-			<frequency>783.99</frequency>
+			<frequency>769.63</frequency>
 		</note>
-		<openHole>false</openHole>
+		<openHole>true</openHole>
 		<openHole>true</openHole>
 		<openHole>false</openHole>
+		<openHole>true</openHole>
 		<openHole>true</openHole>
 		<openHole>true</openHole>
 		<openHole>true</openHole>
 	</fingering>
-	<fingering>
+  	<fingering>
 		<note>
 			<name>G#5</name>
-			<frequency>830.61</frequency>
+			<frequency>815.4</frequency>
 		</note>
-		<openHole>false</openHole>
+		<openHole>true</openHole>
+		<openHole>true</openHole>
 		<openHole>true</openHole>
 		<openHole>true</openHole>
 		<openHole>true</openHole>
@@ -128,49 +177,27 @@
 	<fingering>
 		<note>
 			<name>A5</name>
-			<frequency>880</frequency>
+			<frequency>863.88</frequency>
 		</note>
 		<openHole>true</openHole>
 		<openHole>true</openHole>
 		<openHole>false</openHole>
-		<openHole>true</openHole>
-		<openHole>true</openHole>
-		<openHole>true</openHole>
+		<openHole>false</openHole>
+		<openHole>false</openHole>
+		<openHole>false</openHole>
+		<openHole>false</openHole>
 	</fingering>
-<!-- 	<fingering>
+	<fingering>
 		<note>
 			<name>A#5</name>
-			<frequency>932.33</frequency>
-		</note>
-		<openHole>false</openHole>
-		<openHole>true</openHole>
-		<openHole>false</openHole>
-		<openHole>false</openHole>
-		<openHole>false</openHole>
-		<openHole>false</openHole>
-	</fingering>
-	<fingering>
-		<note>
-			<name>B5</name>
-			<frequency>987.77</frequency>
+			<frequency>915.25</frequency>
 		</note>
 		<openHole>true</openHole>
 		<openHole>true</openHole>
 		<openHole>false</openHole>
 		<openHole>false</openHole>
 		<openHole>false</openHole>
-		<openHole>false</openHole>
-	</fingering> -->
-	<fingering>
-		<note>
-			<name>C6</name>
-			<frequency>1046.5</frequency>
-		</note>
 		<openHole>true</openHole>
-		<openHole>true</openHole>
-		<openHole>false</openHole>
-		<openHole>false</openHole>
-		<openHole>false</openHole>
 		<openHole>true</openHole>
 	</fingering>
 </wit:tuning>

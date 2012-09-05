@@ -9,7 +9,7 @@ import com.wwidesigner.note.TuningInterface;
 
 public class HolePositionAndDiameterOptimizer extends InstrumentOptimizer
 {
-	private static int defaultNumberOfInterpolationPoints = 60;
+	protected static int defaultNumberOfInterpolationPoints = 60;
 
 	public HolePositionAndDiameterOptimizer(Instrument inst,
 			InstrumentCalculator calculator, TuningInterface tuning)

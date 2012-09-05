@@ -26,7 +26,7 @@ public class GordonHoleCalculator extends HoleCalculator
 	protected void updateGeometry(Hole hole)
 	{
 		mRB = hole.getBoreDiameter() / 2.;
-		mRH = hole.getDiameter() / 2.;
+		mRH = 0.92 * hole.getDiameter() / 2.; // Multiplier set by eye to fit LightG6HoleNaf tuning.
 		mLH = hole.getHeight();
 		mRC = hole.getInnerCurvatureRadius() == null ? 0.0005 : hole
 				.getInnerCurvatureRadius();
@@ -93,8 +93,8 @@ public class GordonHoleCalculator extends HoleCalculator
 	 * com.wwidesigner.util.PhysicalParameters)
 	 */
 	@Override
-	public TransferMatrix calcTransferMatrix(Hole hole,
-			double waveNumber, PhysicalParameters parameters)
+	public TransferMatrix calcTransferMatrix(Hole hole, double waveNumber,
+			PhysicalParameters parameters)
 	{
 		mParams = parameters;
 		updateGeometry(hole);
@@ -119,29 +119,30 @@ public class GordonHoleCalculator extends HoleCalculator
 			matrix.setUP(new Complex(0., -1.)
 					.multiply(waveNumber * calcHLE(freq)).add(calcXi(freq))
 					.multiply(z0 * rb_on_rh_2).reciprocal());
-			
+
 			// Change sign to match Antoine's configuration
-//			matrix.setPU(new Complex(0., -1.).multiply(z0 * rb_on_rh_2 * waveNumber
-//					* mOHLB));
-//			matrix.setUP(new Complex(0., 1.)
-//					.multiply(waveNumber * calcHLE(freq)).add(calcXi(freq))
-//					.multiply(z0 * rb_on_rh_2).reciprocal());
+			// matrix.setPU(new Complex(0., -1.).multiply(z0 * rb_on_rh_2 *
+			// waveNumber
+			// * mOHLB));
+			// matrix.setUP(new Complex(0., 1.)
+			// .multiply(waveNumber * calcHLE(freq)).add(calcXi(freq))
+			// .multiply(z0 * rb_on_rh_2).reciprocal());
 		}
 		else
 		{
 			// Sign as per Gordon's implementation
-			matrix.setPU(Complex.I.multiply(z0 * rb_on_rh_2
-					* waveNumber * mCHLB));
+			matrix.setPU(Complex.I.multiply(z0 * rb_on_rh_2 * waveNumber
+					* mCHLB));
 			matrix.setUP(new Complex(0., -1.).multiply(Math.tan(waveNumber
 					* mLH)
 					/ (z0 * rb_on_rh_2)));
-			
+
 			// Change sign to match Antoine's configuration
-//			matrix.setPU(new Complex(0., -1.).multiply(z0 * rb_on_rh_2
-//					* waveNumber * mCHLB));
-//			matrix.setUP(new Complex(0., 1.).multiply(Math.tan(waveNumber
-//					* mLH)
-//					/ (z0 * rb_on_rh_2)));
+			// matrix.setPU(new Complex(0., -1.).multiply(z0 * rb_on_rh_2
+			// * waveNumber * mCHLB));
+			// matrix.setUP(new Complex(0., 1.).multiply(Math.tan(waveNumber
+			// * mLH)
+			// / (z0 * rb_on_rh_2)));
 		}
 
 		return matrix;

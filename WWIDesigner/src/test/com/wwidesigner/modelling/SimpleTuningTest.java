@@ -35,15 +35,15 @@ public class SimpleTuningTest
 			tuner.setCalculator(new GordonCalculator());
 			tuner.showTuning("Light G NAF, Gordon Calculator");
 			
-			tuner.setCalculator(new WhistleCalculator());
-			tuner.showTuning("Light G NAF, Whistle Calculator");
-			
-			tuner.setInstrument(instrumentFile_chalumeau, true);
-			tuner.setTuning(tuningFile_chalumeau, true);
-			tuner.setParams(new PhysicalParameters(25.0, TemperatureType.C));
-			
-			tuner.setCalculator(new SimpleReedCalculator());
-			tuner.showTuning("Chalumeau, Simple Reed Calculator");
+//			tuner.setCalculator(new WhistleCalculator());
+//			tuner.showTuning("Light G NAF, Whistle Calculator");
+//			
+//			tuner.setInstrument(instrumentFile_chalumeau, true);
+//			tuner.setTuning(tuningFile_chalumeau, true);
+//			tuner.setParams(new PhysicalParameters(25.0, TemperatureType.C));
+//			
+//			tuner.setCalculator(new SimpleReedCalculator());
+//			tuner.showTuning("Chalumeau, Simple Reed Calculator");
 		}
 		catch (Exception e)
 		{

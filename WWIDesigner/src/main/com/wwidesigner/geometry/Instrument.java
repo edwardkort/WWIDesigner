@@ -11,6 +11,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.wwidesigner.note.Fingering;
+import com.wwidesigner.util.Constants.LengthType;
 import com.wwidesigner.util.SortedPositionList;
 
 /**
@@ -207,18 +208,7 @@ public class Instrument implements InstrumentInterface
 			return;
 		}
 
-		double multiplier;
-		switch (lengthType)
-		{
-			case MM:
-				multiplier = 0.001;
-				break;
-			case IN:
-				multiplier = 0.0254;
-				break;
-			default:
-				multiplier = 1.;
-		}
+		double multiplier = lengthType.getMultiplierToMetres();
 
 		convertDimensions(multiplier);
 		convertedToMetres = true;
@@ -231,18 +221,7 @@ public class Instrument implements InstrumentInterface
 			return;
 		}
 
-		double multiplier;
-		switch (lengthType)
-		{
-			case MM:
-				multiplier = 1000.;
-				break;
-			case IN:
-				multiplier = 39.3701;
-				break;
-			default:
-				multiplier = 1.;
-		}
+		double multiplier = lengthType.getMultiplierFromMetres();
 
 		convertDimensions(multiplier);
 		convertedToMetres = false;

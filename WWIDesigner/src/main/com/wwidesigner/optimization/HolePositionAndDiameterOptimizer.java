@@ -24,7 +24,7 @@ public class HolePositionAndDiameterOptimizer extends InstrumentOptimizer
 		PositionInterface[] sortedHoles = Instrument.sortList(instrument
 				.getHole());
 
-		int len = 1 + 2*sortedHoles.length;
+		int len = 1 + 2 * sortedHoles.length;
 
 		double[] state_vector = new double[len];
 
@@ -39,13 +39,13 @@ public class HolePositionAndDiameterOptimizer extends InstrumentOptimizer
 					- accumulatedDistance;
 			accumulatedDistance += state_vector[i];
 		}
-		
-		for (int i = 0; i < sortedHoles.length; ++i) 
+
+		for (int i = 0; i < sortedHoles.length; ++i)
 		{
 			Hole hole = (Hole) sortedHoles[i];
-		    state_vector[1+sortedHoles.length+i] = hole.getRatio();
+			state_vector[1 + sortedHoles.length + i] = hole.getRatio();
 		}
-		
+
 		return state_vector;
 	}
 
@@ -62,16 +62,18 @@ public class HolePositionAndDiameterOptimizer extends InstrumentOptimizer
 		double accumulatedDistance = 0.;
 		for (int i = sortedHoles.length; i > 0; --i)
 		{
-			Hole hole = (Hole) sortedHoles[i - 1];
-			hole.setBorePosition(state_vector[0] - state_vector[i]
-					- accumulatedDistance);
+			int holeIdx = i - 1;
+			Hole hole = (Hole) sortedHoles[holeIdx];
+			double holePosition = state_vector[0] - state_vector[i]
+					- accumulatedDistance;
+			hole.setBorePosition(holePosition);
 			accumulatedDistance += state_vector[i];
 		}
-		
-		for (int i = 0; i < sortedHoles.length; ++i) 
+
+		for (int i = 0; i < sortedHoles.length; ++i)
 		{
 			Hole hole = (Hole) sortedHoles[i];
-			hole.setRatio(state_vector[1+sortedHoles.length+i]);
+			hole.setRatio(state_vector[1 + sortedHoles.length + i]);
 		}
 
 		instrument.updateComponents();
@@ -81,7 +83,7 @@ public class HolePositionAndDiameterOptimizer extends InstrumentOptimizer
 	public void setOptimizationFunction()
 	{
 		optimizationFunction = new BasicOptimizationFunction(this, tuning);
-		
+
 	}
 
 }

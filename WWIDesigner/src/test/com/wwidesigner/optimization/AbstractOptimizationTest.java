@@ -38,7 +38,8 @@ public class AbstractOptimizationTest
 	protected Instrument instrument;
 	protected Tuning tuning;
 
-	public void setOptimizerClass(Class<? extends InstrumentOptimizer> optimizerClass)
+	public void setOptimizerClass(
+			Class<? extends InstrumentOptimizer> optimizerClass)
 	{
 		this.optimizerClass = optimizerClass;
 	}
@@ -48,8 +49,9 @@ public class AbstractOptimizationTest
 		Constructor<? extends InstrumentOptimizer> optConstructor = optimizerClass
 				.getConstructor(new Class[] { Instrument.class,
 						InstrumentCalculator.class, TuningInterface.class });
-		InstrumentOptimizer opt = optConstructor.newInstance(instrument, calculator, tuning);
-		
+		InstrumentOptimizer opt = optConstructor.newInstance(instrument,
+				calculator, tuning);
+
 		return opt;
 	}
 
@@ -145,6 +147,7 @@ public class AbstractOptimizationTest
 		optimizer = setInstrumentOptimizer();
 		optimizer.setBaseOptimizer(optimizerType, numberOfInterpolationPoints);
 		setOptimizationBounds(optimizer);
+		setupCustomOptimizer();
 
 		showTuning(instrument, calculator, tuning, title
 				+ ", before optimization");
@@ -162,6 +165,12 @@ public class AbstractOptimizationTest
 
 		// The optimizer modifies the input Instrument instance
 		return instrument;
+	}
+
+	protected void setupCustomOptimizer() throws Exception
+	{
+		// Override this in a test with a custom optimizer that has setup
+		// methods not in the InstrumentOptimizerInterface.
 	}
 
 	public void showTuning(Instrument instrument,

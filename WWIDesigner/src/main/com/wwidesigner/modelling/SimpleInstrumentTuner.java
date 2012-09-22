@@ -3,6 +3,10 @@
  */
 package com.wwidesigner.modelling;
 
+import java.util.Comparator;
+import java.util.Map;
+import java.util.TreeMap;
+
 import com.wwidesigner.geometry.Instrument;
 import com.wwidesigner.geometry.bind.GeometryBindFactory;
 import com.wwidesigner.note.Fingering;
@@ -40,7 +44,7 @@ public class SimpleInstrumentTuner
 		setParams(params);
 	}
 
-	public void showTuning(String title)
+	public Map<Fingering, Double> getTuning()
 	{
 		calculator.setInstrument(instrument);
 		calculator.setPhysicalParameters(params);
@@ -50,13 +54,41 @@ public class SimpleInstrumentTuner
 		int numberOfFrequencies = (int) (10. * InstrumentTuningTable
 				.getCents(maxFreqRatio));
 
-		InstrumentTuningTable table = new InstrumentTuningTable(title);
+		Map<Fingering, Double> fingeringMap = new TreeMap<Fingering, Double>(
+				new Comparator<Fingering>()
+				{
+					public int compare(Fingering arg1, Fingering arg2)
+					{
+						double pitch1 = arg1.getNote().getFrequency();
+						double pitch2 = arg2.getNote().getFrequency();
+
+						if (pitch1 < pitch2)
+						{
+							return -1;
+						}
+						return 1;
+					}
+				});
 
 		for (Fingering fingering : tuning.getFingering())
 		{
 			Double playedFrequency = calculator.getPlayedFrequency(fingering,
 					maxFreqRatio, numberOfFrequencies);
-			table.addTuning(fingering, playedFrequency);
+			fingeringMap.put(fingering, playedFrequency);
+		}
+
+		return fingeringMap;
+	}
+
+	public void showTuning(String title)
+	{
+		Map<Fingering, Double> fingeringMap = getTuning();
+
+		InstrumentTuningTable table = new InstrumentTuningTable(title);
+
+		for (Map.Entry<Fingering, Double> entry : fingeringMap.entrySet())
+		{
+			table.addTuning(entry.getKey(), entry.getValue());
 		}
 
 		table.showTuning();
@@ -71,7 +103,8 @@ public class SimpleInstrumentTuner
 		this.instrument = instrument;
 	}
 
-	public void setInstrument(String xmlInstrumentFile, boolean fileInClasspath) throws Exception
+	public void setInstrument(String xmlInstrumentFile, boolean fileInClasspath)
+			throws Exception
 	{
 		BindFactory geomFactory = GeometryBindFactory.getInstance();
 		Instrument instrument = (Instrument) geomFactory.unmarshalXml(
@@ -88,10 +121,12 @@ public class SimpleInstrumentTuner
 		this.tuning = tuning;
 	}
 
-	public void setTuning(String xmlTuningFile, boolean fileInClasspath) throws Exception
+	public void setTuning(String xmlTuningFile, boolean fileInClasspath)
+			throws Exception
 	{
 		BindFactory noteFactory = NoteBindFactory.getInstance();
-		Tuning tuning = (Tuning) noteFactory.unmarshalXml(xmlTuningFile, fileInClasspath, true);
+		Tuning tuning = (Tuning) noteFactory.unmarshalXml(xmlTuningFile,
+				fileInClasspath, true);
 		setTuning(tuning);
 	}
 

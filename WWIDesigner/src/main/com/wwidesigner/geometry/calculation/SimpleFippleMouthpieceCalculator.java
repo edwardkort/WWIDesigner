@@ -31,23 +31,13 @@ public class SimpleFippleMouthpieceCalculator extends MouthpieceCalculator
 	public TransferMatrix calcTransferMatrix(Mouthpiece mouthpiece,
 			double waveNumber, PhysicalParameters parameters)
 	{
-		TransferMatrix matrix = new TransferMatrix();
 		params = parameters;
-		double z0 = parameters.calcZ0(mouthpiece.getBoreDiameter() / 2.);
-		double omega = waveNumber * parameters.getSpeedOfSound();
-		double k_delta_l = calcKDeltaL(mouthpiece, omega, z0);
-
-		Complex k_delta = new Complex(Math.cos(k_delta_l));
-		matrix.setPP(k_delta);
-		matrix.setUU(k_delta);
-
-		k_delta = new Complex(0., -1.).multiply(Math.sin(k_delta_l) * z0);
-		matrix.setPU(k_delta);
-
-		k_delta = new Complex(0., -1.).multiply(Math.sin(k_delta_l) / z0);
-		matrix.setUP(k_delta);
-
-		return matrix;
+		
+		double freq = waveNumber * parameters.getSpeedOfSound() / ( 2* Math.PI);
+		
+		Complex Zwindow = calcZ(mouthpiece, freq, parameters);
+		
+		return new TransferMatrix(Complex.ONE, Zwindow, Complex.ZERO, Complex.ONE);		
 	}
 
 	/*
@@ -128,7 +118,6 @@ public class SimpleFippleMouthpieceCalculator extends MouthpieceCalculator
 		return equivDiameter;
 	}
 
-	@Override
 	public Complex calcZ(Mouthpiece mouthpiece,
 			double freq, PhysicalParameters physicalParams)
 	{

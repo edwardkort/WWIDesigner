@@ -129,26 +129,6 @@ public class GordonFippleMouthpieceCalculator extends MouthpieceCalculator
 	}
 	
 	@Override
-	public Complex calcZ(Mouthpiece mouthpiece,
-			double freq, PhysicalParameters physicalParams)
-	{
-		// Assume the open window acts as a flanged tube with an effective radius
-		// that corresponds to the window area.
-		double effRadius = Math.sqrt(mouthpiece.getFipple().getWindowLength()
-				* mouthpiece.getFipple().getWindowWidth() / Math.PI );
-		double waveNumber = physicalParams.calcWaveNumber(freq);
-
-		StateVector sv = new StateVector(
-				Tube.calcZflanged( freq, effRadius, physicalParams ),
-				Complex.ONE );
-		TransferMatrix tm = Tube.calcCylinderMatrix(waveNumber,
-				0.0008,//this.mouthpiece.getFipple().getWindowHeight() is null, so set a representative NAF value.
-				effRadius, physicalParams );
-		sv = tm.multiply( sv );
-		return sv.Impedance();
-	}
-
-	@Override
 	public Double calcGain(Mouthpiece mouthpiece,
 			double freq, Complex Z,
 			PhysicalParameters physicalParams)

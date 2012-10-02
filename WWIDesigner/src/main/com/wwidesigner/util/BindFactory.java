@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.Writer;
+import java.net.URISyntaxException;
 import java.util.Map;
 
 import javax.xml.bind.JAXBContext;
@@ -167,7 +168,14 @@ public abstract class BindFactory
 		{
 			throw new FileNotFoundException(name + " not found.");
 		}
-		return fileUrl.getPath();
+		try 
+		{
+			return fileUrl.toURI().getPath();
+		} 
+	    catch (URISyntaxException e) 
+	    {
+		    return fileUrl.getPath();
+		}
 	}
 
 	public File getFileFromName(String name) throws FileNotFoundException

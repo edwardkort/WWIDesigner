@@ -42,13 +42,6 @@ public class NoOpMouthpieceCalculator extends MouthpieceCalculator
 	}
 
 	@Override
-	public Complex calcZ(Mouthpiece mouthpiece, double freq,
-			PhysicalParameters physicalParams)
-	{
-		return Complex.ZERO;
-	}
-
-	@Override
 	public Double calcGain(Mouthpiece mouthpiece, double freq, Complex Z,
 			PhysicalParameters physicalParams)
 	{

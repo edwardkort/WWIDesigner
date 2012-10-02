@@ -24,9 +24,6 @@ public abstract class MouthpieceCalculator
 
 	public abstract int calcReflectanceMultiplier();
 
-	public abstract Complex calcZ(Mouthpiece mouthpiece,
-			double freq, PhysicalParameters physicalParams);
-
 	public abstract Double calcGain(Mouthpiece mouthpiece,
 			double freq, Complex Z, PhysicalParameters physicalParams);
 }

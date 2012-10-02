@@ -53,17 +53,15 @@ public class DefaultInstrumentCalculator extends InstrumentCalculator
 				boreSectionCalculator);
 	}
 
-	@Override
-	public Complex calcReflectionCoefficient(double frequency)
+	private StateVector calcInputStateVector(double freq)
 	{
-		double waveNumber = params.calcWaveNumber(frequency);
+		double waveNumber = params.calcWaveNumber(freq);
 
 		// Start with the state vector of the termination,
 		// and multiply by transfer matrices of each hole and bore segment
 		// from the termination up to and including the mouthpiece.
 
-		StateVector sv = terminationCalculator.calcStateVector(
-				instrument.getTermination(), waveNumber, params);
+		StateVector sv = terminationCalculator.calcStateVector(instrument.getTermination(), waveNumber, params);
 		TransferMatrix tm;
 		for (int componentNr = instrument.getComponents().size() - 1; componentNr >= 0; --componentNr)
 		{
@@ -88,16 +86,23 @@ public class DefaultInstrumentCalculator extends InstrumentCalculator
 			sv = tm.multiply(sv);
 		}
 
+		return sv;
+		
+	}
+	
+	@Override
+	public Complex calcReflectionCoefficient(double frequency)
+	{
+		StateVector sv = calcInputStateVector(frequency);
+		
 		// TODO This mouthpiece calculation will change
 		double headRadius = instrument.getMouthpiece().getBoreDiameter() / 2.;
-		double characteristic_impedance = params.calcZ0(headRadius);
-		Complex reflectance = sv.Reflectance(characteristic_impedance);
-		int reflectanceMultiplier = mouthpieceCalculator
-				.calcReflectanceMultiplier();
+		
+		Complex reflectance = sv.Reflectance( params.calcZ0(headRadius) );
+		
+		int reflectanceMultiplier = mouthpieceCalculator.calcReflectanceMultiplier();
 
-		Complex result = reflectance.multiply(reflectanceMultiplier);
-
-		return result;
+		return reflectance.multiply(reflectanceMultiplier);
 	}
 
 	/*
@@ -111,43 +116,7 @@ public class DefaultInstrumentCalculator extends InstrumentCalculator
 	@Override
 	public Complex calcZ(double freq)
 	{
-		double waveNumber = params.calcWaveNumber(freq);
-
-		// Start with the state vector of the termination,
-		// and multiply by transfer matrices of each hole and bore segment
-		// from the termination up to, but not including the mouthpiece.
-
-		StateVector sv = terminationCalculator.calcStateVector(
-				instrument.getTermination(), waveNumber, params);
-		TransferMatrix tm;
-		for (int componentNr = instrument.getComponents().size() - 1; componentNr > 0; --componentNr)
-		{
-			ComponentInterface component = instrument.getComponents().get(
-					componentNr);
-			if (component instanceof BoreSection)
-			{
-				tm = boreSectionCalculator.calcTransferMatrix(
-						(BoreSection) component, waveNumber, params);
-			}
-			else if (component instanceof Hole)
-			{
-				tm = holeCalculator.calcTransferMatrix((Hole) component,
-						waveNumber, params);
-			}
-			else
-			{
-				assert component instanceof Mouthpiece;
-				tm = mouthpieceCalculator.calcTransferMatrix(
-						(Mouthpiece) component, waveNumber, params);
-			}
-			sv = tm.multiply(sv);
-		}
-		Complex Zresonator = sv.Impedance();
-
-		Complex Zwindow = mouthpieceCalculator.calcZ(
-				instrument.getMouthpiece(), freq, params);
-
-		return Zresonator.add(Zwindow);
+		return calcInputStateVector(freq).Impedance();
 	}
 
 	@Override
@@ -168,8 +137,7 @@ public class DefaultInstrumentCalculator extends InstrumentCalculator
 	@Override
 	public Double getPlayedFrequency(Fingering fingering, double freqRange,
 			int numberOfFrequencies)
-	{
-		Double playedFreq = null;
+	{		Double playedFreq = null;
 		double targetFreq = fingering.getNote().getFrequency();
 		double freqStart = targetFreq / freqRange;
 		double freqEnd = targetFreq * freqRange;

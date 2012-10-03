@@ -6,6 +6,7 @@ package com.wwidesigner.util;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
+import java.io.StringReader;
 import java.io.Writer;
 import java.util.Map;
 
@@ -13,6 +14,7 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
+import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
@@ -60,7 +62,7 @@ public abstract class BindFactory
 			inputFileName = getPathFromName(inputFileName);
 		}
 
-		return unmarshalXml(inputFileName, toDomainObject);
+		return unmarshalXml(new File(inputFileName), toDomainObject);
 	}
 
 	/**
@@ -74,11 +76,26 @@ public abstract class BindFactory
 		return unmarshalXml(inputFile, false);
 	}
 
-	public Object unmarshalXml(String inputFileName, boolean toDomainObject)
+	public Object unmarshalXml(String xmlString, boolean toDomainObject)
 			throws Exception
 	{
-		File inputFile = new File(inputFileName);
-		return unmarshalXml(inputFile, toDomainObject);
+		JAXBContext jc = JAXBContext.newInstance(packagePath);
+		Unmarshaller unmarshaller = jc.createUnmarshaller();
+
+		// Do validation
+		unmarshaller.setSchema(getSchema());
+
+		StreamSource strmSource = new StreamSource(new StringReader(xmlString));
+		Object bindObject = ((JAXBElement<?>) unmarshaller
+				.unmarshal(strmSource)).getValue();
+
+		if (!toDomainObject)
+		{
+			return bindObject;
+		}
+
+		Object domainObject = mapObject(bindObject, bindToDomainMap);
+		return domainObject;
 	}
 
 	public Object unmarshalXml(File inputFile, boolean toDomainObject)
@@ -175,6 +192,22 @@ public abstract class BindFactory
 		String filePath = getPathFromName(name);
 
 		return new File(filePath);
+	}
+	
+	public boolean isValidXml(String xmlString, String rootElementName, boolean isDomainObject) {
+		try {
+			Object root = unmarshalXml(xmlString, isDomainObject);
+			String rootPath = packagePath;
+			if (isDomainObject) {
+				rootPath = rootPath.substring(0, rootPath.lastIndexOf('.'));
+			}
+			Class<?> rootElement = Class.forName(rootPath + "." + rootElementName);
+			rootElement.cast(root);
+			return true;
+		}
+		catch (Exception e) {
+			return false;
+		}
 	}
 
 }

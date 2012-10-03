@@ -15,6 +15,16 @@ import com.wwidesigner.util.PhysicalParameters;
  */
 public class DefaultHoleCalculator extends HoleCalculator
 {
+    private double mFudgeFactor = 1.0;
+    
+    public DefaultHoleCalculator()
+    {
+    }
+    
+	public DefaultHoleCalculator(double fudgeFactor)
+	{
+		mFudgeFactor = fudgeFactor;
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -26,7 +36,7 @@ public class DefaultHoleCalculator extends HoleCalculator
 	public TransferMatrix calcTransferMatrix(Hole hole,
 			double waveNumber, PhysicalParameters parameters)
 	{
-		double radius = hole.getDiameter() / 2;
+		double radius = mFudgeFactor * hole.getDiameter() / 2;
 		double boreRadius = hole.getBoreDiameter() / 2;
 		Complex Zs = null;
 		Complex Za = null;

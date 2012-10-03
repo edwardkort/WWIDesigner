@@ -47,6 +47,25 @@ public class SimpleTuningTest
 		}
 	}
 
+	@Test
+	public void testNafTuningWithNAF()
+	{
+		SimpleInstrumentTuner tuner = new SimpleInstrumentTuner();
+		try
+		{
+			tuner.setInstrument(instrumentFile_NAF, true);
+			tuner.setTuning(tuningFile_NAF, true);
+			tuner.setParams(new PhysicalParameters(74.0, TemperatureType.F));
+			tuner.setCalculator(new NAFCalculator());
+
+			checkTuning(tuner);
+		}
+		catch (Exception e)
+		{
+			fail(e.getMessage());
+		}
+	}
+
 	protected void checkTuning(SimpleInstrumentTuner tuner)
 	{
 		Map<Fingering, Double> tuningMap = tuner.getTuning();

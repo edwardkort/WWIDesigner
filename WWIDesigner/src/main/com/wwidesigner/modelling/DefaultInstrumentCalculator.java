@@ -53,6 +53,11 @@ public class DefaultInstrumentCalculator extends InstrumentCalculator
 				boreSectionCalculator);
 	}
 
+	public DefaultInstrumentCalculator()
+	{
+	    super();
+	}
+
 	private StateVector calcInputStateVector(double freq)
 	{
 		double waveNumber = params.calcWaveNumber(freq);

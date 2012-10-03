@@ -92,6 +92,9 @@ public class SimpleTuningTest
 			tuner.setCalculator(new GordonCalculator());
 			tuner.showTuning("Light G NAF, Gordon Calculator");
 
+			tuner.setCalculator(new NAFCalculator());
+			tuner.showTuning("Light G NAF, NAF Calculator");
+
 			tuner.setCalculator(new WhistleCalculator());
 			tuner.showTuning("Light G NAF, Whistle Calculator");
 

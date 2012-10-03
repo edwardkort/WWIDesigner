@@ -13,6 +13,7 @@ import com.wwidesigner.geometry.BorePoint;
 import com.wwidesigner.geometry.Instrument;
 import com.wwidesigner.geometry.PositionInterface;
 import com.wwidesigner.modelling.GordonCalculator;
+import com.wwidesigner.modelling.NAFCalculator;
 import com.wwidesigner.util.PhysicalParameters;
 import com.wwidesigner.util.Constants.TemperatureType;
 
@@ -54,13 +55,23 @@ public class HoleGroupSpacingOptimizerTest extends AbstractOptimizationTest
 			holeGroups = new int[][] { { 0 }, { 1 }, { 2 }, { 3 }, { 4 },
 					{ 5 }, { 6 } };
 
-			Instrument optimizedInstrument = doInstrumentOptimization("No hole groups");
+			Instrument optimizedInstrument = doInstrumentOptimization("No hole groups, Gordon Calculator");
 
 			// Test bore length
 			List<BorePoint> borePoints = optimizedInstrument.getBorePoint();
 			PositionInterface[] sortedPoints = Instrument.sortList(borePoints);
 			PositionInterface lastPoint = sortedPoints[sortedPoints.length - 1];
-			assertEquals("Bore length incorrect", 14.18,
+			assertEquals("Bore length incorrect with Gordon Calculator", 13.93,
+					lastPoint.getBorePosition(), 0.1);
+
+			setCalculator(new NAFCalculator());
+			optimizedInstrument = doInstrumentOptimization("No hole groups, NAF Calculator");
+
+			// Test bore length
+			borePoints = optimizedInstrument.getBorePoint();
+			sortedPoints = Instrument.sortList(borePoints);
+			lastPoint = sortedPoints[sortedPoints.length - 1];
+			assertEquals("Bore length incorrect with NAF Calculator", 13.93,
 					lastPoint.getBorePosition(), 0.1);
 		}
 		catch (Exception e)
@@ -82,13 +93,23 @@ public class HoleGroupSpacingOptimizerTest extends AbstractOptimizationTest
 			setNumberOfInterpolationPoints(28);
 			holeGroups = new int[][] { { 0, 1, 2 }, { 3, 4, 5 }, { 6 } };
 
-			Instrument optimizedInstrument = doInstrumentOptimization("Two hole groups");
+			Instrument optimizedInstrument = doInstrumentOptimization("Two hole groups, Gordon Calculator");
 
 			// Test bore length
 			List<BorePoint> borePoints = optimizedInstrument.getBorePoint();
 			PositionInterface[] sortedPoints = Instrument.sortList(borePoints);
 			PositionInterface lastPoint = sortedPoints[sortedPoints.length - 1];
-			assertEquals("Bore length incorrect", 14.18,
+			assertEquals("Bore length incorrect with Gordon Calculator", 13.92,
+					lastPoint.getBorePosition(), 0.1);
+
+			setCalculator(new NAFCalculator());
+			optimizedInstrument = doInstrumentOptimization("Two hole groups, NAF Calculator");
+
+			// Test bore length
+			borePoints = optimizedInstrument.getBorePoint();
+			sortedPoints = Instrument.sortList(borePoints);
+			lastPoint = sortedPoints[sortedPoints.length - 1];
+			assertEquals("Bore length incorrect with NAF Calculator", 13.92,
 					lastPoint.getBorePosition(), 0.1);
 		}
 		catch (Exception e)

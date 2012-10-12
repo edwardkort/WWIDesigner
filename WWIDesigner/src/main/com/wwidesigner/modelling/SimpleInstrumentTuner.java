@@ -6,6 +6,7 @@ package com.wwidesigner.modelling;
 import java.util.Comparator;
 import java.util.Map;
 import java.util.TreeMap;
+import javax.swing.JTable;
 
 import com.wwidesigner.geometry.Instrument;
 import com.wwidesigner.geometry.bind.GeometryBindFactory;
@@ -45,6 +46,13 @@ public class SimpleInstrumentTuner
 	}
 
 	public Map<Fingering, Double> getTuning()
+	{
+		InstrumentTuningTable table = getTuning(title);
+
+		table.showTuning();
+	}
+
+	public InstrumentTuningTable getTuning(String title)
 	{
 		calculator.setInstrument(instrument);
 		calculator.setPhysicalParameters(params);
@@ -91,7 +99,14 @@ public class SimpleInstrumentTuner
 			table.addTuning(entry.getKey(), entry.getValue());
 		}
 
-		table.showTuning();
+		return table;
+	}
+
+	public JTable getTuningTable(String title)
+	{
+		InstrumentTuningTable table = getTuning(title);
+
+		return table.getTuningTable();
 	}
 
 	/**
@@ -112,6 +127,14 @@ public class SimpleInstrumentTuner
 		setInstrument(instrument);
 	}
 
+	public void setInstrument(String instrumentXmlString) throws Exception
+	{
+		BindFactory geomFactory = GeometryBindFactory.getInstance();
+		Instrument instrument = (Instrument) geomFactory.unmarshalXml(
+				instrumentXmlString, true);
+		setInstrument(instrument);
+	}
+
 	/**
 	 * @param tuning
 	 *            the tuning to set
@@ -127,6 +150,14 @@ public class SimpleInstrumentTuner
 		BindFactory noteFactory = NoteBindFactory.getInstance();
 		Tuning tuning = (Tuning) noteFactory.unmarshalXml(xmlTuningFile,
 				fileInClasspath, true);
+		setTuning(tuning);
+	}
+
+	public void setTuning(String tuningXmlString) throws Exception
+	{
+		BindFactory noteFactory = NoteBindFactory.getInstance();
+		Tuning tuning = (Tuning) noteFactory
+				.unmarshalXml(tuningXmlString, true);
 		setTuning(tuning);
 	}
 

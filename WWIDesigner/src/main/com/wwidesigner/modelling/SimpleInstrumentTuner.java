@@ -47,13 +47,6 @@ public class SimpleInstrumentTuner
 
 	public Map<Fingering, Double> getTuning()
 	{
-		InstrumentTuningTable table = getTuning(title);
-
-		table.showTuning();
-	}
-
-	public InstrumentTuningTable getTuning(String title)
-	{
 		calculator.setInstrument(instrument);
 		calculator.setPhysicalParameters(params);
 
@@ -90,6 +83,13 @@ public class SimpleInstrumentTuner
 
 	public void showTuning(String title)
 	{
+		InstrumentTuningTable table = makeInstrumentTuningTable(title);
+
+		table.showTuning();
+	}
+
+	protected InstrumentTuningTable makeInstrumentTuningTable(String title)
+	{
 		Map<Fingering, Double> fingeringMap = getTuning();
 
 		InstrumentTuningTable table = new InstrumentTuningTable(title);
@@ -104,7 +104,7 @@ public class SimpleInstrumentTuner
 
 	public JTable getTuningTable(String title)
 	{
-		InstrumentTuningTable table = getTuning(title);
+		InstrumentTuningTable table = makeInstrumentTuningTable(title);
 
 		return table.getTuningTable();
 	}

@@ -51,13 +51,20 @@ public class InstrumentTuningTable
 			values[2] = format.format(Double.NaN);
 			values[3] = format.format(Double.NaN);
 		}
-		
+
 		model.addRow(values);
 	}
 
 	public static double getCents(double freqRatio)
 	{
 		return 1200. * Math.log(freqRatio) / Math.log(2.);
+	}
+
+	public JTable getTuningTable()
+	{
+		JTable table = new JTable(model);
+
+		return table;
 	}
 
 	public void showTuning()
@@ -68,8 +75,8 @@ public class InstrumentTuningTable
 			{
 				JTable table = new JTable(model);
 				JFrame frame = new JFrame(title);
-				frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-				frame.setSize(800, 600);
+//				frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+				frame.setSize(550, 300);
 				frame.getContentPane().add(new JScrollPane(table));
 				frame.setVisible(true);
 			}

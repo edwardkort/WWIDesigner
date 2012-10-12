@@ -24,6 +24,7 @@ import com.jidesoft.app.framework.event.EventSubscriber;
 import com.jidesoft.app.framework.event.SubscriberEvent;
 import com.jidesoft.app.framework.file.FileDataModel;
 import com.jidesoft.app.framework.gui.DataViewPane;
+import com.jidesoft.app.framework.gui.filebased.FileBasedApplication;
 import com.jidesoft.tree.TreeUtils;
 import com.wwidesigner.geometry.bind.GeometryBindFactory;
 import com.wwidesigner.gui.StudyModel.Category;
@@ -75,11 +76,11 @@ public class StudyView extends DataViewPane implements EventSubscriber
 		study = new StudyModel();
 		updateView();
 
-		getApplication().getEventManager().subscribe("FileOpened", this);
-		getApplication().getEventManager().subscribe("FileClosed", this);
+		getApplication().getEventManager().subscribe(NafOptimizationRunner.FILE_OPENED_EVENT_ID, this);
+		getApplication().getEventManager().subscribe(NafOptimizationRunner.FILE_CLOSED_EVENT_ID, this);
 	}
 
-	public void updateView()
+	protected void updateView()
 	{
 		DefaultMutableTreeNode root = new DefaultMutableTreeNode();
 		List<TreePath> selectionPaths = new ArrayList<TreePath>();
@@ -111,6 +112,16 @@ public class StudyView extends DataViewPane implements EventSubscriber
 		tree.setModel(model);
 		TreeUtils.expandAll(tree);
 		tree.setSelectionPaths(selectionPaths.toArray(new TreePath[0]));
+		updateActions();
+	}
+
+	protected void updateActions()
+	{
+		boolean canDo = study.canTune();
+		getApplication().getEventManager().publish(NafOptimizationRunner.TUNING_ACTIVE_EVENT_ID, canDo);
+
+		canDo = study.canOptimize();
+		getApplication().getEventManager().publish(NafOptimizationRunner.OPTIMIZATION_ACTIVE_EVENT_ID, canDo);
 	}
 
 	@Override
@@ -124,12 +135,12 @@ public class StudyView extends DataViewPane implements EventSubscriber
 			if (categoryName != null)
 			{
 				Category category = study.getCategory(categoryName);
-				if (event.getEvent().equals("FileOpened"))
+				if (event.getEvent().equals(NafOptimizationRunner.FILE_OPENED_EVENT_ID))
 				{
 					category.addSub(source.getName(), source);
 					updateView();
 				}
-				else if (event.getEvent().equals("FileClosed"))
+				else if (event.getEvent().equals(NafOptimizationRunner.FILE_CLOSED_EVENT_ID))
 				{
 					String subName = source.getName();
 					if (subName.equals(category.getSelectedSub()))
@@ -144,7 +155,7 @@ public class StudyView extends DataViewPane implements EventSubscriber
 		}
 	}
 
-	private String getCategoryName(String xmlString)
+	protected String getCategoryName(String xmlString)
 	{
 		// Check Instrument
 		BindFactory bindFactory = GeometryBindFactory.getInstance();
@@ -161,6 +172,51 @@ public class StudyView extends DataViewPane implements EventSubscriber
 		}
 
 		return null;
+	}
+
+	public void getTuning()
+	{
+		try
+		{
+			study.calculateTuning("Tuning");
+		}
+		catch (Exception e)
+		{
+			System.out.println(e);
+		}
+	}
+
+	public void optimizeInstrument()
+	{
+		try
+		{
+			FileBasedApplication app = (FileBasedApplication) getApplication();
+			DataModel data = app.newData("xml");
+			CodeEditorView view = (CodeEditorView) app.getDataView(data);
+			String xmlInstrument = study.optimizeInstrument();
+			view.setText(xmlInstrument);
+			view.updateModel(data);
+			addDataModelToStudy(data);
+		}
+		catch (Exception e)
+		{
+			System.out.println(e);
+		}
+	}
+
+	private void addDataModelToStudy(DataModel dataModel)
+	{
+		if (dataModel instanceof FileDataModel)
+		{
+			String data = (String) ((FileDataModel) dataModel).getData();
+			String categoryName = getCategoryName(data);
+			if (categoryName != null)
+			{
+				Category category = study.getCategory(categoryName);
+				category.addSub(dataModel.getName(), dataModel);
+				updateView();
+			}
+		}
 	}
 
 }

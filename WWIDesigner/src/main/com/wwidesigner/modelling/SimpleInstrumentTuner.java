@@ -3,6 +3,8 @@
  */
 package com.wwidesigner.modelling;
 
+import javax.swing.JTable;
+
 import com.wwidesigner.geometry.Instrument;
 import com.wwidesigner.geometry.bind.GeometryBindFactory;
 import com.wwidesigner.note.Fingering;
@@ -42,6 +44,13 @@ public class SimpleInstrumentTuner
 
 	public void showTuning(String title)
 	{
+		InstrumentTuningTable table = getTuning(title);
+
+		table.showTuning();
+	}
+
+	public InstrumentTuningTable getTuning(String title)
+	{
 		calculator.setInstrument(instrument);
 		calculator.setPhysicalParameters(params);
 
@@ -59,7 +68,14 @@ public class SimpleInstrumentTuner
 			table.addTuning(fingering, playedFrequency);
 		}
 
-		table.showTuning();
+		return table;
+	}
+
+	public JTable getTuningTable(String title)
+	{
+		InstrumentTuningTable table = getTuning(title);
+
+		return table.getTuningTable();
 	}
 
 	/**
@@ -71,11 +87,20 @@ public class SimpleInstrumentTuner
 		this.instrument = instrument;
 	}
 
-	public void setInstrument(String xmlInstrumentFile, boolean fileInClasspath) throws Exception
+	public void setInstrument(String xmlInstrumentFile, boolean fileInClasspath)
+			throws Exception
 	{
 		BindFactory geomFactory = GeometryBindFactory.getInstance();
 		Instrument instrument = (Instrument) geomFactory.unmarshalXml(
 				xmlInstrumentFile, fileInClasspath, true);
+		setInstrument(instrument);
+	}
+
+	public void setInstrument(String instrumentXmlString) throws Exception
+	{
+		BindFactory geomFactory = GeometryBindFactory.getInstance();
+		Instrument instrument = (Instrument) geomFactory.unmarshalXml(
+				instrumentXmlString, true);
 		setInstrument(instrument);
 	}
 
@@ -88,10 +113,20 @@ public class SimpleInstrumentTuner
 		this.tuning = tuning;
 	}
 
-	public void setTuning(String xmlTuningFile, boolean fileInClasspath) throws Exception
+	public void setTuning(String xmlTuningFile, boolean fileInClasspath)
+			throws Exception
 	{
 		BindFactory noteFactory = NoteBindFactory.getInstance();
-		Tuning tuning = (Tuning) noteFactory.unmarshalXml(xmlTuningFile, fileInClasspath, true);
+		Tuning tuning = (Tuning) noteFactory.unmarshalXml(xmlTuningFile,
+				fileInClasspath, true);
+		setTuning(tuning);
+	}
+
+	public void setTuning(String tuningXmlString) throws Exception
+	{
+		BindFactory noteFactory = NoteBindFactory.getInstance();
+		Tuning tuning = (Tuning) noteFactory
+				.unmarshalXml(tuningXmlString, true);
 		setTuning(tuning);
 	}
 

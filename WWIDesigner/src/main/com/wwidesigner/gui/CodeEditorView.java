@@ -1,5 +1,11 @@
 package com.wwidesigner.gui;
 
+import java.awt.Dimension;
+import java.awt.print.Pageable;
+
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+
 import com.jidesoft.app.framework.BasicDataModel;
 import com.jidesoft.app.framework.DataModel;
 import com.jidesoft.app.framework.gui.ComponentPageable;
@@ -7,20 +13,12 @@ import com.jidesoft.app.framework.gui.DataViewPane;
 import com.jidesoft.editor.CodeEditor;
 import com.jidesoft.editor.language.LanguageSpecManager;
 
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
-import java.awt.*;
-import java.awt.print.Pageable;
-
 /**
  * CodeEditorView.java
  * <p>
- * Facilitates a DataView using the JIDE <code>CodeEditor</code> with the "Java"
+ * Facilitates a DataView using the JIDE <code>CodeEditor</code> with the "XML"
  * language spec.
- * <p>
- * Used in demos: <code>SimpleCodeEditor</code>
  */
-@SuppressWarnings("serial")
 public class CodeEditorView extends DataViewPane
 {
 	private CodeEditor codeEditor;
@@ -75,13 +73,19 @@ public class CodeEditorView extends DataViewPane
 		}
 	}
 
+	public void setText(String text)
+	{
+		codeEditor.setText(text);
+	}
+
 	public void updateModel(DataModel dataModel)
 	{
 		((BasicDataModel) dataModel).setData(codeEditor.getText());
 	}
-	
-    public Pageable getPageable() {
-    	return new ComponentPageable(codeEditor);
-    }
+
+	public Pageable getPageable()
+	{
+		return new ComponentPageable(codeEditor);
+	}
 
 }

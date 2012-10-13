@@ -69,13 +69,21 @@ public class InstrumentTuningTable
 
 	public void showTuning()
 	{
+		showTuning(true);
+	}
+
+	public void showTuning(final boolean exitOnClose)
+	{
 		SwingUtilities.invokeLater(new Runnable()
 		{
 			public void run()
 			{
 				JTable table = new JTable(model);
 				JFrame frame = new JFrame(title);
-//				frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+				if (exitOnClose)
+				{
+					frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+				}
 				frame.setSize(550, 300);
 				frame.getContentPane().add(new JScrollPane(table));
 				frame.setVisible(true);

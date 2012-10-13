@@ -26,7 +26,7 @@ public class GordonHoleCalculator extends HoleCalculator
 	protected void updateGeometry(Hole hole)
 	{
 		mRB = hole.getBoreDiameter() / 2.;
-		mRH = 0.92 * hole.getDiameter() / 2.; // Multiplier set by eye to fit LightG6HoleNaf tuning.
+		mRH = 0.912 * hole.getDiameter() / 2.; // Multiplier set by eye to fit LightG6HoleNaf tuning.
 		mLH = hole.getHeight();
 		mRC = hole.getInnerCurvatureRadius() == null ? 0.0005 : hole
 				.getInnerCurvatureRadius();

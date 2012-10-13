@@ -83,9 +83,14 @@ public class SimpleInstrumentTuner
 
 	public void showTuning(String title)
 	{
+		showTuning(title, true);
+	}
+
+	public void showTuning(String title, boolean exitOnTableClose)
+	{
 		InstrumentTuningTable table = makeInstrumentTuningTable(title);
 
-		table.showTuning();
+		table.showTuning(exitOnTableClose);
 	}
 
 	protected InstrumentTuningTable makeInstrumentTuningTable(String title)

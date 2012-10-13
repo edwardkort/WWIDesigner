@@ -13,6 +13,8 @@ import com.jidesoft.app.framework.file.FileDataModel;
 import com.wwidesigner.geometry.Instrument;
 import com.wwidesigner.geometry.bind.GeometryBindFactory;
 import com.wwidesigner.modelling.GordonCalculator;
+import com.wwidesigner.modelling.InstrumentCalculator;
+import com.wwidesigner.modelling.NAFCalculator;
 import com.wwidesigner.modelling.SimpleInstrumentTuner;
 import com.wwidesigner.optimization.FippleFactorOptimizer;
 import com.wwidesigner.optimization.HoleGroupSpacingOptimizer;
@@ -34,6 +36,10 @@ public class StudyModel
 	public static final String TUNING_CATEGORY_ID = "Tuning";
 	public static final String OPTIMIZER_CATEGORY_ID = "Optimizer";
 	public static final String CONSTRAINT_CATEGORY_ID = "Constraint set";
+	public static final String CALCULATOR_CATEGORY_ID = "Instrument calculator";
+
+	public static final String GORDON_CALC_SUB_CATEGORY_ID = "Gordon calculator";
+	public static final String NAF_CALC_SUB_CATEGORY_ID = "NAF calculator";
 
 	public static final String FIPPLE_OPT_SUB_CATEGORY_ID = "Fipple-factor Optimizer";
 	public static final String GROUP_OPT_SUB_CATEGORY_ID = "Hole-grouping Optimizer";
@@ -55,6 +61,10 @@ public class StudyModel
 		categories = new ArrayList<Category>();
 		categories.add(new Category(INSTRUMENT_CATEGORY_ID));
 		categories.add(new Category(TUNING_CATEGORY_ID));
+		Category calculators = new Category(CALCULATOR_CATEGORY_ID);
+		calculators.addSub(GORDON_CALC_SUB_CATEGORY_ID, null);
+		calculators.addSub(NAF_CALC_SUB_CATEGORY_ID, null);
+		categories.add(calculators);
 		Category optimizers = new Category(OPTIMIZER_CATEGORY_ID);
 		optimizers.addSub(FIPPLE_OPT_SUB_CATEGORY_ID, null);
 		optimizers.addSub(NO_GROUP_OPT_SUB_CATEGORY_ID, null);
@@ -158,7 +168,11 @@ public class StudyModel
 		Category instrumentCategory = getCategory(INSTRUMENT_CATEGORY_ID);
 		String instrumentSelected = instrumentCategory.getSelectedSub();
 
-		return tuningSelected != null && instrumentSelected != null;
+		Category calculatorCategory = getCategory(CALCULATOR_CATEGORY_ID);
+		String calculatorSelected = calculatorCategory.getSelectedSub();
+
+		return tuningSelected != null && instrumentSelected != null
+				&& calculatorSelected != null;
 	}
 
 	public boolean canOptimize()
@@ -189,16 +203,18 @@ public class StudyModel
 		model.getApplication().getDataView(model).updateModel(model);
 		tuner.setTuning((String) model.getData());
 
-		tuner.setCalculator(new GordonCalculator());
+		tuner.setCalculator(getCalculator());
 
 		tuner.setParams(new PhysicalParameters(72.0, TemperatureType.F));
 
-		tuner.showTuning(title + ": " + instrumentName + "/" + tuningName);
+		tuner.showTuning(title + ": " + instrumentName + "/" + tuningName,
+				false);
 	}
 
 	public String optimizeInstrument() throws Exception
 	{
 		BaseOptimizationRunner runner = setOptimizationRunner();
+		runner.setCalculator(getCalculator());
 		setConstraints(runner);
 
 		String xmlString = getSelectedXmlString(INSTRUMENT_CATEGORY_ID);
@@ -213,6 +229,25 @@ public class StudyModel
 		xmlString = marshal(instrument);
 
 		return xmlString;
+	}
+
+	private InstrumentCalculator getCalculator()
+	{
+		Category calculatorCategory = getCategory(CALCULATOR_CATEGORY_ID);
+		String calculatorSelected = calculatorCategory.getSelectedSub();
+		InstrumentCalculator calculator = null;
+
+		switch (calculatorSelected)
+		{
+			case GORDON_CALC_SUB_CATEGORY_ID:
+				calculator = new GordonCalculator();
+				break;
+			case NAF_CALC_SUB_CATEGORY_ID:
+				calculator = new NAFCalculator();
+				break;
+		}
+		
+		return calculator;
 	}
 
 	private String marshal(Instrument instrument) throws Exception
@@ -238,7 +273,6 @@ public class StudyModel
 
 	protected void setConstraints(BaseOptimizationRunner runner)
 	{
-		runner.setCalculator(new GordonCalculator());
 		Category constraintCategory = getCategory(CONSTRAINT_CATEGORY_ID);
 		String constraint = constraintCategory.getSelectedSub();
 		Category optimizerCategory = getCategory(OPTIMIZER_CATEGORY_ID);

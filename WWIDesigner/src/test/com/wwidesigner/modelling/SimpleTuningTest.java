@@ -73,7 +73,7 @@ public class SimpleTuningTest
 		{
 			Note note = entry.getKey().getNote();
 			assertEquals(note.getName() + " tuning incorrect",
-					note.getFrequency(), entry.getValue(), 20.);
+					note.getFrequency(), entry.getValue(), 13.);
 		}
 	}
 

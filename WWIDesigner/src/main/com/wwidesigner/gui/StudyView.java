@@ -159,16 +159,16 @@ public class StudyView extends DataViewPane implements EventSubscriber
 	{
 		// Check Instrument
 		BindFactory bindFactory = GeometryBindFactory.getInstance();
-		if (bindFactory.isValidXml(xmlString, "Instrument", true))
+		if (bindFactory.isValidXml(xmlString, "Instrument", true)) // TODO Make constants in binding framework
 		{
-			return "Instrument";
+			return StudyModel.INSTRUMENT_CATEGORY_ID;
 		}
 
 		// Check Tuning
 		bindFactory = NoteBindFactory.getInstance();
-		if (bindFactory.isValidXml(xmlString, "Tuning", true))
+		if (bindFactory.isValidXml(xmlString, "Tuning", true)) // TODO Make constants in binding framework
 		{
-			return "Tuning";
+			return StudyModel.TUNING_CATEGORY_ID;
 		}
 
 		return null;
@@ -178,7 +178,7 @@ public class StudyView extends DataViewPane implements EventSubscriber
 	{
 		try
 		{
-			study.calculateTuning("Tuning");
+			study.calculateTuning("Tuning"); // This a title, not a constant
 		}
 		catch (Exception e)
 		{

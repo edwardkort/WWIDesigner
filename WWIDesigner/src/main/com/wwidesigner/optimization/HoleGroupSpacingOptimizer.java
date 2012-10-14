@@ -191,6 +191,13 @@ public class HoleGroupSpacingOptimizer extends InstrumentOptimizer
 	@Override
 	public void updateGeometry(double[] stateVector)
 	{
+		prepareGeometryUpdate(stateVector);
+
+		instrument.updateComponents();
+	}
+
+	protected void prepareGeometryUpdate(double[] stateVector)
+	{
 		PositionInterface[] sortedPoints = Instrument.sortList(instrument
 				.getBorePoint());
 		PositionInterface[] sortedHoles = Instrument.sortList(instrument
@@ -217,8 +224,6 @@ public class HoleGroupSpacingOptimizer extends InstrumentOptimizer
 			Hole hole = (Hole) sortedHoles[i];
 			hole.setRatio(stateVector[1 + numberOfHoleSpaces + i]);
 		}
-
-		instrument.updateComponents();
 	}
 
 	/*

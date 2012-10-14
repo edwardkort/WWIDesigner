@@ -19,6 +19,7 @@ public class BasicImpedanceOptimizationFunction implements
 {
 	private InstrumentOptimizerInterface optimizer;
 	private List<Fingering> fingeringTargets;
+	protected int iterationsDone;
 
 	public BasicImpedanceOptimizationFunction(
 			InstrumentOptimizerInterface optimizer, TuningInterface tuning)
@@ -39,7 +40,7 @@ public class BasicImpedanceOptimizationFunction implements
 	{
 		optimizer.updateGeometry(state_vector);
 		double error = calculateErrorNorm();
-		System.out.println(error);
+		iterationsDone++;
 		return error;
 	}
 
@@ -65,6 +66,12 @@ public class BasicImpedanceOptimizationFunction implements
 			norm += error * error;
 		}
 		return norm;
+	}
+
+	@Override
+	public int getIterationsDone()
+	{
+		return iterationsDone;
 	}
 
 }

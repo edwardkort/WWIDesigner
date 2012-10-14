@@ -20,6 +20,7 @@ import com.wwidesigner.optimization.FippleFactorOptimizer;
 import com.wwidesigner.optimization.HoleGroupSpacingOptimizer;
 import com.wwidesigner.optimization.HolePosAndDiamImpedanceOptimizer;
 import com.wwidesigner.optimization.InstrumentOptimizer;
+import com.wwidesigner.optimization.SingleTaperHoleGroupingOptimizer;
 import com.wwidesigner.optimization.run.BaseOptimizationRunner;
 import com.wwidesigner.optimization.run.HoleGroupSpacingOptimizationRunnner;
 import com.wwidesigner.util.BindFactory;
@@ -44,6 +45,7 @@ public class StudyModel
 	public static final String FIPPLE_OPT_SUB_CATEGORY_ID = "Fipple-factor Optimizer";
 	public static final String GROUP_OPT_SUB_CATEGORY_ID = "Hole-grouping Optimizer";
 	public static final String NO_GROUP_OPT_SUB_CATEGORY_ID = "No-hole-grouping Optimizer";
+	public static final String TAPER_GROUP_OPT_SUB_CATEGORY_ID = "Taper, hole-grouping Optimizer";
 
 	public static final String HOLE_0_CONS_SUB_CATEGORY_ID = "0 holes";
 	public static final String HOLE_6_CONS_SUB_CATEGORY_ID = "6 holes";
@@ -69,6 +71,7 @@ public class StudyModel
 		optimizers.addSub(FIPPLE_OPT_SUB_CATEGORY_ID, null);
 		optimizers.addSub(NO_GROUP_OPT_SUB_CATEGORY_ID, null);
 		optimizers.addSub(GROUP_OPT_SUB_CATEGORY_ID, null);
+		optimizers.addSub(TAPER_GROUP_OPT_SUB_CATEGORY_ID, null);
 		categories.add(optimizers);
 		Category constraints = new Category(CONSTRAINT_CATEGORY_ID);
 		constraints.addSub(HOLE_0_CONS_SUB_CATEGORY_ID, null);
@@ -246,7 +249,7 @@ public class StudyModel
 				calculator = new NAFCalculator();
 				break;
 		}
-		
+
 		return calculator;
 	}
 
@@ -355,6 +358,47 @@ public class StudyModel
 										{ 3, 4, 5 }, { 6 } });
 						break;
 				}
+				break;
+			case TAPER_GROUP_OPT_SUB_CATEGORY_ID:
+				switch (constraint)
+				{
+					case HOLE_0_CONS_SUB_CATEGORY_ID:
+						runner.setOptimizerClass(HolePosAndDiamImpedanceOptimizer.class);
+						runner.setLowerBound(new double[] { 0.25 });
+						runner.setUpperBound(new double[] { 0.4 });
+						runner.setOptimizerType(InstrumentOptimizer.OptimizerType.CMAESOptimizer);
+						runner.setNumberOfInterpolationPoints(2);
+						break;
+					case HOLE_6_CONS_SUB_CATEGORY_ID:
+						runner.setOptimizerClass(SingleTaperHoleGroupingOptimizer.class);
+						runner.setLowerBound(new double[] { 0.2, 0.012, 0.012,
+								0.012, 0.05, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.5,
+								0.0, 0.0 });
+						runner.setUpperBound(new double[] { 0.5, 0.032, 0.1,
+								0.032, 0.2, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 2.0,
+								0.5, 0.5 });
+						runner.setOptimizerType(InstrumentOptimizer.OptimizerType.BOBYQAOptimizer);
+						runner.setNumberOfInterpolationPoints(28);
+						((HoleGroupSpacingOptimizationRunnner) runner)
+								.setHoleGroups(new int[][] { { 0, 1, 2 },
+										{ 3, 4, 5 } });
+						break;
+					case HOLE_7_CONS_SUB_CATEGORY_ID:
+						runner.setOptimizerClass(SingleTaperHoleGroupingOptimizer.class);
+						runner.setLowerBound(new double[] { 0.2, 0.012, 0.012,
+								0.012, 0.0005, 0.05, 0.1, 0.1, 0.1, 0.1, 0.1,
+								0.05, 0.05, 0.5, 0.0, 0.0 });
+						runner.setUpperBound(new double[] { 0.5, 0.032, 0.05,
+								0.032, 0.003, 0.2, 0.7, 0.7, 0.7, 0.7, 0.7, 0.4,
+								0.4, 2.0, 0.5, 0.5 });
+						runner.setOptimizerType(InstrumentOptimizer.OptimizerType.BOBYQAOptimizer);
+						runner.setNumberOfInterpolationPoints(32);
+						((HoleGroupSpacingOptimizationRunnner) runner)
+								.setHoleGroups(new int[][] { { 0, 1, 2 },
+										{ 3, 4, 5 }, { 6 } });
+						break;
+				}
+				break;
 		}
 	}
 
@@ -363,8 +407,9 @@ public class StudyModel
 		Category optimizerCategory = getCategory(OPTIMIZER_CATEGORY_ID);
 		Category constraintCategory = getCategory(CONSTRAINT_CATEGORY_ID);
 
-		if (GROUP_OPT_SUB_CATEGORY_ID
-				.equals(optimizerCategory.getSelectedSub())
+		if ((GROUP_OPT_SUB_CATEGORY_ID.equals(optimizerCategory
+				.getSelectedSub()) || TAPER_GROUP_OPT_SUB_CATEGORY_ID
+				.equals(optimizerCategory.getSelectedSub()))
 				&& !HOLE_0_CONS_SUB_CATEGORY_ID.equals(constraintCategory
 						.getSelectedSub()))
 		{
@@ -373,5 +418,4 @@ public class StudyModel
 
 		return new BaseOptimizationRunner();
 	}
-
 }

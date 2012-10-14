@@ -10,6 +10,7 @@ public class TuningOptimizationFunction implements
 {
 	private InstrumentOptimizerInterface optimizer;
 	private List<Fingering> fingeringTargets;
+	protected int iterationsDone;
 
 	public TuningOptimizationFunction(InstrumentOptimizerInterface optimizer,
 			TuningInterface tuning)
@@ -31,7 +32,7 @@ public class TuningOptimizationFunction implements
 		optimizer.updateGeometry(state_vector);
 		double error = calculateErrorNorm();
 
-		System.out.println(error);
+		iterationsDone++;
 		return error;
 	}
 
@@ -63,6 +64,12 @@ public class TuningOptimizationFunction implements
 		}
 
 		return norm;
+	}
+
+	@Override
+	public int getIterationsDone()
+	{
+		return iterationsDone;
 	}
 
 }

@@ -5,7 +5,6 @@ package com.wwidesigner.optimization.run;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.OutputStreamWriter;
 import java.lang.reflect.Constructor;
 
 import com.wwidesigner.geometry.Instrument;
@@ -157,10 +156,6 @@ public class BaseOptimizationRunner
 
 		// Convert back to the input unit-of-measure values
 		instrument.convertToLengthType();
-
-		BindFactory bindFactory = GeometryBindFactory.getInstance();
-		bindFactory
-				.marshalToXml(instrument, new OutputStreamWriter(System.out));
 
 		// The optimizer modifies the input Instrument instance
 		return instrument;

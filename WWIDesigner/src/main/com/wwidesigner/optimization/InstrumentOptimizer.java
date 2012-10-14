@@ -26,14 +26,16 @@ public abstract class InstrumentOptimizer implements
 	public abstract void setOptimizationFunction();
 
 	public InstrumentOptimizer(int numberOfInterpolationPoints,
-			Instrument inst, InstrumentCalculator calculator, TuningInterface tuning)
+			Instrument inst, InstrumentCalculator calculator,
+			TuningInterface tuning)
 	{
 		// Default to a BOBYQAOptimizer
 		// The number of interpolation point
 		// should be set according
 		// to the number of variables in the optimization problem,
 		// which depends on the OptimizableInstrument
-		setBaseOptimizer(OptimizerType.BOBYQAOptimizer, numberOfInterpolationPoints);
+		setBaseOptimizer(OptimizerType.BOBYQAOptimizer,
+				numberOfInterpolationPoints);
 
 		this.instrument = inst;
 		this.instrumentCalculator = calculator;
@@ -58,10 +60,11 @@ public abstract class InstrumentOptimizer implements
 		this.upperBnd = upperBound;
 	}
 
-	public void setBaseOptimizer(OptimizerType baseOptimizerType, int numberOfInterpolationPoints)
+	public void setBaseOptimizer(OptimizerType baseOptimizerType,
+			int numberOfInterpolationPoints)
 	{
 		this.numberOfInterpolationPoints = numberOfInterpolationPoints;
-		
+
 		switch (baseOptimizerType)
 		{
 			case BOBYQAOptimizer:
@@ -96,11 +99,13 @@ public abstract class InstrumentOptimizer implements
 	{
 		double[] startPoint = getStateVector();
 		setOptimizationFunction();
+		double startError = optimizationFunction.calculateErrorNorm();
 		baseOptimizer.optimize(25000, optimizationFunction, GoalType.MINIMIZE,
 				startPoint, lowerBnd, upperBnd);
-		double error = optimizationFunction.calculateErrorNorm();
-		System.out.print("Final optimization error: ");
-		System.out.println(error);
+		double endError = optimizationFunction.calculateErrorNorm();
+		int iterations = optimizationFunction.getIterationsDone();
+		System.out.println("Optimization residual: " + endError / startError
+				+ " in " + iterations + " iterations");
 	}
 
 	public enum OptimizerType

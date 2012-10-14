@@ -6,5 +6,7 @@ public interface OptimizationFunctionInterface extends MultivariateFunction
 {
 
 	public abstract double calculateErrorNorm();
+	
+	public abstract int getIterationsDone();
 
 }

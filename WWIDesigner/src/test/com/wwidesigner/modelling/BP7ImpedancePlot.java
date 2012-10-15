@@ -37,8 +37,8 @@ public class BP7ImpedancePlot
 		BP7ImpedancePlot plot = new BP7ImpedancePlot();
 		try
 		{
-			String inputInstrumentXML = "com/wwidesigner/geometry/bind/example/BP7.xml";
-			String inputTuningXML = "com/wwidesigner/note/bind/example/BP7-tuning.xml";
+			String inputInstrumentXML = "com/wwidesigner/optimization/example/BP7.xml";
+			String inputTuningXML = "com/wwidesigner/optimization/example/BP7-tuning.xml";
 
 			PhysicalParameters params = new PhysicalParameters(28.2,
 					TemperatureType.C);

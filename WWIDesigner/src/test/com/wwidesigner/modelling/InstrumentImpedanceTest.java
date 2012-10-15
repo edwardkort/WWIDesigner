@@ -33,8 +33,8 @@ public class InstrumentImpedanceTest
 {
 	// Standard instrument, and its measured tuning.
 
-	protected String inputInstrumentXML = "com/wwidesigner/geometry/bind/example/BP7.xml";
-	protected String inputTuningXML = "com/wwidesigner/note/bind/example/BP7-tuning.xml";
+	protected String inputInstrumentXML = "com/wwidesigner/optimization/example/BP7.xml";
+	protected String inputTuningXML = "com/wwidesigner/optimization/example/BP7-tuning.xml";
 
 	/**
 	 * For the standard instrument, test the calculation of impedance against known zeros,
@@ -52,11 +52,10 @@ public class InstrumentImpedanceTest
 			Tuning tuning = getTuningFromXml(inputTuningXML);
 			List<Fingering>  noteList = tuning.getFingering();
 
-			Double fmax[] = { 589.49699364, 665.95846589, 740.62596732,
-					790.25253027, 895.41223635, 1000.04547471, 1080.97410484,
-					1139.23859984, 1201.28218389, 1336.22103577, 1487.47285037,
-					1588.12692212, 1787.297483, 1992.58680484, 2045.42056261,
-					2233.64276274, 2433.04456904, 912.91065873 };
+			Double fmax[]
+					  = { 588.,   665.,   741.,   791.,   899.,  1005.,  1087.,  1147.,
+				         1202.,  1333.,  1485.,  1586.,  1787.,  1997.,  2048.,  2245.,
+				         2437.,   908.};
 
 			instrument.convertToMetres();
 			double Z0 = params.calcZ0(instrument.getMouthpiece()
@@ -105,7 +104,7 @@ public class InstrumentImpedanceTest
 			
 			// Test that the average prediction error is close to zero.
 			
-			assertEquals("Average prediction error is not small.", 0.0, totalError/nrPredictions, 0.30 );
+			assertEquals("Average prediction error is not small.", 0.0, totalError/nrPredictions, 0.50 );
 		}
 		catch (Exception e)
 		{

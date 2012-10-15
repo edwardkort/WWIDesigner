@@ -21,7 +21,7 @@ public class WhistleHoleCalculator extends HoleCalculator
 {
 	// For bare (key-less) toneholes, assume the player's finger
 	// occupies a fixed length of the tonehole.
-	private static double AssumedFingerSize = 0.002;
+	private static double AssumedFingerSize = 0.000;
 
 	/*
 	 * (non-Javadoc)
@@ -93,7 +93,7 @@ public class WhistleHoleCalculator extends HoleCalculator
 				ta = (-0.12 - 0.17 * Math.tanh(2.4 * ( hole.getHeight() - AssumedFingerSize ) / radius))
 						* radius * delta * delta * delta * delta;
 				Ys = Complex.valueOf( 0, 
-						- Math.tan(waveNumber * (te-AssumedFingerSize)) / Z0h );
+						Math.tan(waveNumber * (te-AssumedFingerSize)) / Z0h );
 			}
 		}
 		else
@@ -101,7 +101,7 @@ public class WhistleHoleCalculator extends HoleCalculator
 			// Tonehole closed by key.
 			ta = (-0.12 - 0.17 * Math.tanh(2.4 * hole.getHeight() / radius))
 					* radius * delta * delta * delta * delta;
-			Ys = Complex.valueOf( 0, - Math.tan(waveNumber * te) / Z0h );
+			Ys = Complex.valueOf( 0, Math.tan(waveNumber * te) / Z0h );
 		}
 
 		Za = Complex.I.multiply(Z0h * waveNumber * ta);

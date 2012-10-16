@@ -118,7 +118,7 @@ public class DefaultFippleMouthpieceCalculator extends MouthpieceCalculator
 			windwayHeight = DEFAULT_WINDWAY_HEIGHT;
 		}
 
-		double ratio = Math.sqrt(DEFAULT_WINDWAY_HEIGHT / windwayHeight);
+		double ratio = Math.pow(DEFAULT_WINDWAY_HEIGHT / windwayHeight, 1. / 3);
 		double scaledFippleFactor = mouthpiece.getFipple().getFippleFactor()
 				* ratio;
 

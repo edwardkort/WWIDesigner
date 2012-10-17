@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wii:instrument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns:wii="http://www.wwidesigner.com/Instrument"
+         xsi:schemaLocation="http://www.wwidesigner.com/Instrument ../Instrument.xsd ">
+	<name>BP7 Whistle</name>
+	<description>6-hole PVC whistle, high D, A=440 Just Intonation</description>
+	<lengthType>mm</lengthType>
+	<mouthpiece>
+		<position>0.</position>
+		<fipple>
+			<windowLength>5.4</windowLength>
+			<windowWidth>6.5</windowWidth>
+			<windowHeight>3.3</windowHeight>
+			<windwayLength>21.</windwayLength>
+			<windwayHeight>1.4</windwayHeight>
+		</fipple>
+		<beta>0.4</beta>
+	</mouthpiece>
+	<borePoint>
+		<borePosition>0</borePosition>
+		<boreDiameter>11.9</boreDiameter>
+	</borePoint>
+	<borePoint>
+		<borePosition>267.5</borePosition>
+		<boreDiameter>11.9</boreDiameter>
+	</borePoint>
+	<hole>
+		<borePosition>117.0</borePosition>
+		<diameter>5.6</diameter>
+		<height>2.0</height>
+	</hole>
+	<hole>
+		<borePosition>139.5</borePosition>
+		<diameter>6.0</diameter>
+		<height>2.0</height>
+	</hole>
+	<hole>
+		<borePosition>158.5</borePosition>
+		<diameter>6.0</diameter>
+		<height>2.0</height>
+	</hole>
+	<hole>
+		<borePosition>186.5</borePosition>
+		<diameter>6.0</diameter>
+		<height>2.0</height>
+	</hole>
+	<hole>
+		<borePosition>203.0</borePosition>
+		<diameter>7.9</diameter>
+		<height>2.0</height>
+	</hole>
+	<hole>
+		<borePosition>227.5</borePosition>
+		<diameter>7.5</diameter>
+		<height>2.0</height>
+	</hole>
+	<termination>
+		<flangeDiameter>15.9</flangeDiameter>
+	</termination>
+</wii:instrument>

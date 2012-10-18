@@ -50,7 +50,9 @@ public class StudyModel
 	public static final String TAPER_GROUP_OPT_SUB_CATEGORY_ID = "Taper, hole-grouping Optimizer";
 
 	public static final String HOLE_0_CONS_SUB_CATEGORY_ID = "0 holes";
-	public static final String HOLE_6_CONS_SUB_CATEGORY_ID = "6 holes";
+	public static final String HOLE_6_1_125_SPACING_CONS_SUB_CATEGORY_ID = "6 holes, 1-1/8\" max spacing";
+	public static final String HOLE_6_1_25_SPACING_CONS_SUB_CATEGORY_ID = "6 holes, 1-1/4\" max spacing";
+	public static final String HOLE_6_1_5_SPACING_CONS_SUB_CATEGORY_ID = "6 holes, 1-1/2\" max spacing";
 	public static final String HOLE_7_CONS_SUB_CATEGORY_ID = "7 holes";
 
 	private List<Category> categories;
@@ -78,7 +80,9 @@ public class StudyModel
 		categories.add(optimizers);
 		Category constraints = new Category(CONSTRAINT_CATEGORY_ID);
 		constraints.addSub(HOLE_0_CONS_SUB_CATEGORY_ID, null);
-		constraints.addSub(HOLE_6_CONS_SUB_CATEGORY_ID, null);
+		constraints.addSub(HOLE_6_1_125_SPACING_CONS_SUB_CATEGORY_ID, null);
+		constraints.addSub(HOLE_6_1_25_SPACING_CONS_SUB_CATEGORY_ID, null);
+		constraints.addSub(HOLE_6_1_5_SPACING_CONS_SUB_CATEGORY_ID, null);
 		constraints.addSub(HOLE_7_CONS_SUB_CATEGORY_ID, null);
 		categories.add(constraints);
 	}
@@ -335,7 +339,23 @@ public class StudyModel
 						runner.setOptimizerType(InstrumentOptimizer.OptimizerType.CMAESOptimizer);
 						runner.setNumberOfInterpolationPoints(1);
 						break;
-					case HOLE_6_CONS_SUB_CATEGORY_ID:
+					case HOLE_6_1_125_SPACING_CONS_SUB_CATEGORY_ID:
+						runner.setLowerBound(new double[] { 0.1, 0.15, 0.15,
+								0.15, 0.15, 0.15 });
+						runner.setUpperBound(new double[] { 0.5, 0.5, 0.5, 0.5,
+								0.5, 0.6 });
+						runner.setOptimizerType(InstrumentOptimizer.OptimizerType.BOBYQAOptimizer);
+						runner.setNumberOfInterpolationPoints(12);
+						break;
+					case HOLE_6_1_25_SPACING_CONS_SUB_CATEGORY_ID:
+						runner.setLowerBound(new double[] { 0.1, 0.15, 0.15,
+								0.15, 0.15, 0.15 });
+						runner.setUpperBound(new double[] { 0.5, 0.5, 0.5, 0.5,
+								0.5, 0.6 });
+						runner.setOptimizerType(InstrumentOptimizer.OptimizerType.BOBYQAOptimizer);
+						runner.setNumberOfInterpolationPoints(12);
+						break;
+					case HOLE_6_1_5_SPACING_CONS_SUB_CATEGORY_ID:
 						runner.setLowerBound(new double[] { 0.1, 0.15, 0.15,
 								0.15, 0.15, 0.15 });
 						runner.setUpperBound(new double[] { 0.5, 0.5, 0.5, 0.5,
@@ -363,18 +383,32 @@ public class StudyModel
 						runner.setOptimizerType(InstrumentOptimizer.OptimizerType.CMAESOptimizer);
 						runner.setNumberOfInterpolationPoints(2);
 						break;
-					case HOLE_6_CONS_SUB_CATEGORY_ID:
-						// runner.setLowerBound(new double[] { 0.28, 0.01, 0.01,
-						// 0.01, 0.01, 0.01, 0.05, 0.1, 0.15, 0.15, 0.15,
-						// 0.15, 0.15 });
-						// runner.setUpperBound(new double[] { 0.5, 0.03, 0.03,
-						// 0.035, 0.035, 0.035, 0.15, 0.5, 0.5, 0.5, 0.5,
-						// 0.5, 0.6 });
+					case HOLE_6_1_125_SPACING_CONS_SUB_CATEGORY_ID:
 						runner.setLowerBound(new double[] { 0.25, 0.01, 0.01,
 								0.01, 0.01, 0.01, 0.01, 0.1, 0.15, 0.15, 0.15,
 								0.15, 0.15 });
-						runner.setUpperBound(new double[] { 0.6, 0.05, 0.05,
-								0.07, 0.05, 0.05, 0.3, 0.5, 0.5, 0.5, 0.5, 0.5,
+						runner.setUpperBound(new double[] { 0.6, 0.029, 0.029,
+								0.07, 0.029, 0.029, 0.3, 0.5, 0.5, 0.5, 0.5, 0.5,
+								0.6 });
+						runner.setOptimizerType(InstrumentOptimizer.OptimizerType.BOBYQAOptimizer);
+						runner.setNumberOfInterpolationPoints(26);
+						break;
+					case HOLE_6_1_25_SPACING_CONS_SUB_CATEGORY_ID:
+						runner.setLowerBound(new double[] { 0.25, 0.01, 0.01,
+								0.01, 0.01, 0.01, 0.01, 0.1, 0.15, 0.15, 0.15,
+								0.15, 0.15 });
+						runner.setUpperBound(new double[] { 0.6, 0.032, 0.032,
+								0.07, 0.032, 0.032, 0.3, 0.5, 0.5, 0.5, 0.5, 0.5,
+								0.6 });
+						runner.setOptimizerType(InstrumentOptimizer.OptimizerType.BOBYQAOptimizer);
+						runner.setNumberOfInterpolationPoints(26);
+						break;
+					case HOLE_6_1_5_SPACING_CONS_SUB_CATEGORY_ID:
+						runner.setLowerBound(new double[] { 0.25, 0.01, 0.01,
+								0.01, 0.01, 0.01, 0.01, 0.1, 0.15, 0.15, 0.15,
+								0.15, 0.15 });
+						runner.setUpperBound(new double[] { 0.6, 0.038, 0.038,
+								0.07, 0.038, 0.038, 0.3, 0.5, 0.5, 0.5, 0.5, 0.5,
 								0.6 });
 						runner.setOptimizerType(InstrumentOptimizer.OptimizerType.BOBYQAOptimizer);
 						runner.setNumberOfInterpolationPoints(26);
@@ -401,17 +435,36 @@ public class StudyModel
 						runner.setOptimizerType(InstrumentOptimizer.OptimizerType.CMAESOptimizer);
 						runner.setNumberOfInterpolationPoints(2);
 						break;
-					case HOLE_6_CONS_SUB_CATEGORY_ID:
+					case HOLE_6_1_125_SPACING_CONS_SUB_CATEGORY_ID:
 						runner.setOptimizerClass(HoleGroupSpacingOptimizer.class);
-						// runner.setLowerBound(new double[] { 0.2, 0.012,
-						// 0.012,
-						// 0.012, 0.05, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1 });
-						// runner.setUpperBound(new double[] { 0.5, 0.05, 0.1,
-						// 0.05, 0.2, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7 });
 						runner.setLowerBound(new double[] { 0.2, 0.012, 0.012,
 								0.012, 0.05, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1 });
-						runner.setUpperBound(new double[] { 0.8, 0.05, 0.1,
-								0.05, 0.2, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7 });
+						runner.setUpperBound(new double[] { 0.8, 0.029, 0.1,
+								0.029, 0.3, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7 });
+						runner.setOptimizerType(InstrumentOptimizer.OptimizerType.BOBYQAOptimizer);
+						runner.setNumberOfInterpolationPoints(22);
+						((HoleGroupSpacingOptimizationRunnner) runner)
+								.setHoleGroups(new int[][] { { 0, 1, 2 },
+										{ 3, 4, 5 } });
+						break;
+					case HOLE_6_1_25_SPACING_CONS_SUB_CATEGORY_ID:
+						runner.setOptimizerClass(HoleGroupSpacingOptimizer.class);
+						runner.setLowerBound(new double[] { 0.2, 0.012, 0.012,
+								0.012, 0.05, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1 });
+						runner.setUpperBound(new double[] { 0.8, 0.032, 0.1,
+								0.032, 0.3, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7 });
+						runner.setOptimizerType(InstrumentOptimizer.OptimizerType.BOBYQAOptimizer);
+						runner.setNumberOfInterpolationPoints(22);
+						((HoleGroupSpacingOptimizationRunnner) runner)
+								.setHoleGroups(new int[][] { { 0, 1, 2 },
+										{ 3, 4, 5 } });
+						break;
+					case HOLE_6_1_5_SPACING_CONS_SUB_CATEGORY_ID:
+						runner.setOptimizerClass(HoleGroupSpacingOptimizer.class);
+						runner.setLowerBound(new double[] { 0.2, 0.012, 0.012,
+								0.012, 0.05, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1 });
+						runner.setUpperBound(new double[] { 0.8, 0.038, 0.1,
+								0.038, 0.3, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7 });
 						runner.setOptimizerType(InstrumentOptimizer.OptimizerType.BOBYQAOptimizer);
 						runner.setNumberOfInterpolationPoints(22);
 						((HoleGroupSpacingOptimizationRunnner) runner)
@@ -444,20 +497,41 @@ public class StudyModel
 						runner.setOptimizerType(InstrumentOptimizer.OptimizerType.CMAESOptimizer);
 						runner.setNumberOfInterpolationPoints(2);
 						break;
-					case HOLE_6_CONS_SUB_CATEGORY_ID:
+					case HOLE_6_1_125_SPACING_CONS_SUB_CATEGORY_ID:
 						runner.setOptimizerClass(SingleTaperHoleGroupingOptimizer.class);
-						// runner.setLowerBound(new double[] { 0.2, 0.012,
-						// 0.012,
-						// 0.012, 0.05, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.5,
-						// 0.0, 0.0 });
-						// runner.setUpperBound(new double[] { 0.5, 0.032, 0.1,
-						// 0.032, 0.2, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 2.0,
-						// 0.5, 0.5 });
+						runner.setLowerBound(new double[] { 0.2, 0.01, 0.01,
+								0.01, 0.05, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.5,
+								0.0, 0.0 });
+						runner.setUpperBound(new double[] { 0.8, 0.029, 0.1,
+								0.029, 0.3, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 2.0,
+								0.8, 0.8 });
+						runner.setOptimizerType(InstrumentOptimizer.OptimizerType.BOBYQAOptimizer);
+						runner.setNumberOfInterpolationPoints(28);
+						((HoleGroupSpacingOptimizationRunnner) runner)
+								.setHoleGroups(new int[][] { { 0, 1, 2 },
+										{ 3, 4, 5 } });
+						break;
+					case HOLE_6_1_25_SPACING_CONS_SUB_CATEGORY_ID:
+						runner.setOptimizerClass(SingleTaperHoleGroupingOptimizer.class);
 						runner.setLowerBound(new double[] { 0.2, 0.01, 0.01,
 								0.01, 0.05, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.5,
 								0.0, 0.0 });
 						runner.setUpperBound(new double[] { 0.8, 0.032, 0.1,
 								0.032, 0.3, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 2.0,
+								0.8, 0.8 });
+						runner.setOptimizerType(InstrumentOptimizer.OptimizerType.BOBYQAOptimizer);
+						runner.setNumberOfInterpolationPoints(28);
+						((HoleGroupSpacingOptimizationRunnner) runner)
+								.setHoleGroups(new int[][] { { 0, 1, 2 },
+										{ 3, 4, 5 } });
+						break;
+					case HOLE_6_1_5_SPACING_CONS_SUB_CATEGORY_ID:
+						runner.setOptimizerClass(SingleTaperHoleGroupingOptimizer.class);
+						runner.setLowerBound(new double[] { 0.2, 0.01, 0.01,
+								0.01, 0.05, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.5,
+								0.0, 0.0 });
+						runner.setUpperBound(new double[] { 0.8, 0.038, 0.1,
+								0.038, 0.3, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 2.0,
 								0.8, 0.8 });
 						runner.setOptimizerType(InstrumentOptimizer.OptimizerType.BOBYQAOptimizer);
 						runner.setNumberOfInterpolationPoints(28);

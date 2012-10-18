@@ -171,15 +171,13 @@ public class StudyModel
 
 		public void replaceSub(String newName, FileDataModel source)
 		{
-			// Find sub by matching data
-			String data = (String) source.getData();
+			// Find sub by matching dataModel reference
 			String oldName = null;
 			boolean isSelected = false;
 			for (Map.Entry<String, Object> entry : subs.entrySet())
 			{
 				FileDataModel model = (FileDataModel) entry.getValue();
-				String modelData = (String) model.getData();
-				if (data.equals(modelData))
+				if (source.equals(model))
 				{
 					oldName = entry.getKey();
 					break;

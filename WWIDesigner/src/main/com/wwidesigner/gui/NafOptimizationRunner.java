@@ -40,6 +40,7 @@ public class NafOptimizationRunner extends FileBasedApplication implements
 {
 	static final String FILE_OPENED_EVENT_ID = "FileOpened";
 	static final String FILE_CLOSED_EVENT_ID = "FileClosed";
+	static final String FILE_SAVED_EVENT_ID = "FileSaved";
 	static final String TUNING_ACTIVE_EVENT_ID = "TuningActive";
 	static final String OPTIMIZATION_ACTIVE_EVENT_ID = "OptimizationActive";
 
@@ -65,7 +66,7 @@ public class NafOptimizationRunner extends FileBasedApplication implements
 		addApplicationFeature(new AutoInstallActionsFeature());
 		setExitApplicationOnLastDataView(false);
 		setNewDataOnRun(false);
-		
+
 		// window size
 		ApplicationWindowsUI windowsUI = getApplicationUIManager()
 				.getWindowsUI();
@@ -80,7 +81,7 @@ public class NafOptimizationRunner extends FileBasedApplication implements
 		addEvents();
 		addWindowMenuToggles();
 		addToolMenu();
-		
+
 		// The stock JDAF UndoAction and RedoAction are focused on the state of
 		// the UndoManager of the focused DataModel. But the CodeEditor has its
 		// own Undo and Redo actions. So we use a ComponentAction which will
@@ -104,6 +105,13 @@ public class NafOptimizationRunner extends FileBasedApplication implements
 			{
 				NafOptimizationRunner.this.getEventManager().publish(
 						FILE_CLOSED_EVENT_ID, dataModelEvent);
+			}
+
+			@Override
+			public void dataModelSaving(DataModelEvent dataModelEvent)
+			{
+				NafOptimizationRunner.this.getEventManager().publish(
+						FILE_SAVED_EVENT_ID, dataModelEvent);
 			}
 		});
 
@@ -177,9 +185,10 @@ public class NafOptimizationRunner extends FileBasedApplication implements
 		EventManager eventManager = getEventManager();
 		eventManager.addEvent(FILE_OPENED_EVENT_ID);
 		eventManager.addEvent(FILE_CLOSED_EVENT_ID);
+		eventManager.addEvent(FILE_SAVED_EVENT_ID);
 		eventManager.addEvent(TUNING_ACTIVE_EVENT_ID);
 		eventManager.addEvent(OPTIMIZATION_ACTIVE_EVENT_ID);
-		
+
 		eventManager.subscribe(TUNING_ACTIVE_EVENT_ID, this);
 		eventManager.subscribe(OPTIMIZATION_ACTIVE_EVENT_ID, this);
 	}

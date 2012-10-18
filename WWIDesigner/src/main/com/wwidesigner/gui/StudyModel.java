@@ -142,6 +142,10 @@ public class StudyModel
 
 		public void removeSub(String name)
 		{
+			if (name.equals(selectedSub))
+			{
+				selectedSub = null;
+			}
 			subs.remove(name);
 		}
 
@@ -163,6 +167,37 @@ public class StudyModel
 		public Object getSelectedSubValue()
 		{
 			return subs.get(selectedSub);
+		}
+
+		public void replaceSub(String newName, FileDataModel source)
+		{
+			// Find sub by matching data
+			String data = (String) source.getData();
+			String oldName = null;
+			boolean isSelected = false;
+			for (Map.Entry<String, Object> entry : subs.entrySet())
+			{
+				FileDataModel model = (FileDataModel) entry.getValue();
+				String modelData = (String) model.getData();
+				if (data.equals(modelData))
+				{
+					oldName = entry.getKey();
+					break;
+				}
+			}
+			if (oldName != null)
+			{
+				if (oldName.equals(selectedSub))
+				{
+					isSelected = true;
+				}
+				removeSub(oldName);
+			}
+			addSub(newName, source);
+			if (isSelected)
+			{
+				setSelectedSub(newName);
+			}
 		}
 	}
 

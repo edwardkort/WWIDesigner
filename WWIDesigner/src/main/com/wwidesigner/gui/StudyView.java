@@ -78,6 +78,7 @@ public class StudyView extends DataViewPane implements EventSubscriber
 
 		getApplication().getEventManager().subscribe(NafOptimizationRunner.FILE_OPENED_EVENT_ID, this);
 		getApplication().getEventManager().subscribe(NafOptimizationRunner.FILE_CLOSED_EVENT_ID, this);
+		getApplication().getEventManager().subscribe(NafOptimizationRunner.FILE_SAVED_EVENT_ID, this);
 	}
 
 	protected void updateView()
@@ -135,20 +136,20 @@ public class StudyView extends DataViewPane implements EventSubscriber
 			if (categoryName != null)
 			{
 				Category category = study.getCategory(categoryName);
-				if (event.getEvent().equals(NafOptimizationRunner.FILE_OPENED_EVENT_ID))
+				String eventId = event.getEvent();
+				String subName = source.getName();
+				if (NafOptimizationRunner.FILE_OPENED_EVENT_ID.equals(eventId))
 				{
-					category.addSub(source.getName(), source);
+					category.addSub(subName, source);
 					updateView();
 				}
-				else if (event.getEvent().equals(NafOptimizationRunner.FILE_CLOSED_EVENT_ID))
+				else if (NafOptimizationRunner.FILE_CLOSED_EVENT_ID.equals(eventId))
 				{
-					String subName = source.getName();
-					if (subName.equals(category.getSelectedSub()))
-					{
-						category.setSelectedSub(null);
-					}
 					category.removeSub(subName);
-
+					updateView();
+				}
+				else if (NafOptimizationRunner.FILE_SAVED_EVENT_ID.equals(eventId)) {
+					category.replaceSub(subName, (FileDataModel)source);
 					updateView();
 				}
 			}

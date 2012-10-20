@@ -14,8 +14,11 @@ import com.wwidesigner.geometry.Instrument;
 import com.wwidesigner.geometry.bind.GeometryBindFactory;
 import com.wwidesigner.modelling.GordonCalculator;
 import com.wwidesigner.modelling.InstrumentCalculator;
+import com.wwidesigner.modelling.InstrumentRangeTuner;
+import com.wwidesigner.modelling.InstrumentTuner;
 import com.wwidesigner.modelling.NAFCalculator;
 import com.wwidesigner.modelling.SimpleInstrumentTuner;
+import com.wwidesigner.modelling.WhistleCalculator;
 import com.wwidesigner.optimization.FippleFactorOptimizer;
 import com.wwidesigner.optimization.HoleGroupSpacingOptimizer;
 import com.wwidesigner.optimization.HolePosAndDiamImpedanceOptimizer;
@@ -42,6 +45,7 @@ public class StudyModel
 
 	public static final String GORDON_CALC_SUB_CATEGORY_ID = "Gordon calculator";
 	public static final String NAF_CALC_SUB_CATEGORY_ID = "NAF calculator";
+	public static final String WHISTLE_CALC_SUB_CATEGORY_ID = "Whistle calculator";
 
 	public static final String FIPPLE_OPT_SUB_CATEGORY_ID = "Fipple-factor Optimizer";
 	public static final String HOLESIZE_OPT_SUB_CATEGORY_ID = "Hole-size Optimizer";
@@ -70,6 +74,7 @@ public class StudyModel
 		Category calculators = new Category(CALCULATOR_CATEGORY_ID);
 		calculators.addSub(GORDON_CALC_SUB_CATEGORY_ID, null);
 		calculators.addSub(NAF_CALC_SUB_CATEGORY_ID, null);
+		calculators.addSub(WHISTLE_CALC_SUB_CATEGORY_ID, null);
 		categories.add(calculators);
 		Category optimizers = new Category(OPTIMIZER_CATEGORY_ID);
 		optimizers.addSub(FIPPLE_OPT_SUB_CATEGORY_ID, null);
@@ -232,7 +237,18 @@ public class StudyModel
 
 	public void calculateTuning(String title) throws Exception
 	{
-		SimpleInstrumentTuner tuner = new SimpleInstrumentTuner();
+		InstrumentTuner tuner;
+
+		if (getCategory(CALCULATOR_CATEGORY_ID).getSelectedSub() == WHISTLE_CALC_SUB_CATEGORY_ID)
+		{
+			tuner = new InstrumentRangeTuner();
+			tuner.setParams(new PhysicalParameters(28.2, TemperatureType.C));
+		}
+		else
+		{
+			tuner = new SimpleInstrumentTuner();
+			tuner.setParams(new PhysicalParameters(72.0, TemperatureType.F));
+		}
 
 		Category category = this.getCategory(INSTRUMENT_CATEGORY_ID);
 		String instrumentName = category.getSelectedSub();
@@ -247,8 +263,6 @@ public class StudyModel
 		tuner.setTuning((String) model.getData());
 
 		tuner.setCalculator(getCalculator());
-
-		tuner.setParams(new PhysicalParameters(72.0, TemperatureType.F));
 
 		tuner.showTuning(title + ": " + instrumentName + "/" + tuningName,
 				false);
@@ -287,6 +301,9 @@ public class StudyModel
 				break;
 			case NAF_CALC_SUB_CATEGORY_ID:
 				calculator = new NAFCalculator();
+				break;
+			case WHISTLE_CALC_SUB_CATEGORY_ID:
+				calculator = new WhistleCalculator();
 				break;
 		}
 

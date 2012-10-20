@@ -13,6 +13,7 @@ import com.wwidesigner.geometry.bind.GeometryBindFactory;
 import com.wwidesigner.modelling.InstrumentCalculator;
 import com.wwidesigner.note.Fingering;
 import com.wwidesigner.note.InstrumentTuningTable;
+import com.wwidesigner.note.Note;
 import com.wwidesigner.note.Tuning;
 import com.wwidesigner.note.TuningInterface;
 import com.wwidesigner.note.bind.NoteBindFactory;
@@ -178,8 +179,7 @@ public class AbstractOptimizationTest
 	{
 		double maxFreqRatio = 2.;
 		// set accuracy to 0.1 cents
-		int numberOfFrequencies = (int) (10. * InstrumentTuningTable
-				.getCents(maxFreqRatio));
+		int numberOfFrequencies = (int) (10. * Note.cents(1.0,maxFreqRatio));
 
 		InstrumentTuningTable table = new InstrumentTuningTable(title);
 		// instrument.updateComponents();

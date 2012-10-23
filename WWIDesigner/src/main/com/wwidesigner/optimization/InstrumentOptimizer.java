@@ -1,6 +1,8 @@
 package com.wwidesigner.optimization;
 
 import org.apache.commons.math3.optimization.GoalType;
+import org.apache.commons.math3.optimization.MultivariateOptimizer;
+import org.apache.commons.math3.optimization.PointValuePair;
 import org.apache.commons.math3.optimization.direct.BOBYQAOptimizer;
 import org.apache.commons.math3.optimization.direct.BaseAbstractMultivariateSimpleBoundsOptimizer;
 import org.apache.commons.math3.optimization.direct.CMAESOptimizer;
@@ -8,6 +10,10 @@ import org.apache.commons.math3.optimization.direct.CMAESOptimizer;
 import com.wwidesigner.geometry.Instrument;
 import com.wwidesigner.modelling.InstrumentCalculator;
 import com.wwidesigner.note.TuningInterface;
+import com.wwidesigner.optimization.multistart.AbstractRangeProcessor;
+import com.wwidesigner.optimization.multistart.GridRangeProcessor;
+import com.wwidesigner.optimization.multistart.MultivariateMultiStartBoundsOptimizer;
+import com.wwidesigner.optimization.multistart.RandomRangeProcessor;
 
 public abstract class InstrumentOptimizer implements
 		InstrumentOptimizerInterface
@@ -22,6 +28,11 @@ public abstract class InstrumentOptimizer implements
 	protected BaseAbstractMultivariateSimpleBoundsOptimizer baseOptimizer;
 	protected OptimizerType baseOptimizerType;
 	protected int numberOfInterpolationPoints;
+	protected boolean isMultistart = false;
+	protected int numberOfStarts;
+	protected int[] indicesToVary;
+	protected boolean varyStartValuesRandomly;
+	protected int maxStepsPerOptimization = 5000;
 
 	public abstract void setOptimizationFunction();
 
@@ -100,12 +111,46 @@ public abstract class InstrumentOptimizer implements
 		double[] startPoint = getStateVector();
 		setOptimizationFunction();
 		double startError = optimizationFunction.calculateErrorNorm();
-		baseOptimizer.optimize(25000, optimizationFunction, GoalType.MINIMIZE,
-				startPoint, lowerBnd, upperBnd);
-		double endError = optimizationFunction.calculateErrorNorm();
-		int iterations = optimizationFunction.getIterationsDone();
-		System.out.println("Optimization residual: " + endError / startError
-				+ " in " + iterations + " iterations");
+		if (isMultistart)
+		{
+			AbstractRangeProcessor rangeProcessor = null;
+			if (varyStartValuesRandomly) {
+				rangeProcessor = new RandomRangeProcessor(lowerBnd, upperBnd, indicesToVary, numberOfStarts);
+			}
+			else {
+				rangeProcessor = new GridRangeProcessor(lowerBnd, upperBnd, indicesToVary, numberOfStarts);
+			}
+			MultivariateMultiStartBoundsOptimizer optimizer = new MultivariateMultiStartBoundsOptimizer(
+					(MultivariateOptimizer) baseOptimizer, numberOfStarts,
+					rangeProcessor);
+			PointValuePair result = optimizer.optimize(maxStepsPerOptimization
+					* numberOfStarts, optimizationFunction, GoalType.MINIMIZE,
+					startPoint, lowerBnd, upperBnd);
+			this.updateGeometry(result.getKey());
+			double endError = result.getValue();
+			int iterations = optimizer.getEvaluations();
+			System.out.println("Optimization residual: " + endError
+					/ startError + " in " + iterations + " iterations");
+		}
+		else
+		{
+			baseOptimizer.optimize(maxStepsPerOptimization,
+					optimizationFunction, GoalType.MINIMIZE, startPoint,
+					lowerBnd, upperBnd);
+			double endError = optimizationFunction.calculateErrorNorm();
+			int iterations = optimizationFunction.getIterationsDone();
+			System.out.println("Optimization residual: " + endError
+					/ startError + " in " + iterations + " iterations");
+		}
+	}
+
+	public void doMultistart(boolean doMultistart, int numberOfStarts,
+			int[] indicesToVary, boolean varyRandomly)
+	{
+		this.isMultistart = doMultistart;
+		this.numberOfStarts = numberOfStarts;
+		this.indicesToVary = indicesToVary;
+		this.varyStartValuesRandomly = varyRandomly;
 	}
 
 	public enum OptimizerType

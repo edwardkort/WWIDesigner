@@ -52,6 +52,7 @@ public class StudyModel
 	public static final String NO_GROUP_OPT_SUB_CATEGORY_ID = "No-hole-grouping Optimizer";
 	public static final String GROUP_OPT_SUB_CATEGORY_ID = "Hole-grouping Optimizer";
 	public static final String TAPER_GROUP_OPT_SUB_CATEGORY_ID = "Taper, hole-grouping Optimizer";
+	public static final String MULTISTART_TAPER_OPT_SUB_CATEGORY_ID = "Multistart, taper Optimizer";
 
 	public static final String HOLE_0_CONS_SUB_CATEGORY_ID = "0 holes";
 	public static final String HOLE_6_1_125_SPACING_CONS_SUB_CATEGORY_ID = "6 holes, 1-1/8\" max spacing";
@@ -82,6 +83,7 @@ public class StudyModel
 		optimizers.addSub(HOLESIZE_OPT_SUB_CATEGORY_ID, null);
 		optimizers.addSub(GROUP_OPT_SUB_CATEGORY_ID, null);
 		optimizers.addSub(TAPER_GROUP_OPT_SUB_CATEGORY_ID, null);
+		optimizers.addSub(MULTISTART_TAPER_OPT_SUB_CATEGORY_ID, null);
 		categories.add(optimizers);
 		Category constraints = new Category(CONSTRAINT_CATEGORY_ID);
 		constraints.addSub(HOLE_0_CONS_SUB_CATEGORY_ID, null);
@@ -405,8 +407,8 @@ public class StudyModel
 								0.01, 0.01, 0.01, 0.01, 0.1, 0.15, 0.15, 0.15,
 								0.15, 0.15 });
 						runner.setUpperBound(new double[] { 0.6, 0.029, 0.029,
-								0.07, 0.029, 0.029, 0.3, 0.5, 0.5, 0.5, 0.5, 0.5,
-								0.6 });
+								0.07, 0.029, 0.029, 0.3, 0.5, 0.5, 0.5, 0.5,
+								0.5, 0.6 });
 						runner.setOptimizerType(InstrumentOptimizer.OptimizerType.BOBYQAOptimizer);
 						runner.setNumberOfInterpolationPoints(26);
 						break;
@@ -415,8 +417,8 @@ public class StudyModel
 								0.01, 0.01, 0.01, 0.01, 0.1, 0.15, 0.15, 0.15,
 								0.15, 0.15 });
 						runner.setUpperBound(new double[] { 0.6, 0.032, 0.032,
-								0.07, 0.032, 0.032, 0.3, 0.5, 0.5, 0.5, 0.5, 0.5,
-								0.6 });
+								0.07, 0.032, 0.032, 0.3, 0.5, 0.5, 0.5, 0.5,
+								0.5, 0.6 });
 						runner.setOptimizerType(InstrumentOptimizer.OptimizerType.BOBYQAOptimizer);
 						runner.setNumberOfInterpolationPoints(26);
 						break;
@@ -425,8 +427,8 @@ public class StudyModel
 								0.01, 0.01, 0.01, 0.01, 0.1, 0.15, 0.15, 0.15,
 								0.15, 0.15 });
 						runner.setUpperBound(new double[] { 0.6, 0.038, 0.038,
-								0.07, 0.038, 0.038, 0.3, 0.5, 0.5, 0.5, 0.5, 0.5,
-								0.6 });
+								0.07, 0.038, 0.038, 0.3, 0.5, 0.5, 0.5, 0.5,
+								0.5, 0.6 });
 						runner.setOptimizerType(InstrumentOptimizer.OptimizerType.BOBYQAOptimizer);
 						runner.setNumberOfInterpolationPoints(26);
 						break;
@@ -505,6 +507,7 @@ public class StudyModel
 				}
 				break;
 			case TAPER_GROUP_OPT_SUB_CATEGORY_ID:
+			case MULTISTART_TAPER_OPT_SUB_CATEGORY_ID:
 				switch (constraint)
 				{
 					case HOLE_0_CONS_SUB_CATEGORY_ID:
@@ -577,18 +580,35 @@ public class StudyModel
 
 	protected BaseOptimizationRunner setOptimizationRunner()
 	{
-		Category optimizerCategory = getCategory(OPTIMIZER_CATEGORY_ID);
-		Category constraintCategory = getCategory(CONSTRAINT_CATEGORY_ID);
+		String selectedOptimizer = getCategory(OPTIMIZER_CATEGORY_ID)
+				.getSelectedSub();
+		String selectedConstraint = getCategory(CONSTRAINT_CATEGORY_ID)
+				.getSelectedSub();
 
-		if ((GROUP_OPT_SUB_CATEGORY_ID.equals(optimizerCategory
-				.getSelectedSub()) || TAPER_GROUP_OPT_SUB_CATEGORY_ID
-				.equals(optimizerCategory.getSelectedSub()))
-				&& !HOLE_0_CONS_SUB_CATEGORY_ID.equals(constraintCategory
-						.getSelectedSub()))
+		BaseOptimizationRunner runner = null;
+
+		if (HOLE_0_CONS_SUB_CATEGORY_ID.equals(selectedConstraint))
 		{
-			return new HoleGroupSpacingOptimizationRunnner();
+			runner = new BaseOptimizationRunner();
+		}
+		else if (GROUP_OPT_SUB_CATEGORY_ID.equals(selectedOptimizer))
+		{
+			runner = new HoleGroupSpacingOptimizationRunnner();
+		}
+		else if (TAPER_GROUP_OPT_SUB_CATEGORY_ID.equals(selectedOptimizer))
+		{
+			runner = new HoleGroupSpacingOptimizationRunnner();
+		}
+		else if (MULTISTART_TAPER_OPT_SUB_CATEGORY_ID.equals(selectedOptimizer))
+		{
+			runner = new HoleGroupSpacingOptimizationRunnner();
+			runner.doMultiStart(true, 50, new int[] { 0 }, false);
+		}
+		else
+		{
+			runner = new BaseOptimizationRunner();
 		}
 
-		return new BaseOptimizationRunner();
+		return runner;
 	}
 }

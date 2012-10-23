@@ -131,6 +131,8 @@ public abstract class InstrumentOptimizer implements
 			int iterations = optimizer.getEvaluations();
 			System.out.println("Optimization residual: " + endError
 					/ startError + " in " + iterations + " iterations");
+			isMultistart = false;
+			optimizeInstrument();
 		}
 		else
 		{

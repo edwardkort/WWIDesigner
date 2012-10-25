@@ -43,17 +43,20 @@ public class StudyModel
 	public static final String OPTIMIZER_CATEGORY_ID = "Optimizer";
 	public static final String CONSTRAINT_CATEGORY_ID = "Constraint set";
 	public static final String CALCULATOR_CATEGORY_ID = "Instrument calculator";
+	public static final String MULTI_START_CATEGORY_ID = "Multi-start optimization";
 
 	public static final String GORDON_CALC_SUB_CATEGORY_ID = "Gordon calculator";
 	public static final String NAF_CALC_SUB_CATEGORY_ID = "NAF calculator";
 	public static final String WHISTLE_CALC_SUB_CATEGORY_ID = "Whistle calculator";
+
+	public static final String NO_MULTI_START_SUB_CATEGORY_ID = "No multi-start optimization";
+	public static final String VARY_FIRST_MULTI_START_SUB_CATEGORY_ID = "Vary first bound variable";
 
 	public static final String FIPPLE_OPT_SUB_CATEGORY_ID = "Fipple-factor Optimizer";
 	public static final String HOLESIZE_OPT_SUB_CATEGORY_ID = "Hole-size Optimizer";
 	public static final String NO_GROUP_OPT_SUB_CATEGORY_ID = "No-hole-grouping Optimizer";
 	public static final String GROUP_OPT_SUB_CATEGORY_ID = "Hole-grouping Optimizer";
 	public static final String TAPER_GROUP_OPT_SUB_CATEGORY_ID = "Taper, hole-grouping Optimizer";
-	public static final String MULTISTART_TAPER_OPT_SUB_CATEGORY_ID = "Multistart, taper Optimizer";
 
 	public static final String HOLE_0_CONS_SUB_CATEGORY_ID = "0 holes";
 	public static final String HOLE_6_1_125_SPACING_CONS_SUB_CATEGORY_ID = "6 holes, 1-1/8\" max spacing";
@@ -78,13 +81,18 @@ public class StudyModel
 		calculators.addSub(NAF_CALC_SUB_CATEGORY_ID, null);
 		calculators.addSub(WHISTLE_CALC_SUB_CATEGORY_ID, null);
 		categories.add(calculators);
+		Category multiStart = new Category(MULTI_START_CATEGORY_ID);
+		multiStart.addSub(NO_MULTI_START_SUB_CATEGORY_ID, null);
+		multiStart.addSub(VARY_FIRST_MULTI_START_SUB_CATEGORY_ID, null);
+		// Default to no multi-start
+		multiStart.setSelectedSub(NO_MULTI_START_SUB_CATEGORY_ID);
+		categories.add(multiStart);
 		Category optimizers = new Category(OPTIMIZER_CATEGORY_ID);
 		optimizers.addSub(FIPPLE_OPT_SUB_CATEGORY_ID, null);
 		optimizers.addSub(NO_GROUP_OPT_SUB_CATEGORY_ID, null);
 		optimizers.addSub(HOLESIZE_OPT_SUB_CATEGORY_ID, null);
 		optimizers.addSub(GROUP_OPT_SUB_CATEGORY_ID, null);
 		optimizers.addSub(TAPER_GROUP_OPT_SUB_CATEGORY_ID, null);
-		optimizers.addSub(MULTISTART_TAPER_OPT_SUB_CATEGORY_ID, null);
 		categories.add(optimizers);
 		Category constraints = new Category(CONSTRAINT_CATEGORY_ID);
 		constraints.addSub(HOLE_0_CONS_SUB_CATEGORY_ID, null);
@@ -291,6 +299,26 @@ public class StudyModel
 		return xmlString;
 	}
 
+	private boolean configureMultiStart(BaseOptimizationRunner runner)
+	{
+		Category multiStartCategory = getCategory(MULTI_START_CATEGORY_ID);
+		String multiStartSelected = multiStartCategory.getSelectedSub();
+		boolean isMultiStart = false;
+
+		switch (multiStartSelected)
+		{
+			case NO_MULTI_START_SUB_CATEGORY_ID:
+				runner.doMultiStart(false, 1, null, false);
+				break;
+			case VARY_FIRST_MULTI_START_SUB_CATEGORY_ID:
+				runner.doMultiStart(true, 50, new int[] { 0 }, false);
+				isMultiStart = true;
+				break;
+		}
+
+		return isMultiStart;
+	}
+
 	private InstrumentCalculator getCalculator()
 	{
 		Category calculatorCategory = getCategory(CALCULATOR_CATEGORY_ID);
@@ -344,7 +372,6 @@ public class StudyModel
 		double[] lowerBound = null;
 		double[] upperBound = null;
 		InstrumentOptimizer.OptimizerType optimizerType = null;
-		boolean isMultiStart = false;
 		switch (optimizer)
 		{
 			case FIPPLE_OPT_SUB_CATEGORY_ID:
@@ -492,8 +519,6 @@ public class StudyModel
 						break;
 				}
 				break;
-			case MULTISTART_TAPER_OPT_SUB_CATEGORY_ID:
-				isMultiStart = true;
 			case TAPER_GROUP_OPT_SUB_CATEGORY_ID:
 				switch (constraint)
 				{
@@ -560,13 +585,13 @@ public class StudyModel
 		}
 
 		setRunnerConstraints(runner, optimizerClass, optimizerType, lowerBound,
-				upperBound, isMultiStart);
+				upperBound);
 	}
 
 	protected void setRunnerConstraints(BaseOptimizationRunner runner,
 			Class<? extends InstrumentOptimizer> optimizerClass,
 			OptimizerType optimizerType, double[] lowerBound,
-			double[] upperBound, boolean isMultiStart)
+			double[] upperBound)
 	{
 		runner.setOptimizerClass(optimizerClass);
 		runner.setOptimizerType(optimizerType);
@@ -574,6 +599,7 @@ public class StudyModel
 		runner.setUpperBound(upperBound);
 
 		int numberOfDimensions = lowerBound == null ? 0 : lowerBound.length;
+		boolean isMultiStart = configureMultiStart(runner);
 		int numberOfInterpolations = determineInterpolations(optimizerType,
 				numberOfDimensions, isMultiStart);
 		runner.setNumberOfInterpolationPoints(numberOfInterpolations);
@@ -620,11 +646,6 @@ public class StudyModel
 		else if (TAPER_GROUP_OPT_SUB_CATEGORY_ID.equals(selectedOptimizer))
 		{
 			runner = new HoleGroupSpacingOptimizationRunnner();
-		}
-		else if (MULTISTART_TAPER_OPT_SUB_CATEGORY_ID.equals(selectedOptimizer))
-		{
-			runner = new HoleGroupSpacingOptimizationRunnner();
-			runner.doMultiStart(true, 50, new int[] { 0 }, false);
 		}
 		else
 		{

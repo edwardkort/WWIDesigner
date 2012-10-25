@@ -32,7 +32,7 @@ public abstract class InstrumentOptimizer implements
 	protected int numberOfStarts;
 	protected int[] indicesToVary;
 	protected boolean varyStartValuesRandomly;
-	protected int maxStepsPerOptimization = 5000;
+	protected int maxStepsPerOptimization = 25000;
 
 	public abstract void setOptimizationFunction();
 

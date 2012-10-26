@@ -1,14 +1,23 @@
 package com.wwidesigner.gui;
 
+import java.awt.BorderLayout;
+import java.awt.Container;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 
 import javax.swing.Action;
+import javax.swing.JDialog;
 import javax.swing.JMenu;
+import javax.swing.JTextPane;
 
 import com.jidesoft.app.framework.DataModelAdapter;
 import com.jidesoft.app.framework.DataModelEvent;
 import com.jidesoft.app.framework.DataView;
+import com.jidesoft.app.framework.ProgressEvent;
+import com.jidesoft.app.framework.ProgressListener;
 import com.jidesoft.app.framework.SecondaryBasicDataModel;
+import com.jidesoft.app.framework.activity.Activity;
+import com.jidesoft.app.framework.activity.ActivityAction;
 import com.jidesoft.app.framework.event.EventManager;
 import com.jidesoft.app.framework.event.EventSubscriber;
 import com.jidesoft.app.framework.event.SubscriberEvent;
@@ -16,7 +25,6 @@ import com.jidesoft.app.framework.file.TextFileFormat;
 import com.jidesoft.app.framework.gui.ActionKeys;
 import com.jidesoft.app.framework.gui.ApplicationMenuBarsUI;
 import com.jidesoft.app.framework.gui.ApplicationWindowsUI;
-import com.jidesoft.app.framework.gui.GUIApplicationAction;
 import com.jidesoft.app.framework.gui.MenuBarCustomizer;
 import com.jidesoft.app.framework.gui.MenuConstants;
 import com.jidesoft.app.framework.gui.actions.ComponentAction;
@@ -119,10 +127,14 @@ public class NafOptimizationRunner extends FileBasedApplication implements
 
 	protected void addToolMenu()
 	{
-		Action action;
-		action = new GUIApplicationAction(CALCULATE_TUNING_ACTION_ID)
+		// The complexity in this method is due to the poor way that JDAF
+		// threads Actions and Activities.
+		// Anything simpler just didn't work right!
+		final Activity activity = new Activity(CALCULATE_TUNING_ACTION_ID)
 		{
-			public void actionPerformedDetached(ActionEvent event)
+
+			@Override
+			public void activityPerformed() throws Exception
 			{
 				StudyView studyView = getStudyView();
 				if (studyView != null)
@@ -131,18 +143,44 @@ public class NafOptimizationRunner extends FileBasedApplication implements
 				}
 			}
 		};
+		String message = "Calculating instrument tuning.\nThis may take several seconds.";
+		activity.addProgressListener(new BlockingProgressListener(
+				getApplicationUIManager().getWindowsUI(),
+				CALCULATE_TUNING_ACTION_ID, message));
+		Action action = new ActivityAction(activity)
+		{
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				getApplication().getActivityManager().run(activity);
+			}
+		};
 		getActionMap().put(CALCULATE_TUNING_ACTION_ID, action);
 		action.setEnabled(false);
 
-		action = new GUIApplicationAction(OPTIMIZE_INSTRUMENT_ACTION_ID)
+		final Activity optActivity = new Activity(OPTIMIZE_INSTRUMENT_ACTION_ID)
 		{
-			public void actionPerformedDetached(ActionEvent event)
+
+			@Override
+			public void activityPerformed() throws Exception
 			{
 				StudyView studyView = getStudyView();
 				if (studyView != null)
 				{
 					studyView.optimizeInstrument();
 				}
+			}
+		};
+		message = "Calculating optimized instrument.\nThis may take several minutes.\nPlease be patient.";
+		optActivity.addProgressListener(new BlockingProgressListener(
+				getApplicationUIManager().getWindowsUI(),
+				OPTIMIZE_INSTRUMENT_ACTION_ID, message));
+		action = new ActivityAction(optActivity)
+		{
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				getApplication().getActivityManager().run(optActivity);
 			}
 		};
 		getActionMap().put(OPTIMIZE_INSTRUMENT_ACTION_ID, action);
@@ -220,6 +258,44 @@ public class NafOptimizationRunner extends FileBasedApplication implements
 
 		// add feature
 		addApplicationFeature(docking);
+	}
+
+	protected final class BlockingProgressListener implements ProgressListener
+	{
+		private JDialog dialog;
+
+		protected BlockingProgressListener(ApplicationWindowsUI windowsUI,
+				String activityName, String message)
+		{
+			dialog = new JDialog(windowsUI.getDialogParent(), activityName,
+					true);
+			Container contentPane = dialog.getContentPane();
+			JTextPane textPane = new JTextPane();
+			textPane.setText(message);
+			textPane.setEditable(false);
+			textPane.setMargin(new Insets(20, 20, 20, 20));
+			contentPane.add(textPane, BorderLayout.CENTER);
+			dialog.pack();
+			dialog.setLocationRelativeTo(windowsUI.getDialogParent());
+		}
+
+		@Override
+		public void progressStart(ProgressEvent e)
+		{
+			dialog.setVisible(true);
+		}
+
+		@Override
+		public void progressProgressing(ProgressEvent e)
+		{
+			// Do nothing
+		}
+
+		@Override
+		public void progressEnd(ProgressEvent e)
+		{
+			dialog.setVisible(false);
+		}
 	}
 
 	public static class SecondaryBasicDataModel2 extends

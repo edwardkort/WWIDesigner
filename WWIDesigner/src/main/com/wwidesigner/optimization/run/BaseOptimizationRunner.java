@@ -37,6 +37,10 @@ public class BaseOptimizationRunner
 	protected InstrumentOptimizer optimizer;
 	protected Instrument instrument;
 	protected Tuning tuning;
+	protected boolean isMultistart = false;
+	protected int numberOfStarts;
+	protected int[] indicesToVary;
+	protected boolean varyStartValuesRandomly;
 
 	public void setOptimizerClass(
 			Class<? extends InstrumentOptimizer> optimizerClass)
@@ -130,6 +134,15 @@ public class BaseOptimizationRunner
 		this.calculator = calculator;
 	}
 
+	public void doMultiStart(boolean isMultistart, int numberOfStarts,
+			int[] indicesToVary, boolean varyRandomly)
+	{
+		this.isMultistart = isMultistart;
+		this.numberOfStarts = numberOfStarts;
+		this.indicesToVary = indicesToVary;
+		this.varyStartValuesRandomly = varyRandomly;
+	}
+
 	/**
 	 * Complete workflow for optimizing an XML-defined instrument with the
 	 * InstrumentOptimizer2 algorithm.
@@ -151,6 +164,7 @@ public class BaseOptimizationRunner
 		optimizer.setBaseOptimizer(optimizerType, numberOfInterpolationPoints);
 		setOptimizationBounds(optimizer);
 		setupCustomOptimizer();
+		optimizer.doMultistart(isMultistart, numberOfStarts, indicesToVary, varyStartValuesRandomly);
 
 		optimizer.optimizeInstrument();
 

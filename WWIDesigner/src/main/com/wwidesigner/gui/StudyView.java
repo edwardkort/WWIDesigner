@@ -37,6 +37,12 @@ import com.wwidesigner.util.BindFactory;
  */
 public class StudyView extends DataViewPane implements EventSubscriber
 {
+	private static final long serialVersionUID = 1L;
+
+	// Class names for the studies supported. by setStudyModel(String).
+	public static final String NAF_STUDY_NAME = "NafStudyModel";
+	public static final String WHISTLE_STUDY_NAME = "WhistleStudyModel";
+
 	private JTree tree;
 	private StudyModel study;
 
@@ -73,8 +79,7 @@ public class StudyView extends DataViewPane implements EventSubscriber
 		scrollPane.setPreferredSize(new Dimension(225, 100));
 		add(scrollPane);
 
-		study = new StudyModel();
-		updateView();
+		setStudyModel(NAF_STUDY_NAME);
 
 		getApplication().getEventManager().subscribe(NafOptimizationRunner.FILE_OPENED_EVENT_ID, this);
 		getApplication().getEventManager().subscribe(NafOptimizationRunner.FILE_CLOSED_EVENT_ID, this);
@@ -183,7 +188,8 @@ public class StudyView extends DataViewPane implements EventSubscriber
 		}
 		catch (Exception e)
 		{
-			System.out.println(e);
+			System.out.println("Exception: " + e.getMessage());
+			e.printStackTrace();
 		}
 	}
 
@@ -209,7 +215,8 @@ public class StudyView extends DataViewPane implements EventSubscriber
 		}
 		catch (Exception e)
 		{
-			System.out.println(e);
+			System.out.println("Exception: " + e.getMessage());
+			e.printStackTrace();
 		}
 	}
 
@@ -226,6 +233,36 @@ public class StudyView extends DataViewPane implements EventSubscriber
 				updateView();
 			}
 		}
+	}
+
+	public StudyModel getStudyModel()
+	{
+		return study;
+	}
+
+	/**
+	 * Set the study model given a study class name.
+	 */
+	public void setStudyModel(StudyModel study)
+	{
+		this.study = study;
+		updateView();
+	}
+
+	/**
+	 * Set the study model to a specified object.
+	 */
+	public void setStudyModel(String studyClassName)
+	{
+		if ( studyClassName == NAF_STUDY_NAME )
+		{
+			this.study = new NafStudyModel();
+		}
+		else if ( studyClassName == WHISTLE_STUDY_NAME )
+		{
+			this.study = new WhistleStudyModel();
+		}
+		updateView();
 	}
 
 }

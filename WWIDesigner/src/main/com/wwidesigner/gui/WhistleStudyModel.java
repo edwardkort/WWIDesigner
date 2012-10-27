@@ -15,13 +15,13 @@ import com.wwidesigner.util.Constants.TemperatureType;
 import com.wwidesigner.util.PhysicalParameters;
 
 /**
- * @author kort
+ * @author Burton Patkau
  * 
  */
 public class WhistleStudyModel extends StudyModel
 {
-	public static final String WINDOW_EST_SUB_CATEGORY_ID = "Window Height Estimater";
-	public static final String BETA_EST_SUB_CATEGORY_ID = "Beta Estimater";
+	public static final String WINDOW_OPT_SUB_CATEGORY_ID = "Window Height Calibrator";
+	public static final String BETA_OPT_SUB_CATEGORY_ID = "Beta Calibrator";
 	public static final String LENGTH_OPT_SUB_CATEGORY_ID = "Length Optimizer";
 	public static final String HOLESIZE_OPT_SUB_CATEGORY_ID = "Hole Size Optimizer";
 	public static final String HOLESPACE_OPT_SUB_CATEGORY_ID = "Hole Spacing Optimizer";
@@ -36,8 +36,8 @@ public class WhistleStudyModel extends StudyModel
 	{
 		setParams(new PhysicalParameters(28.2, TemperatureType.C));
 		Category optimizers = new Category(OPTIMIZER_CATEGORY_ID);
-		optimizers.addSub(WINDOW_EST_SUB_CATEGORY_ID, null);
-		optimizers.addSub(BETA_EST_SUB_CATEGORY_ID, null);
+		optimizers.addSub(WINDOW_OPT_SUB_CATEGORY_ID, null);
+		optimizers.addSub(BETA_OPT_SUB_CATEGORY_ID, null);
 		optimizers.addSub(LENGTH_OPT_SUB_CATEGORY_ID, null);
 		optimizers.addSub(HOLESIZE_OPT_SUB_CATEGORY_ID, null);
 		optimizers.addSub(HOLESPACE_OPT_SUB_CATEGORY_ID, null);
@@ -82,37 +82,50 @@ public class WhistleStudyModel extends StudyModel
 		// String constraint = constraintCategory.getSelectedSub();
 		Category optimizerCategory = getCategory(OPTIMIZER_CATEGORY_ID);
 		String optimizer = optimizerCategory.getSelectedSub();
+		Class<? extends InstrumentOptimizer> optimizerClass = null;
+		double[] lowerBound = null;
+		double[] upperBound = null;
+		InstrumentOptimizer.OptimizerType optimizerType = null;
+		int nrInterpolations = 0;
+
 		switch (optimizer)
 		{
-			case WINDOW_EST_SUB_CATEGORY_ID:
-				runner.setOptimizerClass(FippleFactorOptimizer.class);
-				runner.setLowerBound(new double[] { 0.2 });
-				runner.setUpperBound(new double[] { 1.5 });
-				runner.setOptimizerType(InstrumentOptimizer.OptimizerType.CMAESOptimizer);
-				runner.setNumberOfInterpolationPoints(2);
+			case WINDOW_OPT_SUB_CATEGORY_ID:
+				optimizerClass = FippleFactorOptimizer.class;
+				lowerBound = new double[] { 0.2 };
+				upperBound = new double[] { 1.5 };
+				optimizerType = InstrumentOptimizer.OptimizerType.CMAESOptimizer;
+				nrInterpolations = 0;
 				break;
-			case BETA_EST_SUB_CATEGORY_ID:
-				runner.setOptimizerClass(FippleFactorOptimizer.class);
-				runner.setLowerBound(new double[] { 0.3 });
-				runner.setUpperBound(new double[] { 0.4 });
-				runner.setOptimizerType(InstrumentOptimizer.OptimizerType.CMAESOptimizer);
-				runner.setNumberOfInterpolationPoints(2);
+			case BETA_OPT_SUB_CATEGORY_ID:
+				optimizerClass = FippleFactorOptimizer.class;
+				lowerBound = new double[] { 0.3 };
+				upperBound = new double[] { 0.4 };
+				optimizerType = InstrumentOptimizer.OptimizerType.CMAESOptimizer;
+				nrInterpolations = 0;
 				break;
 			case LENGTH_OPT_SUB_CATEGORY_ID:
-				runner.setOptimizerClass(FippleFactorOptimizer.class);
-				runner.setLowerBound(new double[] { 0.0 });
-				runner.setUpperBound(new double[] { 1000.0 });
-				runner.setOptimizerType(InstrumentOptimizer.OptimizerType.CMAESOptimizer);
-				runner.setNumberOfInterpolationPoints(2);
+				optimizerClass = FippleFactorOptimizer.class;
+				lowerBound = new double[] { 0.0 };
+				upperBound = new double[] { 1000.0 };
+				optimizerType = InstrumentOptimizer.OptimizerType.CMAESOptimizer;
+				nrInterpolations = 0;
 				break;
 			case HOLESIZE_OPT_SUB_CATEGORY_ID:
-				runner.setOptimizerClass(HoleSizeOptimizer.class);
-				runner.setLowerBound(new double[] { 0.1, 0.15, 0.15, 0.15, 0.15, 0.15 });
-				runner.setUpperBound(new double[] { 0.5, 0.5,  0.5,  0.5,  0.5,  0.6 });
-				runner.setOptimizerType(InstrumentOptimizer.OptimizerType.BOBYQAOptimizer);
-				runner.setNumberOfInterpolationPoints(12);
+				optimizerClass = HoleSizeOptimizer.class;
+				lowerBound = new double[] { 0.1, 0.15, 0.15, 0.15, 0.15, 0.15 };
+				upperBound = new double[] { 0.5, 0.5,  0.5,  0.5,  0.5,  0.6 };
+				optimizerType = InstrumentOptimizer.OptimizerType.BOBYQAOptimizer;
+				nrInterpolations = 28;
 				break;
 		}
-	}
+
+		runner.setOptimizerClass(optimizerClass);
+		runner.setOptimizerType(optimizerType);
+		runner.setLowerBound(lowerBound);
+		runner.setUpperBound(upperBound);
+		runner.setNumberOfInterpolationPoints(nrInterpolations);
+
+	} // setConstraints
 
 }

@@ -9,6 +9,7 @@ import javax.swing.Action;
 import javax.swing.JDialog;
 import javax.swing.JMenu;
 import javax.swing.JTextPane;
+import javax.swing.SwingUtilities;
 
 import com.jidesoft.app.framework.DataModelAdapter;
 import com.jidesoft.app.framework.DataModelEvent;
@@ -116,7 +117,7 @@ public class NafOptimizationRunner extends FileBasedApplication implements
 			}
 
 			@Override
-			public void dataModelSaving(DataModelEvent dataModelEvent)
+			public void dataModelSaved(DataModelEvent dataModelEvent)
 			{
 				NafOptimizationRunner.this.getEventManager().publish(
 						FILE_SAVED_EVENT_ID, dataModelEvent);
@@ -282,7 +283,13 @@ public class NafOptimizationRunner extends FileBasedApplication implements
 		@Override
 		public void progressStart(ProgressEvent e)
 		{
-			dialog.setVisible(true);
+			SwingUtilities.invokeLater(new Runnable()
+			{
+				public void run()
+				{
+					dialog.setVisible(true);
+				}
+			});
 		}
 
 		@Override

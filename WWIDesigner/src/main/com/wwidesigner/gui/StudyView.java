@@ -197,11 +197,19 @@ public class StudyView extends DataViewPane implements EventSubscriber
 	{
 		try
 		{
+			String xmlInstrument = study.optimizeInstrument();
 			FileBasedApplication app = (FileBasedApplication) getApplication();
 			DataModel data = app.newData("xml");
-			CodeEditorView view = (CodeEditorView) app.getDataView(data);
-			String xmlInstrument = study.optimizeInstrument();
+			// These sleeps are due to the way JDAF handles threading.
+			// The DataModel and DataViews seem to be updated on separate threads
+			// Dumb!
+			CodeEditorView view = null;
+			while (view == null) {
+				view = (CodeEditorView) app.getDataView(data);
+				Thread.sleep(100);
+			}
 			view.setText(xmlInstrument);
+			Thread.sleep(100);
 			view.updateModel(data);
 			addDataModelToStudy(data);
 		}

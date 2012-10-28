@@ -6,11 +6,13 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 
 import javax.swing.Action;
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JDialog;
 import javax.swing.JMenu;
 import javax.swing.JTextPane;
-import javax.swing.SwingUtilities;
 
+import com.jidesoft.app.framework.ApplicationVetoException;
+import com.jidesoft.app.framework.DataModel;
 import com.jidesoft.app.framework.DataModelAdapter;
 import com.jidesoft.app.framework.DataModelEvent;
 import com.jidesoft.app.framework.DataView;
@@ -26,8 +28,10 @@ import com.jidesoft.app.framework.file.TextFileFormat;
 import com.jidesoft.app.framework.gui.ActionKeys;
 import com.jidesoft.app.framework.gui.ApplicationMenuBarsUI;
 import com.jidesoft.app.framework.gui.ApplicationWindowsUI;
+import com.jidesoft.app.framework.gui.GUIApplicationAction;
 import com.jidesoft.app.framework.gui.MenuBarCustomizer;
 import com.jidesoft.app.framework.gui.MenuConstants;
+import com.jidesoft.app.framework.gui.MenuGroup;
 import com.jidesoft.app.framework.gui.actions.ComponentAction;
 import com.jidesoft.app.framework.gui.feature.AutoInstallActionsFeature;
 import com.jidesoft.app.framework.gui.filebased.FileBasedApplication;
@@ -57,6 +61,10 @@ public class NafOptimizationRunner extends FileBasedApplication implements
 	static final String STUDY_ACTION_ID = "Study";
 	static final String CALCULATE_TUNING_ACTION_ID = "Calculate tuning";
 	static final String OPTIMIZE_INSTRUMENT_ACTION_ID = "Optimize instrument";
+	static final String CLEAR_CONSOLE_ACTION_ID = "Clear Console";
+	static final String WARN_ON_DIRTY_CLOSE_ACTION_ID = "Warn on dirty close";
+
+	protected boolean isWarnOnDirtyClose = true;
 
 	public static void main(String[] args)
 	{
@@ -121,6 +129,20 @@ public class NafOptimizationRunner extends FileBasedApplication implements
 			{
 				NafOptimizationRunner.this.getEventManager().publish(
 						FILE_SAVED_EVENT_ID, dataModelEvent);
+			}
+
+			public void dataModelClosing(DataModelEvent dataModelEvent)
+					throws ApplicationVetoException
+			{
+				DataModel dataModel = dataModelEvent.getDataModel();
+				if (dataModel.isDirty())
+				{
+					if (!isWarnOnDirtyClose)
+					{
+						dataModel.setDirty(false);
+						return;
+					}
+				}
 			}
 		});
 
@@ -187,6 +209,29 @@ public class NafOptimizationRunner extends FileBasedApplication implements
 		getActionMap().put(OPTIMIZE_INSTRUMENT_ACTION_ID, action);
 		action.setEnabled(false);
 
+		action = new GUIApplicationAction(CLEAR_CONSOLE_ACTION_ID)
+		{
+			@Override
+			public void actionPerformedDetached(ActionEvent e)
+			{
+				ConsoleView view = getConsoleView();
+				view.clear();
+			}
+		};
+		getActionMap().put(CLEAR_CONSOLE_ACTION_ID, action);
+
+		action = new GUIApplicationAction(WARN_ON_DIRTY_CLOSE_ACTION_ID)
+		{
+			@Override
+			public void actionPerformedDetached(ActionEvent event)
+			{
+				JCheckBoxMenuItem source = (JCheckBoxMenuItem) event
+						.getSource();
+				isWarnOnDirtyClose = source.getState();
+			}
+		};
+		getActionMap().put(WARN_ON_DIRTY_CLOSE_ACTION_ID, action);
+
 		addMenuBarCustomizer(new MenuBarCustomizer()
 		{
 			public JMenu[] createApplicationMenus(
@@ -202,6 +247,18 @@ public class NafOptimizationRunner extends FileBasedApplication implements
 			public void customizeStandardMenu(String menuID, JMenu menu,
 					ApplicationMenuBarsUI menuBarsUI)
 			{
+				if (menuID == WINDOW_MENU_ID)
+				{
+					MenuGroup group = menuBarsUI.getMenuGroup(
+							WINDOW_USER_GROUP_ID, menu);
+					group.addMenuItem(menuBarsUI
+							.getAction(CLEAR_CONSOLE_ACTION_ID));
+					JCheckBoxMenuItem cbItem = new JCheckBoxMenuItem(
+							menuBarsUI.getAction(WARN_ON_DIRTY_CLOSE_ACTION_ID));
+					cbItem.setSelected(isWarnOnDirtyClose);
+					group.addMenuItem(cbItem);
+					group.insertSeparator(3);
+				}
 			}
 		});
 	}
@@ -283,13 +340,13 @@ public class NafOptimizationRunner extends FileBasedApplication implements
 		@Override
 		public void progressStart(ProgressEvent e)
 		{
-			SwingUtilities.invokeLater(new Runnable()
+			try
 			{
-				public void run()
-				{
-					dialog.setVisible(true);
-				}
-			});
+				dialog.setVisible(true);
+			}
+			catch (Exception ex)
+			{
+			}
 		}
 
 		@Override
@@ -301,7 +358,13 @@ public class NafOptimizationRunner extends FileBasedApplication implements
 		@Override
 		public void progressEnd(ProgressEvent e)
 		{
-			dialog.setVisible(false);
+			try
+			{
+				dialog.setVisible(false);
+			}
+			catch (Exception ex)
+			{
+			}
 		}
 	}
 
@@ -347,6 +410,23 @@ public class NafOptimizationRunner extends FileBasedApplication implements
 		}
 
 		return studyView;
+	}
+
+	protected ConsoleView getConsoleView()
+	{
+		ConsoleView consoleView = null;
+		DataView[] views = getApplicationUIManager().getWindowsUI()
+				.getDataViews();
+		for (DataView view : views)
+		{
+			if (view instanceof ConsoleView)
+			{
+				consoleView = (ConsoleView) view;
+				break;
+			}
+		}
+
+		return consoleView;
 	}
 
 }

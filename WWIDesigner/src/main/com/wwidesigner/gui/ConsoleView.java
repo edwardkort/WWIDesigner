@@ -60,6 +60,11 @@ public class ConsoleView extends DataViewPane
 		});
 	}
 
+	public void clear()
+	{
+		textArea.setText("");
+	}
+
 	private void redirectSystemStreams()
 	{
 		OutputStream out = new OutputStream()

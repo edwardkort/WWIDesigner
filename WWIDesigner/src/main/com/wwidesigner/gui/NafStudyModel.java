@@ -43,6 +43,8 @@ public class NafStudyModel extends StudyModel
 
 	public static final String NO_MULTI_START_SUB_CATEGORY_ID = "No multi-start optimization";
 	public static final String VARY_FIRST_MULTI_START_SUB_CATEGORY_ID = "Vary first bound variable";
+	
+	protected int numberOfStarts = 30;
 
 	public NafStudyModel()
 	{
@@ -401,7 +403,7 @@ public class NafStudyModel extends StudyModel
 				runner.doMultiStart(false, 1, null, false);
 				break;
 			case VARY_FIRST_MULTI_START_SUB_CATEGORY_ID:
-				runner.doMultiStart(true, 50, new int[] { 0 }, false);
+				runner.doMultiStart(true, numberOfStarts , new int[] { 0 }, false);
 				isMultiStart = true;
 				break;
 		}

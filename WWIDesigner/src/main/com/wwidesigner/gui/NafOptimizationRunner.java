@@ -9,6 +9,7 @@ import javax.swing.Action;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JDialog;
 import javax.swing.JMenu;
+import javax.swing.JOptionPane;
 import javax.swing.JTextPane;
 
 import com.jidesoft.app.framework.ApplicationVetoException;
@@ -28,6 +29,8 @@ import com.jidesoft.app.framework.file.TextFileFormat;
 import com.jidesoft.app.framework.gui.ActionKeys;
 import com.jidesoft.app.framework.gui.ApplicationMenuBarsUI;
 import com.jidesoft.app.framework.gui.ApplicationWindowsUI;
+import com.jidesoft.app.framework.gui.DataViewAdapter;
+import com.jidesoft.app.framework.gui.DataViewEvent;
 import com.jidesoft.app.framework.gui.GUIApplicationAction;
 import com.jidesoft.app.framework.gui.MenuBarCustomizer;
 import com.jidesoft.app.framework.gui.MenuConstants;
@@ -56,6 +59,7 @@ public class NafOptimizationRunner extends FileBasedApplication implements
 	static final String FILE_SAVED_EVENT_ID = "FileSaved";
 	static final String TUNING_ACTIVE_EVENT_ID = "TuningActive";
 	static final String OPTIMIZATION_ACTIVE_EVENT_ID = "OptimizationActive";
+	static final String WINDOW_RENAMED_EVENT_ID = "WindowRenamed";
 
 	static final String CONSOLE_ACTION_ID = "Console";
 	static final String STUDY_ACTION_ID = "Study";
@@ -63,6 +67,7 @@ public class NafOptimizationRunner extends FileBasedApplication implements
 	static final String OPTIMIZE_INSTRUMENT_ACTION_ID = "Optimize instrument";
 	static final String CLEAR_CONSOLE_ACTION_ID = "Clear Console";
 	static final String WARN_ON_DIRTY_CLOSE_ACTION_ID = "Warn on dirty close";
+	static final String RENAME_WINIDOW_ACTION_ID = "Rename window";
 
 	protected boolean isWarnOnDirtyClose = true;
 
@@ -114,21 +119,21 @@ public class NafOptimizationRunner extends FileBasedApplication implements
 			public void dataModelOpened(DataModelEvent dataModelEvent)
 			{
 				NafOptimizationRunner.this.getEventManager().publish(
-						FILE_OPENED_EVENT_ID, dataModelEvent);
+						FILE_OPENED_EVENT_ID, dataModelEvent.getDataModel());
 			}
 
 			@Override
 			public void dataModelClosed(DataModelEvent dataModelEvent)
 			{
 				NafOptimizationRunner.this.getEventManager().publish(
-						FILE_CLOSED_EVENT_ID, dataModelEvent);
+						FILE_CLOSED_EVENT_ID, dataModelEvent.getDataModel());
 			}
 
 			@Override
 			public void dataModelSaved(DataModelEvent dataModelEvent)
 			{
 				NafOptimizationRunner.this.getEventManager().publish(
-						FILE_SAVED_EVENT_ID, dataModelEvent);
+						FILE_SAVED_EVENT_ID, dataModelEvent.getDataModel());
 			}
 
 			public void dataModelClosing(DataModelEvent dataModelEvent)
@@ -144,6 +149,31 @@ public class NafOptimizationRunner extends FileBasedApplication implements
 					}
 				}
 			}
+		});
+
+		addDataViewListener(new DataViewAdapter()
+		{
+			@Override
+			public void dataViewActivated(DataViewEvent event)
+			{
+				DataView view = event.getDataView();
+				if (view instanceof CodeEditorView)
+				{
+					DataModel model = getDataModel(view);
+					String name = model.getName();
+					Action action = getActionMap()
+							.get(RENAME_WINIDOW_ACTION_ID);
+					if (name.length() > 0 && name.startsWith("Untitled"))
+					{
+						action.setEnabled(true);
+					}
+					else
+					{
+						action.setEnabled(false);
+					}
+				}
+			}
+
 		});
 
 	}
@@ -232,6 +262,30 @@ public class NafOptimizationRunner extends FileBasedApplication implements
 		};
 		getActionMap().put(WARN_ON_DIRTY_CLOSE_ACTION_ID, action);
 
+		action = new GUIApplicationAction(RENAME_WINIDOW_ACTION_ID)
+		{
+			public void actionPerformedDetached(ActionEvent event)
+			{
+				DataModel focusedModel = getApplication().getFocusedModel();
+				if (focusedModel != null)
+				{
+					String oldName = focusedModel.getName();
+					String newName = JOptionPane.showInputDialog(
+							getApplication().getApplicationUIManager()
+									.getWindowsUI().getDialogParent(),
+							"Enter a new name for " + oldName, oldName);
+					if (newName != null && !newName.equals(oldName))
+					{
+						focusedModel.setName(newName);
+					}
+					getApplication().getEventManager().publish(
+							WINDOW_RENAMED_EVENT_ID, focusedModel);
+				}
+			}
+		};
+		action.setEnabled(false);
+		getActionMap().put(RENAME_WINIDOW_ACTION_ID, action);
+
 		addMenuBarCustomizer(new MenuBarCustomizer()
 		{
 			public JMenu[] createApplicationMenus(
@@ -256,8 +310,11 @@ public class NafOptimizationRunner extends FileBasedApplication implements
 					JCheckBoxMenuItem cbItem = new JCheckBoxMenuItem(
 							menuBarsUI.getAction(WARN_ON_DIRTY_CLOSE_ACTION_ID));
 					cbItem.setSelected(isWarnOnDirtyClose);
+					group.addMenuItem(menuBarsUI
+							.getAction(RENAME_WINIDOW_ACTION_ID));
 					group.addMenuItem(cbItem);
 					group.insertSeparator(3);
+					group.insertSeparator(5);
 				}
 			}
 		});
@@ -284,6 +341,7 @@ public class NafOptimizationRunner extends FileBasedApplication implements
 		eventManager.addEvent(FILE_SAVED_EVENT_ID);
 		eventManager.addEvent(TUNING_ACTIVE_EVENT_ID);
 		eventManager.addEvent(OPTIMIZATION_ACTIVE_EVENT_ID);
+		eventManager.addEvent(WINDOW_RENAMED_EVENT_ID);
 
 		eventManager.subscribe(TUNING_ACTIVE_EVENT_ID, this);
 		eventManager.subscribe(OPTIMIZATION_ACTIVE_EVENT_ID, this);

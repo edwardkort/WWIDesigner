@@ -19,7 +19,6 @@ import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
 import com.jidesoft.app.framework.DataModel;
-import com.jidesoft.app.framework.DataModelEvent;
 import com.jidesoft.app.framework.event.EventSubscriber;
 import com.jidesoft.app.framework.event.SubscriberEvent;
 import com.jidesoft.app.framework.file.FileDataModel;
@@ -81,9 +80,14 @@ public class StudyView extends DataViewPane implements EventSubscriber
 
 		setStudyModel(NAF_STUDY_NAME);
 
-		getApplication().getEventManager().subscribe(NafOptimizationRunner.FILE_OPENED_EVENT_ID, this);
-		getApplication().getEventManager().subscribe(NafOptimizationRunner.FILE_CLOSED_EVENT_ID, this);
-		getApplication().getEventManager().subscribe(NafOptimizationRunner.FILE_SAVED_EVENT_ID, this);
+		getApplication().getEventManager().subscribe(
+				NafOptimizationRunner.FILE_OPENED_EVENT_ID, this);
+		getApplication().getEventManager().subscribe(
+				NafOptimizationRunner.FILE_CLOSED_EVENT_ID, this);
+		getApplication().getEventManager().subscribe(
+				NafOptimizationRunner.FILE_SAVED_EVENT_ID, this);
+		getApplication().getEventManager().subscribe(
+				NafOptimizationRunner.WINDOW_RENAMED_EVENT_ID, this);
 	}
 
 	protected void updateView()
@@ -124,16 +128,19 @@ public class StudyView extends DataViewPane implements EventSubscriber
 	protected void updateActions()
 	{
 		boolean canDo = study.canTune();
-		getApplication().getEventManager().publish(NafOptimizationRunner.TUNING_ACTIVE_EVENT_ID, canDo);
+		getApplication().getEventManager().publish(
+				NafOptimizationRunner.TUNING_ACTIVE_EVENT_ID, canDo);
 
 		canDo = study.canOptimize();
-		getApplication().getEventManager().publish(NafOptimizationRunner.OPTIMIZATION_ACTIVE_EVENT_ID, canDo);
+		getApplication().getEventManager().publish(
+				NafOptimizationRunner.OPTIMIZATION_ACTIVE_EVENT_ID, canDo);
 	}
 
 	@Override
 	public void doEvent(SubscriberEvent event)
 	{
-		DataModel source = ((DataModelEvent) event.getSource()).getDataModel();
+		String eventId = event.getEvent();
+		DataModel source = (DataModel) event.getSource();
 		if (source instanceof FileDataModel)
 		{
 			String data = (String) ((FileDataModel) source).getData();
@@ -141,22 +148,21 @@ public class StudyView extends DataViewPane implements EventSubscriber
 			if (categoryName != null)
 			{
 				Category category = study.getCategory(categoryName);
-				String eventId = event.getEvent();
 				String subName = source.getName();
-				if (NafOptimizationRunner.FILE_OPENED_EVENT_ID.equals(eventId))
+				switch (eventId)
 				{
-					category.addSub(subName, source);
-					updateView();
+					case NafOptimizationRunner.FILE_OPENED_EVENT_ID:
+						category.addSub(subName, source);
+						break;
+					case NafOptimizationRunner.FILE_CLOSED_EVENT_ID:
+						category.removeSub(subName);
+						break;
+					case NafOptimizationRunner.FILE_SAVED_EVENT_ID:
+					case NafOptimizationRunner.WINDOW_RENAMED_EVENT_ID:
+						category.replaceSub(subName, (FileDataModel) source);
+						break;
 				}
-				else if (NafOptimizationRunner.FILE_CLOSED_EVENT_ID.equals(eventId))
-				{
-					category.removeSub(subName);
-					updateView();
-				}
-				else if (NafOptimizationRunner.FILE_SAVED_EVENT_ID.equals(eventId)) {
-					category.replaceSub(subName, (FileDataModel)source);
-					updateView();
-				}
+				updateView();
 			}
 		}
 	}
@@ -165,14 +171,21 @@ public class StudyView extends DataViewPane implements EventSubscriber
 	{
 		// Check Instrument
 		BindFactory bindFactory = GeometryBindFactory.getInstance();
-		if (bindFactory.isValidXml(xmlString, "Instrument", true)) // TODO Make constants in binding framework
+		if (bindFactory.isValidXml(xmlString, "Instrument", true)) // TODO Make
+																	// constants
+																	// in
+																	// binding
+																	// framework
 		{
 			return StudyModel.INSTRUMENT_CATEGORY_ID;
 		}
 
 		// Check Tuning
 		bindFactory = NoteBindFactory.getInstance();
-		if (bindFactory.isValidXml(xmlString, "Tuning", true)) // TODO Make constants in binding framework
+		if (bindFactory.isValidXml(xmlString, "Tuning", true)) // TODO Make
+																// constants in
+																// binding
+																// framework
 		{
 			return StudyModel.TUNING_CATEGORY_ID;
 		}
@@ -201,10 +214,12 @@ public class StudyView extends DataViewPane implements EventSubscriber
 			FileBasedApplication app = (FileBasedApplication) getApplication();
 			DataModel data = app.newData("xml");
 			// These sleeps are due to the way JDAF handles threading.
-			// The DataModel and DataViews seem to be updated on separate threads
+			// The DataModel and DataViews seem to be updated on separate
+			// threads
 			// Dumb!
 			CodeEditorView view = null;
-			while (view == null) {
+			while (view == null)
+			{
 				view = (CodeEditorView) app.getDataView(data);
 				Thread.sleep(100);
 			}
@@ -254,11 +269,11 @@ public class StudyView extends DataViewPane implements EventSubscriber
 	 */
 	public void setStudyModel(String studyClassName)
 	{
-		if ( studyClassName == NAF_STUDY_NAME )
+		if (studyClassName == NAF_STUDY_NAME)
 		{
 			this.study = new NafStudyModel();
 		}
-		else if ( studyClassName == WHISTLE_STUDY_NAME )
+		else if (studyClassName == WHISTLE_STUDY_NAME)
 		{
 			this.study = new WhistleStudyModel();
 		}

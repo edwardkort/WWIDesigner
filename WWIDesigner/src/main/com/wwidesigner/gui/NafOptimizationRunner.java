@@ -418,7 +418,7 @@ public class NafOptimizationRunner extends FileBasedApplication implements
 		{
 			try
 			{
-				dialog.setVisible(false);
+				dialog.dispose();
 			}
 			catch (Exception ex)
 			{

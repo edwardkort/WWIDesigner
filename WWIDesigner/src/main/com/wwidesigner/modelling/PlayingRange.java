@@ -12,7 +12,6 @@ import org.apache.commons.math3.optimization.univariate.BrentOptimizer;
 import org.apache.commons.math3.optimization.univariate.UnivariateOptimizer;
 import org.apache.commons.math3.optimization.univariate.UnivariatePointValuePair;
 
-import com.wwidesigner.geometry.Instrument;
 import com.wwidesigner.note.Fingering;
 
 /**
@@ -30,8 +29,7 @@ public class PlayingRange
 	/* Loop gain that defines fmin for a playing range. */
 	protected static final double MinimumGain = 1.0;
 	
-	// The instrument being modeled.
-	protected Instrument instrument;
+	// A calculator for the instrument being modeled.
 	protected InstrumentCalculator calculator;
 
 	// Classes used to find solutions.
@@ -86,12 +84,29 @@ public class PlayingRange
 		}
 	}
 
-	public PlayingRange(Instrument instrument, 
-			InstrumentCalculator calculator, Fingering fingering)
+	/**
+	 * Construct a playing-range calculator for a specified fingering.
+	 * @param calculator
+	 * @param fingering
+	 */
+	public PlayingRange(InstrumentCalculator calculator, Fingering fingering)
 	{
-		this.instrument = instrument;
 		this.calculator = calculator;
 		this.calculator.setFingering(fingering);
+		this.zImag = new ZImag();
+		this.gainOne = new GainOne();
+		this.zRatio = new ZRatio();
+		this.solver = new BrentSolver();
+		this.optimizer = new BrentOptimizer(0.0001, 0.0001);	// Approximate minimum is sufficient.
+	}
+
+	/**
+	 * Construct a playing-range calculator for the current instrument fingering.
+	 * @param calculator
+	 */
+	public PlayingRange(InstrumentCalculator calculator)
+	{
+		this.calculator = calculator;
 		this.zImag = new ZImag();
 		this.gainOne = new GainOne();
 		this.zRatio = new ZRatio();

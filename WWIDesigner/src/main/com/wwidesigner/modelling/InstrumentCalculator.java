@@ -129,6 +129,11 @@ public abstract class InstrumentCalculator
 		this.boreSectionCalculator = boreSectionCalculator;
 	}
 
+	public Instrument getInstrument()
+	{
+		return instrument;
+	}
+
 	public PhysicalParameters getPhysicalParameters()
 	{
 		return this.params;

@@ -202,6 +202,7 @@ public class MultivariateMultiStartBoundsOptimizer implements
 			}
 
 			// Return the found point given the best objective function value.
+			System.out.println("Best optimum: " + optima[0].getValue());
 			return optima[0];
 		}
 		else

@@ -35,13 +35,13 @@ public abstract class BaseObjectiveFunction implements MultivariateFunction, Uni
 	// Recommended optimization method.
 	public enum OptimizerType
 	{
-		BrentOptimizer, PowellOptimizer, BOBYQAOptimizer, CMAESOptimizer, MultiStartOptimizer
+		BrentOptimizer, PowellOptimizer, BOBYQAOptimizer, CMAESOptimizer
 	}
 	
 	protected  OptimizerType  optimizerType;
-	protected  int  nrInterpolations;
 	protected  int  maxIterations;
 	protected  AbstractRangeProcessor  rangeProcessor;
+	protected static final int MaxInterpolations = 40;	// Maximum number of interpolations for BOBYQA.
 
 	// Statistics for the results of an optimization.
 	protected int evaluationsDone;		// Number of error calculations.
@@ -62,7 +62,6 @@ public abstract class BaseObjectiveFunction implements MultivariateFunction, Uni
 		this.evaluator = evaluator;
 		nrDimensions = 1;
 		optimizerType = OptimizerType.BOBYQAOptimizer;
-		nrInterpolations = 20;
 		maxIterations = 1000;
 		rangeProcessor = null;
 		iterationsDone = 0;
@@ -148,7 +147,34 @@ public abstract class BaseObjectiveFunction implements MultivariateFunction, Uni
 	 * @throws DimensionMismatchException.
 	 */
 	public abstract void setGeometryPoint( double[] point );
-	
+
+	/**
+	 * From the number of dimensions, propose a useful number of interpolations
+	 * if the optimizer type requires it.
+	 */
+	public int getNrInterpolations()
+	{
+		int nrInterpolations = 0; // The default value for CMAES
+
+		if (OptimizerType.BOBYQAOptimizer.equals(optimizerType))
+		{
+			if (isMultiStart())
+			{
+				nrInterpolations = 2 * nrDimensions;
+			}
+			else
+			{
+				nrInterpolations = (nrDimensions + 1)
+						* (nrDimensions + 2) / 2;
+			}
+			if ( nrInterpolations > MaxInterpolations )
+			{
+				nrInterpolations = MaxInterpolations;
+			}
+		}
+		return nrInterpolations;
+	}
+
 	public Instrument getInstrument()
 	{
 		return calculator.getInstrument();
@@ -195,16 +221,6 @@ public abstract class BaseObjectiveFunction implements MultivariateFunction, Uni
 		this.optimizerType = optimizerType;
 	}
 
-	public int getNrInterpolations()
-	{
-		return nrInterpolations;
-	}
-
-	public void setNrInterpolations(int nrInterpolations)
-	{
-		this.nrInterpolations = nrInterpolations;
-	}
-
 	public int getMaxIterations()
 	{
 		return maxIterations;
@@ -213,6 +229,15 @@ public abstract class BaseObjectiveFunction implements MultivariateFunction, Uni
 	public void setMaxIterations(int maxIterations)
 	{
 		this.maxIterations = maxIterations;
+	}
+	
+	public boolean isMultiStart()
+	{
+		if (rangeProcessor != null)
+		{
+			return true;
+		}
+		return false;
 	}
 
 	public AbstractRangeProcessor getRangeProcessor()

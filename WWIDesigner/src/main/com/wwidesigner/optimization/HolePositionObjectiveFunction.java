@@ -27,7 +27,6 @@ public class HolePositionObjectiveFunction extends BaseObjectiveFunction
 		super(calculator, tuning, evaluator);
 		nrDimensions = calculator.getInstrument().getHole().size() + 1;
 		optimizerType = OptimizerType.BOBYQAOptimizer;		// MultivariateOptimizer
-		nrInterpolations = 2 * nrDimensions;
 		maxIterations = 2000;
 	}
 

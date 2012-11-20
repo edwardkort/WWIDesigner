@@ -36,7 +36,6 @@ public class HoleGroupObjectiveFunction extends BaseObjectiveFunction
 		optimizerType = OptimizerType.BOBYQAOptimizer;		// MultivariateOptimizer
 		maxIterations = 5000;
 		setHoleGroups(holeGroups);
-		nrInterpolations = 2 * nrDimensions;
 	}
 
 	public void setHoleGroups(int[][] groups) throws Exception

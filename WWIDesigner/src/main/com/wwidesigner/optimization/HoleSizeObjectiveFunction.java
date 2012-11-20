@@ -23,7 +23,6 @@ public class HoleSizeObjectiveFunction extends BaseObjectiveFunction
 		super(calculator, tuning, evaluator);
 		nrDimensions = calculator.getInstrument().getHole().size();
 		optimizerType = OptimizerType.BOBYQAOptimizer;		// MultivariateOptimizer
-		nrInterpolations = 2 * nrDimensions;
 	}
 
 	@Override

@@ -29,7 +29,6 @@ import com.wwidesigner.note.Tuning;
 import com.wwidesigner.note.bind.NoteBindFactory;
 import com.wwidesigner.optimization.BaseObjectiveFunction;
 import com.wwidesigner.optimization.multistart.MultivariateMultiStartBoundsOptimizer;
-import com.wwidesigner.optimization.run.BaseOptimizationRunner;
 import com.wwidesigner.util.BindFactory;
 import com.wwidesigner.util.PhysicalParameters;
 
@@ -303,14 +302,15 @@ public abstract class StudyModel
 				{
 					optimizer = new CMAESOptimizer(objective.getNrInterpolations());
 				}
-				else if ( objective.getOptimizerType() == BaseObjectiveFunction.OptimizerType.MultiStartOptimizer ) {
-					MultivariateOptimizer baseOptimizer = new BOBYQAOptimizer(objective.getNrInterpolations());
+				else {
+					optimizer = new BOBYQAOptimizer(objective.getNrInterpolations());
+				}
+				if ( objective.isMultiStart())
+				{
+					MultivariateOptimizer baseOptimizer = (MultivariateOptimizer) optimizer;
 					optimizer = new MultivariateMultiStartBoundsOptimizer(
 							baseOptimizer, objective.getRangeProcessor().getNumberOfStarts(),
 							objective.getRangeProcessor());
-				}
-				else {
-					optimizer = new BOBYQAOptimizer(objective.getNrInterpolations());
 				}
 				outcome = optimizer.optimize(objective.getMaxIterations(),objective,GoalType.MINIMIZE,
 						startPoint, objective.getLowerBounds(), objective.getUpperBounds());
@@ -403,14 +403,6 @@ public abstract class StudyModel
 	 * @return created tuner.
 	 */
 	protected abstract InstrumentTuner getInstrumentTuner();
-
-	/**
-	 * Create the selected optimization runner,
-	 * set the physical parameters,
-	 * and set any constraints that the user has selected.
-	 * @return
-	 */
-	protected abstract BaseOptimizationRunner getOptimizationRunner();
 
 	/**
 	 * Create the objective function to use for the selected optimization.

@@ -88,7 +88,7 @@ public class InstrumentImpedanceReport
 				}
 				if ( actual != 0.0 )
 				{
-					PlayingRange range = new PlayingRange(instrument,calculator, fingering);
+					PlayingRange range = new PlayingRange(calculator, fingering);
 					double predicted = range.findFmax(actual);
 					pw.printf("%2d   %7.2f  %7.2f   %7.2f", i, fnom, actual, predicted);
 					if ( predicted > 0.0 )

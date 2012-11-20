@@ -91,7 +91,7 @@ public class InstrumentImpedanceTest
 				}
 				if ( actual != 0.0 )
 				{
-					PlayingRange range = new PlayingRange(instrument,calculator, fingering);
+					PlayingRange range = new PlayingRange(calculator, fingering);
 					double predicted = range.findFmax(actual);
 					assertTrue("No prediction for note " + i, predicted > 0.0 );
 					cents = Note.cents(actual, predicted);

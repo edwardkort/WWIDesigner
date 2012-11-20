@@ -42,4 +42,9 @@ public abstract class AbstractRangeProcessor
 
 	public abstract double[] nextVector(double[] startValues);
 
+	public int getNumberOfStarts()
+	{
+		return numberOfSetsToGenerate;
+	}
+
 }

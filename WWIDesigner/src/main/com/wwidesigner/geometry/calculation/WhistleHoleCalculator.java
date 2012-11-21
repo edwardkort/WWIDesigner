@@ -20,7 +20,7 @@ import com.wwidesigner.util.PhysicalParameters;
 public class WhistleHoleCalculator extends HoleCalculator
 {
 	// For bare (key-less) toneholes, assume the player's finger
-	// occupies a fixed length of the tonehole.
+	// occupies a fixed length of the tonehole, in meters.
 	private static double AssumedFingerSize = 0.000;
 
 	/*

@@ -153,6 +153,7 @@ public class StudyView extends DataViewPane implements EventSubscriber
 				{
 					case NafOptimizationRunner.FILE_OPENED_EVENT_ID:
 						category.addSub(subName, source);
+						category.setSelectedSub(subName);
 						break;
 					case NafOptimizationRunner.FILE_CLOSED_EVENT_ID:
 						category.removeSub(subName);

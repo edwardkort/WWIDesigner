@@ -69,7 +69,7 @@ public class NafOptimizationRunner extends FileBasedApplication implements
 	static final String WARN_ON_DIRTY_CLOSE_ACTION_ID = "Warn on dirty close";
 	static final String RENAME_WINIDOW_ACTION_ID = "Rename window";
 
-	protected boolean isWarnOnDirtyClose = true;
+	protected boolean isWarnOnDirtyClose = false;
 
 	public static void main(String[] args)
 	{
@@ -82,7 +82,7 @@ public class NafOptimizationRunner extends FileBasedApplication implements
 	{
 		super("NAF Optimization Runner", TDI_APPLICATION_STYLE);
 
-		// Set behavioe
+		// Set behaviour
 		getApplicationUIManager().setUseJideDockingFramework(true);
 		getApplicationUIManager().setUseJideActionFramework(true);
 		addApplicationFeature(new AutoInstallActionsFeature());
@@ -202,6 +202,11 @@ public class NafOptimizationRunner extends FileBasedApplication implements
 				CALCULATE_TUNING_ACTION_ID, message));
 		Action action = new ActivityAction(activity)
 		{
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
 			@Override
 			public void actionPerformed(ActionEvent e)
 			{
@@ -230,6 +235,11 @@ public class NafOptimizationRunner extends FileBasedApplication implements
 				OPTIMIZE_INSTRUMENT_ACTION_ID, message));
 		action = new ActivityAction(optActivity)
 		{
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
 			@Override
 			public void actionPerformed(ActionEvent e)
 			{
@@ -241,6 +251,11 @@ public class NafOptimizationRunner extends FileBasedApplication implements
 
 		action = new GUIApplicationAction(CLEAR_CONSOLE_ACTION_ID)
 		{
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
 			@Override
 			public void actionPerformedDetached(ActionEvent e)
 			{
@@ -252,6 +267,11 @@ public class NafOptimizationRunner extends FileBasedApplication implements
 
 		action = new GUIApplicationAction(WARN_ON_DIRTY_CLOSE_ACTION_ID)
 		{
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
 			@Override
 			public void actionPerformedDetached(ActionEvent event)
 			{
@@ -264,6 +284,11 @@ public class NafOptimizationRunner extends FileBasedApplication implements
 
 		action = new GUIApplicationAction(RENAME_WINIDOW_ACTION_ID)
 		{
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
 			public void actionPerformedDetached(ActionEvent event)
 			{
 				DataModel focusedModel = getApplication().getFocusedModel();

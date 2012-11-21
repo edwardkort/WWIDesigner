@@ -9,12 +9,26 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import org.apache.commons.math3.analysis.MultivariateFunction;
+import org.apache.commons.math3.optimization.BaseMultivariateSimpleBoundsOptimizer;
+import org.apache.commons.math3.optimization.GoalType;
+import org.apache.commons.math3.optimization.MultivariateOptimizer;
+import org.apache.commons.math3.optimization.PointValuePair;
+import org.apache.commons.math3.optimization.direct.BOBYQAOptimizer;
+import org.apache.commons.math3.optimization.direct.CMAESOptimizer;
+import org.apache.commons.math3.optimization.direct.PowellOptimizer;
+import org.apache.commons.math3.optimization.univariate.BrentOptimizer;
+import org.apache.commons.math3.optimization.univariate.UnivariatePointValuePair;
+
 import com.jidesoft.app.framework.file.FileDataModel;
 import com.wwidesigner.geometry.Instrument;
 import com.wwidesigner.geometry.bind.GeometryBindFactory;
 import com.wwidesigner.modelling.InstrumentCalculator;
 import com.wwidesigner.modelling.InstrumentTuner;
-import com.wwidesigner.optimization.run.BaseOptimizationRunner;
+import com.wwidesigner.note.Tuning;
+import com.wwidesigner.note.bind.NoteBindFactory;
+import com.wwidesigner.optimization.BaseObjectiveFunction;
+import com.wwidesigner.optimization.multistart.MultivariateMultiStartBoundsOptimizer;
 import com.wwidesigner.util.BindFactory;
 import com.wwidesigner.util.PhysicalParameters;
 
@@ -31,8 +45,14 @@ public abstract class StudyModel
 	public static final String OPTIMIZER_CATEGORY_ID = "Optimizer";
 	public static final String CONSTRAINT_CATEGORY_ID = "Constraint set";
 
+	/**
+	 * Tree of selectable categories that the study model supports. 
+	 */
 	protected List<Category> categories;
 	
+	/**
+	 * Physical parameters to use for this study model.
+	 */
 	protected PhysicalParameters params;
 
 	public StudyModel()
@@ -171,23 +191,19 @@ public abstract class StudyModel
 		Category instrumentCategory = getCategory(INSTRUMENT_CATEGORY_ID);
 		String instrumentSelected = instrumentCategory.getSelectedSub();
 
-		Category calculatorCategory = getCategory(CALCULATOR_CATEGORY_ID);
-		String calculatorSelected = calculatorCategory.getSelectedSub();
-
-		return tuningSelected != null && instrumentSelected != null
-				&& calculatorSelected != null;
+		return tuningSelected != null && instrumentSelected != null;
 	}
 
 	public boolean canOptimize()
 	{
+		if ( ! canTune() )
+		{
+			return false;
+		}
 		Category category = getCategory(OPTIMIZER_CATEGORY_ID);
 		String optimizerSelected = category.getSelectedSub();
 
-		category = getCategory(CONSTRAINT_CATEGORY_ID);
-		String constraintsSelected = category.getSelectedSub();
-
-		return optimizerSelected != null && constraintsSelected != null
-				&& canTune();
+		return optimizerSelected != null;
 	}
 
 	public void calculateTuning(String title) throws Exception
@@ -211,19 +227,115 @@ public abstract class StudyModel
 		tuner.showTuning(title + ": " + instrumentName + "/" + tuningName,
 				false);
 	}
+	
+	protected static void printErrors(String description, double errorNorm, double[] errorVector)
+	{
+		boolean firstPass = true;
+		System.out.print(description);
+		System.out.print(errorNorm);
+		System.out.print(" from [");
+		for (double err: errorVector)
+		{
+			if (! firstPass)
+			{
+				System.out.print(",  ");
+			}
+			else
+			{
+				firstPass = false;
+			}
+			System.out.print(err);
+		}
+		System.out.println("].");
+	}
 
 	public String optimizeInstrument() throws Exception
 	{
-		BaseOptimizationRunner runner = getOptimizationRunner();
+		BaseObjectiveFunction objective = getObjectiveFunction();
+		
+		double[] startPoint = objective.getGeometryPoint();
+		double[] errorVector = objective.getErrorVector(startPoint);
+		
+		// Ensure startPoint is within bounds.
+		for (int i = 0; i < startPoint.length; i++)
+		{
+			if ( startPoint[i] < objective.getLowerBounds()[i] )
+			{
+				startPoint[i] = objective.getLowerBounds()[i];
+			}
+			else if ( startPoint[i] > objective.getUpperBounds()[i] )
+			{
+				startPoint[i] = objective.getUpperBounds()[i];
+			} 
+		}
+		System.out.println();
+		printErrors("Initial error: ", objective.calcNorm(errorVector), errorVector);
+		
+		try
+		{
+			if ( objective.getOptimizerType() == BaseObjectiveFunction.OptimizerType.BrentOptimizer )
+			{
+				// Univariate optimization.
+				BrentOptimizer optimizer = new BrentOptimizer(0.00001, 0.00001);
+				UnivariatePointValuePair  outcome;
+				outcome = optimizer.optimize(objective.getMaxIterations(),objective,GoalType.MINIMIZE,
+						objective.getLowerBounds()[0], objective.getUpperBounds()[0],
+						startPoint[0]);
+				double[] geometry = new double[1];
+				geometry[0] = outcome.getPoint();
+				objective.setGeometryPoint(geometry);
+			}
+			else if ( objective.getOptimizerType() == BaseObjectiveFunction.OptimizerType.PowellOptimizer )
+			{
+				// Multivariate optimization, without bounds.
+				PowellOptimizer optimizer = new PowellOptimizer(0.00001, 0.00001);
+				PointValuePair  outcome;
+				outcome = optimizer.optimize(objective.getMaxIterations(),objective,GoalType.MINIMIZE,
+						startPoint);
+				objective.setGeometryPoint(outcome.getPoint());
+			}
+			else {
+				// Multivariate optimization, with bounds.
+				BaseMultivariateSimpleBoundsOptimizer<MultivariateFunction> optimizer;
+				PointValuePair  outcome;
+				if ( objective.getOptimizerType() == BaseObjectiveFunction.OptimizerType.CMAESOptimizer )
+				{
+					optimizer = new CMAESOptimizer(objective.getNrInterpolations());
+				}
+				else {
+					optimizer = new BOBYQAOptimizer(objective.getNrInterpolations());
+				}
+				if ( objective.isMultiStart())
+				{
+					MultivariateOptimizer baseOptimizer = (MultivariateOptimizer) optimizer;
+					optimizer = new MultivariateMultiStartBoundsOptimizer(
+							baseOptimizer, objective.getRangeProcessor().getNumberOfStarts(),
+							objective.getRangeProcessor());
+				}
+				outcome = optimizer.optimize(objective.getMaxIterations(),objective,GoalType.MINIMIZE,
+						startPoint, objective.getLowerBounds(), objective.getUpperBounds());
+				objective.setGeometryPoint(outcome.getPoint());
+			}
+		}
+		catch (Exception e)
+		{
+			System.out.println("Exception: " + e.getMessage());
+			e.printStackTrace();
+		}
+		
+		System.out.print("Performed ");
+		System.out.print(objective.getEvaluationsDone());
+		System.out.print(" error evaluations in ");
+		System.out.print(objective.getIterationsDone());
+		System.out.println(" iterations.");
+		errorVector = objective.getErrorVector(objective.getGeometryPoint());
+		printErrors("Final error:  ", objective.calcNorm(errorVector), errorVector);
+		System.out.println();
 
-		String xmlString = getSelectedXmlString(INSTRUMENT_CATEGORY_ID);
-		runner.setInputInstrumentXML(xmlString, false);
-
-		xmlString = getSelectedXmlString(TUNING_CATEGORY_ID);
-		runner.setInputTuningXML(xmlString, false);
-
-		Instrument instrument = runner.doInstrumentOptimization(null);
-		xmlString = marshal(instrument);
+		Instrument instrument = objective.getInstrument();
+		// Convert back to the input unit-of-measure values
+		instrument.convertToLengthType();
+		String xmlString = marshal(instrument);
 
 		return xmlString;
 	}
@@ -247,6 +359,24 @@ public abstract class StudyModel
 		xmlString = (String) model.getData();
 
 		return xmlString;
+	}
+
+	protected Instrument getInstrument() throws Exception
+	{
+		BindFactory geometryBindFactory = GeometryBindFactory.getInstance();
+		String xmlString = getSelectedXmlString(INSTRUMENT_CATEGORY_ID);
+		Instrument instrument = (Instrument) geometryBindFactory.unmarshalXml(xmlString, true);
+		instrument.updateComponents();
+		return instrument;
+	}
+
+	protected Tuning getTuning() throws Exception
+	{
+		BindFactory noteBindFactory = NoteBindFactory.getInstance();
+		String xmlString = getSelectedXmlString(TUNING_CATEGORY_ID);
+		Tuning tuning = (Tuning) noteBindFactory.unmarshalXml(xmlString, true);
+
+		return tuning;
 	}
 
 	public PhysicalParameters getParams()
@@ -275,10 +405,11 @@ public abstract class StudyModel
 	protected abstract InstrumentTuner getInstrumentTuner();
 
 	/**
-	 * Create the selected optimization runner,
+	 * Create the objective function to use for the selected optimization.
 	 * set the physical parameters,
 	 * and set any constraints that the user has selected.
 	 * @return
+	 * @throws Exception 
 	 */
-	protected abstract BaseOptimizationRunner getOptimizationRunner();
+	protected abstract BaseObjectiveFunction getObjectiveFunction() throws Exception;
 }

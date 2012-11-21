@@ -77,7 +77,7 @@ public class InstrumentTuningReport
 				}
 				if ( target != 0.0 )
 				{
-					PlayingRange range = new PlayingRange(instrument,calculator, fingering);
+					PlayingRange range = new PlayingRange(calculator, fingering);
 					double fmax, fmin;
 					try {
 						fmax = range.findFmax(target);

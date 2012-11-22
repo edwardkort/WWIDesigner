@@ -116,7 +116,7 @@ public class InstrumentTuningRangeTable
 					PlayingRange range = new PlayingRange(calculator, fingering);
 					double fmax, fmin;
 					try {
-						fmax = range.findFmax(target);
+						fmax = range.findXZero(target);
 						values[6] = format_00.format(fmax);
 					}
 					catch (NoPlayingRange e)

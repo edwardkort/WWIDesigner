@@ -11,9 +11,9 @@ import java.lang.reflect.Constructor;
 import com.wwidesigner.geometry.Instrument;
 import com.wwidesigner.geometry.bind.GeometryBindFactory;
 import com.wwidesigner.modelling.InstrumentCalculator;
+import com.wwidesigner.modelling.PlayingRange;
 import com.wwidesigner.note.Fingering;
 import com.wwidesigner.note.InstrumentTuningTable;
-import com.wwidesigner.note.Note;
 import com.wwidesigner.note.Tuning;
 import com.wwidesigner.note.TuningInterface;
 import com.wwidesigner.note.bind.NoteBindFactory;
@@ -177,17 +177,13 @@ public class AbstractOptimizationTest
 	public void showTuning(Instrument instrument,
 			InstrumentCalculator calculator, Tuning tuning, String title)
 	{
-		double maxFreqRatio = 2.;
-		// set accuracy to 0.1 cents
-		int numberOfFrequencies = (int) (10. * Note.cents(1.0,maxFreqRatio));
-
 		InstrumentTuningTable table = new InstrumentTuningTable(title);
 		// instrument.updateComponents();
 
 		for (Fingering fingering : tuning.getFingering())
 		{
-			Double playedFrequency = calculator.getPlayedFrequency(fingering,
-					maxFreqRatio, numberOfFrequencies);
+			PlayingRange range = new PlayingRange(calculator,fingering);
+			Double playedFrequency = new Double(range.findXZero(fingering.getNote().getFrequency()));
 			table.addTuning(fingering, playedFrequency);
 		}
 

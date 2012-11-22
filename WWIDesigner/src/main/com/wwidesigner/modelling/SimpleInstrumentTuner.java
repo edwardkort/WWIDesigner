@@ -6,9 +6,10 @@ package com.wwidesigner.modelling;
 import java.util.Comparator;
 import java.util.Map;
 import java.util.TreeMap;
+
+import com.wwidesigner.modelling.PlayingRange.NoPlayingRange;
 import com.wwidesigner.note.Fingering;
 import com.wwidesigner.note.InstrumentTuningTable;
-import com.wwidesigner.note.Note;
 
 /**
  * @author kort
@@ -21,10 +22,7 @@ public class SimpleInstrumentTuner extends InstrumentTuner
 	{
 		calculator.setInstrument(instrument);
 		calculator.setPhysicalParameters(params);
-
-		double maxFreqRatio = 2.;
-		// set accuracy to 0.1 cents
-		int numberOfFrequencies = (int) (10. * Note.cents(1.0,maxFreqRatio));
+		PlayingRange range = new PlayingRange(calculator);
 
 		Map<Fingering, Double> fingeringMap = new TreeMap<Fingering, Double>(
 				new Comparator<Fingering>()
@@ -44,9 +42,16 @@ public class SimpleInstrumentTuner extends InstrumentTuner
 
 		for (Fingering fingering : tuning.getFingering())
 		{
-			Double playedFrequency = calculator.getPlayedFrequency(fingering,
-					maxFreqRatio, numberOfFrequencies);
-			fingeringMap.put(fingering, playedFrequency);
+			calculator.setFingering(fingering);
+			try
+			{
+				double playedFrequency = range.findXZero(fingering.getNote().getFrequency());
+				fingeringMap.put(fingering, playedFrequency);
+			}
+			catch (NoPlayingRange e)
+			{
+				fingeringMap.put(fingering, null);
+			}
 		}
 
 		return fingeringMap;

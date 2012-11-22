@@ -105,14 +105,14 @@ public class WhistleEvaluator implements EvaluatorInterface
 
 		calculator.setFingering(noteLow);
 		PlayingRange range = new PlayingRange(calculator);
-		fmax = range.findFmax(fLow);
+		fmax = range.findXZero(fLow);
 		fmin = range.findFmin(fmax);
 		z = calculator.calcZ(fmin);
 		imagLow = BottomFraction * z.getImaginary();
 		fLow = fmax;	// Nominal frequency for our interpolation.
 		
 		calculator.setFingering(noteHigh);
-		fmax = range.findFmax(fHigh);
+		fmax = range.findXZero(fHigh);
 		fmin = range.findFmin(fmax);
 		z = calculator.calcZ(fmin);
 		imagHigh = TopFraction * z.getImaginary();

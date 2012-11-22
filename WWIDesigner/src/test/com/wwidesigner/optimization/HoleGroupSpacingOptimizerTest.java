@@ -12,7 +12,6 @@ import org.junit.Test;
 import com.wwidesigner.geometry.BorePoint;
 import com.wwidesigner.geometry.Instrument;
 import com.wwidesigner.geometry.PositionInterface;
-import com.wwidesigner.modelling.GordonCalculator;
 import com.wwidesigner.modelling.NAFCalculator;
 import com.wwidesigner.util.PhysicalParameters;
 import com.wwidesigner.util.Constants.TemperatureType;
@@ -36,7 +35,7 @@ public class HoleGroupSpacingOptimizerTest extends AbstractOptimizationTest
 		setInputInstrumentXML("com/wwidesigner/optimization/example/G7HoleNAF.xml");
 		setInputTuningXML("com/wwidesigner/optimization/example/G7HoleNAFTuning.xml");
 		setParams(new PhysicalParameters(22.22, TemperatureType.C));
-		setCalculator(new GordonCalculator());
+		setCalculator(new NAFCalculator());
 		setOptimizerClass(HoleGroupSpacingOptimizer.class);
 		setOptimizerType(InstrumentOptimizer.OptimizerType.BOBYQAOptimizer);
 	}

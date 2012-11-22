@@ -137,6 +137,7 @@ public abstract class BindFactory
 		JAXBContext context = JAXBContext.newInstance(mappedInput.getClass());
 		Marshaller marshaller = context.createMarshaller();
 		marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+		marshaller.setSchema(getSchema());
 		marshaller.marshal(createElement(mappedInput), writer);
 
 	}

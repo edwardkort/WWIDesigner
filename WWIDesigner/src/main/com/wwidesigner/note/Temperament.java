@@ -77,4 +77,71 @@ public class Temperament
 		ratio.add(newRatio);
 	}
 
+	public static Temperament makeTET_12()
+	{
+		Temperament temp = new Temperament();
+		temp.setName("12-Tone Equal Temperament");
+		temp.setComment("12-tone, equal temperament in one octave.");
+
+		for (int i = 0; i < 13; i++)
+		{
+			double ratio = Math.pow(2., (double) i / 12.);
+			temp.addRatio(ratio);
+		}
+		return temp;
+	}
+
+	public static Temperament makeJI_12()
+	{
+		Temperament temp = new Temperament();
+		temp.setName("12-Tone Just Intonation");
+		temp.setComment("12-tone, just intonation with 7-limit tritone in one octave.");
+
+		temp.addRatio(1.);
+		temp.addRatio(16. / 15);
+		temp.addRatio(9. / 8);
+		temp.addRatio(6. / 5);
+		temp.addRatio(5. / 4);
+		temp.addRatio(4. / 3);
+		temp.addRatio(7. / 5);
+		temp.addRatio(3. / 2);
+		temp.addRatio(8. / 5);
+		temp.addRatio(5. / 3);
+		temp.addRatio(9. / 5);
+		temp.addRatio(15. / 8);
+		temp.addRatio(2.);
+
+		return temp;
+	}
+
+	public enum StandardTemperament
+	{
+		TET_12("12-tone equal temperament"), JI_12("12-tone just intonation");
+		private String description;
+
+		private StandardTemperament(String description)
+		{
+			this.description = description;
+		}
+
+		public String toString()
+		{
+			return description;
+		}
+
+	}
+
+	public static Temperament makeStandardTemperament(StandardTemperament type)
+	{
+		switch (type)
+		{
+			case TET_12:
+				return makeTET_12();
+			case JI_12:
+				return makeJI_12();
+			default:
+				return null;
+		}
+	}
+
 }

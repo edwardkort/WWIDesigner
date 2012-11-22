@@ -81,7 +81,7 @@ public class GordonInstrumentCalculator extends InstrumentCalculator
 
 		Complex result = termImp.multiply(fluteTM.getPP()).add(fluteTM.getPU())
 				.divide(termImp.multiply(fluteTM.getUP()).add(fluteTM.getUU()));
-		return result;
+		return result.conjugate();
 	}
 
 	@Override

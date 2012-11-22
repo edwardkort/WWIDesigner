@@ -9,7 +9,7 @@ import static org.junit.Assert.fail;
 import org.junit.Test;
 
 import com.wwidesigner.geometry.Instrument;
-import com.wwidesigner.modelling.GordonCalculator;
+import com.wwidesigner.modelling.NAFCalculator;
 import com.wwidesigner.util.Constants.TemperatureType;
 import com.wwidesigner.util.PhysicalParameters;
 
@@ -27,7 +27,7 @@ public class FippleFactorOptimizerTest extends AbstractOptimizationTest
 			setInputInstrumentXML("com/wwidesigner/optimization/example/NoHoleNAF1.xml");
 			setInputTuningXML("com/wwidesigner/optimization/example/NoHoleNAF1Tuning.xml");
 			setParams(new PhysicalParameters(22.22, TemperatureType.C));
-			setCalculator(new GordonCalculator());
+			setCalculator(new NAFCalculator());
 			setOptimizerClass(FippleFactorOptimizer.class);
 			setLowerBound(new double[] { 0.2 });
 			setUpperBound(new double[] { 1.5 });

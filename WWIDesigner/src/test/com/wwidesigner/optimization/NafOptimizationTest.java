@@ -14,7 +14,7 @@ import com.wwidesigner.geometry.BorePoint;
 import com.wwidesigner.geometry.Hole;
 import com.wwidesigner.geometry.Instrument;
 import com.wwidesigner.geometry.PositionInterface;
-import com.wwidesigner.modelling.GordonCalculator;
+import com.wwidesigner.modelling.NAFCalculator;
 import com.wwidesigner.util.Constants.TemperatureType;
 import com.wwidesigner.util.PhysicalParameters;
 import com.wwidesigner.util.SortedPositionList;
@@ -34,7 +34,7 @@ public class NafOptimizationTest extends AbstractOptimizationTest
 			setInputInstrumentXML("com/wwidesigner/optimization/example/NoHoleNAF1.xml");
 			setInputTuningXML("com/wwidesigner/optimization/example/NoHoleNAF1Tuning.xml");
 			setParams(new PhysicalParameters(22.22, TemperatureType.C));
-			setCalculator(new GordonCalculator());
+			setCalculator(new NAFCalculator());
 			setOptimizerClass(SimpleHolePositionAndDiameterOptimizer.class);
 			setLowerBound(new double[] { 0.25 });
 			setUpperBound(new double[] { 0.4 });
@@ -65,7 +65,7 @@ public class NafOptimizationTest extends AbstractOptimizationTest
 			setInputInstrumentXML("com/wwidesigner/optimization/example/NoHoleTaperNAF.xml");
 			setInputTuningXML("com/wwidesigner/optimization/example/NoHoleTaperNAFTuning.xml");
 			setParams(new PhysicalParameters(22.22, TemperatureType.C));
-			setCalculator(new GordonCalculator());
+			setCalculator(new NAFCalculator());
 			setOptimizerClass(SimpleHolePositionAndDiameterOptimizer.class);
 			setLowerBound(new double[] { 0.3 });
 			setUpperBound(new double[] { 0.6 });
@@ -96,7 +96,7 @@ public class NafOptimizationTest extends AbstractOptimizationTest
 			setInputInstrumentXML("com/wwidesigner/optimization/example/G7HoleNAF.xml");
 			setInputTuningXML("com/wwidesigner/optimization/example/G7HoleNAFTuning.xml");
 			setParams(new PhysicalParameters(22.22, TemperatureType.C));
-			setCalculator(new GordonCalculator());
+			setCalculator(new NAFCalculator());
 			setOptimizerClass(SimpleHolePositionAndDiameterOptimizer.class);
 			setLowerBound(new double[] { 0.25, 0.03, 0.04, 0.06, 0.075, 0.09,
 					0.1, 0.001, 0.003, 0.003, 0.003, 0.003, 0.003, 0.0015,
@@ -130,7 +130,7 @@ public class NafOptimizationTest extends AbstractOptimizationTest
 			setInputInstrumentXML("com/wwidesigner/optimization/example/G7HoleNAF.xml");
 			setInputTuningXML("com/wwidesigner/optimization/example/G7HoleNAFTuning.xml");
 			setParams(new PhysicalParameters(22.22, TemperatureType.C));
-			setCalculator(new GordonCalculator());
+			setCalculator(new NAFCalculator());
 			setOptimizerClass(HolePosAndDiamImpedanceOptimizer.class);
 			setLowerBound(new double[] { 0.2, 0.012, 0.012, 0.012, 0.012, 0.012,
 					0.0005, 0.05, 0.1, 0.1, 0.1, 0.1, 0.1, 0.05, 0.05 });
@@ -163,7 +163,7 @@ public class NafOptimizationTest extends AbstractOptimizationTest
 			setInputInstrumentXML("com/wwidesigner/optimization/example/1HoleNAF1.xml");
 			setInputTuningXML("com/wwidesigner/optimization/example/1HoleNAF1Tuning.xml");
 			setParams(new PhysicalParameters(22.22, TemperatureType.C));
-			setCalculator(new GordonCalculator());
+			setCalculator(new NAFCalculator());
 			setOptimizerClass(HolePosAndDiamImpedanceOptimizer.class);
 			setLowerBound(new double[] { 0.20, 0.05, 0.3 });
 			setUpperBound(new double[] { 0.4, 0.15, 0.4 });
@@ -214,7 +214,7 @@ public class NafOptimizationTest extends AbstractOptimizationTest
 			setInputInstrumentXML("com/wwidesigner/optimization/example/6HoleNAF1.xml");
 			setInputTuningXML("com/wwidesigner/optimization/example/6HoleNAF1Tuning.xml");
 			setParams(new PhysicalParameters(22.22, TemperatureType.C));
-			setCalculator(new GordonCalculator());
+			setCalculator(new NAFCalculator());
 			setOptimizerClass(HolePosAndDiamImpedanceOptimizer.class);
 			setLowerBound(new double[] { 0.28, 0.01, 0.01, 0.01, 0.01, 0.01,
 						0.05, 0.1, 0.15, 0.15, 0.15, 0.15, 0.15 });

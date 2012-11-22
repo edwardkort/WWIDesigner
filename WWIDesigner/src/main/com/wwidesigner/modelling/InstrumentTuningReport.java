@@ -80,7 +80,7 @@ public class InstrumentTuningReport
 					PlayingRange range = new PlayingRange(calculator, fingering);
 					double fmax, fmin;
 					try {
-						fmax = range.findFmax(target);
+						fmax = range.findXZero(target);
 					}
 					catch (NoPlayingRange e)
 					{

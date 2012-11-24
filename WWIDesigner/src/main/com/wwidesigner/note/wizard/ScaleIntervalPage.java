@@ -92,10 +92,26 @@ public class ScaleIntervalPage extends AbstractWizardPage implements
 
 		});
 		gbc.gridy = 1;
+		gbc.insets = new Insets(5, 0, 5, 0);
+		panel.add(button, gbc);
+
+		button = new JButton("Delete selected cells");
+		button.addActionListener(new ActionListener()
+		{
+
+			@Override
+			public void actionPerformed(ActionEvent arg0)
+			{
+				scaleIntervalPanel.deleteSelection();
+			}
+
+		});
+		gbc.gridy = 2;
 		panel.add(button, gbc);
 
 		gbc.gridx = 1;
 		gbc.gridy = 0;
+		gbc.insets = new Insets(0, 0, 0, 0);
 		contentPanel.add(panel, gbc);
 	}
 

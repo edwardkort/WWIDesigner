@@ -125,6 +125,32 @@ public class ScaleIntervalPanel extends JPanel implements TableModelListener
 		}
 	}
 
+	public void deleteSelection()
+	{
+		DefaultTableModel model = (DefaultTableModel) intervalTable.getModel();
+		int rowIndexStart = intervalTable.getSelectedRow();
+		int rowIndexEnd = intervalTable.getSelectionModel()
+				.getMaxSelectionIndex();
+		int colIndexStart = intervalTable.getSelectedColumn();
+		int colIndexEnd = intervalTable.getColumnModel().getSelectionModel()
+				.getMaxSelectionIndex();
+		for (int i = rowIndexEnd; i >= rowIndexStart; i--)
+		{
+			for (int j = colIndexEnd; j >= colIndexStart; j--)
+			{
+				if (intervalTable.isCellSelected(i, j))
+				{
+					for (int k = i + 1; k < model.getRowCount(); k++)
+					{
+						Object lowerValue = model.getValueAt(k, j);
+						model.setValueAt(lowerValue, k - 1, j);
+					}
+
+				}
+			}
+		}
+	}
+
 	@Override
 	public void tableChanged(TableModelEvent arg0)
 	{

@@ -5,24 +5,25 @@ import com.wwidesigner.modelling.InstrumentCalculator;
 import com.wwidesigner.note.TuningInterface;
 
 /**
- * Optimization objective function for bore length,
- * hole positions, in groups, and hole diameters.
+ * Optimization objective function for hole positions and diameters,
+ * and a simple one-section taper
+ * The foot diameter remains invariant.
  * @author Edward Kort, Burton Patkau
  *
  */
-public class HoleGroupObjectiveFunction extends MergedObjectiveFunction
+public class SingleTaperLengthObjectiveFunction extends
+		MergedObjectiveFunction
 {
 
-	public HoleGroupObjectiveFunction(
+	public SingleTaperLengthObjectiveFunction(
 			InstrumentCalculator calculator, TuningInterface tuning,
-			EvaluatorInterface evaluator, int[][] holeGroups) throws Exception
+			EvaluatorInterface evaluator) throws Exception
 	{
 		super(calculator, tuning, evaluator);
 		this.components = new BaseObjectiveFunction[2];
-		this.components[0] = new HoleGroupPositionObjectiveFunction(calculator, tuning, evaluator, holeGroups);
-		this.components[1] = new HoleSizeObjectiveFunction(calculator, tuning, evaluator);
+		this.components[0] = new LengthObjectiveFunction(calculator, tuning, evaluator);
+		this.components[1] = new SingleTaperRatioObjectiveFunction(calculator, tuning, evaluator);
 		optimizerType = OptimizerType.BOBYQAOptimizer;		// MultivariateOptimizer
-		maxIterations = 10000;
 		sumDimensions();
 	}
 

@@ -10,7 +10,7 @@ import com.wwidesigner.modelling.InstrumentCalculator;
 import com.wwidesigner.note.TuningInterface;
 
 /**
- * Optimization objective function for hole diameters, relative to bore diameter.
+ * Optimization objective function for hole diameters.
  * @author Edward Kort, Burton Patkau
  *
  */
@@ -36,7 +36,7 @@ public class HoleSizeObjectiveFunction extends BaseObjectiveFunction
 		for (int i = 0; i < nrDimensions; ++i)
 		{
 			Hole hole = (Hole) sortedHoles[i];
-			geometry[i] = hole.getRatio();
+			geometry[i] = hole.getDiameter();
 		}
 
 		return geometry;
@@ -54,10 +54,9 @@ public class HoleSizeObjectiveFunction extends BaseObjectiveFunction
 		for (int i = 0; i < nrDimensions; ++i)
 		{
 			Hole hole = (Hole) sortedHoles[i];
-			hole.setRatio(point[i]);
+			hole.setDiameter(point[i]);
 		}
 
 		calculator.getInstrument().updateComponents();
 	}
-
 }

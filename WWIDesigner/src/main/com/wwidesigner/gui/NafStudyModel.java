@@ -18,7 +18,9 @@ import com.wwidesigner.optimization.HoleGroupObjectiveFunction;
 import com.wwidesigner.optimization.HoleObjectiveFunction;
 import com.wwidesigner.optimization.HolePositionObjectiveFunction;
 import com.wwidesigner.optimization.HoleSizeObjectiveFunction;
+import com.wwidesigner.optimization.LengthObjectiveFunction;
 import com.wwidesigner.optimization.SingleTaperHoleGroupObjectiveFunction;
+import com.wwidesigner.optimization.SingleTaperLengthObjectiveFunction;
 import com.wwidesigner.optimization.multistart.GridRangeProcessor;
 import com.wwidesigner.util.Constants.TemperatureType;
 import com.wwidesigner.util.PhysicalParameters;
@@ -38,6 +40,7 @@ public class NafStudyModel extends StudyModel
 	public static final String NO_GROUP_OPT_SUB_CATEGORY_ID = "No-grouping Hole Optimizer";
 	public static final String GROUP_OPT_SUB_CATEGORY_ID = "Hole-grouping Optimizer";
 	public static final String TAPER_GROUP_OPT_SUB_CATEGORY_ID = "Taper, hole-grouping Optimizer";
+	public static final String TAPER_LENGTH_OPT_SUB_CATEGORY_ID = "Taper and Length Optimizer";
 
 	public static final String HOLE_0_CONS_SUB_CATEGORY_ID = "0 holes";
 	public static final String HOLE_6_1_125_SPACING_CONS_SUB_CATEGORY_ID = "6 holes, 1-1/8\" max spacing";
@@ -78,6 +81,7 @@ public class NafStudyModel extends StudyModel
 		optimizers.addSub(HOLESIZE_OPT_SUB_CATEGORY_ID, null);
 		optimizers.addSub(GROUP_OPT_SUB_CATEGORY_ID, null);
 		optimizers.addSub(TAPER_GROUP_OPT_SUB_CATEGORY_ID, null);
+		optimizers.addSub(TAPER_LENGTH_OPT_SUB_CATEGORY_ID, null);
 		categories.add(optimizers);
 		Category constraints = new Category(CONSTRAINT_CATEGORY_ID);
 		constraints.addSub(HOLE_0_CONS_SUB_CATEGORY_ID, null);
@@ -180,7 +184,7 @@ public class NafStudyModel extends StudyModel
 			case HOLESIZE_OPT_SUB_CATEGORY_ID:
 				evaluator = new ReflectionEvaluator(calculator);
 				objective = new HoleSizeObjectiveFunction(calculator, tuning, evaluator);
-				// Bounds are expressed as diameter ratios, relative to bore diameter.
+				// Bounds are hole diameters expressed in meters.
 				if ( numberOfHoles == 0 )
 				{
 					lowerBound = new double[0];
@@ -188,82 +192,86 @@ public class NafStudyModel extends StudyModel
 				}
 				else if ( numberOfHoles == 7 )
 				{
-					lowerBound = new double[] { 0.1, 0.1, 0.1, 0.1, 0.1, 0.05, 0.05 };
-					upperBound = new double[] { 0.7, 0.7, 0.7, 0.7, 0.7, 0.4,  0.4 };
+					lowerBound = new double[] { 0.002, 0.002, 0.002, 0.002, 0.002, 0.002, 0.002 };
+					upperBound = new double[] { 0.014, 0.014, 0.014, 0.014, 0.014, 0.008, 0.008 };
 				}
 				else // Assume 6 holes.
 				{
-					lowerBound = new double[] { 0.1, 0.15, 0.15, 0.15, 0.15, 0.15 };
-					upperBound = new double[] { 0.5, 0.5,  0.5,  0.5,  0.5,  0.6 };
+					lowerBound = new double[] { 0.002, 0.003, 0.003, 0.003, 0.003, 0.003 };
+					upperBound = new double[] { 0.0102, 0.0102, 0.010, 0.010, 0.010, 0.012 };
 				}
 				break;
 			case HOLESPACE_OPT_SUB_CATEGORY_ID:
 				evaluator = new ReflectionEvaluator(calculator);
 				objective = new HolePositionObjectiveFunction(calculator, tuning, evaluator);
-				// Length bounds are expressed in meters, diameter bounds as ratios.
+				// Length bounds are expressed in meters.
 				if ( numberOfHoles == 0 )
 				{
-					lowerBound = new double[] { 0.25 };
-					upperBound = new double[] { 0.4 };
+					lowerBound = new double[] { 0.2 };
+					upperBound = new double[] { 0.7 };
 				}
 				else if ( numberOfHoles == 7 )
 				{
-					lowerBound = new double[] { 0.05, 0.0005, 0.012, 0.012, 0.012, 0.012, 0.012, 0.012 };
-					upperBound = new double[] { 0.3, 0.003,  0.05,  0.05,  0.1,   0.05,  0.05,  0.20 };
+					lowerBound = new double[] { 0.2, 0.0005, 0.012, 0.012, 0.012, 0.012, 0.012, 0.012 };
+					upperBound = new double[] { 0.7, 0.003,  0.05,  0.05,  0.1,   0.05,  0.05,  0.20 };
 				}
 				else if ( constraint == HOLE_6_1_125_SPACING_CONS_SUB_CATEGORY_ID )
 				{
-					lowerBound = new double[] { 0.05, 0.01,  0.01,  0.01, 0.01,  0.01,  0.01 };
-					upperBound = new double[] { 0.3,  0.029, 0.029, 0.07, 0.029, 0.029, 0.30 };
+					lowerBound = new double[] { 0.2, 0.01,  0.01,  0.01, 0.01,  0.01,  0.01 };
+					upperBound = new double[] { 0.7, 0.029, 0.029, 0.07, 0.029, 0.029, 0.30 };
 				}
 				else if ( constraint == HOLE_6_1_25_SPACING_CONS_SUB_CATEGORY_ID )
 				{
-					lowerBound = new double[] { 0.05, 0.01,  0.01,  0.01, 0.01,  0.01,  0.01 };
-					upperBound = new double[] { 0.3,  0.032, 0.032, 0.07, 0.032, 0.032, 0.30 };
+					lowerBound = new double[] { 0.2, 0.01,  0.01,  0.01, 0.01,  0.01,  0.01 };
+					upperBound = new double[] { 0.7, 0.032, 0.032, 0.07, 0.032, 0.032, 0.30 };
 				}
 				else // 6 holes, 1.5 inch spacing.
 				{
-					lowerBound = new double[] { 0.05, 0.01,  0.01,  0.01, 0.01,  0.01,  0.01 };
-					upperBound = new double[] { 0.3,  0.038, 0.038, 0.07, 0.038, 0.038, 0.30 };
+					lowerBound = new double[] { 0.2, 0.01,  0.01,  0.01, 0.01,  0.01,  0.01 };
+					upperBound = new double[] { 0.7, 0.038, 0.038, 0.07, 0.038, 0.038, 0.30 };
 				}
+				// HolePositionObjectiveFunction defines its own lower bound.
+				lowerBound[0] = objective.getLowerBounds()[0];
 				break;
 			case NO_GROUP_OPT_SUB_CATEGORY_ID:
 				evaluator = new ReflectionEvaluator(calculator);
-				objective = new HoleObjectiveFunction(calculator, tuning, evaluator);
 				// Length bounds are expressed in meters, diameter bounds as ratios.
 				if ( numberOfHoles == 0 )
 				{
-					lowerBound = new double[] { 0.25 };
-					upperBound = new double[] { 0.4 };
+					lowerBound = new double[] { 0.2 };
+					upperBound = new double[] { 0.7 };
 				}
 				else if ( numberOfHoles == 7 )
 				{
-					lowerBound = new double[] { 0.05, 0.0005, 0.012, 0.012, 0.012, 0.012, 0.012, 0.012,
-								0.1, 0.1, 0.1, 0.1, 0.1, 0.05, 0.05 };
-					upperBound = new double[] { 0.3, 0.003,  0.05,  0.05,  0.1,   0.05,  0.05,  0.20,
-								0.7, 0.7, 0.7, 0.7, 0.7, 0.4,  0.4 };
+					lowerBound = new double[] { 0.2, 0.0005, 0.012, 0.012, 0.012, 0.012, 0.012, 0.012,
+								0.002, 0.002, 0.002, 0.002, 0.002, 0.002, 0.002 };
+					upperBound = new double[] { 0.7, 0.003,  0.05,  0.05,  0.1,   0.05,  0.05,  0.20,
+								0.014, 0.014, 0.014, 0.014, 0.014, 0.008, 0.008 };
 				}
 				else if ( constraint == HOLE_6_1_125_SPACING_CONS_SUB_CATEGORY_ID )
 				{
-					lowerBound = new double[] { 0.05, 0.01,  0.01,  0.01, 0.01,  0.01,  0.01,
-								0.1, 0.15, 0.15, 0.15, 0.15, 0.15 };
-					upperBound = new double[] { 0.3,  0.029, 0.029, 0.07, 0.029, 0.029, 0.30,
-								0.5, 0.5,  0.5,  0.5,  0.5,  0.6 };
+					lowerBound = new double[] { 0.2, 0.01,  0.01,  0.01, 0.01,  0.01,  0.01,
+								0.002, 0.003, 0.003, 0.003, 0.003, 0.003 };
+					upperBound = new double[] { 0.7, 0.029, 0.029, 0.07, 0.029, 0.029, 0.30,
+								0.0102, 0.0102, 0.010, 0.010, 0.010, 0.012 };
 				}
 				else if ( constraint == HOLE_6_1_25_SPACING_CONS_SUB_CATEGORY_ID )
 				{
-					lowerBound = new double[] { 0.05, 0.01,  0.01,  0.01, 0.01,  0.01,  0.01,
-								0.1, 0.15, 0.15, 0.15, 0.15, 0.15 };
-					upperBound = new double[] { 0.3,  0.032, 0.032, 0.07, 0.032, 0.032, 0.30,
-								0.5, 0.5,  0.5,  0.5,  0.5,  0.6 };
+					lowerBound = new double[] { 0.2, 0.01,  0.01,  0.01, 0.01,  0.01,  0.01,
+								0.002, 0.003, 0.003, 0.003, 0.003, 0.003 };
+					upperBound = new double[] { 0.7, 0.032, 0.032, 0.07, 0.032, 0.032, 0.30,
+								0.0102, 0.0102, 0.010, 0.010, 0.010, 0.012 };
 				}
 				else // 6 holes, 1.5 inch spacing.
 				{
-					lowerBound = new double[] { 0.05, 0.01,  0.01,  0.01, 0.01,  0.01,  0.01,
-								0.1, 0.15, 0.15, 0.15, 0.15, 0.15 };
-					upperBound = new double[] { 0.3,  0.038, 0.038, 0.07, 0.038, 0.038, 0.30,
-								0.5, 0.5,  0.5,  0.5,  0.5,  0.6 };
+					lowerBound = new double[] { 0.2, 0.01,  0.01,  0.01, 0.01,  0.01,  0.01,
+								0.002, 0.003, 0.003, 0.003, 0.003, 0.003 };
+					upperBound = new double[] { 0.7, 0.038, 0.038, 0.07, 0.038, 0.038, 0.30,
+								0.0102, 0.0102, 0.010, 0.010, 0.010, 0.012 };
 				}
+				objective = new HoleObjectiveFunction(calculator, tuning, evaluator);
+				// HolePositionObjectiveFunction defines its own lower bound.
+				lowerBound[0] = objective.getLowerBounds()[0];
 				break;
 			case GROUP_OPT_SUB_CATEGORY_ID:
 				evaluator = new ReflectionEvaluator(calculator);
@@ -271,24 +279,24 @@ public class NafStudyModel extends StudyModel
 				if ( numberOfHoles == 0 )
 				{
 					holeGroups = new int[][] {{}};
-					lowerBound = new double[] { 0.25 };
-					upperBound = new double[] { 0.4 };
+					lowerBound = new double[] { 0.2 };
+					upperBound = new double[] { 0.7 };
 				}
 				else if ( numberOfHoles == 7 )
 				{
 					holeGroups = new int[][] { { 0, 1, 2 }, { 3, 4, 5 }, { 6 } };
-					lowerBound = new double[] { 0.05, 0.0005, 0.012, 0.012, 0.012, 0.012,
-								0.1, 0.1, 0.1, 0.1, 0.1, 0.05, 0.05 };
-					upperBound = new double[] { 0.3, 0.003,  0.05,  0.05,  0.1,   0.20,
-								0.7, 0.7, 0.7, 0.7, 0.7, 0.4,  0.4 };
+					lowerBound = new double[] { 0.2, 0.0005, 0.012, 0.012, 0.012, 0.012,
+								0.002, 0.002, 0.002, 0.002, 0.002, 0.002, 0.002 };
+					upperBound = new double[] { 0.7, 0.003,  0.05,  0.05,  0.1,   0.20,
+								0.014, 0.014, 0.014, 0.014, 0.014, 0.008, 0.008 };
 				}
 				else
 				{
 					holeGroups = new int[][] { { 0, 1, 2 }, { 3, 4, 5 } };
-					lowerBound = new double[] { 0.05, 0.01,  0.01, 0.01,  0.01,
-								0.1, 0.15, 0.15, 0.15, 0.15, 0.15 };
-					upperBound = new double[] { 0.3,  0.038, 0.07, 0.038, 0.30,
-								0.5, 0.5,  0.5,  0.5,  0.5,  0.6 };
+					lowerBound = new double[] { 0.2, 0.01,  0.01, 0.01,  0.01,
+								0.002, 0.003, 0.003, 0.003, 0.003, 0.003 };
+					upperBound = new double[] { 0.7, 0.038, 0.07, 0.038, 0.30,
+								0.0102, 0.0102, 0.010, 0.010, 0.010, 0.012 };
 					if ( constraint == HOLE_6_1_125_SPACING_CONS_SUB_CATEGORY_ID )
 					{
 						upperBound[1] = 0.029;
@@ -301,6 +309,8 @@ public class NafStudyModel extends StudyModel
 					}
 				}
 				objective = new HoleGroupObjectiveFunction(calculator, tuning, evaluator, holeGroups);
+				// HoleGroupObjectiveFunction defines its own lower bound.
+				lowerBound[0] = objective.getLowerBounds()[0];
 				break;
 			case TAPER_GROUP_OPT_SUB_CATEGORY_ID:
 				evaluator = new ReflectionEvaluator(calculator);
@@ -309,27 +319,27 @@ public class NafStudyModel extends StudyModel
 				if ( numberOfHoles == 0 )
 				{
 					holeGroups = new int[][] {{}};
-					lowerBound = new double[] { 0.25, 0.5, 0.0, 0.0 };
-					upperBound = new double[] { 0.4,  2.0, 1.0, 0.0 };
+					lowerBound = new double[] { 0.2, 0.5, 0.0, 0.0 };
+					upperBound = new double[] { 0.7, 2.0, 1.0, 1.0 };
 				}
 				else if ( numberOfHoles == 7 )
 				{
 					holeGroups = new int[][] { { 0, 1, 2 }, { 3, 4, 5 }, { 6 } };
-					lowerBound = new double[] { 0.05, 0.0005, 0.012, 0.012, 0.012, 0.012,
-								0.1, 0.1, 0.1, 0.1, 0.1, 0.05, 0.05,
+					lowerBound = new double[] { 0.2, 0.0005, 0.012, 0.012, 0.012, 0.012,
+								0.002, 0.002, 0.002, 0.002, 0.002, 0.002, 0.002,
 								0.5, 0.0, 0.0 };
-					upperBound = new double[] { 0.3, 0.003,  0.05,  0.05,  0.1,   0.30,
-								0.7, 0.7, 0.7, 0.7, 0.7, 0.4,  0.4,
+					upperBound = new double[] { 0.7, 0.003,  0.05,  0.05,  0.1,   0.30,
+								0.014, 0.014, 0.014, 0.014, 0.014, 0.008, 0.008,
 								2.0, 1.0, 1.0 };
 				}
 				else
 				{
 					holeGroups = new int[][] { { 0, 1, 2 }, { 3, 4, 5 } };
-					lowerBound = new double[] { 0.05, 0.01,  0.01, 0.01,  0.01,
-								0.1, 0.15, 0.15, 0.15, 0.15, 0.15,
+					lowerBound = new double[] { 0.2, 0.01,  0.01, 0.01,  0.01,
+								0.002, 0.003, 0.003, 0.003, 0.003, 0.003,
 								0.5, 0.0, 0.0 };
-					upperBound = new double[] { 0.3,  0.038, 0.07, 0.038, 0.20,
-								0.5, 0.5,  0.5,  0.5,  0.5,  0.6,
+					upperBound = new double[] { 0.7, 0.038, 0.07, 0.038, 0.20,
+								0.0102, 0.0102, 0.010, 0.010, 0.010, 0.012,
 								2.0, 1.0, 1.0 };
 					if ( constraint == HOLE_6_1_125_SPACING_CONS_SUB_CATEGORY_ID )
 					{
@@ -343,6 +353,17 @@ public class NafStudyModel extends StudyModel
 					}
 				}
 				objective = new SingleTaperHoleGroupObjectiveFunction(calculator, tuning, evaluator, holeGroups);
+				// HoleGroupObjectiveFunction defines its own lower bound.
+				lowerBound[0] = objective.getLowerBounds()[0];
+				break;
+			case TAPER_LENGTH_OPT_SUB_CATEGORY_ID:
+				evaluator = new ReflectionEvaluator(calculator);
+				// Length bounds are expressed in meters, taper bounds as ratios.
+				lowerBound = new double[] { 0.2, 0.5, 0.0, 0.0 };
+				upperBound = new double[] { 0.7, 2.0, 1.0, 1.0 };
+				objective = new SingleTaperLengthObjectiveFunction(calculator, tuning, evaluator);
+				// LengthObjectiveFunction defines its own lower bound.
+				lowerBound[0] = objective.getLowerBounds()[0];
 				break;
 		}
 

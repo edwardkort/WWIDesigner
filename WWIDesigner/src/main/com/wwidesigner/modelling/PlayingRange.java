@@ -33,7 +33,7 @@ public class PlayingRange
 {
 	/* Find playing ranges within a ratio of RangeWithin
 	 * of a specified frequency. */
-	protected static final double DefaultRangeWithin = 1.25;	// Within a major third.
+	protected static final double DefaultRangeWithin = 1.4;	// Within half an octave.
 	/* Granularity for bracket search.  Used to estimate derivatives.
 	 * Basic step size for search is 10 times the granularity. */
 	protected static final double Granularity = 1.003;	// About 5 cents.

@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import org.apache.commons.math3.analysis.MultivariateFunction;
+import org.apache.commons.math3.exception.TooManyEvaluationsException;
 import org.apache.commons.math3.optimization.BaseMultivariateSimpleBoundsOptimizer;
 import org.apache.commons.math3.optimization.GoalType;
 import org.apache.commons.math3.optimization.MultivariateOptimizer;
@@ -268,8 +269,9 @@ public abstract class StudyModel
 				startPoint[i] = objective.getUpperBounds()[i];
 			} 
 		}
+		double initialNorm = objective.calcNorm(errorVector);
 		System.out.println();
-		printErrors("Initial error: ", objective.calcNorm(errorVector), errorVector);
+		printErrors("Initial error: ", initialNorm, errorVector);
 		
 		try
 		{
@@ -317,6 +319,10 @@ public abstract class StudyModel
 				objective.setGeometryPoint(outcome.getPoint());
 			}
 		}
+		catch (TooManyEvaluationsException e)
+		{
+			System.out.println("Exception: " + e.getMessage());
+		}
 		catch (Exception e)
 		{
 			System.out.println("Exception: " + e.getMessage());
@@ -329,8 +335,10 @@ public abstract class StudyModel
 		System.out.print(objective.getIterationsDone());
 		System.out.println(" iterations.");
 		errorVector = objective.getErrorVector(objective.getGeometryPoint());
-		printErrors("Final error:  ", objective.calcNorm(errorVector), errorVector);
-		System.out.println();
+		double finalNorm = objective.calcNorm(errorVector);
+		printErrors("Final error:  ", finalNorm, errorVector);
+		System.out.print("Residual error ratio: ");
+		System.out.println(finalNorm/initialNorm);
 
 		Instrument instrument = objective.getInstrument();
 		// Convert back to the input unit-of-measure values

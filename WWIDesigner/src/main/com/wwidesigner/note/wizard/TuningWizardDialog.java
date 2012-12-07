@@ -20,10 +20,10 @@ import com.wwidesigner.gui.util.DataPopulatedProvider;
 public class TuningWizardDialog extends WizardDialog
 {
 
-	public TuningWizardDialog(Frame arg0, String arg1, boolean arg2)
+	public TuningWizardDialog(Frame owner, String title, boolean modal)
 			throws HeadlessException
 	{
-		super(arg0, arg1, arg2);
+		super(owner, title, modal);
 
 		PageList pages = new PageList();
 
@@ -31,12 +31,14 @@ public class TuningWizardDialog extends WizardDialog
 		AbstractWizardPage page2 = new ScaleSymbolPage(this);
 		AbstractWizardPage page3 = new TemperamentPage(this);
 		AbstractWizardPage page4 = new ScaleIntervalPage(this);
+		AbstractWizardPage page5 = new ScalePage(this);
 		AbstractWizardPage pageEnd = new CompletionPage();
 
 		pages.append(page1);
 		pages.append(page2);
 		pages.append(page3);
 		pages.append(page4);
+		pages.append(page5);
 		pages.append(pageEnd);
 
 		setPageList(pages);
@@ -44,6 +46,7 @@ public class TuningWizardDialog extends WizardDialog
 		// Wire dependencies
 		addDataPopulatedDependency(page2, page4);
 		addDataPopulatedDependency(page3, page4);
+		addDataPopulatedDependency(page4, page5);
 
 		setStepsPaneNavigable(true);
 		setPreferredSize(new Dimension(900, 700));
@@ -89,7 +92,7 @@ public class TuningWizardDialog extends WizardDialog
 			{
 				LookAndFeelFactory.installDefaultLookAndFeelAndExtension();
 				TuningWizardDialog wizard = new TuningWizardDialog(
-						(Frame) null, "Instrument Tuning Tool", false);
+						(Frame) null, "Tuning File Wizard", false);
 				wizard.setVisible(true);
 			}
 		});

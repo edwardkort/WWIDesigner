@@ -42,6 +42,7 @@ import com.jidesoft.app.framework.gui.framed.DockableConfiguration;
 import com.jidesoft.app.framework.gui.framed.DockingApplicationFeature;
 import com.jidesoft.app.framework.gui.framed.ToggleFrameAction;
 import com.jidesoft.docking.DockContext;
+import com.wwidesigner.note.wizard.TuningWizardDialog;
 
 /**
  * DockedTextEditor2.java
@@ -65,6 +66,7 @@ public class NafOptimizationRunner extends FileBasedApplication implements
 	static final String STUDY_ACTION_ID = "Study";
 	static final String CALCULATE_TUNING_ACTION_ID = "Calculate tuning";
 	static final String OPTIMIZE_INSTRUMENT_ACTION_ID = "Optimize instrument";
+	static final String CREATE_TUNING_FILE_ACTION_ID = "Create tuning file";
 	static final String CLEAR_CONSOLE_ACTION_ID = "Clear Console";
 	static final String WARN_ON_DIRTY_CLOSE_ACTION_ID = "Warn on dirty close";
 	static final String RENAME_WINIDOW_ACTION_ID = "Rename window";
@@ -249,6 +251,20 @@ public class NafOptimizationRunner extends FileBasedApplication implements
 		getActionMap().put(OPTIMIZE_INSTRUMENT_ACTION_ID, action);
 		action.setEnabled(false);
 
+		action = new GUIApplicationAction(CREATE_TUNING_FILE_ACTION_ID)
+		{
+			@Override
+			public void actionPerformedDetached(ActionEvent e)
+			{
+				TuningWizardDialog wizard = new TuningWizardDialog(
+						getApplication().getApplicationUIManager()
+								.getWindowsUI().getDialogParent(),
+						"Tuning File Wizard", false);
+				wizard.setVisible(true);
+			}
+		};
+		getActionMap().put(CREATE_TUNING_FILE_ACTION_ID, action);
+
 		action = new GUIApplicationAction(CLEAR_CONSOLE_ACTION_ID)
 		{
 			/**
@@ -319,6 +335,7 @@ public class NafOptimizationRunner extends FileBasedApplication implements
 				JMenu menu = menuBarUI.defaultMenu("Tool Menu", "Tool");
 				menu.add(menuBarUI.getAction(CALCULATE_TUNING_ACTION_ID));
 				menu.add(menuBarUI.getAction(OPTIMIZE_INSTRUMENT_ACTION_ID));
+				menu.add(menuBarUI.getAction(CREATE_TUNING_FILE_ACTION_ID));
 				return new JMenu[] { menu };
 			}
 

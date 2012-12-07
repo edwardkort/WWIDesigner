@@ -29,103 +29,26 @@ import javax.swing.table.DefaultTableModel;
 import com.wwidesigner.gui.util.DataPopulatedEvent;
 import com.wwidesigner.gui.util.DataPopulatedListener;
 import com.wwidesigner.gui.util.DoubleCellRenderer;
-import com.wwidesigner.gui.util.NoOpTransferHandler;
-import com.wwidesigner.gui.util.TableSourceTransferHandler;
-import com.wwidesigner.note.Temperament;
+import com.wwidesigner.note.Scale;
 import com.wwidesigner.note.bind.NoteBindFactory;
 import com.wwidesigner.util.BindFactory;
 
-public class TemperamentPanel extends JPanel implements KeyListener,
+public class ScalePanel extends JPanel implements KeyListener,
 		TableModelListener
 {
 	private JTextField nameWidget;
 	private JTextPane descriptionWidget;
-	private JTable ratioList;
+	private JTable noteTable;
 	private boolean namePopulated;
-	private boolean ratiosPopulated;
+	private boolean notesPopulated;
 	private List<DataPopulatedListener> populatedListeners;
 
-	public TemperamentPanel()
+	public ScalePanel()
 	{
-		this.setLayout(new GridBagLayout());
+		setLayout(new GridBagLayout());
 		setNameWidget();
 		setDescriptionWidget();
-		setRatioListWidget();
-		configureDragAndDrop();
-	}
-
-	public Temperament loadTemperament(File file)
-	{
-		Temperament temp = null;
-
-		if (file != null)
-		{
-			BindFactory bindery = NoteBindFactory.getInstance();
-			try
-			{
-				temp = (Temperament) bindery.unmarshalXml(file, true);
-			}
-			catch (Exception ex)
-			{
-				JOptionPane.showMessageDialog(this, "File " + file.getName()
-						+ " is not a valid Temperament file.");
-			}
-		}
-
-		return temp;
-	}
-
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public void populateWidgets(Temperament temp)
-	{
-		if (temp != null)
-		{
-			nameWidget.setText(temp.getName());
-			isNamePopulated();
-
-			descriptionWidget.setText(temp.getComment());
-
-			Vector rows = new Vector();
-			for (Double ratio : temp.getRatio())
-			{
-				Vector row = new Vector();
-				row.add(ratio);
-				rows.add(row);
-			}
-
-			Vector columns = new Vector();
-			columns.add("Ratios");
-			DefaultTableModel model = (DefaultTableModel) ratioList.getModel();
-			model.setDataVector(rows, columns);
-			ratioList.getColumn("Ratios").setCellRenderer(
-					new DoubleCellRenderer(6));
-			areRatiosPopulated();
-		}
-	}
-
-	public void saveTemperament(File file)
-	{
-		Temperament temp = getTemperament();
-
-		BindFactory bindery = NoteBindFactory.getInstance();
-		try
-		{
-			bindery.marshalToXml(temp, file);
-		}
-		catch (Exception ex)
-		{
-			JOptionPane.showMessageDialog(getParent(), "Save failed: " + ex);
-		}
-	}
-
-	public Temperament getTemperament()
-	{
-		Temperament temp = new Temperament();
-		temp.setName(nameWidget.getText());
-		temp.setComment(descriptionWidget.getText());
-		temp.setRatio(getTableData());
-
-		return temp;
+		setNoteTableWidget();
 	}
 
 	private void setNameWidget()
@@ -190,104 +113,88 @@ public class TemperamentPanel extends JPanel implements KeyListener,
 		descriptionWidget.setText(description);
 	}
 
-	private void setRatioListWidget()
+	private void setNoteTableWidget()
 	{
 		JPanel panel = new JPanel();
 		panel.setLayout(new GridBagLayout());
-
-		JLabel label = new JLabel("Ratio List: ");
+		JLabel label = new JLabel("Notes:");
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.anchor = GridBagConstraints.NORTHWEST;
 		gbc.gridx = 0;
 		gbc.gridy = 0;
 		panel.add(label, gbc);
 
-		DefaultTableModel model = new DoubleTableModel();
+		DefaultTableModel model = new StringDoubleTableModel();
 		model.addTableModelListener(this);
-		ratioList = new JTable(model);
+		noteTable = new JTable(model);
+		noteTable.setCellSelectionEnabled(true);
 		resetTableData();
-		ratioList.setAutoscrolls(true);
-		JScrollPane scrollPane = new JScrollPane(ratioList);
+		noteTable.setAutoscrolls(true);
+		JScrollPane scrollPane = new JScrollPane(noteTable);
 		scrollPane.setBorder(new LineBorder(Color.BLACK));
 		scrollPane.setPreferredSize(new Dimension(150, 200));
+		gbc.anchor = GridBagConstraints.NORTHEAST;
+		gbc.gridx = 0;
 		gbc.gridy = 1;
 		gbc.insets = new Insets(0, 15, 0, 0);
 		panel.add(scrollPane, gbc);
 
-		gbc.anchor = GridBagConstraints.NORTHEAST;
-		gbc.gridx = 0;
 		gbc.gridy = 2;
-		gbc.insets = new Insets(0, 0, 10, 0);
 		add(panel, gbc);
 	}
 
-	class DoubleTableModel extends DefaultTableModel
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public void populateWidgets(Scale scale)
 	{
-		@Override
-		public void setValueAt(Object value, int row, int column)
+		if (scale != null)
 		{
-			Double dblValue = null;
+			nameWidget.setText(scale.getName());
+			isNamePopulated();
 
-			try
+			descriptionWidget.setText(scale.getComment());
+
+			Vector rows = new Vector();
+			for (Scale.Note note : scale.getNote())
 			{
-				if (value instanceof String)
-				{
-					dblValue = Double.valueOf((String) value);
-				}
-				else
-				{
-					dblValue = (Double) value;
-				}
-			}
-			catch (Exception e)
-			{
+				Vector row = new Vector();
+				row.add(note.getName());
+				row.add(note.getFrequency());
+				rows.add(row);
 			}
 
-			super.setValueAt(dblValue, row, column);
+			setTableData(rows);
+			areNotesPopulated();
 		}
-
 	}
 
 	public void resetTableData()
 	{
-		DefaultTableModel model = (DefaultTableModel) ratioList.getModel();
-		model.setDataVector(new Double[50][1], new String[] { "Ratios" });
-		ratioList.getColumn("Ratios")
-				.setCellRenderer(new DoubleCellRenderer(6));
+		DefaultTableModel model = (DefaultTableModel) noteTable.getModel();
+		model.setDataVector(new Object[60][2], new String[] { "Symbol",
+				"Frequency" });
+		noteTable.getColumn("Frequency").setCellRenderer(
+				new DoubleCellRenderer(6));
+
 	}
 
-	private List<Double> getTableData()
+	public void deleteSelectedNotes()
 	{
-		DefaultTableModel model = (DefaultTableModel) ratioList.getModel();
-		ArrayList<Double> data = new ArrayList<Double>();
-
-		for (int i = 0; i < model.getRowCount(); i++)
-		{
-			Double value = (Double) model.getValueAt(i, 0);
-			data.add(value);
-		}
-
-		return data;
-	}
-
-	public void deleteSelectedRatios()
-	{
-		int[] selectedRows = ratioList.getSelectedRows();
+		int[] selectedRows = noteTable.getSelectedRows();
 		Arrays.sort(selectedRows);
 
-		DefaultTableModel model = (DefaultTableModel) ratioList.getModel();
+		DefaultTableModel model = (DefaultTableModel) noteTable.getModel();
 		for (int row = selectedRows.length - 1; row >= 0; row--)
 		{
 			model.removeRow(selectedRows[row]);
 		}
 	}
 
-	public void deleteUnselectedRatios()
+	public void deleteUnselectedNotes()
 	{
-		int[] selectedRows = ratioList.getSelectedRows();
+		int[] selectedRows = noteTable.getSelectedRows();
 		Arrays.sort(selectedRows);
 
-		DefaultTableModel model = (DefaultTableModel) ratioList.getModel();
+		DefaultTableModel model = (DefaultTableModel) noteTable.getModel();
 		int numRows = model.getRowCount();
 		for (int row = numRows - 1; row >= 0; row--)
 		{
@@ -298,9 +205,9 @@ public class TemperamentPanel extends JPanel implements KeyListener,
 		}
 	}
 
-	public void insertRatioAboveSelection()
+	public void insertNoteAboveSelection()
 	{
-		int[] selectedRows = ratioList.getSelectedRows();
+		int[] selectedRows = noteTable.getSelectedRows();
 		if (selectedRows.length == 0)
 		{
 			return;
@@ -308,10 +215,10 @@ public class TemperamentPanel extends JPanel implements KeyListener,
 		Arrays.sort(selectedRows);
 		int topIndex = selectedRows[0];
 
-		DefaultTableModel model = (DefaultTableModel) ratioList.getModel();
+		DefaultTableModel model = (DefaultTableModel) noteTable.getModel();
 		model.insertRow(topIndex, (Object[]) null);
 
-		ListSelectionModel selModel = ratioList.getSelectionModel();
+		ListSelectionModel selModel = noteTable.getSelectionModel();
 		selModel.clearSelection();
 		for (int i = 0; i < selectedRows.length; i++)
 		{
@@ -320,9 +227,9 @@ public class TemperamentPanel extends JPanel implements KeyListener,
 		}
 	}
 
-	public void insertRatioBelowSelection()
+	public void insertNoteBelowSelection()
 	{
-		int[] selectedRows = ratioList.getSelectedRows();
+		int[] selectedRows = noteTable.getSelectedRows();
 		if (selectedRows.length == 0)
 		{
 			return;
@@ -330,68 +237,162 @@ public class TemperamentPanel extends JPanel implements KeyListener,
 		Arrays.sort(selectedRows);
 		int bottomIndex = selectedRows[selectedRows.length - 1];
 
-		DefaultTableModel model = (DefaultTableModel) ratioList.getModel();
+		DefaultTableModel model = (DefaultTableModel) noteTable.getModel();
 		model.insertRow(bottomIndex + 1, (Object[]) null);
-
 	}
 
-	public void addOctaveBelow()
+	public Scale loadScale(File file)
 	{
-		int[] selectedRows = ratioList.getSelectedRows();
-		if (selectedRows.length == 0)
-		{
-			return;
-		}
-		Arrays.sort(selectedRows);
+		Scale scale = null;
 
-		DefaultTableModel model = (DefaultTableModel) ratioList.getModel();
-		int lastRow = getLastPopulatedRow();
-
-		for (int selectedRow : selectedRows)
+		if (file != null)
 		{
-			Double value = (Double) model.getValueAt(selectedRow, 0);
-			if (value != null)
+			BindFactory bindery = NoteBindFactory.getInstance();
+			try
 			{
-				value *= 2.;
+				scale = (Scale) bindery.unmarshalXml(file, true);
 			}
-			model.insertRow(++lastRow, new Object[] { value });
-		}
-	}
-
-	private int getLastPopulatedRow()
-	{
-		DefaultTableModel model = (DefaultTableModel) ratioList.getModel();
-		int row = model.getRowCount();
-
-		for (--row; row >= 0; row++)
-		{
-			Object value = model.getValueAt(row, 0);
-			if (value != null)
+			catch (Exception ex)
 			{
-				return row;
+				JOptionPane.showMessageDialog(this, "File " + file.getName()
+						+ " is not a valid ScaleSymbolList file.");
 			}
 		}
 
-		return 0;
+		return scale;
+	}
+
+	public void saveScale(File file)
+	{
+		Scale scale = getScale();
+
+		BindFactory bindery = NoteBindFactory.getInstance();
+		try
+		{
+			bindery.marshalToXml(scale, file);
+		}
+		catch (Exception ex)
+		{
+			JOptionPane.showMessageDialog(getParent(), "Save failed: " + ex);
+		}
+	}
+
+	@SuppressWarnings("rawtypes")
+	public Scale getScale()
+	{
+		Scale scale = new Scale();
+		scale.setName(nameWidget.getText());
+		scale.setComment(descriptionWidget.getText());
+		Vector notes = (Vector)getTableData();
+		for (Object noteObj : notes) {
+			Vector noteValue = (Vector)noteObj;
+			Scale.Note note = new Scale.Note();
+			note.setName((String)noteValue.get(0));
+			note.setFrequency((Double)noteValue.get(1));
+			scale.addNote(note);
+		}
+
+		return scale;
+	}
+
+	@SuppressWarnings("rawtypes")
+	public void setTableData(Vector data)
+	{
+		DefaultTableModel model = (DefaultTableModel) noteTable.getModel();
+		Vector<String> columnNames = new Vector<String>();
+		columnNames.add("Symbol");
+		columnNames.add("Frequency");
+		model.setDataVector(data, columnNames);
+		noteTable.getColumn("Frequency").setCellRenderer(
+				new DoubleCellRenderer(6));
+
+	}
+
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public Object getTableData()
+	{
+		DefaultTableModel model = (DefaultTableModel) noteTable.getModel();
+		Vector data = (Vector) model.getDataVector();
+		Vector clonedData = new Vector();
+		for (Object row : data)
+		{
+			Vector rowData = (Vector) row;
+			Vector clonedRow = new Vector();
+			String name = (String) rowData.get(0);
+			if (name == null)
+			{
+				clonedRow.add(null);
+			}
+			else
+			{
+				clonedRow.add(new String(name));
+			}
+			Double interval = (Double) rowData.get(1);
+			if (interval == null)
+			{
+				clonedRow.add(null);
+			}
+			else
+			{
+				clonedRow.add(new Double(interval));
+			}
+			clonedData.add(clonedRow);
+		}
+
+		return clonedData;
+	}
+
+	class StringDoubleTableModel extends DefaultTableModel
+	{
+		@Override
+		public void setValueAt(Object value, int row, int column)
+		{
+			if (column == 1)
+			{
+				Double dblValue = null;
+
+				try
+				{
+					if (value instanceof String)
+					{
+						dblValue = Double.valueOf((String) value);
+					}
+					else
+					{
+						dblValue = (Double) value;
+					}
+				}
+				catch (Exception e)
+				{
+				}
+
+				super.setValueAt(dblValue, row, column);
+			}
+			else
+			{
+				super.setValueAt(value, row, column);
+			}
+		}
 	}
 
 	@Override
 	public void tableChanged(TableModelEvent event)
 	{
-		areRatiosPopulated();
+		areNotesPopulated();
 	}
 
-	private void areRatiosPopulated()
+	private void areNotesPopulated()
 	{
-		DefaultTableModel model = (DefaultTableModel) ratioList.getModel();
-		ratiosPopulated = false;
+		DefaultTableModel model = (DefaultTableModel) noteTable.getModel();
+		notesPopulated = false;
 
 		for (int i = 0; i < model.getRowCount(); i++)
 		{
-			Object value = model.getValueAt(i, 0);
-			if (value != null)
+			String noteName = (String) model.getValueAt(i, 0);
+			Double frequency = (Double) model.getValueAt(i, 1);
+			if (noteName != null && noteName.length() > 0 && frequency != null)
 			{
-				ratiosPopulated = true;
+				notesPopulated = true;
 				break;
 			}
 		}
@@ -440,19 +441,10 @@ public class TemperamentPanel extends JPanel implements KeyListener,
 		}
 
 		DataPopulatedEvent event = new DataPopulatedEvent(this, namePopulated
-				&& ratiosPopulated);
+				&& notesPopulated);
 		for (DataPopulatedListener listener : populatedListeners)
 		{
 			listener.dataStateChanged(event);
 		}
 	}
-
-	private void configureDragAndDrop()
-	{
-		ratioList.setDragEnabled(true);
-		ratioList.setTransferHandler(new TableSourceTransferHandler());
-		nameWidget.setTransferHandler(new NoOpTransferHandler());
-		descriptionWidget.setTransferHandler(new NoOpTransferHandler());
-	}
-
 }

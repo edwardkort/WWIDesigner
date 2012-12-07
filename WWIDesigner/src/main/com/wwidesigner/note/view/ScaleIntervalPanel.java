@@ -5,6 +5,9 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Vector;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -15,12 +18,16 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
 
+import com.wwidesigner.gui.util.DataPopulatedEvent;
+import com.wwidesigner.gui.util.DataPopulatedListener;
 import com.wwidesigner.gui.util.DoubleCellRenderer;
 import com.wwidesigner.gui.util.TableTransferHandler;
 
 public class ScaleIntervalPanel extends JPanel implements TableModelListener
 {
 	private JTable intervalTable;
+	private List<DataPopulatedListener> populatedListeners;
+	private boolean intervalsPopulated;
 
 	public ScaleIntervalPanel()
 	{
@@ -33,14 +40,6 @@ public class ScaleIntervalPanel extends JPanel implements TableModelListener
 	{
 		JPanel panel = new JPanel();
 		panel.setLayout(new GridBagLayout());
-		JLabel label = new JLabel("Scale with Intervals");
-		label.setFont(getFont().deriveFont(Font.BOLD));
-		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.anchor = GridBagConstraints.NORTH;
-		gbc.gridx = 0;
-		gbc.gridy = 0;
-		gbc.ipady = 20;
-		panel.add(label, gbc);
 
 		DefaultTableModel model = new StringDoubleTableModel();
 		model.addTableModelListener(this);
@@ -51,9 +50,10 @@ public class ScaleIntervalPanel extends JPanel implements TableModelListener
 		JScrollPane scrollPane = new JScrollPane(intervalTable);
 		scrollPane.setBorder(new LineBorder(Color.BLACK));
 		scrollPane.setPreferredSize(new Dimension(150, 200));
+		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.anchor = GridBagConstraints.CENTER;
 		gbc.gridx = 0;
-		gbc.gridy = 1;
+		gbc.gridy = 0;
 		panel.add(scrollPane, gbc);
 
 		gbc.gridy = 0;
@@ -68,6 +68,53 @@ public class ScaleIntervalPanel extends JPanel implements TableModelListener
 		intervalTable.getColumn("Interval").setCellRenderer(
 				new DoubleCellRenderer(6));
 
+	}
+
+	@SuppressWarnings("rawtypes")
+	public void setTableData(Vector data)
+	{
+		DefaultTableModel model = (DefaultTableModel) intervalTable.getModel();
+		Vector<String> columnNames = new Vector<String>();
+		columnNames.add("Symbol");
+		columnNames.add("Interval");
+		model.setDataVector(data, columnNames);
+		intervalTable.getColumn("Interval").setCellRenderer(
+				new DoubleCellRenderer(6));
+
+	}
+
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public Object getTableData()
+	{
+		DefaultTableModel model = (DefaultTableModel) intervalTable.getModel();
+		Vector data = (Vector) model.getDataVector();
+		Vector clonedData = new Vector();
+		for (Object row : data)
+		{
+			Vector rowData = (Vector) row;
+			Vector clonedRow = new Vector();
+			String name = (String) rowData.get(0);
+			if (name == null)
+			{
+				clonedRow.add(null);
+			}
+			else
+			{
+				clonedRow.add(new String(name));
+			}
+			Double interval = (Double) rowData.get(1);
+			if (interval == null)
+			{
+				clonedRow.add(null);
+			}
+			else
+			{
+				clonedRow.add(new Double(interval));
+			}
+			clonedData.add(clonedRow);
+		}
+
+		return clonedData;
 	}
 
 	class StringDoubleTableModel extends DefaultTableModel
@@ -123,6 +170,7 @@ public class ScaleIntervalPanel extends JPanel implements TableModelListener
 				}
 			}
 		}
+		fireDataStateChanged();
 	}
 
 	public void deleteSelection()
@@ -145,17 +193,63 @@ public class ScaleIntervalPanel extends JPanel implements TableModelListener
 						Object lowerValue = model.getValueAt(k, j);
 						model.setValueAt(lowerValue, k - 1, j);
 					}
-
+					model.setValueAt(null, model.getRowCount() - 1, j);
 				}
 			}
+		}
+		fireDataStateChanged();
+	}
+
+	public void addDataPopulatedListener(DataPopulatedListener listener)
+	{
+		if (populatedListeners == null)
+		{
+			populatedListeners = new ArrayList<DataPopulatedListener>();
+		}
+		populatedListeners.add(listener);
+	}
+
+	private void fireDataStateChanged()
+	{
+		if (populatedListeners == null)
+		{
+			return;
+		}
+
+		DataPopulatedEvent event = new DataPopulatedEvent(this,
+				intervalsPopulated);
+		for (DataPopulatedListener listener : populatedListeners)
+		{
+			listener.dataStateChanged(event);
 		}
 	}
 
 	@Override
 	public void tableChanged(TableModelEvent arg0)
 	{
-		// TODO Auto-generated method stub
+		areIntervalsPopulated();
+	}
 
+	private void areIntervalsPopulated()
+	{
+		DefaultTableModel model = (DefaultTableModel) intervalTable.getModel();
+		intervalsPopulated = false;
+
+		for (int i = 0; i < model.getRowCount(); i++)
+		{
+			String value = (String) model.getValueAt(i, 0);
+			if (value != null && value.length() > 0)
+			{
+				Double dblValue = (Double) model.getValueAt(i, 1);
+				if (dblValue != null)
+				{
+					intervalsPopulated = true;
+					break;
+				}
+			}
+		}
+
+		fireDataStateChanged();
 	}
 
 	private void configureDragAndDrop()

@@ -73,11 +73,19 @@ public class ScaleIntervalPage extends AbstractWizardPage implements
 		JPanel panel = new JPanel();
 		panel.setLayout(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.anchor = GridBagConstraints.CENTER;
-
-		scaleIntervalPanel = new ScaleIntervalPanel();
+		JLabel label = new JLabel("Scale with Intervals");
+		label.setFont(getFont().deriveFont(Font.BOLD));
+		gbc.anchor = GridBagConstraints.NORTH;
 		gbc.gridx = 0;
 		gbc.gridy = 0;
+		gbc.ipady = 20;
+		panel.add(label, gbc);
+
+		scaleIntervalPanel = new ScaleIntervalPanel();
+		addDataPopulatedListener(this);
+		gbc.gridx = 0;
+		gbc.gridy = 1;
+		gbc.anchor = GridBagConstraints.CENTER;
 		panel.add(scaleIntervalPanel, gbc);
 
 		JButton button = new JButton("Clear selected cells");
@@ -91,7 +99,7 @@ public class ScaleIntervalPage extends AbstractWizardPage implements
 			}
 
 		});
-		gbc.gridy = 1;
+		gbc.gridy = 2;
 		gbc.insets = new Insets(5, 0, 5, 0);
 		panel.add(button, gbc);
 
@@ -106,7 +114,7 @@ public class ScaleIntervalPage extends AbstractWizardPage implements
 			}
 
 		});
-		gbc.gridy = 2;
+		gbc.gridy = 3;
 		panel.add(button, gbc);
 
 		gbc.gridx = 1;
@@ -299,15 +307,13 @@ public class ScaleIntervalPage extends AbstractWizardPage implements
 	@Override
 	public Object getPageData()
 	{
-		// TODO Auto-generated method stub
-		return null;
+		return scaleIntervalPanel.getTableData();
 	}
 
 	@Override
 	public void addDataPopulatedListener(DataPopulatedListener listener)
 	{
-		// TODO Auto-generated method stub
-
+		scaleIntervalPanel.addDataPopulatedListener(listener);
 	}
 
 	@Override

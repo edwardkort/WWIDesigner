@@ -3,13 +3,9 @@
  */
 package com.wwidesigner.modelling;
 
-import java.util.Comparator;
-import java.util.Map;
-import java.util.TreeMap;
-
 import com.wwidesigner.modelling.PlayingRange.NoPlayingRange;
 import com.wwidesigner.note.Fingering;
-import com.wwidesigner.note.InstrumentTuningTable;
+import com.wwidesigner.note.Note;
 
 /**
  * @author kort
@@ -17,65 +13,31 @@ import com.wwidesigner.note.InstrumentTuningTable;
  */
 public class SimpleInstrumentTuner extends InstrumentTuner
 {
-
-	public Map<Fingering, Double> getTuning()
+	@Override
+	public Note predictedNote(Fingering fingering)
 	{
-		calculator.setInstrument(instrument);
-		calculator.setPhysicalParameters(params);
-		PlayingRange range = new PlayingRange(calculator);
-
-		Map<Fingering, Double> fingeringMap = new TreeMap<Fingering, Double>(
-				new Comparator<Fingering>()
-				{
-					public int compare(Fingering arg1, Fingering arg2)
-					{
-						double pitch1 = arg1.getNote().getFrequency();
-						double pitch2 = arg2.getNote().getFrequency();
-
-						if (pitch1 < pitch2)
-						{
-							return -1;
-						}
-						return 1;
-					}
-				});
-
-		for (Fingering fingering : tuning.getFingering())
+		Note targetNote = fingering.getNote();
+		Note predNote = new Note();
+		predNote.setName(targetNote.getName());
+		double target = getFrequencyTarget(targetNote);
+		
+		if (target == 0.0)
 		{
-			calculator.setFingering(fingering);
-			try
-			{
-				double playedFrequency = range.findXZero(fingering.getNote().getFrequency());
-				fingeringMap.put(fingering, playedFrequency);
-			}
-			catch (NoPlayingRange e)
-			{
-				fingeringMap.put(fingering, null);
-			}
+			// No target frequency.
+			// Return note without prediction, because we can't make a prediction.
+			return predNote;
 		}
 
-		return fingeringMap;
-	}
-
-	public void showTuning(String title, boolean exitOnTableClose)
-	{
-		InstrumentTuningTable table = makeInstrumentTuningTable(title);
-
-		table.showTuning(exitOnTableClose);
-	}
-
-	protected InstrumentTuningTable makeInstrumentTuningTable(String title)
-	{
-		Map<Fingering, Double> fingeringMap = getTuning();
-
-		InstrumentTuningTable table = new InstrumentTuningTable(title);
-
-		for (Map.Entry<Fingering, Double> entry : fingeringMap.entrySet())
-		{
-			table.addTuning(entry.getKey(), entry.getValue());
+		PlayingRange range = new PlayingRange(calculator, fingering);
+		try {
+			double playedFrequency = range.findXZero(fingering.getNote().getFrequency());
+			predNote.setFrequency(playedFrequency);
 		}
-
-		return table;
+		catch (NoPlayingRange e)
+		{
+			// Leave frequency unassigned.
+		}
+		return predNote;
 	}
 
 }

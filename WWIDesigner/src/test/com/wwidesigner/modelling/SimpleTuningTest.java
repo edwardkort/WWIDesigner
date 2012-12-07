@@ -6,12 +6,12 @@ package com.wwidesigner.modelling;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
-import java.util.Map;
-
+import java.util.List;
 import org.junit.Test;
 
 import com.wwidesigner.note.Fingering;
 import com.wwidesigner.note.Note;
+import com.wwidesigner.note.Tuning;
 import com.wwidesigner.util.Constants.TemperatureType;
 import com.wwidesigner.util.PhysicalParameters;
 
@@ -68,12 +68,25 @@ public class SimpleTuningTest
 
 	protected void checkTuning(SimpleInstrumentTuner tuner)
 	{
-		Map<Fingering, Double> tuningMap = tuner.getTuning();
-		for (Map.Entry<Fingering, Double> entry : tuningMap.entrySet())
+//		Map<Fingering, Double> tuningMap = tuner.getTuning();
+//		for (Map.Entry<Fingering, Double> entry : tuningMap.entrySet())
+//		{
+//			Note note = entry.getKey().getNote();
+//			assertEquals(note.getName() + " tuning incorrect",
+//					note.getFrequency(), entry.getValue(), 13.);
+//		}
+		Tuning predicted = tuner.getPredictedTuning();
+		List<Fingering> tgtFingering  = tuner.getTuning().getFingering();
+		List<Fingering> predFingering = predicted.getFingering();
+		Note tgtNote;
+		Note predNote;
+
+		for ( int i = 0; i < tgtFingering.size(); ++ i )
 		{
-			Note note = entry.getKey().getNote();
-			assertEquals(note.getName() + " tuning incorrect",
-					note.getFrequency(), entry.getValue(), 13.);
+			tgtNote  = tgtFingering.get(i).getNote();
+			predNote = predFingering.get(i).getNote();
+			assertEquals(tgtNote.getName() + " tuning incorrect",
+					tgtNote.getFrequency(), predNote.getFrequency(), 13.);
 		}
 	}
 
@@ -83,6 +96,7 @@ public class SimpleTuningTest
 	public static void main(String[] args)
 	{
 		SimpleInstrumentTuner tuner = new SimpleInstrumentTuner();
+		InstrumentRangeTuner whistleTuner = new InstrumentRangeTuner();
 		try
 		{
 			tuner.setInstrument(instrumentFile_NAF, true);
@@ -95,8 +109,8 @@ public class SimpleTuningTest
 			tuner.setCalculator(new NAFCalculator());
 			tuner.showTuning("Light G NAF, NAF Calculator");
 
-			tuner.setCalculator(new WhistleCalculator());
-			tuner.showTuning("Light G NAF, Whistle Calculator");
+			whistleTuner.setCalculator(new WhistleCalculator());
+			whistleTuner.showTuning("Light G NAF, Whistle Calculator");
 
 			tuner.setInstrument(instrumentFile_chalumeau, true);
 			tuner.setTuning(tuningFile_chalumeau, true);

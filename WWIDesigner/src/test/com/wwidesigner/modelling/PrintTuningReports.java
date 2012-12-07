@@ -1,6 +1,8 @@
 package com.wwidesigner.modelling;
 
-import com.wwidesigner.modelling.InstrumentTuningReport;
+import com.wwidesigner.note.Tuning;
+import com.wwidesigner.util.PhysicalParameters;
+import com.wwidesigner.util.Constants.TemperatureType;
 
 /**
  * @author Burton Patkau
@@ -8,22 +10,47 @@ import com.wwidesigner.modelling.InstrumentTuningReport;
  */
 public class PrintTuningReports
 {
+	public static void printReport(String instrumentFile, String tuningFile)
+	{
+		printReport( instrumentFile, tuningFile, 28.2 );
+	}
+
+	public static void printReport(String instrumentFile, String tuningFile, double temperature)
+	{
+		InstrumentRangeTuner tuner = new InstrumentRangeTuner();
+		TuningComparisonTable table = new TuningComparisonTable("Tuning for " + instrumentFile);
+		try
+		{
+			tuner.setInstrument(instrumentFile, true);
+			tuner.setTuning(tuningFile, true);
+			tuner.setParams( new PhysicalParameters(temperature, TemperatureType.C) );
+			tuner.setCalculator( new WhistleCalculator() );
+			Tuning predicted = tuner.getPredictedTuning();
+			table.buildTable(tuner.getTuning(), predicted);
+			table.printTuning( System.out );
+		}
+		catch (Exception e)
+		{
+			System.out.println("Exception: " + e.getMessage());
+			e.printStackTrace();
+		}
+	}
+
 	/**
 	 * For specified instruments, predict the tuning for each note,
 	 * and compare to measured values.
 	 */
 	public static void main(String[] args)
 	{
-		InstrumentTuningReport reporter = new InstrumentTuningReport();
-		reporter.printReport("com/wwidesigner/optimization/example/BP7.xml",
+		printReport("com/wwidesigner/optimization/example/BP7.xml",
 				"com/wwidesigner/optimization/example/BP7-tuning.xml");
-		reporter.printReport("com/wwidesigner/optimization/example/BP8-partial.xml",
+		printReport("com/wwidesigner/optimization/example/BP8-partial.xml",
 				"com/wwidesigner/optimization/example/BP8-partial-tuning.xml");
-		reporter.printReport("com/wwidesigner/optimization/example/NoHoleNAF1.xml",
+		printReport("com/wwidesigner/optimization/example/NoHoleNAF1.xml",
 				"com/wwidesigner/optimization/example/NoHoleNAF1Tuning.xml");
-		reporter.printReport("com/wwidesigner/optimization/example/1HoleNAF1.xml",
+		printReport("com/wwidesigner/optimization/example/1HoleNAF1.xml",
 				"com/wwidesigner/optimization/example/1HoleNAF1Tuning.xml");
-		reporter.printReport("com/wwidesigner/optimization/example/LightG6HoleNAF.xml",
+		printReport("com/wwidesigner/optimization/example/LightG6HoleNAF.xml",
 				"com/wwidesigner/optimization/example/LightG6HoleNAFTuning.xml", 24);
 	}
 }

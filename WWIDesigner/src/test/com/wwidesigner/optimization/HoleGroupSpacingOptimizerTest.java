@@ -12,7 +12,9 @@ import org.junit.Test;
 import com.wwidesigner.geometry.BorePoint;
 import com.wwidesigner.geometry.Instrument;
 import com.wwidesigner.geometry.PositionInterface;
+import com.wwidesigner.modelling.GordonCalculator;
 import com.wwidesigner.modelling.NAFCalculator;
+import com.wwidesigner.modelling.ReactanceEvaluator;
 import com.wwidesigner.util.PhysicalParameters;
 import com.wwidesigner.util.Constants.TemperatureType;
 
@@ -25,34 +27,37 @@ public class HoleGroupSpacingOptimizerTest extends AbstractOptimizationTest
 	protected int[][] holeGroups;
 
 	@Override
-	protected void setupCustomOptimizer() throws Exception
-	{
-		((HoleGroupSpacingOptimizer) optimizer).setHoleGroups(holeGroups);
-	}
-
-	private void setup() throws Exception
+	protected void setup() throws Exception
 	{
 		setInputInstrumentXML("com/wwidesigner/optimization/example/G7HoleNAF.xml");
 		setInputTuningXML("com/wwidesigner/optimization/example/G7HoleNAFTuning.xml");
 		setParams(new PhysicalParameters(22.22, TemperatureType.C));
-		setCalculator(new NAFCalculator());
-		setOptimizerClass(HoleGroupSpacingOptimizer.class);
-		setOptimizerType(InstrumentOptimizer.OptimizerType.BOBYQAOptimizer);
+		super.setup();
 	}
 
 	@Test
-	public void testNoGrouping()
+	public void testNoGroupingGordon()
 	{
 		try
 		{
+			setCalculator(new GordonCalculator());
 			setup();
-			setLowerBound(new double[] { 0.2, 0.012, 0.012, 0.012, 0.012,
-					0.012, 0.0005, 0.05, 0.1, 0.1, 0.1, 0.1, 0.1, 0.05, 0.05 });
-			setUpperBound(new double[] { 0.5, 0.05, 0.05, 0.1, 0.05, 0.05,
-					0.003, 0.2, 0.7, 0.7, 0.7, 0.7, 0.7, 0.4, 0.4 });
-			setNumberOfInterpolationPoints(30);
+//			setLowerBound(new double[] { 0.2, 0.012, 0.012, 0.012, 0.012,
+//					0.012, 0.0005, 0.05, 0.1, 0.1, 0.1, 0.1, 0.1, 0.05, 0.05 });
+//			setUpperBound(new double[] { 0.5, 0.05, 0.05, 0.1, 0.05, 0.05,
+//					0.003, 0.2, 0.7, 0.7, 0.7, 0.7, 0.7, 0.4, 0.4 });
+			lowerBound = new double[] { 0.2, 0.018, 0.018, 0.018, 0.018, 0.018, 0.0005, 0.018,
+					0.0025, 0.0025, 0.0025, 0.0025, 0.0025, 0.0025, 0.0025 };
+			upperBound = new double[] { 0.5, 0.05,  0.05,  0.1,   0.05,  0.05,  0.003,  0.20,
+					0.017, 0.017, 0.017, 0.017, 0.017, 0.010, 0.010 };
 			holeGroups = new int[][] { { 0 }, { 1 }, { 2 }, { 3 }, { 4 },
 					{ 5 }, { 6 } };
+			evaluator = new ReactanceEvaluator(calculator);
+			objective = new HoleGroupObjectiveFunction(calculator, tuning, evaluator, holeGroups);
+			// HoleGroupObjectiveFunction defines its own lower bound.
+			lowerBound[0] = objective.getLowerBounds()[0];
+			objective.setMaxIterations(20000);
+			objective.setOptimizerType(BaseObjectiveFunction.OptimizerType.CMAESOptimizer);
 
 			Instrument optimizedInstrument = doInstrumentOptimization("No hole groups, Gordon Calculator");
 
@@ -62,14 +67,39 @@ public class HoleGroupSpacingOptimizerTest extends AbstractOptimizationTest
 			PositionInterface lastPoint = sortedPoints[sortedPoints.length - 1];
 			assertEquals("Bore length incorrect with Gordon Calculator", 13.93,
 					lastPoint.getBorePosition(), 0.1);
+		}
+		catch (Exception e)
+		{
+			fail(e.getMessage());
+		}
+	}
 
+	@Test
+	public void testNoGroupingNAF()
+	{
+		try
+		{
 			setCalculator(new NAFCalculator());
-			optimizedInstrument = doInstrumentOptimization("No hole groups, NAF Calculator");
+			setup();
+			lowerBound = new double[] { 0.2, 0.018, 0.018, 0.018, 0.018, 0.018, 0.0005, 0.018,
+					0.0025, 0.0025, 0.0025, 0.0025, 0.0025, 0.0025, 0.0025 };
+			upperBound = new double[] { 0.5, 0.05,  0.05,  0.1,   0.05,  0.05,  0.003,  0.20,
+					0.017, 0.017, 0.017, 0.017, 0.017, 0.010, 0.010 };
+			holeGroups = new int[][] { { 0 }, { 1 }, { 2 }, { 3 }, { 4 },
+					{ 5 }, { 6 } };
+			evaluator = new ReactanceEvaluator(calculator);
+			objective = new HoleGroupObjectiveFunction(calculator, tuning, evaluator, holeGroups);
+			// HoleGroupObjectiveFunction defines its own lower bound.
+			lowerBound[0] = objective.getLowerBounds()[0];
+			objective.setMaxIterations(20000);
+			objective.setOptimizerType(BaseObjectiveFunction.OptimizerType.CMAESOptimizer);
+
+			Instrument optimizedInstrument = doInstrumentOptimization("No hole groups, NAF Calculator");
 
 			// Test bore length
-			borePoints = optimizedInstrument.getBorePoint();
-			sortedPoints = Instrument.sortList(borePoints);
-			lastPoint = sortedPoints[sortedPoints.length - 1];
+			List<BorePoint> borePoints = optimizedInstrument.getBorePoint();
+			PositionInterface[] sortedPoints = Instrument.sortList(borePoints);
+			PositionInterface lastPoint = sortedPoints[sortedPoints.length - 1];
 			assertEquals("Bore length incorrect with NAF Calculator", 13.93,
 					lastPoint.getBorePosition(), 0.1);
 		}
@@ -80,17 +110,27 @@ public class HoleGroupSpacingOptimizerTest extends AbstractOptimizationTest
 	}
 
 	@Test
-	public void test2Grouping()
+	public void test2GroupingGordon()
 	{
 		try
 		{
+			setCalculator(new GordonCalculator());
 			setup();
-			setLowerBound(new double[] { 0.2, 0.012, 0.012, 0.012, 0.0005,
-					0.05, 0.1, 0.1, 0.1, 0.1, 0.1, 0.05, 0.05 });
-			setUpperBound(new double[] { 0.5, 0.05, 0.1, 0.05, 0.003, 0.2, 0.7,
-					0.7, 0.7, 0.7, 0.7, 0.4, 0.4 });
-			setNumberOfInterpolationPoints(28);
+//			setLowerBound(new double[] { 0.2, 0.012, 0.012, 0.012, 0.0005,
+//					0.05, 0.1, 0.1, 0.1, 0.1, 0.1, 0.05, 0.05 });
+//			setUpperBound(new double[] { 0.5, 0.05, 0.1, 0.05, 0.003, 0.2, 0.7,
+//					0.7, 0.7, 0.7, 0.7, 0.4, 0.4 });
+			lowerBound = new double[] { 0.2, 0.018, 0.018, 0.018, 0.0005, 0.018,
+					0.0025, 0.0025, 0.0025, 0.0025, 0.0025, 0.0012, 0.0012 };
+			upperBound = new double[] { 0.7, 0.05,  0.05,  0.1,   0.003,  0.20,
+					0.017, 0.017, 0.017, 0.017, 0.017, 0.010, 0.010 };
 			holeGroups = new int[][] { { 0, 1, 2 }, { 3, 4, 5 }, { 6 } };
+			evaluator = new ReactanceEvaluator(calculator);
+			objective = new HoleGroupObjectiveFunction(calculator, tuning, evaluator, holeGroups);
+			// HoleGroupObjectiveFunction defines its own lower bound.
+			lowerBound[0] = objective.getLowerBounds()[0];
+			objective.setMaxIterations(20000);
+			objective.setOptimizerType(BaseObjectiveFunction.OptimizerType.CMAESOptimizer);
 
 			Instrument optimizedInstrument = doInstrumentOptimization("Two hole groups, Gordon Calculator");
 
@@ -101,13 +141,38 @@ public class HoleGroupSpacingOptimizerTest extends AbstractOptimizationTest
 			assertEquals("Bore length incorrect with Gordon Calculator", 13.92,
 					lastPoint.getBorePosition(), 0.1);
 
+		}
+		catch (Exception e)
+		{
+			fail(e.getMessage());
+		}
+	}
+
+	@Test
+	public void test2GroupingNAF()
+	{
+		try
+		{
 			setCalculator(new NAFCalculator());
-			optimizedInstrument = doInstrumentOptimization("Two hole groups, NAF Calculator");
+			setup();
+			lowerBound = new double[] { 0.2, 0.018, 0.018, 0.018, 0.0005, 0.018,
+					0.0025, 0.0025, 0.0025, 0.0025, 0.0025, 0.0012, 0.0012 };
+			upperBound = new double[] { 0.7, 0.05,  0.05,  0.1,   0.003,  0.20,
+					0.017, 0.017, 0.017, 0.017, 0.017, 0.010, 0.010 };
+			holeGroups = new int[][] { { 0, 1, 2 }, { 3, 4, 5 }, { 6 } };
+			evaluator = new ReactanceEvaluator(calculator);
+			objective = new HoleGroupObjectiveFunction(calculator, tuning, evaluator, holeGroups);
+			// HoleGroupObjectiveFunction defines its own lower bound.
+			lowerBound[0] = objective.getLowerBounds()[0];
+			objective.setMaxIterations(20000);
+			objective.setOptimizerType(BaseObjectiveFunction.OptimizerType.CMAESOptimizer);
+
+			Instrument optimizedInstrument = doInstrumentOptimization("Two hole groups, NAF Calculator");
 
 			// Test bore length
-			borePoints = optimizedInstrument.getBorePoint();
-			sortedPoints = Instrument.sortList(borePoints);
-			lastPoint = sortedPoints[sortedPoints.length - 1];
+			List<BorePoint> borePoints = optimizedInstrument.getBorePoint();
+			PositionInterface[] sortedPoints = Instrument.sortList(borePoints);
+			PositionInterface lastPoint = sortedPoints[sortedPoints.length - 1];
 			assertEquals("Bore length incorrect with NAF Calculator", 13.92,
 					lastPoint.getBorePosition(), 0.1);
 		}
@@ -120,7 +185,9 @@ public class HoleGroupSpacingOptimizerTest extends AbstractOptimizationTest
 	public static void main(String[] args)
 	{
 		HoleGroupSpacingOptimizerTest test = new HoleGroupSpacingOptimizerTest();
-		// test.testNoGrouping();
-		test.test2Grouping();
+		test.testNoGroupingGordon();
+		test.testNoGroupingNAF();
+		test.test2GroupingGordon();
+		test.test2GroupingNAF();
 	}
 }

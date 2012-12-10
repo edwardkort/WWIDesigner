@@ -15,6 +15,7 @@ import com.wwidesigner.geometry.Hole;
 import com.wwidesigner.geometry.Instrument;
 import com.wwidesigner.geometry.PositionInterface;
 import com.wwidesigner.modelling.NAFCalculator;
+import com.wwidesigner.modelling.ReactanceEvaluator;
 import com.wwidesigner.util.Constants.TemperatureType;
 import com.wwidesigner.util.PhysicalParameters;
 import com.wwidesigner.util.SortedPositionList;
@@ -35,11 +36,11 @@ public class NafOptimizationTest extends AbstractOptimizationTest
 			setInputTuningXML("com/wwidesigner/optimization/example/NoHoleNAF1Tuning.xml");
 			setParams(new PhysicalParameters(22.22, TemperatureType.C));
 			setCalculator(new NAFCalculator());
-			setOptimizerClass(SimpleHolePositionAndDiameterOptimizer.class);
+			setup();
 			setLowerBound(new double[] { 0.25 });
 			setUpperBound(new double[] { 0.4 });
-			setOptimizerType(InstrumentOptimizer.OptimizerType.CMAESOptimizer);
-			setNumberOfInterpolationPoints(2);
+			evaluator = new ReactanceEvaluator(calculator);
+			objective = new LengthObjectiveFunction(calculator, tuning, evaluator);
 
 			Instrument optimizedInstrument = doInstrumentOptimization("No-hole");
 
@@ -49,7 +50,6 @@ public class NafOptimizationTest extends AbstractOptimizationTest
 			PositionInterface lastPoint = sortedPoints[sortedPoints.length - 1];
 			assertEquals("Bore length incorrect", 11.97,
 					lastPoint.getBorePosition(), 0.1);
-
 		}
 		catch (Exception e)
 		{
@@ -66,11 +66,11 @@ public class NafOptimizationTest extends AbstractOptimizationTest
 			setInputTuningXML("com/wwidesigner/optimization/example/NoHoleTaperNAFTuning.xml");
 			setParams(new PhysicalParameters(22.22, TemperatureType.C));
 			setCalculator(new NAFCalculator());
-			setOptimizerClass(SimpleHolePositionAndDiameterOptimizer.class);
+			setup();
 			setLowerBound(new double[] { 0.3 });
 			setUpperBound(new double[] { 0.6 });
-			setOptimizerType(InstrumentOptimizer.OptimizerType.CMAESOptimizer);
-			setNumberOfInterpolationPoints(2);
+			evaluator = new ReactanceEvaluator(calculator);
+			objective = new LengthObjectiveFunction(calculator, tuning, evaluator);
 
 			Instrument optimizedInstrument = doInstrumentOptimization("No-hole");
 
@@ -97,14 +97,16 @@ public class NafOptimizationTest extends AbstractOptimizationTest
 			setInputTuningXML("com/wwidesigner/optimization/example/G7HoleNAFTuning.xml");
 			setParams(new PhysicalParameters(22.22, TemperatureType.C));
 			setCalculator(new NAFCalculator());
-			setOptimizerClass(SimpleHolePositionAndDiameterOptimizer.class);
-			setLowerBound(new double[] { 0.25, 0.03, 0.04, 0.06, 0.075, 0.09,
-					0.1, 0.001, 0.003, 0.003, 0.003, 0.003, 0.003, 0.0015,
-					0.0015 });
-			setUpperBound(new double[] { 0.5, 0.15, 0.18, 0.21, 0.24, 0.27, 0.3,
-					0.3, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02 });
-			setOptimizerType(InstrumentOptimizer.OptimizerType.BOBYQAOptimizer);
-			setNumberOfInterpolationPoints(30);
+			setup();
+			setLowerBound(new double[] { 0.25, 0.03, 0.04, 0.06, 0.075, 0.09, 0.001, 0.01,
+					0.003, 0.003, 0.003, 0.003, 0.003, 0.0015, 0.0015 });
+			setUpperBound(new double[] { 0.5, 0.15, 0.18, 0.21, 0.24, 0.27, 0.3, 0.3,
+					0.012, 0.012, 0.012, 0.012, 0.012, 0.012, 0.012 });
+			evaluator = new ReactanceEvaluator(calculator);
+			objective = new HoleObjectiveFunction(calculator, tuning, evaluator);
+			// HoleObjectiveFunction defines its own lower bound.
+			lowerBound[0] = objective.getLowerBounds()[0];
+			objective.setMaxIterations(30000);
 
 			Instrument optimizedInstrument = doInstrumentOptimization("7-hole taper");
 
@@ -131,13 +133,16 @@ public class NafOptimizationTest extends AbstractOptimizationTest
 			setInputTuningXML("com/wwidesigner/optimization/example/G7HoleNAFTuning.xml");
 			setParams(new PhysicalParameters(22.22, TemperatureType.C));
 			setCalculator(new NAFCalculator());
-			setOptimizerClass(HolePosAndDiamImpedanceOptimizer.class);
-			setLowerBound(new double[] { 0.2, 0.012, 0.012, 0.012, 0.012, 0.012,
-					0.0005, 0.05, 0.1, 0.1, 0.1, 0.1, 0.1, 0.05, 0.05 });
-			setUpperBound(new double[] { 0.5, 0.05, 0.05, 0.1, 0.05, 0.05,
-					0.003, 0.2, 0.7, 0.7, 0.7, 0.7, 0.7, 0.4, 0.4 });
-			setOptimizerType(InstrumentOptimizer.OptimizerType.BOBYQAOptimizer);
-			setNumberOfInterpolationPoints(30);
+			setup();
+			setLowerBound(new double[] { 0.2, 0.014, 0.014, 0.014, 0.014, 0.014, 0.0005, 0.05,
+					0.0025, 0.0025, 0.0025, 0.0025, 0.0025, 0.0013, 0.0013 });
+			setUpperBound(new double[] { 0.5, 0.05, 0.05, 0.1, 0.05, 0.05, 0.003, 0.2,
+					0.013, 0.013, 0.013, 0.013, 0.013, 0.010, 0.010 });
+			evaluator = new ReactanceEvaluator(calculator);
+			objective = new HoleObjectiveFunction(calculator, tuning, evaluator);
+			// HoleObjectiveFunction defines its own lower bound.
+			lowerBound[0] = objective.getLowerBounds()[0];
+			objective.setMaxIterations(20000);
 
 			Instrument optimizedInstrument = doInstrumentOptimization("7-hole taper2");
 
@@ -164,11 +169,13 @@ public class NafOptimizationTest extends AbstractOptimizationTest
 			setInputTuningXML("com/wwidesigner/optimization/example/1HoleNAF1Tuning.xml");
 			setParams(new PhysicalParameters(22.22, TemperatureType.C));
 			setCalculator(new NAFCalculator());
-			setOptimizerClass(HolePosAndDiamImpedanceOptimizer.class);
-			setLowerBound(new double[] { 0.20, 0.05, 0.3 });
-			setUpperBound(new double[] { 0.4, 0.15, 0.4 });
-			setOptimizerType(InstrumentOptimizer.OptimizerType.BOBYQAOptimizer);
-			setNumberOfInterpolationPoints(6);
+			setup();
+			setLowerBound(new double[] { 0.20, 0.05, 0.0075 });
+			setUpperBound(new double[] { 0.4, 0.15, 0.010 });
+			evaluator = new ReactanceEvaluator(calculator);
+			objective = new HoleObjectiveFunction(calculator, tuning, evaluator);
+			// HoleObjectiveFunction defines its own lower bound.
+			lowerBound[0] = objective.getLowerBounds()[0];
 
 			Instrument optimizedInstrument = doInstrumentOptimization("One-hole");
 
@@ -215,13 +222,15 @@ public class NafOptimizationTest extends AbstractOptimizationTest
 			setInputTuningXML("com/wwidesigner/optimization/example/6HoleNAF1Tuning.xml");
 			setParams(new PhysicalParameters(22.22, TemperatureType.C));
 			setCalculator(new NAFCalculator());
-			setOptimizerClass(HolePosAndDiamImpedanceOptimizer.class);
-			setLowerBound(new double[] { 0.28, 0.01, 0.01, 0.01, 0.01, 0.01,
-						0.05, 0.1, 0.15, 0.15, 0.15, 0.15, 0.15 });
-			setUpperBound(new double[] { 0.5, 0.03, 0.03, 0.035, 0.035,
-						0.035, 0.15, 0.5, 0.5, 0.5, 0.5, 0.5, 0.6 });
-			setOptimizerType(InstrumentOptimizer.OptimizerType.BOBYQAOptimizer);
-			setNumberOfInterpolationPoints(26);
+			setup();
+			setLowerBound(new double[] { 0.28, 0.013, 0.013, 0.013, 0.013, 0.013, 0.05,
+					0.0025, 0.0038, 0.0038, 0.0038, 0.0038, 0.0038 });
+			setUpperBound(new double[] { 0.5, 0.03, 0.03, 0.035, 0.035, 0.035, 0.15,
+					0.012,  0.012,  0.012, 0.012, 0.012, 0.012 });
+			evaluator = new ReactanceEvaluator(calculator);
+			objective = new HoleObjectiveFunction(calculator, tuning, evaluator);
+			// HoleObjectiveFunction defines its own lower bound.
+			lowerBound[0] = objective.getLowerBounds()[0];
 
 			Instrument optimizedInstrument = doInstrumentOptimization("Six-hole");
 
@@ -272,11 +281,11 @@ public class NafOptimizationTest extends AbstractOptimizationTest
 	public static void main(String[] args)
 	{
 		NafOptimizationTest test = new NafOptimizationTest();
-//		test.testNoHoleOptimization();
+		test.testNoHoleOptimization();
 //		test.testNoHoleTaperOptimization();
 //		test.test1HoleOptimization();
 //		test.test6HoleOptimization();
 //		test.test7HoleTaperOptimization();
-		test.test7HoleTaperOptimization2();
+//		test.test7HoleTaperOptimization2();
 	}
 }

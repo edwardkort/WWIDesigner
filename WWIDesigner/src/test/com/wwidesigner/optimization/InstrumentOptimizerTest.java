@@ -10,6 +10,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.List;
 
+import org.apache.commons.math3.optimization.GoalType;
+import org.apache.commons.math3.optimization.PointValuePair;
+import org.apache.commons.math3.optimization.direct.BOBYQAOptimizer;
 import org.junit.Test;
 
 import com.wwidesigner.geometry.BorePoint;
@@ -17,7 +20,9 @@ import com.wwidesigner.geometry.Hole;
 import com.wwidesigner.geometry.Instrument;
 import com.wwidesigner.geometry.PositionInterface;
 import com.wwidesigner.geometry.bind.GeometryBindFactory;
+import com.wwidesigner.modelling.EvaluatorInterface;
 import com.wwidesigner.modelling.InstrumentCalculator;
+import com.wwidesigner.modelling.ReactanceEvaluator;
 import com.wwidesigner.modelling.SimpleTestCalculator;
 import com.wwidesigner.note.Tuning;
 import com.wwidesigner.note.bind.NoteBindFactory;
@@ -35,8 +40,8 @@ public class InstrumentOptimizerTest
 	protected String inputTuningXML = "com/wwidesigner/optimization/example/6HoleTuning.xml";
 
 	/**
-	 * Complete workflow for optimizing an XML-defined instrument with the
-	 * InstrumentOptimizer2 algorithm.
+	 * Complete workflow for optimizing an XML-defined instrument with
+	 * a specified ObjectiveFunction.
 	 * 
 	 * @return An Instrument object after optimization, with all dimensions in
 	 *         the original units.
@@ -52,10 +57,20 @@ public class InstrumentOptimizerTest
 
 		Tuning tuning = getTuningFromXml(inputTuningXML);
 
-		InstrumentOptimizer optimizer = new HolePositionOptimizer(
-				instrument, calculator, tuning);
-		setOptimizationBounds(optimizer);
-		optimizer.optimizeInstrument();
+		double lowerBound[] = new double[] { 0.25, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01 };
+		double upperBound[] = new double[] { 0.4,  0.035, 0.035, 0.035, 0.035, 0.05, 0.08 };
+		EvaluatorInterface evaluator = new ReactanceEvaluator(calculator);
+		BaseObjectiveFunction objective = new HolePositionObjectiveFunction(calculator, tuning, evaluator);
+		// HoleObjectiveFunction defines its own lower bound.
+		lowerBound[0] = objective.getLowerBounds()[0];
+		objective.setLowerBounds(lowerBound);
+		objective.setUpperBounds(upperBound);
+		
+		BOBYQAOptimizer optimizer = new BOBYQAOptimizer(30);
+		
+		PointValuePair outcome = optimizer.optimize(20000, objective, GoalType.MINIMIZE,
+				objective.getStartingPoint(), lowerBound, upperBound);
+		objective.setGeometryPoint(outcome.getKey());
 
 		// Convert back to the input unit-of-measure values
 		instrument.convertToLengthType();
@@ -112,30 +127,6 @@ public class InstrumentOptimizerTest
 		Tuning tuning = (Tuning) noteBindFactory.unmarshalXml(inputFile, true);
 
 		return tuning;
-	}
-
-	protected void setOptimizationBounds(InstrumentOptimizer optimizer)
-	{
-		double[] lB = new double[7];
-		double[] uB = new double[7];
-
-		lB[0] = 0.25;
-		uB[0] = 0.40;
-		lB[1] = 0.01;
-		uB[1] = 0.035;
-		lB[2] = 0.01;
-		uB[2] = 0.035;
-		lB[3] = 0.01;
-		uB[3] = 0.035;
-		lB[4] = 0.01;
-		uB[4] = 0.035;
-		lB[5] = 0.01;
-		uB[5] = 0.05;
-		lB[6] = 0.01;
-		uB[6] = 0.08;
-
-		optimizer.setLowerBnd(lB);
-		optimizer.setUpperBnd(uB);
 	}
 
 	/**

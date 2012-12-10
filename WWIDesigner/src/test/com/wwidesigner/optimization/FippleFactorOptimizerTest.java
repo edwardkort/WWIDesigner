@@ -10,6 +10,7 @@ import org.junit.Test;
 
 import com.wwidesigner.geometry.Instrument;
 import com.wwidesigner.modelling.NAFCalculator;
+import com.wwidesigner.modelling.ReactanceEvaluator;
 import com.wwidesigner.util.Constants.TemperatureType;
 import com.wwidesigner.util.PhysicalParameters;
 
@@ -28,11 +29,11 @@ public class FippleFactorOptimizerTest extends AbstractOptimizationTest
 			setInputTuningXML("com/wwidesigner/optimization/example/NoHoleNAF1Tuning.xml");
 			setParams(new PhysicalParameters(22.22, TemperatureType.C));
 			setCalculator(new NAFCalculator());
-			setOptimizerClass(FippleFactorOptimizer.class);
+			setup();
 			setLowerBound(new double[] { 0.2 });
 			setUpperBound(new double[] { 1.5 });
-			setOptimizerType(InstrumentOptimizer.OptimizerType.CMAESOptimizer);
-			setNumberOfInterpolationPoints(2);
+			evaluator = new ReactanceEvaluator(calculator);
+			objective = new FippleFactorObjectiveFunction(calculator, tuning, evaluator);
 
 			Instrument optimizedInstrument = doInstrumentOptimization("No-hole");
 

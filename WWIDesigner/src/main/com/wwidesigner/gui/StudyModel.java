@@ -254,21 +254,8 @@ public abstract class StudyModel
 	{
 		BaseObjectiveFunction objective = getObjectiveFunction();
 		
-		double[] startPoint = objective.getGeometryPoint();
+		double[] startPoint = objective.getStartingPoint();
 		double[] errorVector = objective.getErrorVector(startPoint);
-		
-		// Ensure startPoint is within bounds.
-		for (int i = 0; i < startPoint.length; i++)
-		{
-			if ( startPoint[i] < objective.getLowerBounds()[i] )
-			{
-				startPoint[i] = objective.getLowerBounds()[i];
-			}
-			else if ( startPoint[i] > objective.getUpperBounds()[i] )
-			{
-				startPoint[i] = objective.getUpperBounds()[i];
-			} 
-		}
 		double initialNorm = objective.calcNorm(errorVector);
 		System.out.println();
 		printErrors("Initial error: ", initialNorm, errorVector);

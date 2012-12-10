@@ -45,9 +45,12 @@ public class HoleGroupPositionObjectiveFunction extends BaseObjectiveFunction
 		// (Use 1 mm past the lower edge of the lowest hole.)
 
 		PositionInterface[] holeList = Instrument.sortList(calculator.getInstrument().getHole());
-		Hole endHole = (Hole) holeList[holeList.length-1];
-		lowerBounds = new double[nrDimensions];
-		lowerBounds[0] = endHole.getBorePosition() + endHole.getDiameter()/2.0 + 0.001;
+		if (holeList.length > 0)
+		{
+			Hole endHole = (Hole) holeList[holeList.length-1];
+			lowerBounds = new double[nrDimensions];
+			lowerBounds[0] = endHole.getBorePosition() + endHole.getDiameter()/2.0 + 0.001;
+		}
 	}
 
 	public void setHoleGroups(int[][] groups) throws Exception
@@ -123,20 +126,24 @@ public class HoleGroupPositionObjectiveFunction extends BaseObjectiveFunction
 		for (int i = 0; i < holeGroups.length; i++)
 		{
 			int[] group = holeGroups[i];
-			// All holes but the last use the current dimension.
-			for ( int j = 0; j < group.length - 1; j++ )
+			if (group.length > 1)
 			{
-				dimensionByHole[group[j]] = dimension;
-				groupSize[group[j]] = group.length - 1;
+				// All holes but the last use the current dimension,
+				// inter-hole spacing.
+				for ( int j = 0; j < group.length - 1; j++ )
+				{
+					dimensionByHole[group[j]] = dimension;
+					groupSize[group[j]] = group.length - 1;
+				}
+				dimension++;
 			}
 			if (group.length > 0)
 			{
 				// Last hole in the group uses the spacing after the group.
-				dimension++;
 				dimensionByHole[group[group.length-1]] = dimension;
 				groupSize[group[group.length-1]] = 1;
+				dimension++;
 			}
-			dimension++;
 		}
 	}
 

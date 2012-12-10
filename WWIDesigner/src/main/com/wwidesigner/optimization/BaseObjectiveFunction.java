@@ -139,7 +139,32 @@ public abstract class BaseObjectiveFunction implements MultivariateFunction, Uni
 	 * @return point representing current geometry values.  point.length == nrDimensions.
 	 */
 	public abstract double[] getGeometryPoint();
-	
+
+	/**
+	 * Retrieve geometry values from the instrument,
+	 * ensuring the values lie within the current bounds.
+	 * Specific values depend on the derived class.
+	 * @return point representing current geometry values.  point.length == nrDimensions.
+	 */
+	public double[] getStartingPoint()
+	{
+		double[] startPoint = this.getGeometryPoint();
+		
+		// Ensure startPoint is within bounds.
+		for (int i = 0; i < startPoint.length; i++)
+		{
+			if ( startPoint[i] < lowerBounds[i] )
+			{
+				startPoint[i] = lowerBounds[i];
+			}
+			else if ( startPoint[i] > upperBounds[i] )
+			{
+				startPoint[i] = upperBounds[i];
+			} 
+		}
+		return startPoint;
+	}
+
 	/**
 	 * Set geometry values for an instrument.
 	 * Specific values depend on the derived class.

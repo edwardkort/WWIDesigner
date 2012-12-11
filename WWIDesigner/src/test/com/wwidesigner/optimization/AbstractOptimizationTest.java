@@ -6,15 +6,20 @@ package com.wwidesigner.optimization;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.OutputStreamWriter;
-import java.lang.reflect.Constructor;
+import org.apache.commons.math3.analysis.MultivariateFunction;
+import org.apache.commons.math3.optimization.BaseMultivariateSimpleBoundsOptimizer;
+import org.apache.commons.math3.optimization.GoalType;
+import org.apache.commons.math3.optimization.PointValuePair;
+import org.apache.commons.math3.optimization.direct.BOBYQAOptimizer;
+import org.apache.commons.math3.optimization.direct.CMAESOptimizer;
 
 import com.wwidesigner.geometry.Instrument;
 import com.wwidesigner.geometry.bind.GeometryBindFactory;
+import com.wwidesigner.modelling.EvaluatorInterface;
 import com.wwidesigner.modelling.InstrumentCalculator;
 import com.wwidesigner.modelling.SimpleInstrumentTuner;
 import com.wwidesigner.modelling.TuningComparisonTable;
 import com.wwidesigner.note.Tuning;
-import com.wwidesigner.note.TuningInterface;
 import com.wwidesigner.note.bind.NoteBindFactory;
 import com.wwidesigner.util.BindFactory;
 import com.wwidesigner.util.PhysicalParameters;
@@ -25,36 +30,23 @@ import com.wwidesigner.util.PhysicalParameters;
  */
 public class AbstractOptimizationTest
 {
+	// Basic variables that derived class should initialize
+	// before calling base setup() function.
+	protected InstrumentCalculator calculator;
 	protected String inputInstrumentXML;
 	protected String inputTuningXML;
-	protected double[] lowerBound;
-	protected double[] upperBound;
-	protected InstrumentOptimizer.OptimizerType optimizerType;
-	protected int numberOfInterpolationPoints;
 	protected PhysicalParameters params;
-	protected InstrumentCalculator calculator;
-	protected Class<? extends InstrumentOptimizer> optimizerClass;
-	protected InstrumentOptimizer optimizer;
+	
+	// Intermediate values that base setup() function initializes.
 	protected Instrument instrument;
 	protected Tuning tuning;
 
-	public void setOptimizerClass(
-			Class<? extends InstrumentOptimizer> optimizerClass)
-	{
-		this.optimizerClass = optimizerClass;
-	}
-
-	public InstrumentOptimizer setInstrumentOptimizer() throws Exception
-	{
-		Constructor<? extends InstrumentOptimizer> optConstructor = optimizerClass
-				.getConstructor(new Class[] { Instrument.class,
-						InstrumentCalculator.class, TuningInterface.class });
-		InstrumentOptimizer opt = optConstructor.newInstance(instrument,
-				calculator, tuning);
-
-		return opt;
-	}
-
+	// Intermediate variables, to build objective function for optimization
+	protected double[] lowerBound;
+	protected double[] upperBound;
+	protected EvaluatorInterface evaluator;
+	protected BaseObjectiveFunction objective;
+	
 	/**
 	 * @param params
 	 *            the params to set
@@ -101,24 +93,6 @@ public class AbstractOptimizationTest
 	}
 
 	/**
-	 * @param optimizerType
-	 *            the optimizerType to set
-	 */
-	public void setOptimizerType(InstrumentOptimizer.OptimizerType optimizerType)
-	{
-		this.optimizerType = optimizerType;
-	}
-
-	/**
-	 * @param numberOfInterpolationPoints
-	 *            the numberOfInterpolationPoints to set
-	 */
-	public void setNumberOfInterpolationPoints(int numberOfInterpolationPoints)
-	{
-		this.numberOfInterpolationPoints = numberOfInterpolationPoints;
-	}
-
-	/**
 	 * @param calculator
 	 *            the calculator to set
 	 */
@@ -127,9 +101,18 @@ public class AbstractOptimizationTest
 		this.calculator = calculator;
 	}
 
+	protected void setup() throws Exception
+	{
+		instrument = getInstrumentFromXml();
+		calculator.setInstrument(instrument);
+		calculator.setPhysicalParameters(params);
+		instrument.convertToMetres();
+		tuning = getTuningFromXml();
+	}
+
 	/**
 	 * Complete workflow for optimizing an XML-defined instrument with the
-	 * InstrumentOptimizer2 algorithm.
+	 * current objective function.
 	 * 
 	 * @return An Instrument object after optimization, with all dimensions in
 	 *         the original units.
@@ -137,22 +120,27 @@ public class AbstractOptimizationTest
 	 */
 	public Instrument doInstrumentOptimization(String title) throws Exception
 	{
-		instrument = getInstrumentFromXml();
-		calculator.setInstrument(instrument);
-		calculator.setPhysicalParameters(params);
-		instrument.convertToMetres();
-
-		tuning = getTuningFromXml();
-
-		optimizer = setInstrumentOptimizer();
-		optimizer.setBaseOptimizer(optimizerType, numberOfInterpolationPoints);
-		setOptimizationBounds(optimizer);
-		setupCustomOptimizer();
+		objective.setLowerBounds(lowerBound);
+		objective.setUpperBounds(upperBound);
+		double[] startPoint = objective.getStartingPoint();
+		BaseMultivariateSimpleBoundsOptimizer<MultivariateFunction> optimizer;
+		PointValuePair  outcome;
+		if ( objective.getOptimizerType() == BaseObjectiveFunction.OptimizerType.CMAESOptimizer
+				|| objective.getOptimizerType() == BaseObjectiveFunction.OptimizerType.BrentOptimizer )
+		{
+			optimizer = new CMAESOptimizer(objective.getNrInterpolations());
+		}
+		else {
+			optimizer = new BOBYQAOptimizer(objective.getNrInterpolations());
+		}
 
 		showTuning(instrument, calculator, tuning, title
 				+ ", before optimization");
 
-		optimizer.optimizeInstrument();
+		outcome = optimizer.optimize(objective.getMaxIterations(),objective,GoalType.MINIMIZE,
+				startPoint, objective.getLowerBounds(), objective.getUpperBounds());
+		objective.setGeometryPoint(outcome.getPoint());
+
 		showTuning(instrument, calculator, tuning, title
 				+ ", after optimization");
 
@@ -165,12 +153,6 @@ public class AbstractOptimizationTest
 
 		// The optimizer modifies the input Instrument instance
 		return instrument;
-	}
-
-	protected void setupCustomOptimizer() throws Exception
-	{
-		// Override this in a test with a custom optimizer that has setup
-		// methods not in the InstrumentOptimizerInterface.
 	}
 
 	public void showTuning(Instrument instrument,
@@ -204,12 +186,6 @@ public class AbstractOptimizationTest
 		Tuning tuning = (Tuning) noteBindFactory.unmarshalXml(inputFile, true);
 
 		return tuning;
-	}
-
-	protected void setOptimizationBounds(InstrumentOptimizer optimizer)
-	{
-		optimizer.setLowerBnd(lowerBound);
-		optimizer.setUpperBnd(upperBound);
 	}
 
 	protected File getInputFile(String fileName, BindFactory bindFactory)

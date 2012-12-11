@@ -58,8 +58,11 @@ public class GordonInstrumentCalculator extends InstrumentCalculator
 			TransferMatrix compTM = null;
 			if (component instanceof BoreSection)
 			{
-				compTM = boreSectionCalculator.calcTransferMatrix(
+				if (((BoreSection)component).getLength() > 0)
+				{
+					compTM = boreSectionCalculator.calcTransferMatrix(
 						(BoreSection) component, waveNumber, params);
+				}
 			}
 			else if (component instanceof Hole)
 			{
@@ -72,7 +75,10 @@ public class GordonInstrumentCalculator extends InstrumentCalculator
 						(Mouthpiece) component, waveNumber, params);
 			}
 
-			fluteTM = fluteTM.multiply(compTM);
+			if (compTM != null)
+			{
+				fluteTM = fluteTM.multiply(compTM);
+			}
 		}
 
 		StateVector sv = terminationCalculator.calcStateVector(

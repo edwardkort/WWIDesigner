@@ -243,9 +243,9 @@ public class NafStudyModel extends StudyModel
 				}
 				else if ( numberOfHoles == 7 )
 				{
-					lowerBound = new double[] { 0.2, 0.0005, 0.012, 0.012, 0.012, 0.012, 0.012, 0.012,
+					lowerBound = new double[] { 0.2, 0.012, 0.012, 0.012, 0.012, 0.012, 0.0005, 0.012,
 								0.002, 0.002, 0.002, 0.002, 0.002, 0.002, 0.002 };
-					upperBound = new double[] { 0.7, 0.003,  0.05,  0.05,  0.1,   0.05,  0.05,  0.20,
+					upperBound = new double[] { 0.7, 0.05,  0.05,  0.1,   0.05,  0.05,  0.003,  0.20,
 								0.014, 0.014, 0.014, 0.014, 0.014, 0.008, 0.008 };
 				}
 				else if ( constraint == HOLE_6_1_125_SPACING_CONS_SUB_CATEGORY_ID )
@@ -285,9 +285,9 @@ public class NafStudyModel extends StudyModel
 				else if ( numberOfHoles == 7 )
 				{
 					holeGroups = new int[][] { { 0, 1, 2 }, { 3, 4, 5 }, { 6 } };
-					lowerBound = new double[] { 0.2, 0.0005, 0.012, 0.012, 0.012, 0.012,
+					lowerBound = new double[] { 0.2, 0.012, 0.012, 0.012, 0.0005, 0.012,
 								0.002, 0.002, 0.002, 0.002, 0.002, 0.002, 0.002 };
-					upperBound = new double[] { 0.7, 0.003,  0.05,  0.05,  0.1,   0.20,
+					upperBound = new double[] { 0.7, 0.05,  0.05,  0.1,   0.003,   0.20,
 								0.014, 0.014, 0.014, 0.014, 0.014, 0.008, 0.008 };
 				}
 				else

@@ -197,7 +197,7 @@ public class PlayingRange
 			throws NoPlayingRange
 	{
 		final double delta = nearFreq * (Granularity-1.0);	// Step size for derivatives.
-		final double stepSize = 10.0 * delta;					// Step size for search.
+		final double stepSize = 10.0 * delta;				// Step size for search.
 		double lowerFreq;
 		double upperFreq; 
 		Complex z1, z2;

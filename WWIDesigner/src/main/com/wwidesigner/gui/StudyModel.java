@@ -229,6 +229,28 @@ public abstract class StudyModel
 				false);
 	}
 	
+	public void graphTuning(String title) throws Exception
+	{
+		InstrumentTuner tuner = getInstrumentTuner();
+
+		Category category = this.getCategory(INSTRUMENT_CATEGORY_ID);
+		String instrumentName = category.getSelectedSub();
+		FileDataModel model = (FileDataModel) category.getSelectedSubValue();
+		model.getApplication().getDataView(model).updateModel(model);
+		tuner.setInstrument((String) model.getData());
+
+		category = getCategory(TUNING_CATEGORY_ID);
+		String tuningName = category.getSelectedSub();
+		model = (FileDataModel) category.getSelectedSubValue();
+		model.getApplication().getDataView(model).updateModel(model);
+		tuner.setTuning((String) model.getData());
+
+		tuner.setCalculator(getCalculator());
+
+		tuner.plotTuning(title + ": " + instrumentName + "/" + tuningName,
+				false);
+	}
+	
 	protected static void printErrors(String description, double errorNorm, double[] errorVector)
 	{
 		boolean firstPass = true;

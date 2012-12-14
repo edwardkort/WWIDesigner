@@ -65,6 +65,7 @@ public class NafOptimizationRunner extends FileBasedApplication implements
 	static final String CONSOLE_ACTION_ID = "Console";
 	static final String STUDY_ACTION_ID = "Study";
 	static final String CALCULATE_TUNING_ACTION_ID = "Calculate tuning";
+	static final String GRAPH_TUNING_ACTION_ID = "Graph tuning";
 	static final String OPTIMIZE_INSTRUMENT_ACTION_ID = "Optimize instrument";
 	static final String CREATE_TUNING_FILE_ACTION_ID = "Create tuning file";
 	static final String CLEAR_CONSOLE_ACTION_ID = "Clear Console";
@@ -218,6 +219,39 @@ public class NafOptimizationRunner extends FileBasedApplication implements
 		getActionMap().put(CALCULATE_TUNING_ACTION_ID, action);
 		action.setEnabled(false);
 
+		final Activity graphActivity = new Activity(GRAPH_TUNING_ACTION_ID)
+		{
+
+			@Override
+			public void activityPerformed() throws Exception
+			{
+				StudyView studyView = getStudyView();
+				if (studyView != null)
+				{
+					studyView.graphTuning();
+				}
+			}
+		};
+		message = "Calculating instrument tuning.\nThis may take several seconds.";
+		graphActivity.addProgressListener(new BlockingProgressListener(
+				getApplicationUIManager().getWindowsUI(),
+				GRAPH_TUNING_ACTION_ID, message));
+		action = new ActivityAction(graphActivity)
+		{
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				getApplication().getActivityManager().run(graphActivity);
+			}
+		};
+		getActionMap().put(GRAPH_TUNING_ACTION_ID, action);
+		action.setEnabled(false);
+
 		final Activity optActivity = new Activity(OPTIMIZE_INSTRUMENT_ACTION_ID)
 		{
 
@@ -334,6 +368,7 @@ public class NafOptimizationRunner extends FileBasedApplication implements
 			{
 				JMenu menu = menuBarUI.defaultMenu("Tool Menu", "Tool");
 				menu.add(menuBarUI.getAction(CALCULATE_TUNING_ACTION_ID));
+				menu.add(menuBarUI.getAction(GRAPH_TUNING_ACTION_ID));
 				menu.add(menuBarUI.getAction(OPTIMIZE_INSTRUMENT_ACTION_ID));
 				menu.add(menuBarUI.getAction(CREATE_TUNING_FILE_ACTION_ID));
 				return new JMenu[] { menu };
@@ -480,6 +515,11 @@ public class NafOptimizationRunner extends FileBasedApplication implements
 		if (TUNING_ACTIVE_EVENT_ID.equals(eventName))
 		{
 			Action action = getActionMap().get(CALCULATE_TUNING_ACTION_ID);
+			if (action != null)
+			{
+				action.setEnabled((Boolean) e.getSource());
+			}
+			action = getActionMap().get(GRAPH_TUNING_ACTION_ID);
 			if (action != null)
 			{
 				action.setEnabled((Boolean) e.getSource());

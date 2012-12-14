@@ -149,6 +149,12 @@ public class TuningComparisonTable extends DefaultTableModel
 		}
 	}
 
+	/**
+	 * Collect the data necessary to tabulate the predicted tuning for an instrument.
+	 * Following this call, use showTuning() or printTuning() to display the graph.
+	 * @param target - target tuning
+	 * @param predicted - predicted tuning for each note in target tuning.
+	 */
 	public void buildTable(Tuning target, Tuning predicted)
 	{
 		List<Fingering> tgtFingering  = target.getFingering();

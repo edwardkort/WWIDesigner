@@ -5,10 +5,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GridLayout;
 import java.awt.Image;
-import java.awt.Insets;
-import java.awt.MediaTracker;
 import java.awt.RenderingHints;
-import java.awt.Toolkit;
 import java.awt.geom.Arc2D;
 import java.awt.geom.Line2D;
 
@@ -18,17 +15,6 @@ import javax.swing.JRadioButton;
 import javax.swing.WindowConstants;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
-
-import org.apache.batik.dom.svg.SAXSVGDocumentFactory;
-import org.apache.batik.dom.svg.SVGDOMImplementation;
-import org.apache.batik.swing.JSVGCanvas;
-import org.apache.batik.util.XMLResourceDescriptor;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.svg.SVGDocument;
-
-import com.wwidesigner.note.bind.NoteBindFactory;
-import com.wwidesigner.util.BindFactory;
 
 /**
  * <p>
@@ -47,12 +33,10 @@ public class FingeringComponent extends JPanel
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
 	protected JRadioButton[] mHoles;
 	protected JPanel mButtonPanel = new JPanel();
 	protected Image mImage;
 	protected int mHighestOpenHole;
-	protected JSVGCanvas svgCanvas;
 
 	public FingeringComponent(int numHoles, int highestOpenHole)
 	{
@@ -61,47 +45,6 @@ public class FingeringComponent extends JPanel
 		setBorder(border);
 
 		makeHoles(numHoles);
-//		svgCanvas = new JSVGCanvas();
-		// add(svgCanvas);
-		// try
-		// {
-		// String imageName = ClassLoader.getSystemResource(
-		// "com/wwidesigner/gui/smallFlute.svg").toString();
-		// svgCanvas.setDocumentState(JSVGCanvas.ALWAYS_DYNAMIC);
-		// String parser = XMLResourceDescriptor.getXMLParserClassName();
-		// SAXSVGDocumentFactory f = new SAXSVGDocumentFactory(parser);
-		// Document doc = f.createDocument(imageName);
-		// // svgCanvas.setURI(imageName);
-		// // svgCanvas.createImage(300, 200);
-		// // SVGDocument doc = svgCanvas.getSVGDocument();
-		// Element root = doc.getDocumentElement();
-		// // root.setAttributeNS(SVGDOMImplementation.SVG_NAMESPACE_URI,
-		// "width", "800");
-		// root.setAttributeNS(null, "width", "1200");
-		// // root.setAttributeNS(SVGDOMImplementation.SVG_NAMESPACE_URI,
-		// "height", "200");
-		// root.setAttributeNS(null, "height", "300");
-		// // root.setAttributeNS(null, "preserveAspectRatio", "");
-		// svgCanvas.setSVGDocument((SVGDocument)doc);
-		// svgCanvas.invalidate();
-		// // svgCanvas.setSize(400, 500);
-		// }
-		// catch (Exception ex)
-		// {
-		// ex.printStackTrace();
-		// }
-		// mImage = Toolkit.getDefaultToolkit().getImage(
-		// "src/main/com/wwidesigner/gui/smallFlute.gif");
-		// MediaTracker mt = new MediaTracker(this);
-		// try
-		// {
-		// mt.addImage(mImage, 0);
-		// mt.waitForID(0);
-		// }
-		// catch (Exception e)
-		// {
-		// e.printStackTrace();
-		// }
 	}
 
 	@Override
@@ -114,12 +57,9 @@ public class FingeringComponent extends JPanel
 		g2.draw(new Line2D.Double(85, 5, 220, 5));
 		g2.draw(new Line2D.Double(85, 35, 220, 35));
 		g2.draw(new Line2D.Double(220, 5, 220, 35));
-		// super.paintComponent(g);
 		try
 		{
-			// Insets insets = getInsets();
 			addHoles();
-			// g.drawImage(mImage, insets.left, insets.top, null);
 			validate();
 		}
 		catch (Exception e)

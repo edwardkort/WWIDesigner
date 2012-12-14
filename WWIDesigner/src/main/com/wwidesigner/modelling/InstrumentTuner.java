@@ -58,6 +58,21 @@ public abstract class InstrumentTuner
 		table.showTuning(exitOnTableClose);
 	}
 	
+	public void plotTuning(String title)
+	{
+		plotTuning(title, true);
+	}
+
+	public void plotTuning(String title, boolean exitOnTableClose)
+	{
+		calculator.setInstrument(instrument);
+		calculator.setPhysicalParameters(params);
+		Tuning predicted = getPredictedTuning();
+		PlotPlayingRanges plot = new PlotPlayingRanges(title);
+		plot.buildGraph(calculator, tuning, predicted);
+		plot.plotGraph(exitOnTableClose);
+	}
+	
 	/**
 	 * For a given target note, extract a frequency to use
 	 * as a target frequency.  If no frequency available, return 0.

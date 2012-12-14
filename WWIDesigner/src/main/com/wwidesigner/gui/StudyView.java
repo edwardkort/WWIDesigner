@@ -207,6 +207,19 @@ public class StudyView extends DataViewPane implements EventSubscriber
 		}
 	}
 
+	public void graphTuning()
+	{
+		try
+		{
+			study.graphTuning("Tuning"); // This a title, not a constant
+		}
+		catch (Exception e)
+		{
+			System.out.println("Exception: " + e.getMessage());
+			e.printStackTrace();
+		}
+	}
+
 	public void optimizeInstrument()
 	{
 		try

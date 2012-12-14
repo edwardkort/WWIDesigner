@@ -108,30 +108,30 @@ public class WhistleStudyModel extends StudyModel
 				objective = new LengthObjectiveFunction(calculator, tuning, evaluator);
 				// LengthObjectiveFunction calculates its own lower bound, from the instrument geometry.
 				lowerBound = objective.getLowerBounds();
-				upperBound = new double[] { 2.000 };
+				upperBound = new double[] { 0.700 };
 				break;
 			case HOLESIZE_OPT_SUB_CATEGORY_ID:
 				evaluator = new WhistleEvaluator(calculator);
 				objective = new HoleSizeObjectiveFunction(calculator, tuning, evaluator);
-				// Bounds are expressed as diameter ratios, relative to bore diameter.
-				lowerBound = new double[] { 0.1, 0.1, 0.1, 0.1, 0.1, 0.1 };
-				upperBound = new double[] { 0.9, 0.9, 0.9, 0.9, 0.9, 0.9 };
+				// Bounds are diameters, expressed in meters.
+				lowerBound = new double[] { 0.004, 0.004, 0.004, 0.004, 0.004, 0.004 };
+				upperBound = new double[] { 0.012, 0.012, 0.012, 0.012, 0.012, 0.012 };
 				break;
 			case HOLESPACE_OPT_SUB_CATEGORY_ID:
 				evaluator = new WhistleEvaluator(calculator);
 				objective = new HolePositionObjectiveFunction(calculator, tuning, evaluator);
 				// Bounds are expressed in meters.
-				lowerBound = new double[] { 0.010, 0.010, 0.010, 0.010, 0.010, 0.010, 0.010 };
-				upperBound = new double[] { 1.000, 0.050, 0.050, 0.050, 0.050, 0.050, 0.200 };
+				lowerBound = new double[] { 0.200, 0.013, 0.013, 0.013, 0.013, 0.013, 0.013 };
+				upperBound = new double[] { 0.700, 0.050, 0.050, 0.050, 0.050, 0.050, 0.200 };
 				break;
 			case HOLE_OPT_SUB_CATEGORY_ID:
 				evaluator = new WhistleEvaluator(calculator);
 				objective = new HoleObjectiveFunction(calculator, tuning, evaluator);
 				// Length bounds are expressed in meters, diameter bounds as ratios.
-				lowerBound = new double[] { 0.010, 0.010, 0.010, 0.010, 0.010, 0.010, 0.010,
-						0.1, 0.1, 0.1, 0.1, 0.1, 0.1 };
-				upperBound = new double[] { 1.000, 0.050, 0.050, 0.050, 0.050, 0.050, 0.200,
-						0.9, 0.9, 0.9, 0.9, 0.9, 0.9 };
+				lowerBound = new double[] { 0.200, 0.012, 0.012, 0.012, 0.012, 0.012, 0.012,
+						0.004, 0.004, 0.004, 0.004, 0.004, 0.004 };
+				upperBound = new double[] { 0.700, 0.050, 0.050, 0.050, 0.050, 0.050, 0.200,
+						0.012, 0.012, 0.012, 0.012, 0.012, 0.012 };
 				break;
 		}
 

@@ -15,7 +15,7 @@ public class NAFCalculator extends DefaultInstrumentCalculator
 
 		setMouthpieceCalculator(new DefaultFippleMouthpieceCalculator());
 		setTerminationCalculator(new ThickFlangedOpenEndCalculator());
-		setHoleCalculator(new DefaultHoleCalculator(0.912));
+		setHoleCalculator(new DefaultHoleCalculator(0.955));
 		setBoreSectionCalculator(new DefaultBoreSectionCalculator());
 	}
 
@@ -25,7 +25,7 @@ public class NAFCalculator extends DefaultInstrumentCalculator
 		
 		setMouthpieceCalculator(new DefaultFippleMouthpieceCalculator());
 		setTerminationCalculator(new ThickFlangedOpenEndCalculator());
-		setHoleCalculator(new DefaultHoleCalculator(0.92));
+		setHoleCalculator(new DefaultHoleCalculator(0.955));
 		setBoreSectionCalculator(new DefaultBoreSectionCalculator());
 	}
 }

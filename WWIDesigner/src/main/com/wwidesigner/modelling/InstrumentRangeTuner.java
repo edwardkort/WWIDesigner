@@ -6,6 +6,7 @@ package com.wwidesigner.modelling;
 import com.wwidesigner.modelling.PlayingRange.NoPlayingRange;
 import com.wwidesigner.note.Fingering;
 import com.wwidesigner.note.Note;
+import com.wwidesigner.note.Tuning;
 
 /**
  * @author kort
@@ -13,6 +14,23 @@ import com.wwidesigner.note.Note;
  */
 public class InstrumentRangeTuner extends InstrumentTuner
 {
+	WhistleEvaluator  evaluator;
+
+	
+	/* (non-Javadoc)
+	 * @see com.wwidesigner.modelling.InstrumentTuner#getPredictedTuning()
+	 */
+	@Override
+	public Tuning getPredictedTuning()
+	{
+		WhistleCalculator newCalc = new WhistleCalculator(instrument, params);
+		evaluator = new WhistleEvaluator(newCalc);
+		evaluator.setFingering(tuning.getFingering());
+
+		return super.getPredictedTuning();
+	}
+
+
 	@Override
 	public Note predictedNote(Fingering fingering)
 	{
@@ -34,7 +52,7 @@ public class InstrumentRangeTuner extends InstrumentTuner
 
 		// Predict playing range.
 		PlayingRange range = new PlayingRange(calculator, fingering);
-		double fmax, fmin;
+		double fmax, fmin, fnom;
 		try {
 			fmax = range.findXZero(target);
 			predNote.setFrequencyMax(fmax);
@@ -44,6 +62,14 @@ public class InstrumentRangeTuner extends InstrumentTuner
 		catch (NoPlayingRange e)
 		{
 			// Leave fmax and fmin unassigned.
+		}
+		try {
+			fnom = range.findX(target, evaluator.getNominalX(target));
+			predNote.setFrequency(fnom);
+		}
+		catch (NoPlayingRange e)
+		{
+			// Leave fnom unassigned.
 		}
 		return predNote;
 	}

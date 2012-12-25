@@ -10,11 +10,11 @@
 		<fipple>
 			<windowLength>5.9</windowLength>
 			<windowWidth>7.4</windowWidth>
-			<windowHeight>4.2</windowHeight>
+			<windowHeight>4.22</windowHeight>
 			<windwayLength>17</windwayLength>
 			<windwayHeight>1.8</windwayHeight>
 		</fipple>
-		<beta>0.4</beta>
+		<beta>0.4416</beta>
 	</mouthpiece>
 	<borePoint>
 		<borePosition>0</borePosition>

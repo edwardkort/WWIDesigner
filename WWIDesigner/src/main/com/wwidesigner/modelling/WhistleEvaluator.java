@@ -28,8 +28,8 @@ public class WhistleEvaluator implements EvaluatorInterface
 
 	// Target reactance of lowest note is BottomFraction of its value at fmin.
 	// Target reactance of highest note is TopFraction of its value at fmin.
-	protected double BottomFraction = 0.02;
-	protected double TopFraction    = 0.70;
+	protected double BottomFraction;
+	protected double TopFraction;
 	
 	protected double fLow;		// Lowest frequency in target range.
 	protected double fHigh;		// Highest frequency in target range.
@@ -41,8 +41,8 @@ public class WhistleEvaluator implements EvaluatorInterface
 	public WhistleEvaluator( WhistleCalculator calculator )
 	{
 		this.calculator = calculator;
-		BottomFraction = 0.02;
-		TopFraction    = 0.70;
+		BottomFraction = 0.05;
+		TopFraction    = 0.60;
 		fLow           = 100.0;
 		fHigh          = 100.0;
 		slope          = 0.0;
@@ -68,7 +68,7 @@ public class WhistleEvaluator implements EvaluatorInterface
 	 */
 	public void setFingering(List<Fingering> fingeringTargets)
 	{
-		// Get lowest and highest target notes, and estimate a target velocity for each.
+		// Get lowest and highest target notes, and estimate a target reactance for each.
 
 		// Target frequencies for lowest and highest note,
 		// then the nominal frequency for these notes, used in
@@ -87,18 +87,34 @@ public class WhistleEvaluator implements EvaluatorInterface
 		noteHigh.setNote(new Note());
 		for (Fingering target: fingeringTargets)
 		{
-			if ( target.getNote() != null
-					&& target.getNote().getFrequency() != null )
+			if ( target.getNote() != null )
 			{
-				if ( target.getNote().getFrequency() < fLow )
+				if( target.getNote().getFrequency() != null )
 				{
-					fLow = target.getNote().getFrequency();
-					noteLow.setOpenHole(target.getOpenHole());
+					if ( target.getNote().getFrequency() < fLow )
+					{
+						fLow = target.getNote().getFrequency();
+						noteLow.setOpenHole(target.getOpenHole());
+					}
+					if ( target.getNote().getFrequency() > fHigh )
+					{
+						fHigh = target.getNote().getFrequency();
+						noteHigh.setOpenHole(target.getOpenHole());
+					}
 				}
-				if ( target.getNote().getFrequency() > fHigh )
+				else if( target.getNote().getFrequencyMax() != null )
 				{
-					fHigh = target.getNote().getFrequency();
-					noteHigh.setOpenHole(target.getOpenHole());
+					// If we don't have a nominal frequency, look for fmax.
+					if ( target.getNote().getFrequencyMax() < fLow )
+					{
+						fLow = target.getNote().getFrequencyMax();
+						noteLow.setOpenHole(target.getOpenHole());
+					}
+					if ( target.getNote().getFrequencyMax() > fHigh )
+					{
+						fHigh = target.getNote().getFrequencyMax();
+						noteHigh.setOpenHole(target.getOpenHole());
+					}
 				}
 			}
 		}
@@ -162,11 +178,12 @@ public class WhistleEvaluator implements EvaluatorInterface
 	}
 
 	/**
-	 * Calculate the signed percentage difference
+	 * Calculate the signed difference
 	 * between nominal reactance for each fingering,
 	 * and the predicted reactance for that fingering.
 	 * @param fingeringTargets  - Fingerings, with target note for each.
-	 * @return percentage difference between target and predicted velocities.
+	 * @return difference between target and predicted reactance,
+	 * 			divided by square of target frequency.
 	 * 			length = fingeringTargets.size().
 	 */
 
@@ -191,7 +208,7 @@ public class WhistleEvaluator implements EvaluatorInterface
 				xNom = getNominalX(f);
 				z = calculator.calcZ(target);
 				xPred = z.getImaginary();
-				err = ( xPred - xNom )/xNom;
+				err = ( xPred - xNom )/(f*f);
 				errorVector[i++] = err; 
 			}
 		}

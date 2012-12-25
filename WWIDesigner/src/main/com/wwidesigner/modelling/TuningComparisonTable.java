@@ -200,7 +200,7 @@ public class TuningComparisonTable extends DefaultTableModel
 				values[colNr++] = formatted(predF);
 				if (tgtHasFnom)
 				{
-					if ( predF == null )
+					if ( tgtF == null || predF == null )
 					{
 						values[colNr++] = " ";
 					}
@@ -226,7 +226,7 @@ public class TuningComparisonTable extends DefaultTableModel
 				values[colNr++] = formatted(predF);
 				if (tgtHasFmin)
 				{
-					if ( predF == null )
+					if ( tgtF == null || predF == null )
 					{
 						values[colNr++] = " ";
 					}
@@ -252,7 +252,7 @@ public class TuningComparisonTable extends DefaultTableModel
 				values[colNr++] = formatted(predF);
 				if (tgtHasFmax)
 				{
-					if ( predF == null )
+					if ( tgtF == null || predF == null )
 					{
 						cents = null;
 						values[colNr++] = " ";

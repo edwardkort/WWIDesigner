@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wit:fingeringPattern xmlns:wit="http://www.wwidesigner.com/Tuning" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <name>Test 6-hole fingering pattern</name>
+  <comment>A few 6-hole fingerings without notes</comment>
+  <numberOfHoles>6</numberOfHoles>
+  <fingering>
+    <openHole>true</openHole>
+    <openHole>true</openHole>
+    <openHole>true</openHole>
+    <openHole>true</openHole>
+    <openHole>true</openHole>
+    <openHole>true</openHole>
+  </fingering>
+  <fingering>
+    <openHole>false</openHole>
+    <openHole>false</openHole>
+    <openHole>false</openHole>
+    <openHole>false</openHole>
+    <openHole>true</openHole>
+    <openHole>true</openHole>
+  </fingering>
+  <fingering>
+    <openHole>false</openHole>
+    <openHole>false</openHole>
+    <openHole>false</openHole>
+    <openHole>false</openHole>
+    <openHole>false</openHole>
+    <openHole>true</openHole>
+  </fingering>
+  <fingering>
+    <openHole>false</openHole>
+    <openHole>false</openHole>
+    <openHole>false</openHole>
+    <openHole>false</openHole>
+    <openHole>false</openHole>
+    <openHole>false</openHole>
+  </fingering>
+</wit:fingeringPattern>

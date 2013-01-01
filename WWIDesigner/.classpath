@@ -17,5 +17,6 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/JIDE_JDAF_Helpers"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/JIDE_Dialogs"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/Batik"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/JIDE_Grid"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>

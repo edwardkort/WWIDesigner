@@ -32,6 +32,7 @@ public class TuningWizardDialog extends WizardDialog
 		AbstractWizardPage page3 = new TemperamentPage(this);
 		AbstractWizardPage page4 = new ScaleIntervalPage(this);
 		AbstractWizardPage page5 = new ScalePage(this);
+		AbstractWizardPage page6 = new FingeringPatternPage(this);
 		AbstractWizardPage pageEnd = new CompletionPage();
 
 		pages.append(page1);
@@ -39,6 +40,7 @@ public class TuningWizardDialog extends WizardDialog
 		pages.append(page3);
 		pages.append(page4);
 		pages.append(page5);
+		pages.append(page6);
 		pages.append(pageEnd);
 
 		setPageList(pages);

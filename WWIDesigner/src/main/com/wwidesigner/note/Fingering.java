@@ -15,6 +15,19 @@ public class Fingering
 	protected Note note;
 	protected List<Boolean> openHole;
 
+	public Fingering()
+	{
+
+	}
+
+	public Fingering(int numberOfHoles)
+	{
+		for (int i = 0; i < numberOfHoles; i++)
+		{
+			addOpenHole(true);
+		}
+	}
+
 	/**
 	 * @return the note
 	 */
@@ -53,10 +66,30 @@ public class Fingering
 		this.openHole = openHole;
 	}
 
+	public void setOpenHoles(boolean[] openHoles)
+	{
+		openHole = null;
+		for (boolean newOpenHole : openHoles)
+		{
+			addOpenHole(newOpenHole);
+		}
+	}
+
 	public void addOpenHole(Boolean newOpenHole)
 	{
 		getOpenHole();
 		openHole.add(newOpenHole);
+	}
+
+	public int getNumberOfHoles()
+	{
+		int num = 0;
+		if (openHole != null)
+		{
+			num = openHole.size();
+		}
+
+		return num;
 	}
 
 }

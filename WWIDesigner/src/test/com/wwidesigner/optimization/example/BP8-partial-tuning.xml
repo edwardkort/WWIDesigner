@@ -9,6 +9,7 @@
 	<fingering>
 		<note>
 			<name>low D</name>
+			<frequency>587</frequency>
 			<frequencyMin>568</frequencyMin>
 			<frequencyMax>585</frequencyMax>
 		</note>
@@ -18,6 +19,7 @@
 	<fingering>
 		<note>
 			<name>E</name>
+			<frequency>652</frequency>
 			<frequencyMin>630</frequencyMin>
 			<frequencyMax>653</frequencyMax>
 		</note>
@@ -27,6 +29,7 @@
 	<fingering>
 		<note>
 			<name>F#</name>
+			<frequency>719</frequency>
 			<frequencyMin>690</frequencyMin>
 			<frequencyMax>728</frequencyMax>
 		</note>
@@ -36,6 +39,7 @@
 	<fingering>
 		<note>
 		<name>G</name>
+			<frequency>764</frequency>
 			<frequencyMin>733</frequencyMin>
 			<frequencyMax>774</frequencyMax>
 		</note>
@@ -45,6 +49,7 @@
 	<fingering>
 		<note>
 		<name>A</name>
+			<frequency>861</frequency>
 			<frequencyMin>825</frequencyMin>
 			<frequencyMax>878</frequencyMax>
 		</note>
@@ -54,6 +59,7 @@
 	<fingering>
 		<note>
 		<name>B</name>
+			<frequency>954</frequency>
 			<frequencyMin>895</frequencyMin>
 			<frequencyMax>978</frequencyMax>
 		</note>
@@ -63,6 +69,7 @@
 	<fingering>
 		<note>
 		<name>C-nat</name>
+			<frequency>999</frequency>
 			<frequencyMin>939</frequencyMin>
 			<frequencyMax>1027</frequencyMax>
 		</note>
@@ -72,6 +79,7 @@
 	<fingering>
 		<note>
 			<name>C#</name>
+			<frequency>1060</frequency>
 			<frequencyMin>1000</frequencyMin>
 			<frequencyMax>1092</frequencyMax>
 		</note>
@@ -81,6 +89,7 @@
 	<fingering>
 		<note>
 			<name>D</name>
+			<frequency>1162</frequency>
 			<frequencyMin>1116</frequencyMin>
 			<frequencyMax>1191</frequencyMax>
 		</note>
@@ -90,6 +99,7 @@
 	<fingering>
 		<note>
 			<name>E</name>
+			<frequency>1295</frequency>
 			<frequencyMin>1238</frequencyMin>
 			<frequencyMax>1315</frequencyMax>
 		</note>
@@ -99,6 +109,7 @@
 	<fingering>
 		<note>
 			<name>F#</name>
+			<frequency>1420</frequency>
 			<frequencyMin>1366</frequencyMin>
 			<frequencyMax>1460</frequencyMax>
 		</note>
@@ -108,6 +119,7 @@
 	<fingering>
 		<note>
 		<name>G</name>
+			<frequency>1510</frequency>
 			<frequencyMin>1456</frequencyMin>
 			<frequencyMax>1560</frequencyMax>
 		</note>
@@ -117,6 +129,7 @@
 	<fingering>
 		<note>
 			<name>A</name>
+			<frequency>1689</frequency>
 			<frequencyMin>1648</frequencyMin>
 			<frequencyMax>1761</frequencyMax>
 		</note>
@@ -126,6 +139,7 @@
 	<fingering>
 		<note>
 		<name>B</name>
+			<frequency>1863</frequency>
 			<frequencyMin>1830</frequencyMin>
 			<frequencyMax>1940</frequencyMax>
 		</note>
@@ -135,6 +149,7 @@
 	<fingering>
 		<note>
 			<name>hi C-nat</name>
+			<frequency>1903</frequency>
 			<frequencyMin>1901</frequencyMin>
 			<frequencyMax>1937</frequencyMax>
 		</note>
@@ -144,6 +159,7 @@
 	<fingering>
 		<note>
 			<name>C#</name>
+			<frequency>2063</frequency>
 			<frequencyMin>2031</frequencyMin>
 			<frequencyMax>2112</frequencyMax>
 		</note>
@@ -153,6 +169,7 @@
 	<fingering>
 		<note>
 			<name>high D</name>
+			<frequency>2345</frequency>
 			<frequencyMin>2332</frequencyMin>
 			<frequencyMax>2408</frequencyMax>
 		</note>

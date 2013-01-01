@@ -115,7 +115,8 @@ public class WhistleStudyModel extends StudyModel
 				objective = new HoleSizeObjectiveFunction(calculator, tuning, evaluator);
 				// Bounds are diameters, expressed in meters.
 				lowerBound = new double[] { 0.004, 0.004, 0.004, 0.004, 0.004, 0.004 };
-				upperBound = new double[] { 0.012, 0.012, 0.012, 0.012, 0.012, 0.012 };
+//				upperBound = new double[] { 0.010, 0.010, 0.010, 0.010, 0.010, 0.010 };
+				upperBound = new double[] { 0.009, 0.009, 0.009, 0.009, 0.009, 0.009 };
 				break;
 			case HOLESPACE_OPT_SUB_CATEGORY_ID:
 				evaluator = new WhistleEvaluator(calculator);
@@ -125,13 +126,14 @@ public class WhistleStudyModel extends StudyModel
 				upperBound = new double[] { 0.700, 0.050, 0.050, 0.050, 0.050, 0.050, 0.200 };
 				break;
 			case HOLE_OPT_SUB_CATEGORY_ID:
+			default:
 				evaluator = new WhistleEvaluator(calculator);
 				objective = new HoleObjectiveFunction(calculator, tuning, evaluator);
 				// Length bounds are expressed in meters, diameter bounds as ratios.
 				lowerBound = new double[] { 0.200, 0.012, 0.012, 0.012, 0.012, 0.012, 0.012,
 						0.004, 0.004, 0.004, 0.004, 0.004, 0.004 };
 				upperBound = new double[] { 0.700, 0.050, 0.050, 0.050, 0.050, 0.050, 0.200,
-						0.012, 0.012, 0.012, 0.012, 0.012, 0.012 };
+						0.010, 0.010, 0.010, 0.010, 0.010, 0.010 };
 				break;
 		}
 

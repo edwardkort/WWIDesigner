@@ -5,21 +5,20 @@ package com.wwidesigner.geometry.calculation;
 
 import org.apache.commons.math3.complex.Complex;
 
-import com.wwidesigner.geometry.BoreSection;
 import com.wwidesigner.geometry.Mouthpiece;
 import com.wwidesigner.math.StateVector;
 import com.wwidesigner.math.TransferMatrix;
 import com.wwidesigner.util.PhysicalParameters;
 
 /**
- * Mouthpiece calculation for a fipple mouthpiece.
- * @author kort
+ * Mouthpiece calculation for a fipple mouthpiece, modeling
+ * the window as a (short) tube with area equal to the window area
+ * and flanged open end.
+ * @author Burton Patkau
  * 
  */
 public class SimpleFippleMouthpieceCalculator extends MouthpieceCalculator
 {
-	private PhysicalParameters params;
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -31,9 +30,7 @@ public class SimpleFippleMouthpieceCalculator extends MouthpieceCalculator
 	public TransferMatrix calcTransferMatrix(Mouthpiece mouthpiece,
 			double waveNumber, PhysicalParameters parameters)
 	{
-		params = parameters;
-		
-		double freq = waveNumber * parameters.getSpeedOfSound() / ( 2* Math.PI);
+		double freq = waveNumber * parameters.getSpeedOfSound() / ( 2* Math.PI );
 		
 		Complex Zwindow = calcZ(mouthpiece, freq, parameters);
 		
@@ -50,72 +47,6 @@ public class SimpleFippleMouthpieceCalculator extends MouthpieceCalculator
 	public int calcReflectanceMultiplier()
 	{
 		return -1;
-	}
-
-	protected double calcKDeltaL(Mouthpiece mouthpiece, double omega, double z0)
-	{
-		double result = Math
-				.atan(1.0 / (z0 * (calcJYE(mouthpiece, omega) + calcJYC(mouthpiece, omega))));
-
-		return result;
-	}
-
-	protected double calcJYE(Mouthpiece mouthpiece, double omega)
-	{
-		double gamma = params.getGamma();
-		double result = getCharacteristicLength(mouthpiece) / (gamma * omega);
-
-		return result;
-	}
-
-	protected double calcJYC(Mouthpiece mouthpiece, double omega)
-	{
-		double gamma = params.getGamma();
-		double speedOfSound = params.getSpeedOfSound();
-		double v = calcHeadspaceVolume(mouthpiece);
-
-		double result = -(omega * v)
-				/ (gamma * speedOfSound * speedOfSound);
-
-		return result;
-	}
-
-	protected double calcHeadspaceVolume(Mouthpiece mouthpiece)
-	{
-		double volume = 0.;
-		for (BoreSection section : mouthpiece.getHeadspace())
-		{
-			volume += getSectionVolume(section);
-		}
-
-		return volume;
-	}
-
-	protected double getSectionVolume(BoreSection section)
-	{
-		double leftRadius = section.getLeftRadius();
-		double rightRadius = section.getRightRadius();
-		double length = section.getLength();
-
-		double volume = Math.PI
-				* length
-				* (leftRadius * leftRadius + leftRadius * rightRadius + rightRadius
-						* rightRadius) / 3.;
-
-		return volume;
-	}
-
-	protected double getCharacteristicLength(Mouthpiece mouthpiece)
-	{
-		double windowLength = mouthpiece.getFipple().getWindowLength();
-		double windowWidth = mouthpiece.getFipple().getWindowWidth();
-		double fippleFactor = mouthpiece.getFipple().getFippleFactor();
-
-		double effectiveArea = windowLength * windowWidth;
-		double equivDiameter = 2. * Math.sqrt(effectiveArea / Math.PI)
-				* fippleFactor;
-
-		return equivDiameter;
 	}
 
 	public Complex calcZ(Mouthpiece mouthpiece,

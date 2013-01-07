@@ -42,7 +42,7 @@ public class WhistleEvaluator implements EvaluatorInterface
 	{
 		this.calculator = calculator;
 		BottomFraction = 0.05;
-		TopFraction    = 0.60;
+		TopFraction    = 0.40;
 		fLow           = 100.0;
 		fHigh          = 100.0;
 		slope          = 0.0;

@@ -55,8 +55,8 @@ public class Tube
 			double length, double radius, PhysicalParameters params)
 	{
 		double Zc = params.calcZ0(radius);
-		double epsilon = 1.0/(radius * Math.sqrt(waveNumber)) * params.getAlphaConstant();
-		Complex gammaL = new Complex( epsilon, (1.0+epsilon) ).multiply( waveNumber * length );
+		double epsilon = params.getAlphaConstant()/(radius * Math.sqrt(waveNumber));
+		Complex gammaL = new Complex( epsilon, 1.0/(1.0-epsilon) ).multiply( waveNumber * length );
 		Complex coshL = gammaL.cosh();
 		Complex sinhL = gammaL.sinh();
         TransferMatrix result = new TransferMatrix(coshL, sinhL.multiply(Zc), sinhL.divide(Zc), coshL);
@@ -68,36 +68,54 @@ public class Tube
 	 * Calculate the transfer matrix of a conical tube.
 	 * @param freq: frequency in Hz.
 	 * @param length: length of the tube, in metres.
-	 * @param leftRadius: radius of one end the tube, in metres.
-	 * @param rightRadius: radius of other end the tube, in metres.
+	 * @param sourceRadius: radius of source end the tube, in metres.
+	 * @param loadRadius: radius of load end the tube, in metres.
 	 * @param params: physical parameters
 	 * @return Transfer matrix
 	 */
 	public static TransferMatrix calcConeMatrix(double waveNumber, 
-			double length, double leftRadius, double rightRadius, PhysicalParameters params)
+			double length, double sourceRadius, double loadRadius, PhysicalParameters params)
 	{
-		// TODO Copied from Dan Gordon.  Not verified.
-		double ZcLeft  = params.calcZ0(leftRadius);
-		double ZcRight = params.calcZ0(rightRadius);
+		// From: Y. Kulik, Transfer matrix of conical waveguides with any geometric
+		//       parameters for increased precision in computer modeling, 
+		//       JASA v. 122, pp. EL179-EL184, November 2007.
+		
+		if ( sourceRadius == loadRadius )
+		{
+			return calcCylinderMatrix(waveNumber, length, sourceRadius, params);
+		}
 
-		double one_over_x_in = (rightRadius-leftRadius) / (leftRadius*length);
-		double one_over_x_out = (rightRadius-leftRadius) / (rightRadius*length);
+		// Complex wave vector, at source and load.
+		double alpha_0 = params.getAlphaConstant()/Math.sqrt(waveNumber);
+		double epsilon = alpha_0/sourceRadius;
+		Complex k_in  = new Complex( 1.0/(1.0-epsilon), -epsilon ).multiply( waveNumber );
+		epsilon = alpha_0/loadRadius;
+		Complex k_out = new Complex( 1.0/(1.0-epsilon), -epsilon ).multiply( waveNumber );
 
-		// inverse of the equivalent radius at which we calculate the losses
-		double one_over_Req = Math.log(rightRadius/leftRadius) / (rightRadius - leftRadius);
+		// Cotangents of theta_in and theta_out. 
+		Complex cot_in  = new Complex(loadRadius-sourceRadius)
+							.divide(k_in.multiply(sourceRadius * length));
+		Complex cot_out = new Complex(loadRadius-sourceRadius)
+							.divide(k_out.multiply(loadRadius * length));
 
-		Complex k_lossy = Complex.valueOf(1,-1).multiply(one_over_Req
-				*Math.sqrt(waveNumber)*params.getAlphaConstant()).add(waveNumber);		
+		// Mean complex wave vector along the whole cone, from Kulik 2007.
+		
+		epsilon = alpha_0/(loadRadius - sourceRadius);
+		Complex mean = new Complex( 1.0 + epsilon * Math.log((loadRadius - alpha_0)/(sourceRadius - alpha_0)),
+				- epsilon * Math.log(loadRadius/sourceRadius));
+		Complex kMeanL = mean.multiply(waveNumber * length);
 
-		Complex k_lossy_L = k_lossy.multiply(length);
+		// sine and cosine of kMean * L, pre-multiplied by ratio of radii.
+		Complex sin_kL = kMeanL.sin().multiply(loadRadius/sourceRadius);
+		Complex cos_kL = kMeanL.cos().multiply(loadRadius/sourceRadius);
 
-		Complex A = k_lossy_L.cos().multiply(leftRadius/leftRadius).subtract( k_lossy_L.sin().multiply(one_over_x_in).divide(k_lossy) );
-		Complex B = k_lossy_L.sin().multiply(Complex.I).multiply((rightRadius/leftRadius)*ZcRight);
-		Complex C = Complex.valueOf(rightRadius/leftRadius).multiply(Complex.I.multiply(k_lossy_L.sin()).multiply(k_lossy.pow(-2).multiply(one_over_x_in*one_over_x_out).add(1))
-				.add( k_lossy_L.cos().multiply(one_over_x_in-one_over_x_out).divide(Complex.I.multiply(k_lossy)))).divide(ZcLeft);
-		Complex D = k_lossy_L.cos().multiply(leftRadius/leftRadius).add( k_lossy_L.sin().multiply(one_over_x_out).divide(k_lossy) );
+		Complex A = cos_kL.subtract(sin_kL.multiply(cot_out));
+		Complex B = Complex.I.multiply(sin_kL).multiply(params.calcZ0(loadRadius));
+		Complex C = Complex.I.multiply(sin_kL.multiply(cot_out.multiply(cot_in).add(1.0))
+				.add(cos_kL.multiply(cot_out.subtract(cot_in)))).divide(params.calcZ0(sourceRadius));
+		Complex D = cos_kL.add(sin_kL.multiply(cot_in));
 
-		return new TransferMatrix(A, B, C, D);		
+		return new TransferMatrix(A, B, C, D);
 	}
 
 }

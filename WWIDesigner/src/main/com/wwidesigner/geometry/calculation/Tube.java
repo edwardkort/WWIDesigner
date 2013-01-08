@@ -115,7 +115,9 @@ public class Tube
 				.add(cos_kL.multiply(cot_out.subtract(cot_in)))).divide(params.calcZ0(sourceRadius));
 		Complex D = cos_kL.add(sin_kL.multiply(cot_in));
 
-		return new TransferMatrix(A, B, C, D);
+		TransferMatrix tm = new TransferMatrix(A, B, C, D); 
+		assert tm.determinant() == Complex.valueOf(1.0,0.0);
+		return tm;
 	}
 
 }

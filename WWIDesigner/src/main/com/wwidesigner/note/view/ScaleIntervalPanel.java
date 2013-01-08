@@ -2,14 +2,12 @@ package com.wwidesigner.note.view;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;

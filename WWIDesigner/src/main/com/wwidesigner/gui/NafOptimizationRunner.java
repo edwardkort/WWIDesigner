@@ -35,6 +35,8 @@ import com.jidesoft.app.framework.gui.GUIApplicationAction;
 import com.jidesoft.app.framework.gui.MenuBarCustomizer;
 import com.jidesoft.app.framework.gui.MenuConstants;
 import com.jidesoft.app.framework.gui.MenuGroup;
+import com.jidesoft.app.framework.gui.PreferencesDialogRequest;
+import com.jidesoft.app.framework.gui.PreferencesPane;
 import com.jidesoft.app.framework.gui.actions.ComponentAction;
 import com.jidesoft.app.framework.gui.feature.AutoInstallActionsFeature;
 import com.jidesoft.app.framework.gui.filebased.FileBasedApplication;
@@ -101,6 +103,9 @@ public class NafOptimizationRunner extends FileBasedApplication implements
 		getApplicationUIManager().setUseJideDocumentPane(true);
 
 		// Add my UI customizations
+		PreferencesPane preferencesDialog = new OptimizationPreferences();
+		PreferencesDialogRequest.installPreferences(this, preferencesDialog);
+
 		addFileMapping(new TextFileFormat("xml", "XML"), CodeEditorView.class);
 		addDockedViews();
 		addEvents();

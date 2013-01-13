@@ -9,6 +9,7 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.prefs.Preferences;
 
 import javax.swing.JScrollPane;
 import javax.swing.JTree;
@@ -37,10 +38,6 @@ import com.wwidesigner.util.BindFactory;
 public class StudyView extends DataViewPane implements EventSubscriber
 {
 	private static final long serialVersionUID = 1L;
-
-	// Class names for the studies supported. by setStudyModel(String).
-	public static final String NAF_STUDY_NAME = "NafStudyModel";
-	public static final String WHISTLE_STUDY_NAME = "WhistleStudyModel";
 
 	private JTree tree;
 	private StudyModel study;
@@ -78,7 +75,10 @@ public class StudyView extends DataViewPane implements EventSubscriber
 		scrollPane.setPreferredSize(new Dimension(225, 100));
 		add(scrollPane);
 
-		setStudyModel(NAF_STUDY_NAME);
+		Preferences myPreferences = getApplication().getPreferences();
+		String modelName = myPreferences.get(OptimizationPreferences.STUDY_MODEL_OPT,
+				OptimizationPreferences.NAF_STUDY_NAME);
+		setStudyModel(modelName);
 
 		getApplication().getEventManager().subscribe(
 				NafOptimizationRunner.FILE_OPENED_EVENT_ID, this);
@@ -92,8 +92,13 @@ public class StudyView extends DataViewPane implements EventSubscriber
 
 	protected void updateView()
 	{
+		// Build the selection tree.
+
 		DefaultMutableTreeNode root = new DefaultMutableTreeNode();
 		List<TreePath> selectionPaths = new ArrayList<TreePath>();
+		
+		// Add all static categories and selection options to the tree.
+
 		for (Category category : study.getCategories())
 		{
 			DefaultMutableTreeNode node = new DefaultMutableTreeNode(category);
@@ -118,6 +123,7 @@ public class StudyView extends DataViewPane implements EventSubscriber
 				}
 			}
 		}
+		
 		TreeModel model = new DefaultTreeModel(root);
 		tree.setModel(model);
 		TreeUtils.expandAll(tree);
@@ -274,8 +280,13 @@ public class StudyView extends DataViewPane implements EventSubscriber
 	 */
 	public void setStudyModel(StudyModel study)
 	{
+		DataModel[] models = getApplication().getDataModels();
 		this.study = study;
 		updateView();
+		for ( DataModel model : models )
+		{
+			addDataModelToStudy(model);
+		}
 	}
 
 	/**
@@ -283,15 +294,19 @@ public class StudyView extends DataViewPane implements EventSubscriber
 	 */
 	public void setStudyModel(String studyClassName)
 	{
-		if (studyClassName == NAF_STUDY_NAME)
+		if (studyClassName.contentEquals(OptimizationPreferences.NAF_STUDY_NAME))
 		{
-			this.study = new NafStudyModel();
+			setStudyModel( new NafStudyModel() );
 		}
-		else if (studyClassName == WHISTLE_STUDY_NAME)
+		else if (studyClassName.contentEquals(OptimizationPreferences.WHISTLE_STUDY_NAME))
 		{
-			this.study = new WhistleStudyModel();
+			setStudyModel( new WhistleStudyModel() );
 		}
-		updateView();
+		else
+		{
+			// Default study model.
+			setStudyModel( new WhistleStudyModel() );
+		}
 	}
 
 }

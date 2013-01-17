@@ -5,8 +5,12 @@ package com.wwidesigner.gui;
 
 import java.util.prefs.Preferences;
 
-import javax.swing.ButtonGroup;
+import javax.swing.BoxLayout;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JRadioButton;
+import javax.swing.JSpinner;
+import javax.swing.SpinnerNumberModel;
 
 import com.jidesoft.app.framework.ApplicationVetoException;
 import com.jidesoft.app.framework.DataView;
@@ -25,10 +29,14 @@ public class OptimizationPreferences extends PreferencesPane
 	public static final String STUDY_MODEL_OPT = "StudyModel";
 	public static final String NAF_STUDY_NAME = "NafStudy";
 	public static final String WHISTLE_STUDY_NAME = "WhistleStudy";
+	public static final String BLOWING_LEVEL_OPT = "BlowingLevel";
+	public static final int DEFAULT_BLOWING_LEVEL = 5;
 
-	ButtonGroup studyGroup;
+	JPanel studyGroup;
 	JRadioButton nafButton;
 	JRadioButton whistleButton;
+	JSpinner blowingLevelSpinner;
+	SpinnerNumberModel blowingLevel;
 
 	@Override
 	protected void initializeComponents(DialogRequest request) {
@@ -36,11 +44,16 @@ public class OptimizationPreferences extends PreferencesPane
 		nafButton = new JRadioButton("NAF Study");
 		nafButton.setSelected(true);
 		whistleButton = new JRadioButton("Whistle Study");
-		studyGroup = new ButtonGroup();
+		studyGroup = new JPanel();
+		studyGroup.setLayout(new BoxLayout(studyGroup,BoxLayout.Y_AXIS));
+		blowingLevel = new SpinnerNumberModel(DEFAULT_BLOWING_LEVEL,0,10,1);
+		blowingLevelSpinner = new JSpinner(blowingLevel);
+		blowingLevelSpinner.setName("Blowing Level");
 		studyGroup.add(nafButton);
 		studyGroup.add(whistleButton);
-		this.add(nafButton);
-		this.add(whistleButton);
+		this.add(studyGroup);
+		this.add(new JLabel("Blowing Level:"));
+		this.add(blowingLevelSpinner);
 	}
 
 	@Override
@@ -58,13 +71,17 @@ public class OptimizationPreferences extends PreferencesPane
 			whistleButton.setSelected(true);
 			nafButton.setSelected(false);
 		}
+		Number currentLevel = myPreferences.getInt(BLOWING_LEVEL_OPT, DEFAULT_BLOWING_LEVEL);
+		blowingLevel.setValue(currentLevel);
 	}
 
 	@Override
 	protected void updatePreferences(GUIApplication application) {
 		// Update the application preferences, from the dialog values.
 		Preferences myPreferences = application.getPreferences();
+		String priorStudyName = myPreferences.get(STUDY_MODEL_OPT, "");
 		String studyName;
+
 		if (nafButton.isSelected())
 		{
 			studyName = NAF_STUDY_NAME;
@@ -73,18 +90,24 @@ public class OptimizationPreferences extends PreferencesPane
 		{
 			studyName = WHISTLE_STUDY_NAME;
 		}
-		if ( ! studyName.contentEquals(myPreferences.get(STUDY_MODEL_OPT, "")))
+
+		// Update the preferences, and re-set the view's study model.
+		
+		myPreferences.put( STUDY_MODEL_OPT, studyName );
+		myPreferences.putInt(BLOWING_LEVEL_OPT, blowingLevel.getNumber().intValue());
+
+		DataView[] views = application.getFocusedViews();
+		for (DataView view : views)
 		{
-			// Study model name has changed.
-			// Update the preferences, and re-set the view's study model.
-			myPreferences.put( STUDY_MODEL_OPT, studyName );
-			DataView[] views = application.getFocusedViews();
-			for (DataView view : views)
+			if ( view instanceof StudyView )
 			{
-				if ( view instanceof StudyView )
+				StudyView studyView = (StudyView) view;
+				if ( ! studyName.contentEquals(priorStudyName))
 				{
-					((StudyView)view).setStudyModel(studyName);
+					// Study model name has changed.
+					studyView.setStudyModel(studyName);
 				}
+				studyView.getStudyModel().setPreferences(myPreferences);
 			}
 		}
 	}

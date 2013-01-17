@@ -30,7 +30,16 @@ public class WhistleEvaluator implements EvaluatorInterface
 	// Target reactance of highest note is TopFraction of its value at fmin.
 	protected double BottomFraction;
 	protected double TopFraction;
-	
+
+	// Standard ranges for BottomFraction and TopFraction.
+	// Evaluator uses blowing level, 0 .. 10, to interpolate between these ranges,
+	// using the Lo value at blowin level 0 and the Hi value at blowing level 10.
+	// Default fractions are the average of Hi and Lo values, blowing level 5.
+	protected static final double BottomLo = 0.08;
+	protected static final double BottomHi = 0.02;
+	protected static final double TopLo = 0.9;
+	protected static final double TopHi = 0.1;
+
 	protected double fLow;		// Lowest frequency in target range.
 	protected double fHigh;		// Highest frequency in target range.
 	// Linear equation parameters for calculating nominal impedance:
@@ -40,13 +49,14 @@ public class WhistleEvaluator implements EvaluatorInterface
 
 	public WhistleEvaluator( WhistleCalculator calculator )
 	{
-		this.calculator = calculator;
-		BottomFraction = 0.05;
-		TopFraction    = 0.40;
-		fLow           = 100.0;
-		fHigh          = 100.0;
-		slope          = 0.0;
-		intercept      = 0.0;
+		this(calculator,5);
+	}
+	
+	public WhistleEvaluator( WhistleCalculator calculator, int blowingLevel )
+	{
+		this(calculator,
+				BottomLo + (double)blowingLevel * 0.1 * (BottomHi - BottomLo),
+				TopLo + (double)blowingLevel * 0.1 * (TopHi - TopLo));
 	}
 
 	public WhistleEvaluator( WhistleCalculator calculator, double bottomFr, double topFr )

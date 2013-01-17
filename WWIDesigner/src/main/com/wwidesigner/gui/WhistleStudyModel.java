@@ -3,6 +3,8 @@
  */
 package com.wwidesigner.gui;
 
+import java.util.prefs.Preferences;
+
 import com.wwidesigner.geometry.Instrument;
 import com.wwidesigner.modelling.BellNoteEvaluator;
 import com.wwidesigner.modelling.EvaluatorInterface;
@@ -36,11 +38,14 @@ public class WhistleStudyModel extends StudyModel
 	public static final String HOLESIZE_OPT_SUB_CATEGORY_ID = "4. Hole Size Optimizer";
 	public static final String HOLESPACE_OPT_SUB_CATEGORY_ID = "5. Hole Spacing Optimizer";
 	public static final String HOLE_OPT_SUB_CATEGORY_ID = "6. Hole Size+Spacing Optimizer";
+	
+	protected int blowingLevel;
 
 	public WhistleStudyModel()
 	{
 		super();
 		setLocalCategories();
+		blowingLevel = 5;
 	}
 
 	protected void setLocalCategories()
@@ -56,6 +61,16 @@ public class WhistleStudyModel extends StudyModel
 		categories.add(optimizers);
 	}
 
+	/* (non-Javadoc)
+	 * @see com.wwidesigner.gui.StudyModel#setPreferences(java.util.prefs.Preferences)
+	 */
+	@Override
+	public void setPreferences(Preferences newPreferences)
+	{
+		blowingLevel = newPreferences.getInt(OptimizationPreferences.BLOWING_LEVEL_OPT, 5);
+		super.setPreferences(newPreferences);
+	}
+
 	@Override
 	protected InstrumentCalculator getCalculator()
 	{
@@ -68,7 +83,7 @@ public class WhistleStudyModel extends StudyModel
 	@Override
 	protected InstrumentTuner getInstrumentTuner()
 	{
-		InstrumentTuner tuner = new InstrumentRangeTuner();
+		InstrumentTuner tuner = new InstrumentRangeTuner(blowingLevel);
 		tuner.setParams(params);
 		return tuner;
 	}
@@ -111,7 +126,7 @@ public class WhistleStudyModel extends StudyModel
 				upperBound = new double[] { 0.700 };
 				break;
 			case HOLESIZE_OPT_SUB_CATEGORY_ID:
-				evaluator = new WhistleEvaluator(calculator);
+				evaluator = new WhistleEvaluator(calculator, blowingLevel);
 				objective = new HoleSizeObjectiveFunction(calculator, tuning, evaluator);
 				// Bounds are diameters, expressed in meters.
 				lowerBound = new double[] { 0.004, 0.004, 0.004, 0.004, 0.004, 0.004 };
@@ -119,7 +134,7 @@ public class WhistleStudyModel extends StudyModel
 				upperBound = new double[] { 0.009, 0.009, 0.009, 0.009, 0.009, 0.009 };
 				break;
 			case HOLESPACE_OPT_SUB_CATEGORY_ID:
-				evaluator = new WhistleEvaluator(calculator);
+				evaluator = new WhistleEvaluator(calculator, blowingLevel);
 				objective = new HolePositionObjectiveFunction(calculator, tuning, evaluator);
 				// Bounds are expressed in meters.
 				lowerBound = new double[] { 0.200, 0.013, 0.013, 0.013, 0.013, 0.013, 0.013 };
@@ -127,7 +142,7 @@ public class WhistleStudyModel extends StudyModel
 				break;
 			case HOLE_OPT_SUB_CATEGORY_ID:
 			default:
-				evaluator = new WhistleEvaluator(calculator);
+				evaluator = new WhistleEvaluator(calculator, blowingLevel);
 				objective = new HoleObjectiveFunction(calculator, tuning, evaluator);
 				// Length bounds are expressed in meters, diameter bounds as ratios.
 				lowerBound = new double[] { 0.200, 0.012, 0.012, 0.012, 0.012, 0.012, 0.012,

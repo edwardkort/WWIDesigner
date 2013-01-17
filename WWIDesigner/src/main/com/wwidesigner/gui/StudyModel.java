@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.prefs.Preferences;
 
 import org.apache.commons.math3.analysis.MultivariateFunction;
 import org.apache.commons.math3.exception.TooManyEvaluationsException;
@@ -404,6 +405,15 @@ public abstract class StudyModel
 	public void setParams(PhysicalParameters params)
 	{
 		this.params = params;
+	}
+	
+	/**
+	 * Set study model preferences from application preferences.
+	 * @param newPreferences
+	 */
+	public void setPreferences(Preferences newPreferences)
+	{
+		// No preferences yet in base class.
 	}
 
 	// Methods to create objects that will perform this study,

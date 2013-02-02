@@ -64,7 +64,7 @@ public class ScalePage extends AbstractWizardPage implements DataProvider,
 	public ScalePage(TuningWizardDialog parent)
 	{
 		super(
-				"Scale with Frequenciess",
+				"Scale with Frequencies",
 				"Convert a scale with intervals to one with frequencies by setting a reference note.");
 		this.parent = parent;
 		createWizardContent();
@@ -96,15 +96,13 @@ public class ScalePage extends AbstractWizardPage implements DataProvider,
 	@Override
 	public void addDataPopulatedListener(DataPopulatedListener listener)
 	{
-		// TODO Auto-generated method stub
-
+		scalePanel.addDataPopulatedListener(listener);
 	}
 
 	@Override
 	public Object getPageData()
 	{
-		// TODO Auto-generated method stub
-		return null;
+		return scalePanel.getScale();
 	}
 
 	@Override

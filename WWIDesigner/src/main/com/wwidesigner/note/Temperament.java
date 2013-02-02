@@ -144,4 +144,24 @@ public class Temperament
 		}
 	}
 
+	public void deleteNulls()
+	{
+		// Do nothing with name
+		if (comment != null && comment.trim().length() == 0)
+		{
+			comment = null;
+		}
+		if (ratio != null)
+		{
+			for (int i = ratio.size() - 1; i >= 0; i--)
+			{
+				if (ratio.get(i) == null)
+				{
+					ratio.remove(i);
+				}
+			}
+		}
+
+	}
+
 }

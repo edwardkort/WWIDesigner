@@ -1,12 +1,10 @@
 package com.wwidesigner.note.view;
 
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.File;
@@ -15,12 +13,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Vector;
 
-import javax.swing.AbstractCellEditor;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.ListSelectionModel;
@@ -28,18 +24,15 @@ import javax.swing.border.LineBorder;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
-import javax.swing.text.AttributeSet;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.PlainDocument;
 
 import com.jidesoft.grid.JideTable;
 import com.wwidesigner.gui.util.DataPopulatedEvent;
 import com.wwidesigner.gui.util.DataPopulatedListener;
+import com.wwidesigner.gui.util.IntegerDocument;
 import com.wwidesigner.gui.util.NoOpTransferHandler;
-import com.wwidesigner.gui.util.TableSourceTransferHandler;
+import com.wwidesigner.gui.util.TableSourceRowTransferHandler;
 import com.wwidesigner.note.Fingering;
 import com.wwidesigner.note.FingeringPattern;
 import com.wwidesigner.note.bind.NoteBindFactory;
@@ -51,15 +44,15 @@ public class FingeringPatternPanel extends JPanel implements KeyListener,
 	public static final String NEW_EVENT_ID = "newData";
 	public static final String SAVE_EVENT_ID = "saveData";
 
-	private JTextField nameWidget;
-	private JTextPane descriptionWidget;
-	private JTextField numberOfHolesWidget;
-	private JideTable fingeringList;
-	private Integer numberOfHoles;
-	private boolean namePopulated;
-	private boolean numberOfHolesPopulated;
-	private boolean fingeringsPopulated;
-	private List<DataPopulatedListener> populatedListeners;
+	protected JTextField nameWidget;
+	protected JTextPane descriptionWidget;
+	protected JTextField numberOfHolesWidget;
+	protected JideTable fingeringList;
+	protected Integer numberOfHoles;
+	protected boolean namePopulated;
+	protected boolean numberOfHolesPopulated;
+	protected boolean fingeringsPopulated;
+	protected List<DataPopulatedListener> populatedListeners;
 
 	public FingeringPatternPanel()
 	{
@@ -112,7 +105,7 @@ public class FingeringPatternPanel extends JPanel implements KeyListener,
 					.getModel();
 			fingeringList.setAutoResizeMode(JideTable.AUTO_RESIZE_FILL);
 			fingeringList.setFillsRight(true);
-			TableColumn column = fingeringList.getColumn("Fingerings");
+			TableColumn column = fingeringList.getColumn("Fingering");
 			column.setPreferredWidth(new FingeringComponent(fingerings
 					.getNumberOfHoles()).getPreferredSize().width);
 			for (Fingering fingering : fingerings.getFingering())
@@ -126,7 +119,7 @@ public class FingeringPatternPanel extends JPanel implements KeyListener,
 		}
 	}
 
-	private void isNumberOfHolesPopulated()
+	protected void isNumberOfHolesPopulated()
 	{
 		String number = numberOfHolesWidget.getText();
 
@@ -250,7 +243,7 @@ public class FingeringPatternPanel extends JPanel implements KeyListener,
 		return fingerings;
 	}
 
-	private void setNameWidget()
+	protected void setNameWidget()
 	{
 		JPanel panel = new JPanel();
 		panel.setLayout(new GridBagLayout());
@@ -281,7 +274,7 @@ public class FingeringPatternPanel extends JPanel implements KeyListener,
 		nameWidget.setText(name);
 	}
 
-	private void setDescriptionWidget()
+	protected void setDescriptionWidget()
 	{
 		JPanel panel = new JPanel();
 		panel.setLayout(new GridBagLayout());
@@ -317,7 +310,7 @@ public class FingeringPatternPanel extends JPanel implements KeyListener,
 		numberOfHolesWidget.setText(number.toString());
 	}
 
-	private void setNumberWidget()
+	protected void setNumberWidget()
 	{
 		JPanel panel = new JPanel();
 		panel.setLayout(new GridBagLayout());
@@ -343,7 +336,7 @@ public class FingeringPatternPanel extends JPanel implements KeyListener,
 		add(panel, gbc);
 	}
 
-	private void setFingeringListWidget()
+	protected void setFingeringListWidget()
 	{
 		JPanel panel = new JPanel();
 		panel.setLayout(new GridBagLayout());
@@ -377,10 +370,10 @@ public class FingeringPatternPanel extends JPanel implements KeyListener,
 	public void resetTableData(int numRows, int numHoles)
 	{
 		DefaultTableModel model = (DefaultTableModel) fingeringList.getModel();
-		model.setDataVector(new Fingering[0][1], new String[] { "Fingerings" });
+		model.setDataVector(new Fingering[0][1], new String[] { "Fingering" });
 		fingeringList.setFillsGrids(false);
 		TableCellRenderer renderer = new FingeringRenderer();
-		TableColumn column = fingeringList.getColumn("Fingerings");
+		TableColumn column = fingeringList.getColumn("Fingering");
 		column.setCellRenderer(renderer);
 		column.setCellEditor(new FingeringEditor());
 		if (numRows > 0)
@@ -400,7 +393,7 @@ public class FingeringPatternPanel extends JPanel implements KeyListener,
 		areFingeringsPopulated();
 	}
 
-	private List<Fingering> getTableData()
+	protected List<Fingering> getTableData()
 	{
 		DefaultTableModel model = (DefaultTableModel) fingeringList.getModel();
 		ArrayList<Fingering> data = new ArrayList<Fingering>();
@@ -422,7 +415,7 @@ public class FingeringPatternPanel extends JPanel implements KeyListener,
 		areFingeringsPopulated();
 	}
 
-	private void areFingeringsPopulated()
+	protected void areFingeringsPopulated()
 	{
 		DefaultTableModel model = (DefaultTableModel) fingeringList.getModel();
 		fingeringsPopulated = false;
@@ -438,83 +431,6 @@ public class FingeringPatternPanel extends JPanel implements KeyListener,
 		}
 
 		fireDataStateChanged();
-	}
-
-	class IntegerDocument extends PlainDocument
-	{
-		@Override
-		public void insertString(int offset, String s, AttributeSet attributeSet)
-				throws BadLocationException
-		{
-			try
-			{
-				Integer.parseInt(s);
-			}
-			catch (Exception ex)
-			{
-				Toolkit.getDefaultToolkit().beep();
-				return;
-			}
-			super.insertString(offset, s, attributeSet);
-		}
-	}
-
-	class FingeringRenderer implements TableCellRenderer
-	{
-		public Dimension getPreferredSize()
-		{
-			FingeringComponent fingering = new FingeringComponent(0);
-
-			Dimension dim = fingering.getPreferredSize();
-
-			return new Dimension(dim.width, dim.height);
-		}
-
-		@Override
-		public Component getTableCellRendererComponent(JTable table,
-				Object value, boolean isSelected, boolean hasFocus, int row,
-				int column)
-		{
-			if (value != null && value instanceof Fingering)
-			{
-				return new FingeringComponent((Fingering) value, isSelected);
-			}
-
-			return null;
-		}
-
-	}
-
-	class FingeringEditor extends AbstractCellEditor implements TableCellEditor
-	{
-		Fingering fingering;
-		FingeringComponent fingeringComp;
-
-		@Override
-		public Component getTableCellEditorComponent(JTable table,
-				Object value, boolean isSelected, int row, int column)
-		{
-			fingeringComp = new FingeringComponent((Fingering) value, true,
-					true);
-			fingering = (Fingering) value;
-
-			return fingeringComp;
-		}
-
-		@Override
-		public boolean stopCellEditing()
-		{
-			fingeringComp.updateFingering(fingering);
-
-			return super.stopCellEditing();
-		}
-
-		@Override
-		public Object getCellEditorValue()
-		{
-			return fingering;
-		}
-
 	}
 
 	@Override
@@ -540,7 +456,7 @@ public class FingeringPatternPanel extends JPanel implements KeyListener,
 	{
 	}
 
-	private void isNamePopulated()
+	protected void isNamePopulated()
 	{
 		String name = nameWidget.getText();
 
@@ -557,7 +473,7 @@ public class FingeringPatternPanel extends JPanel implements KeyListener,
 		populatedListeners.add(listener);
 	}
 
-	private void fireDataStateChanged()
+	protected void fireDataStateChanged()
 	{
 		if (populatedListeners == null)
 		{
@@ -580,10 +496,10 @@ public class FingeringPatternPanel extends JPanel implements KeyListener,
 		}
 	}
 
-	private void configureDragAndDrop()
+	protected void configureDragAndDrop()
 	{
 		fingeringList.setDragEnabled(true);
-		fingeringList.setTransferHandler(new TableSourceTransferHandler());
+		fingeringList.setTransferHandler(new TableSourceRowTransferHandler());
 		nameWidget.setTransferHandler(new NoOpTransferHandler());
 		descriptionWidget.setTransferHandler(new NoOpTransferHandler());
 	}

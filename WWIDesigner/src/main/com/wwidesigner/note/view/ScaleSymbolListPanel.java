@@ -45,6 +45,9 @@ public class ScaleSymbolListPanel extends JPanel implements KeyListener,
 	private boolean symbolsPopulated;
 	private List<DataPopulatedListener> populatedListeners;
 
+	public static final String LOAD_PAGE_ID = "loadData";
+	public static final String SAVE_ID = "saveData";
+
 	public ScaleSymbolListPanel()
 	{
 		setLayout(new GridBagLayout());
@@ -168,6 +171,7 @@ public class ScaleSymbolListPanel extends JPanel implements KeyListener,
 	public void saveSymbolList(File file)
 	{
 		ScaleSymbolList symbols = getScaleSymbolList();
+		symbols.removeNulls();
 
 		BindFactory bindery = NoteBindFactory.getInstance();
 		try
@@ -297,10 +301,10 @@ public class ScaleSymbolListPanel extends JPanel implements KeyListener,
 		for (int i = 0; i < model.getRowCount(); i++)
 		{
 			String value = (String) model.getValueAt(i, 0);
-			if (value != null && value.length() > 0)
-			{
+//			if (value != null && value.length() > 0)
+//			{
 				data.add(value);
-			}
+//			}
 		}
 		return data;
 	}
@@ -319,7 +323,7 @@ public class ScaleSymbolListPanel extends JPanel implements KeyListener,
 		for (int i = 0; i < model.getRowCount(); i++)
 		{
 			String value = (String) model.getValueAt(i, 0);
-			if (value != null && value.length() > 0)
+			if (value != null && value.trim().length() > 0)
 			{
 				symbolsPopulated = true;
 				break;
@@ -349,7 +353,7 @@ public class ScaleSymbolListPanel extends JPanel implements KeyListener,
 	{
 		String name = nameWidget.getText();
 
-		namePopulated = (name != null && name.length() > 0);
+		namePopulated = (name != null && name.trim().length() > 0);
 		fireDataStateChanged();
 	}
 
@@ -369,11 +373,18 @@ public class ScaleSymbolListPanel extends JPanel implements KeyListener,
 			return;
 		}
 
-		DataPopulatedEvent event = new DataPopulatedEvent(this, namePopulated
-				&& symbolsPopulated);
-		for (DataPopulatedListener listener : populatedListeners)
+		List<DataPopulatedEvent> events = new ArrayList<DataPopulatedEvent>();
+		DataPopulatedEvent event = new DataPopulatedEvent(this, SAVE_ID,
+				namePopulated && symbolsPopulated);
+		events.add(event);
+		event = new DataPopulatedEvent(this, LOAD_PAGE_ID, symbolsPopulated);
+		events.add(event);
+		for (DataPopulatedEvent thisEvent : events)
 		{
-			listener.dataStateChanged(event);
+			for (DataPopulatedListener listener : populatedListeners)
+			{
+				listener.dataStateChanged(thisEvent);
+			}
 		}
 	}
 

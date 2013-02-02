@@ -345,7 +345,11 @@ public class TemperamentPage extends AbstractWizardPage implements
 	{
 		if (event.getSource() instanceof TemperamentPanel)
 		{
-			saveButton.setEnabled(event.isPopulated());
+			Boolean canSave = event.isPopulated(TemperamentPanel.SAVE_ID);
+			if (canSave != null)
+			{
+				saveButton.setEnabled(canSave);
+			}
 		}
 	}
 

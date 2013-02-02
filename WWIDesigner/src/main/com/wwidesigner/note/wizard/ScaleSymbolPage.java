@@ -298,7 +298,11 @@ public class ScaleSymbolPage extends AbstractWizardPage implements
 	{
 		if (event.getSource() instanceof ScaleSymbolListPanel)
 		{
-			saveButton.setEnabled(event.isPopulated());
+			Boolean canSave = event.isPopulated(ScaleSymbolListPanel.SAVE_ID);
+			if (canSave != null)
+			{
+				saveButton.setEnabled(canSave);
+			}
 		}
 	}
 

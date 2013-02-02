@@ -179,7 +179,7 @@ public abstract class BindFactory
 		}
 	}
 
-	public String getPathFromName(String name) throws FileNotFoundException
+	public static String getPathFromName(String name) throws FileNotFoundException
 	{
 		java.net.URL fileUrl = ClassLoader.getSystemResource(name);
 		if (fileUrl == null)
@@ -196,7 +196,7 @@ public abstract class BindFactory
 		}
 	}
 
-	public File getFileFromName(String name) throws FileNotFoundException
+	public static File getFileFromName(String name) throws FileNotFoundException
 	{
 		String filePath = getPathFromName(name);
 

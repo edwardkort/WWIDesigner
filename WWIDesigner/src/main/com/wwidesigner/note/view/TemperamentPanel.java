@@ -45,6 +45,9 @@ public class TemperamentPanel extends JPanel implements KeyListener,
 	private boolean ratiosPopulated;
 	private List<DataPopulatedListener> populatedListeners;
 
+	public static final String LOAD_PAGE_ID = "loadData";
+	public static final String SAVE_ID = "saveData";
+
 	public TemperamentPanel()
 	{
 		this.setLayout(new GridBagLayout());
@@ -106,6 +109,7 @@ public class TemperamentPanel extends JPanel implements KeyListener,
 	public void saveTemperament(File file)
 	{
 		Temperament temp = getTemperament();
+		temp.deleteNulls();
 
 		BindFactory bindery = NoteBindFactory.getInstance();
 		try
@@ -419,7 +423,7 @@ public class TemperamentPanel extends JPanel implements KeyListener,
 	{
 		String name = nameWidget.getText();
 
-		namePopulated = (name != null && name.length() > 0);
+		namePopulated = (name != null && name.trim().length() > 0);
 		fireDataStateChanged();
 	}
 
@@ -439,11 +443,18 @@ public class TemperamentPanel extends JPanel implements KeyListener,
 			return;
 		}
 
-		DataPopulatedEvent event = new DataPopulatedEvent(this, namePopulated
-				&& ratiosPopulated);
-		for (DataPopulatedListener listener : populatedListeners)
+		List<DataPopulatedEvent> events = new ArrayList<DataPopulatedEvent>();
+		DataPopulatedEvent event = new DataPopulatedEvent(this, SAVE_ID,
+				namePopulated && ratiosPopulated);
+		events.add(event);
+		event = new DataPopulatedEvent(this, LOAD_PAGE_ID, ratiosPopulated);
+		events.add(event);
+		for (DataPopulatedEvent thisEvent : events)
 		{
-			listener.dataStateChanged(event);
+			for (DataPopulatedListener listener : populatedListeners)
+			{
+				listener.dataStateChanged(thisEvent);
+			}
 		}
 	}
 

@@ -33,6 +33,7 @@ public class TuningWizardDialog extends WizardDialog
 		AbstractWizardPage page4 = new ScaleIntervalPage(this);
 		AbstractWizardPage page5 = new ScalePage(this);
 		AbstractWizardPage page6 = new FingeringPatternPage(this);
+		AbstractWizardPage page7 = new TuningPage(this);
 		AbstractWizardPage pageEnd = new CompletionPage();
 
 		pages.append(page1);
@@ -41,6 +42,7 @@ public class TuningWizardDialog extends WizardDialog
 		pages.append(page4);
 		pages.append(page5);
 		pages.append(page6);
+		pages.append(page7);
 		pages.append(pageEnd);
 
 		setPageList(pages);
@@ -49,9 +51,11 @@ public class TuningWizardDialog extends WizardDialog
 		addDataPopulatedDependency(page2, page4);
 		addDataPopulatedDependency(page3, page4);
 		addDataPopulatedDependency(page4, page5);
+		addDataPopulatedDependency(page5, page7);
+		addDataPopulatedDependency(page6, page7);
 
 		setStepsPaneNavigable(true);
-		setPreferredSize(new Dimension(900, 700));
+		setPreferredSize(new Dimension(1024, 768));
 		pack();
 		setResizable(true); // for wizard, it's better to make it not resizable.
 		JideSwingUtilities.globalCenterWindow(this);

@@ -13,6 +13,7 @@ import com.wwidesigner.modelling.ReflectionEvaluator;
 import com.wwidesigner.modelling.SimpleInstrumentTuner;
 import com.wwidesigner.note.Tuning;
 import com.wwidesigner.optimization.BaseObjectiveFunction;
+import com.wwidesigner.optimization.BaseObjectiveFunction.OptimizerType;
 import com.wwidesigner.optimization.FippleFactorObjectiveFunction;
 import com.wwidesigner.optimization.HoleGroupObjectiveFunction;
 import com.wwidesigner.optimization.HoleObjectiveFunction;
@@ -51,7 +52,7 @@ public class NafStudyModel extends StudyModel
 	public static final String NO_MULTI_START_SUB_CATEGORY_ID = "No multi-start optimization";
 	public static final String VARY_FIRST_MULTI_START_SUB_CATEGORY_ID = "Vary first bound variable";
 	public static final String VARY_ALL_MULTI_START_SUB_CATEGORY_ID = "Vary all dimensions";
-	
+
 	protected int numberOfStarts = 30;
 
 	public NafStudyModel()
@@ -138,9 +139,9 @@ public class NafStudyModel extends StudyModel
 				break;
 		}
 
-		if ( calculator != null )
+		if (calculator != null)
 		{
-		    calculator.setPhysicalParameters(params);
+			calculator.setPhysicalParameters(params);
 		}
 		return calculator;
 	}
@@ -168,200 +169,236 @@ public class NafStudyModel extends StudyModel
 		EvaluatorInterface evaluator;
 		int numberOfHoles = instrument.getHole().size();
 
-		BaseObjectiveFunction  objective = null;
+		BaseObjectiveFunction objective = null;
 		double[] lowerBound = null;
 		double[] upperBound = null;
-		int[][]  holeGroups = null;
+		int[][] holeGroups = null;
 
 		switch (optimizer)
 		{
 			case FIPPLE_OPT_SUB_CATEGORY_ID:
 				evaluator = new ReflectionEvaluator(calculator);
-				objective = new FippleFactorObjectiveFunction(calculator, tuning, evaluator);
+				objective = new FippleFactorObjectiveFunction(calculator,
+						tuning, evaluator);
 				lowerBound = new double[] { 0.2 };
 				upperBound = new double[] { 1.5 };
 				break;
 			case HOLESIZE_OPT_SUB_CATEGORY_ID:
 				evaluator = new ReflectionEvaluator(calculator);
-				objective = new HoleSizeObjectiveFunction(calculator, tuning, evaluator);
+				objective = new HoleSizeObjectiveFunction(calculator, tuning,
+						evaluator);
 				// Bounds are hole diameters expressed in meters.
-				if ( numberOfHoles == 0 )
+				if (numberOfHoles == 0)
 				{
 					lowerBound = new double[0];
 					upperBound = new double[0];
 				}
-				else if ( numberOfHoles == 7 )
+				else if (numberOfHoles == 7)
 				{
-					lowerBound = new double[] { 0.002, 0.002, 0.002, 0.002, 0.002, 0.002, 0.002 };
-					upperBound = new double[] { 0.014, 0.014, 0.014, 0.014, 0.014, 0.008, 0.008 };
+					lowerBound = new double[] { 0.002, 0.002, 0.002, 0.002,
+							0.002, 0.002, 0.002 };
+					upperBound = new double[] { 0.014, 0.014, 0.014, 0.014,
+							0.014, 0.008, 0.008 };
 				}
-				else // Assume 6 holes.
+				else
+				// Assume 6 holes.
 				{
-					lowerBound = new double[] { 0.002, 0.003, 0.003, 0.003, 0.003, 0.003 };
-					upperBound = new double[] { 0.0102, 0.0102, 0.010, 0.010, 0.010, 0.012 };
+					lowerBound = new double[] { 0.002, 0.003, 0.003, 0.003,
+							0.003, 0.003 };
+					upperBound = new double[] { 0.0102, 0.0102, 0.010, 0.010,
+							0.010, 0.012 };
 				}
 				break;
 			case HOLESPACE_OPT_SUB_CATEGORY_ID:
 				evaluator = new ReflectionEvaluator(calculator);
-				objective = new HolePositionObjectiveFunction(calculator, tuning, evaluator);
+				objective = new HolePositionObjectiveFunction(calculator,
+						tuning, evaluator);
 				// Length bounds are expressed in meters.
-				if ( numberOfHoles == 0 )
+				if (numberOfHoles == 0)
 				{
 					lowerBound = new double[] { 0.2 };
 					upperBound = new double[] { 0.7 };
 				}
-				else if ( numberOfHoles == 7 )
+				else if (numberOfHoles == 7)
 				{
-					lowerBound = new double[] { 0.2, 0.0005, 0.012, 0.012, 0.012, 0.012, 0.012, 0.012 };
-					upperBound = new double[] { 0.7, 0.003,  0.05,  0.05,  0.1,   0.05,  0.05,  0.20 };
+					lowerBound = new double[] { 0.2, 0.0005, 0.012, 0.012,
+							0.012, 0.012, 0.012, 0.012 };
+					upperBound = new double[] { 0.7, 0.003, 0.05, 0.05, 0.1,
+							0.05, 0.05, 0.20 };
 				}
-				else if ( constraint == HOLE_6_1_125_SPACING_CONS_SUB_CATEGORY_ID )
+				else if (constraint == HOLE_6_1_125_SPACING_CONS_SUB_CATEGORY_ID)
 				{
-					lowerBound = new double[] { 0.2, 0.01,  0.01,  0.01, 0.01,  0.01,  0.01 };
-					upperBound = new double[] { 0.7, 0.029, 0.029, 0.07, 0.029, 0.029, 0.30 };
+					lowerBound = new double[] { 0.2, 0.01, 0.01, 0.01, 0.01,
+							0.01, 0.01 };
+					upperBound = new double[] { 0.7, 0.029, 0.029, 0.07, 0.029,
+							0.029, 0.30 };
 				}
-				else if ( constraint == HOLE_6_1_25_SPACING_CONS_SUB_CATEGORY_ID )
+				else if (constraint == HOLE_6_1_25_SPACING_CONS_SUB_CATEGORY_ID)
 				{
-					lowerBound = new double[] { 0.2, 0.01,  0.01,  0.01, 0.01,  0.01,  0.01 };
-					upperBound = new double[] { 0.7, 0.032, 0.032, 0.07, 0.032, 0.032, 0.30 };
+					lowerBound = new double[] { 0.2, 0.01, 0.01, 0.01, 0.01,
+							0.01, 0.01 };
+					upperBound = new double[] { 0.7, 0.032, 0.032, 0.07, 0.032,
+							0.032, 0.30 };
 				}
-				else // 6 holes, 1.5 inch spacing.
+				else
+				// 6 holes, 1.5 inch spacing.
 				{
-					lowerBound = new double[] { 0.2, 0.01,  0.01,  0.01, 0.01,  0.01,  0.01 };
-					upperBound = new double[] { 0.7, 0.038, 0.038, 0.07, 0.038, 0.038, 0.30 };
+					lowerBound = new double[] { 0.2, 0.01, 0.01, 0.01, 0.01,
+							0.01, 0.01 };
+					upperBound = new double[] { 0.7, 0.038, 0.038, 0.07, 0.038,
+							0.038, 0.30 };
 				}
 				// HolePositionObjectiveFunction defines its own lower bound.
 				lowerBound[0] = objective.getLowerBounds()[0];
 				break;
 			case NO_GROUP_OPT_SUB_CATEGORY_ID:
 				evaluator = new ReflectionEvaluator(calculator);
-				// Length bounds are expressed in meters, diameter bounds as ratios.
-				if ( numberOfHoles == 0 )
+				// Length bounds are expressed in meters, diameter bounds as
+				// ratios.
+				if (numberOfHoles == 0)
 				{
-					lowerBound = new double[] { 0.2 };
+					lowerBound = new double[] { 0.1 };
 					upperBound = new double[] { 0.7 };
 				}
-				else if ( numberOfHoles == 7 )
+				else if (numberOfHoles == 7)
 				{
-					lowerBound = new double[] { 0.2, 0.012, 0.012, 0.012, 0.012, 0.012, 0.0005, 0.012,
-								0.002, 0.002, 0.002, 0.002, 0.002, 0.002, 0.002 };
-					upperBound = new double[] { 0.7, 0.05,  0.05,  0.1,   0.05,  0.05,  0.003,  0.20,
-								0.014, 0.014, 0.014, 0.014, 0.014, 0.008, 0.008 };
+					lowerBound = new double[] { 0.2, 0.012, 0.012, 0.012,
+							0.012, 0.012, 0.0005, 0.012, 0.002, 0.002, 0.002,
+							0.002, 0.002, 0.002, 0.002 };
+					upperBound = new double[] { 0.7, 0.05, 0.05, 0.1, 0.05,
+							0.05, 0.003, 0.20, 0.014, 0.014, 0.014, 0.014,
+							0.014, 0.008, 0.008 };
 				}
-				else if ( constraint == HOLE_6_1_125_SPACING_CONS_SUB_CATEGORY_ID )
+				else if (constraint == HOLE_6_1_125_SPACING_CONS_SUB_CATEGORY_ID)
 				{
-					lowerBound = new double[] { 0.2, 0.01,  0.01,  0.01, 0.01,  0.01,  0.01,
-								0.002, 0.003, 0.003, 0.003, 0.003, 0.003 };
-					upperBound = new double[] { 0.7, 0.029, 0.029, 0.07, 0.029, 0.029, 0.30,
-								0.0102, 0.0102, 0.010, 0.010, 0.010, 0.012 };
+					lowerBound = new double[] { 0.2, 0.01, 0.01, 0.01, 0.01,
+							0.01, 0.01, 0.002, 0.003, 0.003, 0.003, 0.003,
+							0.003 };
+					upperBound = new double[] { 0.7, 0.029, 0.029, 0.07, 0.029,
+							0.029, 0.30, 0.0102, 0.0102, 0.010, 0.010, 0.010,
+							0.012 };
 				}
-				else if ( constraint == HOLE_6_1_25_SPACING_CONS_SUB_CATEGORY_ID )
+				else if (constraint == HOLE_6_1_25_SPACING_CONS_SUB_CATEGORY_ID)
 				{
-					lowerBound = new double[] { 0.2, 0.01,  0.01,  0.01, 0.01,  0.01,  0.01,
-								0.002, 0.003, 0.003, 0.003, 0.003, 0.003 };
-					upperBound = new double[] { 0.7, 0.032, 0.032, 0.07, 0.032, 0.032, 0.30,
-								0.0102, 0.0102, 0.010, 0.010, 0.010, 0.012 };
+					lowerBound = new double[] { 0.2, 0.01, 0.01, 0.01, 0.01,
+							0.01, 0.01, 0.002, 0.003, 0.003, 0.003, 0.003,
+							0.003 };
+					upperBound = new double[] { 0.7, 0.032, 0.032, 0.07, 0.032,
+							0.032, 0.30, 0.0102, 0.0102, 0.010, 0.010, 0.010,
+							0.012 };
 				}
-				else // 6 holes, 1.5 inch spacing.
+				else
+				// 6 holes, 1.5 inch spacing.
 				{
-					lowerBound = new double[] { 0.2, 0.01,  0.01,  0.01, 0.01,  0.01,  0.01,
-								0.002, 0.003, 0.003, 0.003, 0.003, 0.003 };
-					upperBound = new double[] { 0.7, 0.038, 0.038, 0.07, 0.038, 0.038, 0.30,
-								0.0102, 0.0102, 0.010, 0.010, 0.010, 0.012 };
+					lowerBound = new double[] { 0.2, 0.01, 0.01, 0.01, 0.01,
+							0.01, 0.01, 0.002, 0.003, 0.003, 0.003, 0.003,
+							0.003 };
+					upperBound = new double[] { 0.7, 0.038, 0.038, 0.07, 0.038,
+							0.038, 0.30, 0.0102, 0.0102, 0.010, 0.010, 0.010,
+							0.012 };
 				}
-				objective = new HoleObjectiveFunction(calculator, tuning, evaluator);
+				objective = new HoleObjectiveFunction(calculator, tuning,
+						evaluator);
 				// HolePositionObjectiveFunction defines its own lower bound.
 				lowerBound[0] = objective.getLowerBounds()[0];
 				break;
 			case GROUP_OPT_SUB_CATEGORY_ID:
 				evaluator = new ReflectionEvaluator(calculator);
-				// Length bounds are expressed in meters, diameter bounds as ratios.
-				if ( numberOfHoles == 0 )
+				// Length bounds are expressed in meters, diameter bounds as
+				// ratios.
+				if (numberOfHoles == 0)
 				{
-					holeGroups = new int[][] {{}};
+					holeGroups = new int[][] { {} };
 					lowerBound = new double[] { 0.2 };
 					upperBound = new double[] { 0.7 };
 				}
-				else if ( numberOfHoles == 7 )
+				else if (numberOfHoles == 7)
 				{
 					holeGroups = new int[][] { { 0, 1, 2 }, { 3, 4, 5 }, { 6 } };
-					lowerBound = new double[] { 0.2, 0.012, 0.012, 0.012, 0.0005, 0.012,
-								0.002, 0.002, 0.002, 0.002, 0.002, 0.002, 0.002 };
-					upperBound = new double[] { 0.7, 0.05,  0.05,  0.1,   0.003,   0.20,
-								0.014, 0.014, 0.014, 0.014, 0.014, 0.008, 0.008 };
+					lowerBound = new double[] { 0.2, 0.012, 0.012, 0.012,
+							0.0005, 0.012, 0.002, 0.002, 0.002, 0.002, 0.002,
+							0.002, 0.002 };
+					upperBound = new double[] { 0.7, 0.05, 0.05, 0.1, 0.003,
+							0.20, 0.014, 0.014, 0.014, 0.014, 0.014, 0.008,
+							0.008 };
 				}
 				else
 				{
 					holeGroups = new int[][] { { 0, 1, 2 }, { 3, 4, 5 } };
-					lowerBound = new double[] { 0.2, 0.01,  0.01, 0.01,  0.01,
-								0.002, 0.003, 0.003, 0.003, 0.003, 0.003 };
+					lowerBound = new double[] { 0.2, 0.01, 0.01, 0.01, 0.01,
+							0.002, 0.003, 0.003, 0.003, 0.003, 0.003 };
 					upperBound = new double[] { 0.7, 0.038, 0.07, 0.038, 0.30,
-								0.0102, 0.0102, 0.010, 0.010, 0.010, 0.012 };
-					if ( constraint == HOLE_6_1_125_SPACING_CONS_SUB_CATEGORY_ID )
+							0.0102, 0.0102, 0.010, 0.010, 0.010, 0.012 };
+					if (constraint == HOLE_6_1_125_SPACING_CONS_SUB_CATEGORY_ID)
 					{
 						upperBound[1] = 0.029;
 						upperBound[3] = 0.029;
 					}
-					else if ( constraint == HOLE_6_1_25_SPACING_CONS_SUB_CATEGORY_ID )
+					else if (constraint == HOLE_6_1_25_SPACING_CONS_SUB_CATEGORY_ID)
 					{
 						upperBound[1] = 0.032;
 						upperBound[3] = 0.032;
 					}
 				}
-				objective = new HoleGroupObjectiveFunction(calculator, tuning, evaluator, holeGroups);
+				objective = new HoleGroupObjectiveFunction(calculator, tuning,
+						evaluator, holeGroups);
 				// HoleGroupObjectiveFunction defines its own lower bound.
 				lowerBound[0] = objective.getLowerBounds()[0];
 				break;
 			case TAPER_GROUP_OPT_SUB_CATEGORY_ID:
 				evaluator = new ReflectionEvaluator(calculator);
-				// Length bounds are expressed in meters, diameter bounds as ratios,
+				// Length bounds are expressed in meters, diameter bounds as
+				// ratios,
 				// taper bounds as ratios.
-				if ( numberOfHoles == 0 )
+				if (numberOfHoles == 0)
 				{
-					holeGroups = new int[][] {{}};
+					holeGroups = new int[][] { {} };
 					lowerBound = new double[] { 0.2, 0.5, 0.0, 0.0 };
 					upperBound = new double[] { 0.7, 2.0, 1.0, 1.0 };
 				}
-				else if ( numberOfHoles == 7 )
+				else if (numberOfHoles == 7)
 				{
 					holeGroups = new int[][] { { 0, 1, 2 }, { 3, 4, 5 }, { 6 } };
-					lowerBound = new double[] { 0.2, 0.0005, 0.012, 0.012, 0.012, 0.012,
-								0.002, 0.002, 0.002, 0.002, 0.002, 0.002, 0.002,
-								0.5, 0.0, 0.0 };
-					upperBound = new double[] { 0.7, 0.003,  0.05,  0.05,  0.1,   0.30,
-								0.014, 0.014, 0.014, 0.014, 0.014, 0.008, 0.008,
-								2.0, 1.0, 1.0 };
+					lowerBound = new double[] { 0.2, 0.0005, 0.012, 0.012,
+							0.012, 0.012, 0.002, 0.002, 0.002, 0.002, 0.002,
+							0.002, 0.002, 0.5, 0.0, 0.0 };
+					upperBound = new double[] { 0.7, 0.003, 0.05, 0.05, 0.1,
+							0.30, 0.014, 0.014, 0.014, 0.014, 0.014, 0.008,
+							0.008, 2.0, 1.0, 1.0 };
 				}
 				else
 				{
 					holeGroups = new int[][] { { 0, 1, 2 }, { 3, 4, 5 } };
-					lowerBound = new double[] { 0.2, 0.01,  0.01, 0.01,  0.01,
-								0.002, 0.003, 0.003, 0.003, 0.003, 0.003,
-								0.5, 0.0, 0.0 };
+					lowerBound = new double[] { 0.2, 0.01, 0.01, 0.01, 0.01,
+							0.002, 0.003, 0.003, 0.003, 0.003, 0.003, 0.5, 0.0,
+							0.0 };
 					upperBound = new double[] { 0.7, 0.038, 0.07, 0.038, 0.20,
-								0.0102, 0.0102, 0.010, 0.010, 0.010, 0.012,
-								2.0, 1.0, 1.0 };
-					if ( constraint == HOLE_6_1_125_SPACING_CONS_SUB_CATEGORY_ID )
+							0.0102, 0.0102, 0.010, 0.010, 0.010, 0.012, 2.0,
+							1.0, 1.0 };
+					if (constraint == HOLE_6_1_125_SPACING_CONS_SUB_CATEGORY_ID)
 					{
 						upperBound[1] = 0.029;
 						upperBound[3] = 0.029;
 					}
-					else if ( constraint == HOLE_6_1_25_SPACING_CONS_SUB_CATEGORY_ID )
+					else if (constraint == HOLE_6_1_25_SPACING_CONS_SUB_CATEGORY_ID)
 					{
 						upperBound[1] = 0.032;
 						upperBound[3] = 0.032;
 					}
 				}
-				objective = new SingleTaperHoleGroupObjectiveFunction(calculator, tuning, evaluator, holeGroups);
+				objective = new SingleTaperHoleGroupObjectiveFunction(
+						calculator, tuning, evaluator, holeGroups);
 				// HoleGroupObjectiveFunction defines its own lower bound.
 				lowerBound[0] = objective.getLowerBounds()[0];
 				break;
 			case TAPER_LENGTH_OPT_SUB_CATEGORY_ID:
 				evaluator = new ReflectionEvaluator(calculator);
-				// Length bounds are expressed in meters, taper bounds as ratios.
+				// Length bounds are expressed in meters, taper bounds as
+				// ratios.
 				lowerBound = new double[] { 0.2, 0.5, 0.0, 0.0 };
 				upperBound = new double[] { 0.7, 2.0, 1.0, 1.0 };
-				objective = new SingleTaperLengthObjectiveFunction(calculator, tuning, evaluator);
+				objective = new SingleTaperLengthObjectiveFunction(calculator,
+						tuning, evaluator);
 				// LengthObjectiveFunction defines its own lower bound.
 				lowerBound[0] = objective.getLowerBounds()[0];
 				break;
@@ -369,20 +406,25 @@ public class NafStudyModel extends StudyModel
 
 		objective.setLowerBounds(lowerBound);
 		objective.setUpperBounds(upperBound);
-		
+
+		if (lowerBound.length == 1)
+		{
+			objective.setOptimizerType(OptimizerType.BrentOptimizer);
+		}
+
 		Category multiStartCategory = getCategory(MULTI_START_CATEGORY_ID);
 		String multiStartSelected = multiStartCategory.getSelectedSub();
-		if ( multiStartSelected == VARY_FIRST_MULTI_START_SUB_CATEGORY_ID )
+		if (multiStartSelected == VARY_FIRST_MULTI_START_SUB_CATEGORY_ID)
 		{
-			GridRangeProcessor rangeProcessor = new GridRangeProcessor(lowerBound, upperBound, 
-					new int[] {0}, 30 );
+			GridRangeProcessor rangeProcessor = new GridRangeProcessor(
+					lowerBound, upperBound, new int[] { 0 }, 30);
 			objective.setRangeProcessor(rangeProcessor);
 			objective.setMaxIterations(30 * objective.getMaxIterations());
 		}
-		else if ( multiStartSelected == VARY_ALL_MULTI_START_SUB_CATEGORY_ID )
+		else if (multiStartSelected == VARY_ALL_MULTI_START_SUB_CATEGORY_ID)
 		{
-			GridRangeProcessor rangeProcessor = new GridRangeProcessor(lowerBound, upperBound, 
-					null, 30 );
+			GridRangeProcessor rangeProcessor = new GridRangeProcessor(
+					lowerBound, upperBound, null, 30);
 			objective.setRangeProcessor(rangeProcessor);
 			objective.setMaxIterations(30 * objective.getMaxIterations());
 		}

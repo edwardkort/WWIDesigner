@@ -5,6 +5,7 @@ import org.apache.commons.math3.complex.Complex;
 import com.wwidesigner.geometry.Instrument;
 import com.wwidesigner.geometry.calculation.DefaultBoreSectionCalculator;
 import com.wwidesigner.geometry.calculation.FlangedEndCalculator;
+import com.wwidesigner.geometry.calculation.SimpleBoreSectionCalculator;
 import com.wwidesigner.geometry.calculation.SimpleFippleMouthpieceCalculator;
 import com.wwidesigner.geometry.calculation.WhistleHoleCalculator;
 import com.wwidesigner.note.Fingering;
@@ -25,14 +26,14 @@ public class WhistleCalculator extends DefaultInstrumentCalculator
 	{
 		super(instrument, new SimpleFippleMouthpieceCalculator(),
 				new FlangedEndCalculator(), new WhistleHoleCalculator(),
-				new DefaultBoreSectionCalculator(), physicalParams);
+				new SimpleBoreSectionCalculator(), physicalParams);
 	}
 
 	public WhistleCalculator()
 	{
 		super(new SimpleFippleMouthpieceCalculator(),
 				new FlangedEndCalculator(), new WhistleHoleCalculator(),
-				new DefaultBoreSectionCalculator());
+				new SimpleBoreSectionCalculator());
 	}
 	
 	/**

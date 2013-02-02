@@ -15,7 +15,19 @@ import com.wwidesigner.note.Tuning;
 public class InstrumentRangeTuner extends InstrumentTuner
 {
 	WhistleEvaluator  evaluator;
+	protected int blowingLevel;
 
+	public InstrumentRangeTuner()
+	{
+		super();
+		blowingLevel = 5;
+	}
+	
+	public InstrumentRangeTuner(int blowingLevel)
+	{
+		super();
+		this.blowingLevel = blowingLevel;
+	}
 	
 	/* (non-Javadoc)
 	 * @see com.wwidesigner.modelling.InstrumentTuner#getPredictedTuning()
@@ -24,7 +36,7 @@ public class InstrumentRangeTuner extends InstrumentTuner
 	public Tuning getPredictedTuning()
 	{
 		WhistleCalculator newCalc = new WhistleCalculator(instrument, params);
-		evaluator = new WhistleEvaluator(newCalc);
+		evaluator = new WhistleEvaluator(newCalc, blowingLevel);
 		evaluator.setFingering(tuning.getFingering());
 
 		return super.getPredictedTuning();

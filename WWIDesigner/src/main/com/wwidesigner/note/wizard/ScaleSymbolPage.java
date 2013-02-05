@@ -19,7 +19,6 @@ import javax.swing.JPanel;
 import com.jidesoft.dialog.ButtonEvent;
 import com.jidesoft.dialog.ButtonNames;
 import com.jidesoft.wizard.AbstractWizardPage;
-import com.jidesoft.wizard.WizardDialog;
 import com.wwidesigner.gui.util.DataPopulatedEvent;
 import com.wwidesigner.gui.util.DataPopulatedListener;
 import com.wwidesigner.gui.util.DataPopulatedProvider;
@@ -35,14 +34,12 @@ public class ScaleSymbolPage extends AbstractWizardPage implements
 	private JPanel contentPanel;
 	private ScaleSymbolListPanel symbolPanel;
 	private JButton saveButton;
-	private WizardDialog parent;
 	private boolean isInitialized;
 
-	public ScaleSymbolPage(WizardDialog parent)
+	public ScaleSymbolPage()
 	{
 		super("Scale Symbols",
 				"Select or create the note symbols used in the scale.");
-		this.parent = parent;
 		createWizardContent();
 	}
 
@@ -67,6 +64,7 @@ public class ScaleSymbolPage extends AbstractWizardPage implements
 	{
 		fireButtonEvent(ButtonEvent.ENABLE_BUTTON, ButtonNames.BACK);
 		fireButtonEvent(ButtonEvent.ENABLE_BUTTON, ButtonNames.NEXT);
+		fireButtonEvent(ButtonEvent.HIDE_BUTTON, ButtonNames.CANCEL);
 	}
 
 	@Override

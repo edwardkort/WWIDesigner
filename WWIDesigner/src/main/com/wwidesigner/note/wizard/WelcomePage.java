@@ -4,6 +4,8 @@ import javax.swing.JComponent;
 import javax.swing.JEditorPane;
 import javax.swing.JScrollPane;
 
+import com.jidesoft.dialog.ButtonEvent;
+import com.jidesoft.dialog.ButtonNames;
 import com.jidesoft.wizard.WelcomeWizardPage;
 
 class WelcomePage extends WelcomeWizardPage
@@ -37,6 +39,13 @@ class WelcomePage extends WelcomeWizardPage
 		}
 
 		return scrollPane;
+	}
+
+	@Override
+	public void setupWizardButtons()
+	{
+		fireButtonEvent(ButtonEvent.HIDE_BUTTON, ButtonNames.BACK);
+		fireButtonEvent(ButtonEvent.HIDE_BUTTON, ButtonNames.CANCEL);
 	}
 
 }

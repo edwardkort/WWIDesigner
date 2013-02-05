@@ -296,6 +296,7 @@ public class ScaleIntervalPage extends AbstractWizardPage implements
 	{
 		fireButtonEvent(ButtonEvent.ENABLE_BUTTON, ButtonNames.BACK);
 		fireButtonEvent(ButtonEvent.ENABLE_BUTTON, ButtonNames.NEXT);
+		fireButtonEvent(ButtonEvent.HIDE_BUTTON, ButtonNames.CANCEL);
 	}
 
 	@Override

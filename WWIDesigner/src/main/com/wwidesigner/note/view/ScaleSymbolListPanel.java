@@ -97,7 +97,7 @@ public class ScaleSymbolListPanel extends JPanel implements KeyListener,
 			}
 
 			Vector columns = new Vector();
-			columns.add("Symbols");
+			columns.add("Symbol");
 			DefaultTableModel model = (DefaultTableModel) symbolList.getModel();
 			model.setDataVector(rows, columns);
 			areSymbolsPopulated();
@@ -290,7 +290,7 @@ public class ScaleSymbolListPanel extends JPanel implements KeyListener,
 	public void resetTableData()
 	{
 		DefaultTableModel model = (DefaultTableModel) symbolList.getModel();
-		model.setDataVector(new String[50][1], new String[] { "Symbols" });
+		model.setDataVector(new String[50][1], new String[] { "Symbol" });
 	}
 
 	private List<String> getTableData()
@@ -301,10 +301,10 @@ public class ScaleSymbolListPanel extends JPanel implements KeyListener,
 		for (int i = 0; i < model.getRowCount(); i++)
 		{
 			String value = (String) model.getValueAt(i, 0);
-//			if (value != null && value.length() > 0)
-//			{
-				data.add(value);
-//			}
+			// if (value != null && value.length() > 0)
+			// {
+			data.add(value);
+			// }
 		}
 		return data;
 	}

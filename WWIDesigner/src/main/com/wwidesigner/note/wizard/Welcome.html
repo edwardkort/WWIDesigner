@@ -19,6 +19,25 @@ Currently, a <b>Scale with Intervals</b> can not be persisted, only used in subs
 contains at least one note with both a symbol and ratio.</p>
 <p>The <b><i>Scale with Frequencies Page</i></b> supports the specification of a <b>Scale with Frequencies</b>, 
 which is a set of notes each defined by a symbol and a frequency (in Hz). A <b>Scale with Frequencies</b> may
-be created in a number of ways: <i>De novo</i>, entering values directly in the Notes table; by loading an 
+be created in a number of ways: <i>de novo</i>, entering values directly in the Notes table; by loading an 
 existing <b>Scale</b> file and optionally modifying it; or by calculating the frequencies based on the intervals
-in a <b>Scale with Intervals</b> and a reference note in that scale with a specified frequency.</p>
+in a <b>Scale with Intervals</b> and a reference note in that scale with a specified frequency. A <b>Scale with Frequencies</b>
+may be saved if it has a name and at least one note with a symbol and frequency. To be used in subsequent pages, a <b>Scale
+with Frequencies</b> does not need a name</p>
+<p>The <i><b>Fingering Pattern Page</b></i> supports the specification of a <b>Fingering Pattern</b>, the set of <b>Fingerings</b>
+used for a given instrument. Each <b>Fingering</b> is the specification of open and closed holes for a particular note (to be 
+set in subsequent pages). A <b>Fingering Pattern</b> may be created <i>de novo</i>, or from an existing <b>Fingering Pattern</b>
+file. In order to create a <b>Fingering Pattern</b> <i>de novo</i>, the number of holes for this instrument must first be set.
+A closed hole has a dark center, an open hole has a clear center. A <b>Fingering</b> that is being edited has a red border;
+to accept the edits, either press &lt;TAB&gt;, &lt;ENTER&gt;, or click on another <b>Fingering</b>; &lt;ESC&gt; cancels the
+edit. A selected <b>Fingering</b> has either a red or black border. A <b>Fingering Pattern</b> may be saved if it has a name and
+at least one <b>Fingering</b>; to be used in subsequent pages, it need not have a name.</p>
+<p>The <i><b>Scale with Frequencies and Fingerings Page</b></i> creates a <b>Tuning</b>, which is the merging of a <b>Scale
+with Frequencies</b> and a <b>Fingering Pattern</b>. A <b>Tuning</b> is central to WWIDesigner, used as a goal in instrument
+geometry optimization and to evaluate the tuning of and instrument. A <b>Tuning</b> may be created <i>de novo</i>, by loading
+(and modifying) an existing <b>Tuning</b> file, or (through drag-and-drop) by merging selected notes (from the <b>Scale</b>
+table) and selected fingerings (from the <b>Fingerings</b> table). Before performing drag-and-drop operations, a <b>Tuning</b> will
+have to be created by either loading an existing <b>Tuning</b> file, or by specifying the number of holes and clicking the New button.
+The creation and editing of fingerings in the <b>Tuning</b>
+table follow the same guidelines as in the <i><b>Fingering Pattern Page</b></i>. To be saved, a <b>Tuning</b> must have a name
+and at least one fingering (a zero-hole fingering is fine) with symbol and frequency.</p>

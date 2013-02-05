@@ -34,46 +34,55 @@ public class TuningTableTransferHandler extends TransferHandler
 			return false;
 		}
 
-		JTable table = (JTable) info.getComponent();
-		DefaultTableModel model = (DefaultTableModel) table.getModel();
-		JTable.DropLocation dl = (JTable.DropLocation) info.getDropLocation();
-		int row = dl.getRow();
-		List<? extends List> dropData = getDropData(info);
+		try
+		{
+			JTable table = (JTable) info.getComponent();
+			DefaultTableModel model = (DefaultTableModel) table.getModel();
+			JTable.DropLocation dl = (JTable.DropLocation) info
+					.getDropLocation();
+			int row = dl.getRow();
+			List<? extends List> dropData = getDropData(info);
 
-		if (dropData.size() == 0)
+			if (dropData.size() == 0)
+			{
+				return false;
+			}
+
+			int numColumns = dropData.get(0).size();
+			if (numColumns == 1) // Handle number of holes in source and target
+			{
+				Fingering sourceFingering = (Fingering) dropData.get(0).get(0);
+				int sourceNumberOfHoles = sourceFingering.getNumberOfHoles();
+				Fingering targetFingering = (Fingering) model
+						.getValueAt(row, 2);
+				int targetNumberOfHoles = targetFingering.getNumberOfHoles();
+				if (sourceNumberOfHoles != targetNumberOfHoles)
+				{
+					tuningPanel.resetFingeringColumn(sourceNumberOfHoles);
+				}
+			}
+			int numberOfHoles = tuningPanel.getNumberOfHoles();
+			for (List rowData : dropData)
+			{
+				if (row >= model.getRowCount())
+				{
+					model.insertRow(row, new Object[] { null, null,
+							new Fingering(numberOfHoles) });
+				}
+				if (numColumns == 1)
+				{
+					model.setValueAt(rowData.get(0), row++, 2);
+				}
+				else if (numColumns == 2)
+				{
+					model.setValueAt(rowData.get(0), row, 0);
+					model.setValueAt(rowData.get(1), row++, 1);
+				}
+			}
+		}
+		catch (Exception ex)
 		{
 			return false;
-		}
-
-		int numColumns = dropData.get(0).size();
-		if (numColumns == 1) // Handle number of holes in source and target
-		{
-			Fingering sourceFingering = (Fingering) dropData.get(0).get(0);
-			int sourceNumberOfHoles = sourceFingering.getNumberOfHoles();
-			Fingering targetFingering = (Fingering) model.getValueAt(row, 2);
-			int targetNumberOfHoles = targetFingering.getNumberOfHoles();
-			if (sourceNumberOfHoles != targetNumberOfHoles)
-			{
-				tuningPanel.resetFingeringColumn(sourceNumberOfHoles);
-			}
-		}
-		int numberOfHoles = tuningPanel.getNumberOfHoles();
-		for (List rowData : dropData)
-		{
-			if (row >= model.getRowCount())
-			{
-				model.insertRow(row, new Object[] { null, null,
-						new Fingering(numberOfHoles) });
-			}
-			if (numColumns == 1)
-			{
-				model.setValueAt(rowData.get(0), row++, 2);
-			}
-			else if (numColumns == 2)
-			{
-				model.setValueAt(rowData.get(0), row, 0);
-				model.setValueAt(rowData.get(1), row++, 1);
-			}
 		}
 
 		return true;

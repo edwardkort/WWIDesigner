@@ -33,7 +33,7 @@ import com.wwidesigner.note.view.FingeringPatternPanel;
 import com.wwidesigner.note.view.ScalePanel;
 import com.wwidesigner.note.view.TuningPanel;
 
-public class TuningPage extends AbstractWizardPage implements DataProvider,
+public class TuningPage extends AbstractWizardPage implements
 		DataPopulatedProvider, DataPopulatedListener
 {
 	private JPanel contentPanel;
@@ -419,19 +419,15 @@ public class TuningPage extends AbstractWizardPage implements DataProvider,
 	public void setupWizardButtons()
 	{
 		fireButtonEvent(ButtonEvent.ENABLE_BUTTON, ButtonNames.BACK);
-		fireButtonEvent(ButtonEvent.ENABLE_BUTTON, ButtonNames.NEXT);
+		fireButtonEvent(ButtonEvent.ENABLE_BUTTON, ButtonNames.FINISH);
+		fireButtonEvent(ButtonEvent.HIDE_BUTTON, ButtonNames.NEXT);
+		fireButtonEvent(ButtonEvent.HIDE_BUTTON, ButtonNames.CANCEL);
 	}
 
 	@Override
 	public int getLeftPaneItems()
 	{
 		return LEFTPANE_STEPS;
-	}
-
-	@Override
-	public Object getPageData()
-	{
-		return null;// tuningPanel.getTableData();
 	}
 
 	@Override
@@ -469,7 +465,8 @@ public class TuningPage extends AbstractWizardPage implements DataProvider,
 				{
 					newButton.setEnabled(dataPopulated);
 				}
-				dataPopulated = event.isPopulated(FingeringPatternPanel.SAVE_EVENT_ID);
+				dataPopulated = event
+						.isPopulated(FingeringPatternPanel.SAVE_EVENT_ID);
 				if (dataPopulated != null)
 				{
 					saveButton.setEnabled(dataPopulated);

@@ -11,25 +11,27 @@ import com.wwidesigner.note.TuningInterface;
 
 /**
  * Optimization objective function for hole diameters.
+ * 
  * @author Edward Kort, Burton Patkau
- *
+ * 
  */
 public class HoleSizeObjectiveFunction extends BaseObjectiveFunction
 {
 
-	public HoleSizeObjectiveFunction(InstrumentCalculator calculator, TuningInterface tuning,
-			EvaluatorInterface evaluator)
+	public HoleSizeObjectiveFunction(InstrumentCalculator calculator,
+			TuningInterface tuning, EvaluatorInterface evaluator)
 	{
 		super(calculator, tuning, evaluator);
 		nrDimensions = calculator.getInstrument().getHole().size();
-		optimizerType = OptimizerType.BOBYQAOptimizer;		// MultivariateOptimizer
+		optimizerType = OptimizerType.BOBYQAOptimizer; // MultivariateOptimizer
+		setConstraints();
 	}
 
 	@Override
 	public double[] getGeometryPoint()
 	{
-		PositionInterface[] sortedHoles
-				= Instrument.sortList(calculator.getInstrument().getHole());
+		PositionInterface[] sortedHoles = Instrument.sortList(calculator
+				.getInstrument().getHole());
 
 		double[] geometry = new double[nrDimensions];
 
@@ -45,11 +47,12 @@ public class HoleSizeObjectiveFunction extends BaseObjectiveFunction
 	@Override
 	public void setGeometryPoint(double[] point)
 	{
-		if ( point.length != nrDimensions ) {
+		if (point.length != nrDimensions)
+		{
 			throw new DimensionMismatchException(point.length, nrDimensions);
 		}
-		PositionInterface[] sortedHoles
-				= Instrument.sortList(calculator.getInstrument().getHole());
+		PositionInterface[] sortedHoles = Instrument.sortList(calculator
+				.getInstrument().getHole());
 
 		for (int i = 0; i < nrDimensions; ++i)
 		{
@@ -58,5 +61,24 @@ public class HoleSizeObjectiveFunction extends BaseObjectiveFunction
 		}
 
 		calculator.getInstrument().updateComponents();
+	}
+
+	protected void setConstraints()
+	{
+		for (int i = nrDimensions; i > 0; i--)
+		{
+			String name = "Hole " + i;
+			if (i == nrDimensions)
+			{
+				name += " (top)";
+			}
+			else if (i == 1)
+			{
+				name += " (bottom)";
+			}
+			name += " diameter";
+			Constraint constraint = new Constraint(name, true);
+			constraints.addConstraint(constraint);
+		}
 	}
 }

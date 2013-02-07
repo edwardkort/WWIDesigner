@@ -6,9 +6,6 @@ import static org.junit.Assert.fail;
 import org.junit.Test;
 
 import com.wwidesigner.modelling.NAFCalculator;
-import com.wwidesigner.modelling.ReactanceEvaluator;
-import com.wwidesigner.util.Constants.TemperatureType;
-import com.wwidesigner.util.PhysicalParameters;
 
 public class ConstraintsTest extends AbstractOptimizationTest
 {
@@ -19,12 +16,8 @@ public class ConstraintsTest extends AbstractOptimizationTest
 		{
 			setInputInstrumentXML("com/wwidesigner/optimization/example/NoHoleNAF1.xml");
 			setInputTuningXML("com/wwidesigner/optimization/example/NoHoleNAF1Tuning.xml");
-			setParams(new PhysicalParameters(22.22, TemperatureType.C));
 			setCalculator(new NAFCalculator());
 			setup();
-			setLowerBound(new double[] { 0.2 });
-			setUpperBound(new double[] { 1.5 });
-			evaluator = new ReactanceEvaluator(calculator);
 			objective = new FippleFactorObjectiveFunction(calculator, tuning,
 					evaluator);
 			Constraints constraints = objective.getConstraints();
@@ -47,10 +40,35 @@ public class ConstraintsTest extends AbstractOptimizationTest
 		}
 	}
 
-	public static void main(String[] args)
+	@Test
+	public final void testGetHoleSizeConstraint()
 	{
-		ConstraintsTest test = new ConstraintsTest();
-		test.testGetFippleConstraint();
+		try
+		{
+			setInputInstrumentXML("com/wwidesigner/optimization/example/6HoleNAF1.xml");
+			setInputTuningXML("com/wwidesigner/optimization/example/6HoleNAF1Tuning.xml");
+			setCalculator(new NAFCalculator());
+			setup();
+			objective = new HoleSizeObjectiveFunction(calculator, tuning,
+					evaluator);
+			Constraints constraints = objective.getConstraints();
+
+			assertEquals("Number of constraints incorrect",
+					objective.getNrDimensions(),
+					constraints.getNumberOfConstraints());
+
+			Constraint constraint = constraints.getConstraint(5);
+			assertEquals("Constraint name incorrect",
+					"Hole 1 (bottom) diameter", constraint.getDisplayName());
+
+			assertEquals("Constraint dimensionality incorrect", true,
+					constraint.isDimensional());
+
+		}
+		catch (Exception e)
+		{
+			fail(e.getMessage());
+		}
 	}
 
 }

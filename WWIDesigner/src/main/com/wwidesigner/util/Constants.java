@@ -17,7 +17,7 @@ public interface Constants
 
 	enum LengthType implements Constants
 	{
-		CM, MM, FT, IN;
+		CM, MM, FT, IN, M;
 
 		public double getMultiplierToMetres()
 		{
@@ -26,6 +26,9 @@ public interface Constants
 			{
 				case MM:
 					multiplier = 0.001;
+					break;
+				case CM:
+					multiplier = 0.01;
 					break;
 				case IN:
 					multiplier = 0.0254;
@@ -45,13 +48,16 @@ public interface Constants
 				case MM:
 					multiplier = 1000.;
 					break;
+				case CM:
+					multiplier = 100.;
+					break;
 				case IN:
 					multiplier = 39.3701;
 					break;
 				default:
 					multiplier = 1.;
 			}
-			
+
 			return multiplier;
 		}
 	}

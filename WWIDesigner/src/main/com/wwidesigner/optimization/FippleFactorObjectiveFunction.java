@@ -8,35 +8,40 @@ import com.wwidesigner.note.TuningInterface;
 
 /**
  * Optimization objective function for an instrument's fipple factor.
+ * 
  * @author Burton Patkau
- *
+ * 
  */
 public class FippleFactorObjectiveFunction extends BaseObjectiveFunction
 {
 
-	public FippleFactorObjectiveFunction(InstrumentCalculator calculator, TuningInterface tuning,
-			EvaluatorInterface evaluator)
+	public FippleFactorObjectiveFunction(InstrumentCalculator calculator,
+			TuningInterface tuning, EvaluatorInterface evaluator)
 	{
 		super(calculator, tuning, evaluator);
 		nrDimensions = 1;
-		optimizerType = OptimizerType.BrentOptimizer;		// UnivariateOptimizer
+		optimizerType = OptimizerType.BrentOptimizer; // UnivariateOptimizer
+		constraints.addConstraint(new Constraint("Fipple factor", false));
 	}
 
 	@Override
 	public double[] getGeometryPoint()
 	{
 		double[] geometry = new double[1];
-		geometry[0] = calculator.getInstrument().getMouthpiece().getFipple().getFippleFactor();
+		geometry[0] = calculator.getInstrument().getMouthpiece().getFipple()
+				.getFippleFactor();
 		return geometry;
 	}
 
 	@Override
 	public void setGeometryPoint(double[] point)
 	{
-		if ( point.length != nrDimensions ) {
+		if (point.length != nrDimensions)
+		{
 			throw new DimensionMismatchException(point.length, nrDimensions);
 		}
-		calculator.getInstrument().getMouthpiece().getFipple().setFippleFactor( point[0] );
+		calculator.getInstrument().getMouthpiece().getFipple()
+				.setFippleFactor(point[0]);
 		calculator.getInstrument().updateComponents();
 	}
 

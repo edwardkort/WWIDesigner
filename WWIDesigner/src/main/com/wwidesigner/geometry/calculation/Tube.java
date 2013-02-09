@@ -56,7 +56,7 @@ public class Tube
 	{
 		double Zc = params.calcZ0(radius);
 		double epsilon = params.getAlphaConstant()/(radius * Math.sqrt(waveNumber));
-		Complex gammaL = new Complex( epsilon, 1.0/(1.0-epsilon) ).multiply( waveNumber * length );
+		Complex gammaL = new Complex( epsilon, 1.0+epsilon ).multiply( waveNumber * length );
 		Complex coshL = gammaL.cosh();
 		Complex sinhL = gammaL.sinh();
         TransferMatrix result = new TransferMatrix(coshL, sinhL.multiply(Zc), sinhL.divide(Zc), coshL);
@@ -76,44 +76,36 @@ public class Tube
 	public static TransferMatrix calcConeMatrix(double waveNumber, 
 			double length, double sourceRadius, double loadRadius, PhysicalParameters params)
 	{
-		// From: Y. Kulik, Transfer matrix of conical waveguides with any geometric
-		//       parameters for increased precision in computer modeling, 
-		//       JASA v. 122, pp. EL179-EL184, November 2007.
+		// From: Antoine Lefebvre and Jean Kergomard.
 		
 		if ( sourceRadius == loadRadius )
 		{
 			return calcCylinderMatrix(waveNumber, length, sourceRadius, params);
 		}
 
-		// Complex wave vector, at source and load.
+		// Mean complex wave vector along the whole cone, from Lefebvre and Kergomard.
 		double alpha_0 = params.getAlphaConstant()/Math.sqrt(waveNumber);
-		double epsilon = alpha_0/sourceRadius;
-		Complex k_in  = new Complex( 1.0/(1.0-epsilon), -epsilon ).multiply( waveNumber );
-		epsilon = alpha_0/loadRadius;
-		Complex k_out = new Complex( 1.0/(1.0-epsilon), -epsilon ).multiply( waveNumber );
-
-		// Cotangents of theta_in and theta_out. 
-		Complex cot_in  = new Complex(loadRadius-sourceRadius)
-							.divide(k_in.multiply(sourceRadius * length));
-		Complex cot_out = new Complex(loadRadius-sourceRadius)
-							.divide(k_out.multiply(loadRadius * length));
-
-		// Mean complex wave vector along the whole cone, from Kulik 2007.
-		
-		epsilon = alpha_0/(loadRadius - sourceRadius);
-		Complex mean = new Complex( 1.0 + epsilon * Math.log((loadRadius - alpha_0)/(sourceRadius - alpha_0)),
-				- epsilon * Math.log(loadRadius/sourceRadius));
+		double epsilon = alpha_0/(loadRadius - sourceRadius) * Math.log(loadRadius/sourceRadius);
+		Complex mean = new Complex( 1.0 + epsilon, - epsilon );
 		Complex kMeanL = mean.multiply(waveNumber * length);
+		
+		// Cotangents of theta_in and theta_out. 
+		Complex cot_in  = new Complex((loadRadius-sourceRadius)/sourceRadius)
+							.divide(kMeanL);
+		Complex cot_out = new Complex((loadRadius-sourceRadius)/loadRadius)
+							.divide(kMeanL);
 
-		// sine and cosine of kMean * L, pre-multiplied by ratio of radii.
-		Complex sin_kL = kMeanL.sin().multiply(loadRadius/sourceRadius);
-		Complex cos_kL = kMeanL.cos().multiply(loadRadius/sourceRadius);
+		// sine and cosine of kMean * L.
+		Complex sin_kL = kMeanL.sin();
+		Complex cos_kL = kMeanL.cos();
 
-		Complex A = cos_kL.subtract(sin_kL.multiply(cot_out));
-		Complex B = Complex.I.multiply(sin_kL).multiply(params.calcZ0(loadRadius));
-		Complex C = Complex.I.multiply(sin_kL.multiply(cot_out.multiply(cot_in).add(1.0))
-				.add(cos_kL.multiply(cot_out.subtract(cot_in)))).divide(params.calcZ0(sourceRadius));
-		Complex D = cos_kL.add(sin_kL.multiply(cot_in));
+		Complex A = cos_kL.multiply(loadRadius/sourceRadius).subtract(sin_kL.multiply(cot_in));
+		Complex B = Complex.I.multiply(sin_kL)
+				.multiply(params.calcZ0(loadRadius) * (loadRadius/sourceRadius));
+		Complex C = Complex.I.multiply(loadRadius/(sourceRadius*params.calcZ0(sourceRadius))).multiply(
+				sin_kL.multiply(cot_out.multiply(cot_in).add(1.0))
+				.add(cos_kL.multiply(cot_out.subtract(cot_in))));
+		Complex D = cos_kL.multiply(sourceRadius/loadRadius).add(sin_kL.multiply(cot_out));
 
 		TransferMatrix tm = new TransferMatrix(A, B, C, D); 
 		assert tm.determinant() == Complex.valueOf(1.0,0.0);

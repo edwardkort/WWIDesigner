@@ -3,18 +3,47 @@
  */
 package com.wwidesigner.note;
 
+import java.io.Serializable;
+
 import com.wwidesigner.util.Constants;
 
 /**
  * @author kort
  * 
  */
-public class Note
+public class Note implements Serializable
 {
 	protected String name;
 	protected Double frequency;
 	protected Double frequencyMin;
 	protected Double frequencyMax;
+
+	public Note()
+	{
+	}
+
+	public Note(Note note)
+	{
+		if (note != null)
+		{
+			setName(note.getName());
+			Double dbl = note.getFrequency();
+			if (dbl != null)
+			{
+				setFrequency(new Double(dbl));
+			}
+			dbl = note.getFrequencyMin();
+			if (dbl != null)
+			{
+				setFrequencyMin(new Double(dbl));
+			}
+			dbl = note.getFrequencyMax();
+			if (dbl != null)
+			{
+				setFrequencyMax(new Double(dbl));
+			}
+		}
+	}
 
 	/**
 	 * @return the name
@@ -84,9 +113,9 @@ public class Note
 		this.frequencyMax = frequencyMax;
 	}
 
-    public static double cents(double f1, double f2)
-    {
-    	return Math.log(f2/f1)/Constants.LOG2 * Constants.CENTS_IN_OCTAVE;
-    }
+	public static double cents(double f1, double f2)
+	{
+		return Math.log(f2 / f1) / Constants.LOG2 * Constants.CENTS_IN_OCTAVE;
+	}
 
 }

@@ -19,6 +19,7 @@ import javax.swing.table.DefaultTableModel;
 import com.wwidesigner.gui.util.DataPopulatedEvent;
 import com.wwidesigner.gui.util.DataPopulatedListener;
 import com.wwidesigner.gui.util.DoubleCellRenderer;
+import com.wwidesigner.gui.util.StringDoubleTableModel;
 import com.wwidesigner.gui.util.TableTransferHandler;
 
 public class ScaleIntervalPanel extends JPanel implements TableModelListener
@@ -113,39 +114,6 @@ public class ScaleIntervalPanel extends JPanel implements TableModelListener
 		}
 
 		return clonedData;
-	}
-
-	class StringDoubleTableModel extends DefaultTableModel
-	{
-		@Override
-		public void setValueAt(Object value, int row, int column)
-		{
-			if (column == 1)
-			{
-				Double dblValue = null;
-
-				try
-				{
-					if (value instanceof String)
-					{
-						dblValue = Double.valueOf((String) value);
-					}
-					else
-					{
-						dblValue = (Double) value;
-					}
-				}
-				catch (Exception e)
-				{
-				}
-
-				super.setValueAt(dblValue, row, column);
-			}
-			else
-			{
-				super.setValueAt(value, row, column);
-			}
-		}
 	}
 
 	public void clearSelection()

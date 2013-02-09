@@ -296,6 +296,7 @@ public class ScaleIntervalPage extends AbstractWizardPage implements
 	{
 		fireButtonEvent(ButtonEvent.ENABLE_BUTTON, ButtonNames.BACK);
 		fireButtonEvent(ButtonEvent.ENABLE_BUTTON, ButtonNames.NEXT);
+		fireButtonEvent(ButtonEvent.HIDE_BUTTON, ButtonNames.CANCEL);
 	}
 
 	@Override
@@ -322,11 +323,21 @@ public class ScaleIntervalPage extends AbstractWizardPage implements
 		Object source = event.getSource();
 		if (source instanceof ScaleSymbolListPanel)
 		{
-			updateFromSymbolPageButton.setEnabled(event.isPopulated());
+			Boolean isLoadable = event
+					.isPopulated(ScaleSymbolListPanel.LOAD_PAGE_ID);
+			if (isLoadable != null)
+			{
+				updateFromSymbolPageButton.setEnabled(isLoadable);
+			}
 		}
 		else if (source instanceof TemperamentPanel)
 		{
-			updateFromTemperamentPageButton.setEnabled(event.isPopulated());
+			Boolean isLoadable = event
+					.isPopulated(TemperamentPanel.LOAD_PAGE_ID);
+			if (isLoadable != null)
+			{
+				updateFromTemperamentPageButton.setEnabled(isLoadable);
+			}
 		}
 	}
 

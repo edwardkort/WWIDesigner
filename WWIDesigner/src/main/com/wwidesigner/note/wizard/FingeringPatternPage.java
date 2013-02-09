@@ -19,7 +19,6 @@ import javax.swing.JPanel;
 import com.jidesoft.dialog.ButtonEvent;
 import com.jidesoft.dialog.ButtonNames;
 import com.jidesoft.wizard.AbstractWizardPage;
-import com.jidesoft.wizard.WizardDialog;
 import com.wwidesigner.gui.util.DataPopulatedEvent;
 import com.wwidesigner.gui.util.DataPopulatedListener;
 import com.wwidesigner.gui.util.DataPopulatedProvider;
@@ -35,10 +34,9 @@ public class FingeringPatternPage extends AbstractWizardPage implements
 	private FingeringPatternPanel fingeringPanel;
 	private JButton newButton;
 	private JButton saveButton;
-	private WizardDialog parent;
 	private boolean isInitialized;
 
-	public FingeringPatternPage(WizardDialog parent)
+	public FingeringPatternPage()
 	{
 		super(
 				"Fingering Pattern",
@@ -46,7 +44,6 @@ public class FingeringPatternPage extends AbstractWizardPage implements
 						+ "Set the number of holes before creating a New fingering pattern. "
 						+ "Click on a fingering to initial editing (red outline); "
 						+ "Hit Esc to cancel editing, Enter to accept edits.");
-		this.parent = parent;
 		createWizardContent();
 	}
 
@@ -71,6 +68,7 @@ public class FingeringPatternPage extends AbstractWizardPage implements
 	{
 		fireButtonEvent(ButtonEvent.ENABLE_BUTTON, ButtonNames.BACK);
 		fireButtonEvent(ButtonEvent.ENABLE_BUTTON, ButtonNames.NEXT);
+		fireButtonEvent(ButtonEvent.HIDE_BUTTON, ButtonNames.CANCEL);
 	}
 
 	@Override

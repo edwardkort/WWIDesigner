@@ -29,6 +29,9 @@ import javax.swing.table.DefaultTableModel;
 import com.wwidesigner.gui.util.DataPopulatedEvent;
 import com.wwidesigner.gui.util.DataPopulatedListener;
 import com.wwidesigner.gui.util.DoubleCellRenderer;
+import com.wwidesigner.gui.util.NoOpTransferHandler;
+import com.wwidesigner.gui.util.StringDoubleTableModel;
+import com.wwidesigner.gui.util.TableSourceRowTransferHandler;
 import com.wwidesigner.note.Scale;
 import com.wwidesigner.note.bind.NoteBindFactory;
 import com.wwidesigner.util.BindFactory;
@@ -43,12 +46,15 @@ public class ScalePanel extends JPanel implements KeyListener,
 	private boolean notesPopulated;
 	private List<DataPopulatedListener> populatedListeners;
 
+	public static final String LOAD_PAGE_ID = "loadData";
+
 	public ScalePanel()
 	{
 		setLayout(new GridBagLayout());
 		setNameWidget();
 		setDescriptionWidget();
 		setNoteTableWidget();
+		configureDragAndDrop();
 	}
 
 	private void setNameWidget()
@@ -127,7 +133,7 @@ public class ScalePanel extends JPanel implements KeyListener,
 		DefaultTableModel model = new StringDoubleTableModel();
 		model.addTableModelListener(this);
 		noteTable = new JTable(model);
-		noteTable.setCellSelectionEnabled(true);
+		setTableCellSelectionEnabled(true);
 		resetTableData();
 		noteTable.setAutoscrolls(true);
 		JScrollPane scrollPane = new JScrollPane(noteTable);
@@ -255,7 +261,7 @@ public class ScalePanel extends JPanel implements KeyListener,
 			catch (Exception ex)
 			{
 				JOptionPane.showMessageDialog(this, "File " + file.getName()
-						+ " is not a valid ScaleSymbolList file.");
+						+ " is not a valid Scale file.");
 			}
 		}
 
@@ -283,12 +289,13 @@ public class ScalePanel extends JPanel implements KeyListener,
 		Scale scale = new Scale();
 		scale.setName(nameWidget.getText());
 		scale.setComment(descriptionWidget.getText());
-		Vector notes = (Vector)getTableData();
-		for (Object noteObj : notes) {
-			Vector noteValue = (Vector)noteObj;
+		Vector notes = (Vector) getTableData();
+		for (Object noteObj : notes)
+		{
+			Vector noteValue = (Vector) noteObj;
 			Scale.Note note = new Scale.Note();
-			note.setName((String)noteValue.get(0));
-			note.setFrequency((Double)noteValue.get(1));
+			note.setName((String) noteValue.get(0));
+			note.setFrequency((Double) noteValue.get(1));
 			scale.addNote(note);
 		}
 
@@ -340,39 +347,6 @@ public class ScalePanel extends JPanel implements KeyListener,
 		}
 
 		return clonedData;
-	}
-
-	class StringDoubleTableModel extends DefaultTableModel
-	{
-		@Override
-		public void setValueAt(Object value, int row, int column)
-		{
-			if (column == 1)
-			{
-				Double dblValue = null;
-
-				try
-				{
-					if (value instanceof String)
-					{
-						dblValue = Double.valueOf((String) value);
-					}
-					else
-					{
-						dblValue = (Double) value;
-					}
-				}
-				catch (Exception e)
-				{
-				}
-
-				super.setValueAt(dblValue, row, column);
-			}
-			else
-			{
-				super.setValueAt(value, row, column);
-			}
-		}
 	}
 
 	@Override
@@ -440,11 +414,33 @@ public class ScalePanel extends JPanel implements KeyListener,
 			return;
 		}
 
+		List<DataPopulatedEvent> events = new ArrayList<DataPopulatedEvent>();
 		DataPopulatedEvent event = new DataPopulatedEvent(this, namePopulated
 				&& notesPopulated);
-		for (DataPopulatedListener listener : populatedListeners)
+		events.add(event);
+		event = new DataPopulatedEvent(this, LOAD_PAGE_ID, notesPopulated);
+		events.add(event);
+		for (DataPopulatedEvent thisEvent : events)
 		{
-			listener.dataStateChanged(event);
+			for (DataPopulatedListener listener : populatedListeners)
+			{
+				listener.dataStateChanged(thisEvent);
+			}
 		}
 	}
+
+	private void configureDragAndDrop()
+	{
+		noteTable.setDragEnabled(true);
+		noteTable.setTransferHandler(new TableSourceRowTransferHandler());
+		nameWidget.setTransferHandler(new NoOpTransferHandler());
+		descriptionWidget.setTransferHandler(new NoOpTransferHandler());
+	}
+
+	public void setTableCellSelectionEnabled(boolean editable)
+	{
+		noteTable.setCellSelectionEnabled(editable);
+		noteTable.setRowSelectionAllowed(true);
+	}
+
 }

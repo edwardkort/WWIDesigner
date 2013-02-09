@@ -43,12 +43,17 @@ public class ArrayTransferable implements Transferable
 	@Override
 	public boolean isDataFlavorSupported(DataFlavor flavor)
 	{
+		boolean supported;
 		if (type == null || flavor == null)
 		{
-			return false;
+			supported = false;
 		}
-		
-		return type.equals(flavor.getClass());
+		else
+		{
+			supported = type.equals(flavor.getRepresentationClass());
+		}
+
+		return supported;
 	}
 
 }

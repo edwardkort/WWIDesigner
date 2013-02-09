@@ -17,6 +17,25 @@ public class FingeringPattern
 	protected int numberOfHoles;
 	protected List<Fingering> fingering;
 
+	public FingeringPattern()
+	{
+	}
+
+	public FingeringPattern(FingeringPattern pattern)
+	{
+		if (pattern != null)
+		{
+			setName(pattern.getName());
+			setComment(pattern.getComment());
+			setNumberOfHoles(pattern.getNumberOfHoles());
+			List<Fingering> fingerings = pattern.getFingering();
+			for (Fingering oldFingering : fingerings)
+			{
+				addFingering(new Fingering(oldFingering));
+			}
+		}
+	}
+
 	/**
 	 * @return the name
 	 */

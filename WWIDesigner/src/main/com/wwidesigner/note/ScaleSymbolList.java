@@ -207,4 +207,24 @@ public class ScaleSymbolList
 		}
 	}
 
+	public void removeNulls()
+	{
+		// Don't check name
+		if (comment != null && comment.trim().length() == 0)
+		{
+			comment = null;
+		}
+		if (scaleSymbol != null && scaleSymbol.size() > 0)
+		{
+			for (int i = scaleSymbol.size() - 1; i >= 0; i--)
+			{
+				String symbol = scaleSymbol.get(i);
+				if (symbol == null || symbol.trim().length() == 0)
+				{
+					scaleSymbol.remove(i);
+				}
+			}
+		}
+	}
+
 }

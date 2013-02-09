@@ -3,6 +3,7 @@
  */
 package com.wwidesigner.note;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,14 +11,13 @@ import java.util.List;
  * @author kort
  * 
  */
-public class Fingering
+public class Fingering implements Serializable
 {
 	protected Note note;
 	protected List<Boolean> openHole;
 
 	public Fingering()
 	{
-
 	}
 
 	public Fingering(int numberOfHoles)
@@ -25,6 +25,19 @@ public class Fingering
 		for (int i = 0; i < numberOfHoles; i++)
 		{
 			addOpenHole(true);
+		}
+	}
+
+	public Fingering(Fingering fingering)
+	{
+		if (fingering != null)
+		{
+			setNote(new Note(fingering.getNote()));
+			List<Boolean> holes = fingering.getOpenHole();
+			for (Boolean hole : holes)
+			{
+				addOpenHole(new Boolean(hole));
+			}
 		}
 	}
 

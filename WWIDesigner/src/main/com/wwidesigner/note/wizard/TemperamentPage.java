@@ -19,7 +19,6 @@ import javax.swing.filechooser.FileFilter;
 import com.jidesoft.dialog.ButtonEvent;
 import com.jidesoft.dialog.ButtonNames;
 import com.jidesoft.wizard.AbstractWizardPage;
-import com.jidesoft.wizard.WizardDialog;
 import com.wwidesigner.gui.util.DataPopulatedEvent;
 import com.wwidesigner.gui.util.DataPopulatedListener;
 import com.wwidesigner.gui.util.DataPopulatedProvider;
@@ -34,14 +33,12 @@ public class TemperamentPage extends AbstractWizardPage implements
 	private JPanel contentPanel;
 	private TemperamentPanel tempPanel;
 	private JButton saveButton;
-	private WizardDialog parent;
 	private boolean isInitialized;
 
-	public TemperamentPage(WizardDialog parent)
+	public TemperamentPage()
 	{
 		super("Musical Temperament",
 				"Select or create the note intervals (temperament) used in the scale.");
-		this.parent = parent;
 		createWizardContent();
 	}
 
@@ -332,6 +329,7 @@ public class TemperamentPage extends AbstractWizardPage implements
 	{
 		fireButtonEvent(ButtonEvent.ENABLE_BUTTON, ButtonNames.BACK);
 		fireButtonEvent(ButtonEvent.ENABLE_BUTTON, ButtonNames.NEXT);
+		fireButtonEvent(ButtonEvent.HIDE_BUTTON, ButtonNames.CANCEL);
 	}
 
 	@Override
@@ -345,7 +343,11 @@ public class TemperamentPage extends AbstractWizardPage implements
 	{
 		if (event.getSource() instanceof TemperamentPanel)
 		{
-			saveButton.setEnabled(event.isPopulated());
+			Boolean canSave = event.isPopulated(TemperamentPanel.SAVE_ID);
+			if (canSave != null)
+			{
+				saveButton.setEnabled(canSave);
+			}
 		}
 	}
 

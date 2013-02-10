@@ -40,6 +40,10 @@ public class HoleGroupPositionObjectiveFunction extends BaseObjectiveFunction
 		super(calculator, tuning, evaluator);
 		optimizerType = OptimizerType.BOBYQAOptimizer;		// MultivariateOptimizer
 		setHoleGroups(holeGroups);
+		if ( nrDimensions == 1 ) {
+			// BOBYQA doesn't support single dimension.
+			optimizerType = OptimizerType.CMAESOptimizer;
+		}
 		
 		// Length cannot be shorter than position of lowest hole.
 		// (Use 1 mm past the lower edge of the lowest hole.)
@@ -59,6 +63,17 @@ public class HoleGroupPositionObjectiveFunction extends BaseObjectiveFunction
 
 		numberOfHoleSpaces = 0;
 		int numberOfHoles = calculator.getInstrument().getHole().size();
+		if ( numberOfHoles == 0 )
+		{
+			// If there are no holes, assume the list of groups is empty.
+			// Only one dimension, the length of the flute.
+			this.nrDimensions = 1;
+			this.holeGroups = new int[][] { {} };
+			dimensionByHole = null;
+			groupSize = null;
+			return;
+		}
+
 		boolean first = true;
 		int currentIdx = 0;
 		for (int[] group : groups)
@@ -103,8 +118,11 @@ public class HoleGroupPositionObjectiveFunction extends BaseObjectiveFunction
 					}
 				}
 				currentIdx = holeIdx;
-			}
-		}
+			} // for holes in group
+		} // for each group
+
+		this.holeGroups = groups;
+
 		numberOfHoleSpaces++; // The space from last hole to foot of flute
 
 		if ((currentIdx + 1) != numberOfHoles)
@@ -112,7 +130,6 @@ public class HoleGroupPositionObjectiveFunction extends BaseObjectiveFunction
 			throw new Exception("All holes are not in a group");
 		}
 
-		this.holeGroups = groups;
 		this.nrDimensions = 1 + numberOfHoleSpaces;
 		
 		// Compute dimensionByHole.

@@ -67,6 +67,10 @@ public abstract class MergedObjectiveFunction extends BaseObjectiveFunction
 				++i;
 			}
 		}
+		if ( nrDimensions == 1 && optimizerType == OptimizerType.BOBYQAOptimizer ) {
+			// BOBYQA doesn't support single dimension.
+			optimizerType = OptimizerType.CMAESOptimizer;
+		}
 	}
 
 	/*

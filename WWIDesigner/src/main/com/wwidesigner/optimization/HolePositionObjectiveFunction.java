@@ -31,6 +31,10 @@ public class HolePositionObjectiveFunction extends BaseObjectiveFunction
 		super(calculator, tuning, evaluator);
 		nrDimensions = 1 + calculator.getInstrument().getHole().size();
 		optimizerType = OptimizerType.BOBYQAOptimizer;		// MultivariateOptimizer
+		if ( nrDimensions == 1 ) {
+			// BOBYQA doesn't support single dimension.
+			optimizerType = OptimizerType.CMAESOptimizer;
+		}
 		
 		// Length cannot be shorter than position of lowest hole.
 		// (Use 1 mm past the lower edge of the lowest hole.)

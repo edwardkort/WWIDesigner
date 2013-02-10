@@ -310,7 +310,8 @@ public abstract class StudyModel
 				// Multivariate optimization, with bounds.
 				BaseMultivariateSimpleBoundsOptimizer<MultivariateFunction> optimizer;
 				PointValuePair  outcome;
-				if ( objective.getOptimizerType() == BaseObjectiveFunction.OptimizerType.CMAESOptimizer )
+				if ( objective.getOptimizerType() == BaseObjectiveFunction.OptimizerType.CMAESOptimizer
+						|| objective.getNrDimensions() == 1 )	// BOBYQA requires 2 or more dimensions.
 				{
 					optimizer = new CMAESOptimizer(objective.getNrInterpolations());
 				}

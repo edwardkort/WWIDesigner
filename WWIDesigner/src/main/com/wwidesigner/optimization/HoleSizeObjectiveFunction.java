@@ -69,9 +69,14 @@ public class HoleSizeObjectiveFunction extends BaseObjectiveFunction
 
 	protected void setConstraints()
 	{
-		for (int i = nrDimensions; i > 0; i--)
+		PositionInterface[] sortedHoles = Instrument.sortList(calculator
+				.getInstrument().getHole());
+
+		for (int i = nrDimensions, idx = 0; i > 0; i--, idx++)
 		{
-			String name = "Hole " + i;
+			String givenName = ((Hole) sortedHoles[idx]).getName();
+			String name = (givenName != null && givenName.trim().length() > 0) ? givenName
+					: "Hole " + i;
 			if (i == nrDimensions)
 			{
 				name += " (top)";

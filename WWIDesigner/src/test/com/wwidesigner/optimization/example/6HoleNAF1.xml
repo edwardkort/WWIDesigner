@@ -22,6 +22,7 @@
 		<boreDiameter>1.041</boreDiameter>
 	</borePoint>
 	<hole>
+		<name>Hole T</name>
 		<borePosition>3.15</borePosition>
 		<diameter>0.308</diameter>
 		<height>0.165</height>

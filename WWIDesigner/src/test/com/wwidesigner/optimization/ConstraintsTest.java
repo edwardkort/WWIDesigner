@@ -57,6 +57,7 @@ public class ConstraintsTest extends AbstractOptimizationTest
 					objective.getNrDimensions(),
 					constraints.getNumberOfConstraints());
 
+			// Test hole name that is not set in Instrument.xml
 			Constraint constraint = constraints.getConstraint(5);
 			assertEquals("Constraint name incorrect",
 					"Hole 1 (bottom) diameter", constraint.getDisplayName());
@@ -64,6 +65,10 @@ public class ConstraintsTest extends AbstractOptimizationTest
 			assertEquals("Constraint dimensionality incorrect", true,
 					constraint.isDimensional());
 
+			// Test hole name that is set in Instrument.xml
+			constraint = constraints.getConstraint(0);
+			assertEquals("Constraint name incorrect",
+					"Hole T (top) diameter", constraint.getDisplayName());
 		}
 		catch (Exception e)
 		{

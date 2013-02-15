@@ -1,44 +1,78 @@
 package com.wwidesigner.optimization;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import com.wwidesigner.util.Constants.LengthType;
 
 public class Constraints
 {
-	private List<Constraint> constraints;
+	private Map<String, List<Constraint>> constraints;
 	private LengthType dimensionType;
 
 	public Constraints(LengthType dimensionType)
 	{
-		constraints = new ArrayList<Constraint>();
+		constraints = new HashMap<String, List<Constraint>>();
 		this.dimensionType = dimensionType;
+	}
+
+	public Set<String> getCategories()
+	{
+		return constraints.keySet();
 	}
 
 	public void addConstraint(Constraint newConstraint)
 	{
-		constraints.add(newConstraint);
+		if (Constraint.isValid(newConstraint))
+		{
+			String category = newConstraint.getCategory();
+			List<Constraint> catConstraints = getConstraints(category);
+			catConstraints.add(newConstraint);
+		}
 	}
 
-	public Constraint getConstraint(int index)
+	public Constraint getConstraint(String category, int index)
 	{
-		return constraints.get(index);
+		return constraints.get(category).get(index);
 	}
 
 	public void addConstraints(Constraints newConstraints)
 	{
-		constraints.addAll(newConstraints.constraints);
+		Set<String> categories = newConstraints.getCategories();
+		for (String category : categories)
+		{
+			List<Constraint> catConstraints = newConstraints
+					.getConstraints(category);
+			for (Constraint constraint : catConstraints)
+			{
+				addConstraint(constraint);
+			}
+		}
 	}
 
-	public List<Constraint> getConstraints()
+	public List<Constraint> getConstraints(String category)
 	{
-		return constraints;
+		if (category == null || category.trim().length() == 0)
+		{
+			return null;
+		}
+
+		List<Constraint> catConstraints = constraints.get(category);
+		if (catConstraints == null)
+		{
+			catConstraints = new ArrayList<Constraint>();
+			constraints.put(category, catConstraints);
+		}
+
+		return catConstraints;
 	}
 
-	public int getNumberOfConstraints()
+	public int getNumberOfConstraints(String category)
 	{
-		return constraints.size();
+		return constraints.get(category).size();
 	}
 
 }

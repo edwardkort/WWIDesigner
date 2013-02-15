@@ -3,12 +3,14 @@ package com.wwidesigner.optimization;
 public class Constraint
 {
 	private String displayName;
-	private boolean isDimensional;
+	private String category;
+	private ConstraintType type;
 
-	public Constraint(String displayName, boolean isDimensional)
+	public Constraint(String category, String displayName, ConstraintType type)
 	{
+		this.category = category;
 		this.displayName = displayName;
-		this.isDimensional = isDimensional;
+		this.type = type;
 	}
 
 	public String getDisplayName()
@@ -16,9 +18,39 @@ public class Constraint
 		return displayName;
 	}
 
-	public boolean isDimensional()
+	public String getCategory()
 	{
-		return isDimensional;
+		return category;
+	}
+
+	public ConstraintType getType()
+	{
+		return type;
+	}
+
+	public enum ConstraintType
+	{
+		BOOLEAN, INTEGER, DIMENSIONAL, DIMENSIONLESS
+	}
+
+	public static boolean isValid(Constraint constraint)
+	{
+		if (constraint == null)
+		{
+			return false;
+		}
+		if (constraint.category == null
+				|| constraint.category.trim().length() == 0)
+		{
+			return false;
+		}
+		if (constraint.displayName == null
+				|| constraint.displayName.trim().length() == 0)
+		{
+			return false;
+		}
+
+		return true;
 	}
 
 }

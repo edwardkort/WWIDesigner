@@ -5,6 +5,7 @@ import org.apache.commons.math3.exception.DimensionMismatchException;
 import com.wwidesigner.modelling.EvaluatorInterface;
 import com.wwidesigner.modelling.InstrumentCalculator;
 import com.wwidesigner.note.TuningInterface;
+import com.wwidesigner.optimization.Constraint.ConstraintType;
 
 /**
  * Optimization objective function for an instrument's fipple factor.
@@ -21,7 +22,8 @@ public class FippleFactorObjectiveFunction extends BaseObjectiveFunction
 		super(calculator, tuning, evaluator);
 		nrDimensions = 1;
 		optimizerType = OptimizerType.BrentOptimizer; // UnivariateOptimizer
-		constraints.addConstraint(new Constraint("Fipple factor", false));
+		constraints.addConstraint(new Constraint("Mouthpiece", "Fipple factor",
+				ConstraintType.DIMENSIONLESS));
 	}
 
 	@Override

@@ -8,6 +8,7 @@ import com.wwidesigner.geometry.PositionInterface;
 import com.wwidesigner.modelling.EvaluatorInterface;
 import com.wwidesigner.modelling.InstrumentCalculator;
 import com.wwidesigner.note.TuningInterface;
+import com.wwidesigner.optimization.Constraint.ConstraintType;
 
 /**
  * Optimization objective function for hole diameters.
@@ -69,6 +70,8 @@ public class HoleSizeObjectiveFunction extends BaseObjectiveFunction
 
 	protected void setConstraints()
 	{
+		String constraintCategory = "Hole size";
+		ConstraintType type = ConstraintType.DIMENSIONAL;
 		PositionInterface[] sortedHoles = Instrument.sortList(calculator
 				.getInstrument().getHole());
 
@@ -86,7 +89,7 @@ public class HoleSizeObjectiveFunction extends BaseObjectiveFunction
 				name += " (bottom)";
 			}
 			name += " diameter";
-			Constraint constraint = new Constraint(name, true);
+			Constraint constraint = new Constraint(constraintCategory, name, type);
 			constraints.addConstraint(constraint);
 		}
 	}

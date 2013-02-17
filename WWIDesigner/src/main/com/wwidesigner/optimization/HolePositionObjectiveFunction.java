@@ -35,17 +35,6 @@ public class HolePositionObjectiveFunction extends BaseObjectiveFunction
 			// BOBYQA doesn't support single dimension.
 			optimizerType = OptimizerType.CMAESOptimizer;
 		}
-		
-		// Length cannot be shorter than position of lowest hole.
-		// (Use 1 mm past the lower edge of the lowest hole.)
-
-		PositionInterface[] holeList = Instrument.sortList(calculator.getInstrument().getHole());
-		if (holeList.length > 0)
-		{
-			Hole endHole = (Hole) holeList[holeList.length-1];
-			lowerBounds = new double[nrDimensions];
-			lowerBounds[0] = endHole.getBorePosition() + endHole.getDiameter()/2.0 + 0.001;
-		}
 	}
 	
 	/**

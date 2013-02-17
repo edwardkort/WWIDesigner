@@ -5,9 +5,6 @@ import java.util.List;
 import org.apache.commons.math3.exception.DimensionMismatchException;
 
 import com.wwidesigner.geometry.BorePoint;
-import com.wwidesigner.geometry.Hole;
-import com.wwidesigner.geometry.Instrument;
-import com.wwidesigner.geometry.PositionInterface;
 import com.wwidesigner.modelling.EvaluatorInterface;
 import com.wwidesigner.modelling.InstrumentCalculator;
 import com.wwidesigner.note.TuningInterface;
@@ -26,17 +23,6 @@ public class LengthObjectiveFunction extends BaseObjectiveFunction
 		super(calculator, tuning, evaluator);
 		nrDimensions = 1;
 		optimizerType = OptimizerType.BrentOptimizer;		// UnivariateOptimizer
-		
-		// Length cannot be shorter than position of lowest hole.
-		// (Use 1 mm past the lower edge of the lowest hole.)
-
-		PositionInterface[] holeList = Instrument.sortList(calculator.getInstrument().getHole());
-		if ( holeList.length > 0 )
-		{
-			Hole endHole = (Hole) holeList[holeList.length-1];
-			lowerBounds = new double[nrDimensions];
-			lowerBounds[0] = endHole.getBorePosition() + endHole.getDiameter()/2.0 + 0.001;
-		}
 	}
 
 	@Override

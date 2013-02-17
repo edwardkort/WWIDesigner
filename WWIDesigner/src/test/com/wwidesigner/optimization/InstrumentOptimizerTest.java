@@ -40,8 +40,8 @@ public class InstrumentOptimizerTest
 	protected String inputTuningXML = "com/wwidesigner/optimization/example/6HoleTuning.xml";
 
 	/**
-	 * Complete workflow for optimizing an XML-defined instrument with
-	 * a specified ObjectiveFunction.
+	 * Complete workflow for optimizing an XML-defined instrument with a
+	 * specified ObjectiveFunction.
 	 * 
 	 * @return An Instrument object after optimization, with all dimensions in
 	 *         the original units.
@@ -52,24 +52,27 @@ public class InstrumentOptimizerTest
 		PhysicalParameters parameters = new PhysicalParameters(25.,
 				TemperatureType.C);
 		Instrument instrument = getInstrumentFromXml(inputInstrumentXML);
-		InstrumentCalculator calculator = new SimpleTestCalculator(instrument,parameters);
+		InstrumentCalculator calculator = new SimpleTestCalculator(instrument,
+				parameters);
 		instrument.convertToMetres();
 
 		Tuning tuning = getTuningFromXml(inputTuningXML);
 
-		double lowerBound[] = new double[] { 0.25, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01 };
-		double upperBound[] = new double[] { 0.4,  0.035, 0.035, 0.035, 0.035, 0.05, 0.08 };
+		double lowerBound[] = new double[] { 0.25, 0.01, 0.01, 0.01, 0.01,
+				0.01, 0.01 };
+		double upperBound[] = new double[] { 0.4, 0.035, 0.035, 0.035, 0.035,
+				0.05, 0.08 };
 		EvaluatorInterface evaluator = new ReactanceEvaluator(calculator);
-		BaseObjectiveFunction objective = new HolePositionObjectiveFunction(calculator, tuning, evaluator);
-		// HoleObjectiveFunction defines its own lower bound.
-		lowerBound[0] = objective.getLowerBounds()[0];
+		BaseObjectiveFunction objective = new HolePositionObjectiveFunction(
+				calculator, tuning, evaluator);
 		objective.setLowerBounds(lowerBound);
 		objective.setUpperBounds(upperBound);
-		
+
 		BOBYQAOptimizer optimizer = new BOBYQAOptimizer(30);
-		
-		PointValuePair outcome = optimizer.optimize(20000, objective, GoalType.MINIMIZE,
-				objective.getStartingPoint(), lowerBound, upperBound);
+
+		PointValuePair outcome = optimizer.optimize(20000, objective,
+				GoalType.MINIMIZE, objective.getStartingPoint(), lowerBound,
+				upperBound);
 		objective.setGeometryPoint(outcome.getKey());
 
 		// Convert back to the input unit-of-measure values
@@ -85,22 +88,29 @@ public class InstrumentOptimizerTest
 		try
 		{
 			Instrument optimizedInstrument = doInstrumentOptimization();
-			
+
 			// Test bore length
 			List<BorePoint> borePoints = optimizedInstrument.getBorePoint();
 			PositionInterface[] sortedPoints = Instrument.sortList(borePoints);
 			PositionInterface lastPoint = sortedPoints[sortedPoints.length - 1];
-			assertEquals("Bore length incorrect", 377.10, lastPoint.getBorePosition(), 0.01);
-			
+			assertEquals("Bore length incorrect", 377.10,
+					lastPoint.getBorePosition(), 0.01);
+
 			// Test hole positions
 			List<Hole> holes = optimizedInstrument.getHole();
 			PositionInterface[] sortedHoles = Instrument.sortList(holes);
-			assertEquals("Hole 1 position incorrect", 188.32, sortedHoles[0].getBorePosition(), 0.01);
-			assertEquals("Hole 2 position incorrect", 212.60, sortedHoles[1].getBorePosition(), 0.01);
-			assertEquals("Hole 3 position incorrect", 238.91, sortedHoles[2].getBorePosition(), 0.01);
-			assertEquals("Hole 4 position incorrect", 272.14, sortedHoles[3].getBorePosition(), 0.01);
-			assertEquals("Hole 5 position incorrect", 283.72, sortedHoles[4].getBorePosition(), 0.01);
-			assertEquals("Hole 6 position incorrect", 317.46, sortedHoles[5].getBorePosition(), 0.01);
+			assertEquals("Hole 1 position incorrect", 188.32,
+					sortedHoles[0].getBorePosition(), 0.01);
+			assertEquals("Hole 2 position incorrect", 212.60,
+					sortedHoles[1].getBorePosition(), 0.01);
+			assertEquals("Hole 3 position incorrect", 238.91,
+					sortedHoles[2].getBorePosition(), 0.01);
+			assertEquals("Hole 4 position incorrect", 272.14,
+					sortedHoles[3].getBorePosition(), 0.01);
+			assertEquals("Hole 5 position incorrect", 283.72,
+					sortedHoles[4].getBorePosition(), 0.01);
+			assertEquals("Hole 6 position incorrect", 317.46,
+					sortedHoles[5].getBorePosition(), 0.01);
 		}
 		catch (Exception e)
 		{
@@ -140,11 +150,12 @@ public class InstrumentOptimizerTest
 	 *            that manages the elements in the file.
 	 * @return A file representation of the fileName, as found somewhere in the
 	 *         classpath.
-	 * @throws FileNotFoundException 
+	 * @throws FileNotFoundException
 	 */
-	protected File getInputFile(String fileName, BindFactory bindFactory) throws FileNotFoundException
+	protected File getInputFile(String fileName, BindFactory bindFactory)
+			throws FileNotFoundException
 	{
-		String inputPath = bindFactory.getPathFromName(fileName);
+		String inputPath = BindFactory.getPathFromName(fileName);
 		File inputFile = new File(inputPath);
 
 		return inputFile;

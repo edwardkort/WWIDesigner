@@ -38,7 +38,7 @@ public class WhistleStudyModel extends StudyModel
 	public static final String HOLESIZE_OPT_SUB_CATEGORY_ID = "4. Hole Size Optimizer";
 	public static final String HOLESPACE_OPT_SUB_CATEGORY_ID = "5. Hole Spacing Optimizer";
 	public static final String HOLE_OPT_SUB_CATEGORY_ID = "6. Hole Size+Spacing Optimizer";
-	
+
 	protected int blowingLevel;
 
 	public WhistleStudyModel()
@@ -61,13 +61,18 @@ public class WhistleStudyModel extends StudyModel
 		categories.add(optimizers);
 	}
 
-	/* (non-Javadoc)
-	 * @see com.wwidesigner.gui.StudyModel#setPreferences(java.util.prefs.Preferences)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.wwidesigner.gui.StudyModel#setPreferences(java.util.prefs.Preferences
+	 * )
 	 */
 	@Override
 	public void setPreferences(Preferences newPreferences)
 	{
-		blowingLevel = newPreferences.getInt(OptimizationPreferences.BLOWING_LEVEL_OPT, 5);
+		blowingLevel = newPreferences.getInt(
+				OptimizationPreferences.BLOWING_LEVEL_OPT, 5);
 		super.setPreferences(newPreferences);
 	}
 
@@ -100,7 +105,7 @@ public class WhistleStudyModel extends StudyModel
 		calculator.setInstrument(instrument);
 		calculator.setPhysicalParameters(params);
 
-		BaseObjectiveFunction  objective = null;
+		BaseObjectiveFunction objective = null;
 		double[] lowerBound = null;
 		double[] upperBound = null;
 
@@ -108,47 +113,58 @@ public class WhistleStudyModel extends StudyModel
 		{
 			case WINDOW_OPT_SUB_CATEGORY_ID:
 				evaluator = new FmaxEvaluator(calculator);
-				objective = new WindowHeightObjectiveFunction(calculator, tuning, evaluator);
+				objective = new WindowHeightObjectiveFunction(calculator,
+						tuning, evaluator);
 				lowerBound = new double[] { 0.000 };
 				upperBound = new double[] { 0.010 };
 				break;
 			case BETA_OPT_SUB_CATEGORY_ID:
 				evaluator = new FminEvaluator(calculator);
-				objective = new BetaObjectiveFunction(calculator, tuning, evaluator);
+				objective = new BetaObjectiveFunction(calculator, tuning,
+						evaluator);
 				lowerBound = new double[] { 0.2 };
 				upperBound = new double[] { 0.5 };
 				break;
 			case LENGTH_OPT_SUB_CATEGORY_ID:
 				evaluator = new BellNoteEvaluator(calculator);
-				objective = new LengthObjectiveFunction(calculator, tuning, evaluator);
-				// LengthObjectiveFunction calculates its own lower bound, from the instrument geometry.
-				lowerBound = objective.getLowerBounds();
+				objective = new LengthObjectiveFunction(calculator, tuning,
+						evaluator);
+				lowerBound = new double[] { 0.350 };
 				upperBound = new double[] { 0.700 };
 				break;
 			case HOLESIZE_OPT_SUB_CATEGORY_ID:
 				evaluator = new WhistleEvaluator(calculator, blowingLevel);
-				objective = new HoleSizeObjectiveFunction(calculator, tuning, evaluator);
+				objective = new HoleSizeObjectiveFunction(calculator, tuning,
+						evaluator);
 				// Bounds are diameters, expressed in meters.
-				lowerBound = new double[] { 0.004, 0.004, 0.004, 0.004, 0.004, 0.004 };
-//				upperBound = new double[] { 0.010, 0.010, 0.010, 0.010, 0.010, 0.010 };
-				upperBound = new double[] { 0.009, 0.009, 0.009, 0.009, 0.009, 0.009 };
+				lowerBound = new double[] { 0.004, 0.004, 0.004, 0.004, 0.004,
+						0.004 };
+				// upperBound = new double[] { 0.010, 0.010, 0.010, 0.010,
+				// 0.010, 0.010 };
+				upperBound = new double[] { 0.009, 0.009, 0.009, 0.009, 0.009,
+						0.009 };
 				break;
 			case HOLESPACE_OPT_SUB_CATEGORY_ID:
 				evaluator = new WhistleEvaluator(calculator, blowingLevel);
-				objective = new HolePositionObjectiveFunction(calculator, tuning, evaluator);
+				objective = new HolePositionObjectiveFunction(calculator,
+						tuning, evaluator);
 				// Bounds are expressed in meters.
-				lowerBound = new double[] { 0.200, 0.013, 0.013, 0.013, 0.013, 0.013, 0.013 };
-				upperBound = new double[] { 0.700, 0.050, 0.050, 0.050, 0.050, 0.050, 0.200 };
+				lowerBound = new double[] { 0.200, 0.013, 0.013, 0.013, 0.013,
+						0.013, 0.013 };
+				upperBound = new double[] { 0.700, 0.050, 0.050, 0.050, 0.050,
+						0.050, 0.200 };
 				break;
 			case HOLE_OPT_SUB_CATEGORY_ID:
 			default:
 				evaluator = new WhistleEvaluator(calculator, blowingLevel);
-				objective = new HoleObjectiveFunction(calculator, tuning, evaluator);
-				// Length bounds are expressed in meters, diameter bounds as ratios.
-				lowerBound = new double[] { 0.200, 0.012, 0.012, 0.012, 0.012, 0.012, 0.012,
-						0.004, 0.004, 0.004, 0.004, 0.004, 0.004 };
-				upperBound = new double[] { 0.700, 0.050, 0.050, 0.050, 0.050, 0.050, 0.200,
-						0.010, 0.010, 0.010, 0.010, 0.010, 0.010 };
+				objective = new HoleObjectiveFunction(calculator, tuning,
+						evaluator);
+				// Length bounds are expressed in meters, diameter bounds as
+				// ratios.
+				lowerBound = new double[] { 0.200, 0.012, 0.012, 0.012, 0.012,
+						0.012, 0.012, 0.004, 0.004, 0.004, 0.004, 0.004, 0.004 };
+				upperBound = new double[] { 0.700, 0.050, 0.050, 0.050, 0.050,
+						0.050, 0.200, 0.010, 0.010, 0.010, 0.010, 0.010, 0.010 };
 				break;
 		}
 

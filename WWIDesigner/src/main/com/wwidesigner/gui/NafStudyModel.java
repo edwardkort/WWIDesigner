@@ -19,7 +19,6 @@ import com.wwidesigner.optimization.HoleGroupObjectiveFunction;
 import com.wwidesigner.optimization.HoleObjectiveFunction;
 import com.wwidesigner.optimization.HolePositionObjectiveFunction;
 import com.wwidesigner.optimization.HoleSizeObjectiveFunction;
-import com.wwidesigner.optimization.LengthObjectiveFunction;
 import com.wwidesigner.optimization.SingleTaperHoleGroupObjectiveFunction;
 import com.wwidesigner.optimization.SingleTaperLengthObjectiveFunction;
 import com.wwidesigner.optimization.multistart.GridRangeProcessor;
@@ -248,8 +247,6 @@ public class NafStudyModel extends StudyModel
 					upperBound = new double[] { 0.7, 0.038, 0.038, 0.07, 0.038,
 							0.038, 0.30 };
 				}
-				// HolePositionObjectiveFunction defines its own lower bound.
-				lowerBound[0] = objective.getLowerBounds()[0];
 				break;
 			case NO_GROUP_OPT_SUB_CATEGORY_ID:
 				evaluator = new ReflectionEvaluator(calculator);
@@ -299,8 +296,6 @@ public class NafStudyModel extends StudyModel
 				}
 				objective = new HoleObjectiveFunction(calculator, tuning,
 						evaluator);
-				// HolePositionObjectiveFunction defines its own lower bound.
-				lowerBound[0] = objective.getLowerBounds()[0];
 				break;
 			case GROUP_OPT_SUB_CATEGORY_ID:
 				evaluator = new ReflectionEvaluator(calculator);
@@ -342,8 +337,6 @@ public class NafStudyModel extends StudyModel
 				}
 				objective = new HoleGroupObjectiveFunction(calculator, tuning,
 						evaluator, holeGroups);
-				// HoleGroupObjectiveFunction defines its own lower bound.
-				lowerBound[0] = objective.getLowerBounds()[0];
 				break;
 			case TAPER_GROUP_OPT_SUB_CATEGORY_ID:
 				evaluator = new ReflectionEvaluator(calculator);
@@ -388,8 +381,6 @@ public class NafStudyModel extends StudyModel
 				}
 				objective = new SingleTaperHoleGroupObjectiveFunction(
 						calculator, tuning, evaluator, holeGroups);
-				// HoleGroupObjectiveFunction defines its own lower bound.
-				lowerBound[0] = objective.getLowerBounds()[0];
 				break;
 			case TAPER_LENGTH_OPT_SUB_CATEGORY_ID:
 				evaluator = new ReflectionEvaluator(calculator);
@@ -399,8 +390,6 @@ public class NafStudyModel extends StudyModel
 				upperBound = new double[] { 0.7, 2.0, 1.0, 1.0 };
 				objective = new SingleTaperLengthObjectiveFunction(calculator,
 						tuning, evaluator);
-				// LengthObjectiveFunction defines its own lower bound.
-				lowerBound[0] = objective.getLowerBounds()[0];
 				break;
 		}
 

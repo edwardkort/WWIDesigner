@@ -14,46 +14,37 @@ import com.wwidesigner.modelling.InstrumentCalculator;
 import com.wwidesigner.note.TuningInterface;
 
 /**
- * Optimization objective function for bore length and hole positions,
- * with holes equally spaced within groups:
- * - Position of end bore point.
- * - For each group, spacing within group, then spacing to next group,
- *   ending with spacing from last group to end of bore.
- * Assumes that total spacing is less than the bore length.
- * (In practice, it will be significantly less.)
+ * Optimization objective function for bore length and hole positions, with
+ * holes equally spaced within groups: - Position of end bore point. - For each
+ * group, spacing within group, then spacing to next group, ending with spacing
+ * from last group to end of bore. Assumes that total spacing is less than the
+ * bore length. (In practice, it will be significantly less.)
+ * 
  * @author Edward Kort, Burton Patkau
- *
+ * 
  */
 public class HoleGroupPositionObjectiveFunction extends BaseObjectiveFunction
 {
 	protected int[][] holeGroups;
 	protected int numberOfHoleSpaces;
-	// For each hole, the geometry dimension that identifies spacing after this hole.
+	// For each hole, the geometry dimension that identifies spacing after this
+	// hole.
 	protected int[] dimensionByHole;
 	// For each hole, the number of holes in the hole's dimension.
 	// This is used to average existing lengths.
 	protected double[] groupSize;
 
-	public HoleGroupPositionObjectiveFunction(InstrumentCalculator calculator, TuningInterface tuning,
-			EvaluatorInterface evaluator, int[][] holeGroups) throws Exception
+	public HoleGroupPositionObjectiveFunction(InstrumentCalculator calculator,
+			TuningInterface tuning, EvaluatorInterface evaluator,
+			int[][] holeGroups) throws Exception
 	{
 		super(calculator, tuning, evaluator);
-		optimizerType = OptimizerType.BOBYQAOptimizer;		// MultivariateOptimizer
+		optimizerType = OptimizerType.BOBYQAOptimizer; // MultivariateOptimizer
 		setHoleGroups(holeGroups);
-		if ( nrDimensions == 1 ) {
+		if (nrDimensions == 1)
+		{
 			// BOBYQA doesn't support single dimension.
 			optimizerType = OptimizerType.CMAESOptimizer;
-		}
-		
-		// Length cannot be shorter than position of lowest hole.
-		// (Use 1 mm past the lower edge of the lowest hole.)
-
-		PositionInterface[] holeList = Instrument.sortList(calculator.getInstrument().getHole());
-		if (holeList.length > 0)
-		{
-			Hole endHole = (Hole) holeList[holeList.length-1];
-			lowerBounds = new double[nrDimensions];
-			lowerBounds[0] = endHole.getBorePosition() + endHole.getDiameter()/2.0 + 0.001;
 		}
 	}
 
@@ -63,7 +54,7 @@ public class HoleGroupPositionObjectiveFunction extends BaseObjectiveFunction
 
 		numberOfHoleSpaces = 0;
 		int numberOfHoles = calculator.getInstrument().getHole().size();
-		if ( numberOfHoles == 0 )
+		if (numberOfHoles == 0)
 		{
 			// If there are no holes, assume the list of groups is empty.
 			// Only one dimension, the length of the flute.
@@ -131,11 +122,11 @@ public class HoleGroupPositionObjectiveFunction extends BaseObjectiveFunction
 		}
 
 		this.nrDimensions = 1 + numberOfHoleSpaces;
-		
+
 		// Compute dimensionByHole.
-		
+
 		dimensionByHole = new int[numberOfHoles];
-		groupSize       = new double[numberOfHoles];
+		groupSize = new double[numberOfHoles];
 
 		// Dimension 0 is the position of the end bore point.
 		// Dimension 1 is the spacing after the first hole.
@@ -147,7 +138,7 @@ public class HoleGroupPositionObjectiveFunction extends BaseObjectiveFunction
 			{
 				// All holes but the last use the current dimension,
 				// inter-hole spacing.
-				for ( int j = 0; j < group.length - 1; j++ )
+				for (int j = 0; j < group.length - 1; j++)
 				{
 					dimensionByHole[group[j]] = dimension;
 					groupSize[group[j]] = group.length - 1;
@@ -157,8 +148,8 @@ public class HoleGroupPositionObjectiveFunction extends BaseObjectiveFunction
 			if (group.length > 0)
 			{
 				// Last hole in the group uses the spacing after the group.
-				dimensionByHole[group[group.length-1]] = dimension;
-				groupSize[group[group.length-1]] = 1;
+				dimensionByHole[group[group.length - 1]] = dimension;
+				groupSize[group[group.length - 1]] = 1;
 				dimension++;
 			}
 		}
@@ -172,9 +163,9 @@ public class HoleGroupPositionObjectiveFunction extends BaseObjectiveFunction
 		List<BorePoint> boreList = calculator.getInstrument().getBorePoint();
 		double endPosition = boreList.get(0).getBorePosition();
 
-		for (BorePoint borePoint: boreList)
+		for (BorePoint borePoint : boreList)
 		{
-			if ( borePoint.getBorePosition() > endPosition )
+			if (borePoint.getBorePosition() > endPosition)
 			{
 				endPosition = borePoint.getBorePosition();
 			}
@@ -185,8 +176,8 @@ public class HoleGroupPositionObjectiveFunction extends BaseObjectiveFunction
 	@Override
 	public double[] getGeometryPoint()
 	{
-		PositionInterface[] sortedHoles
-				= Instrument.sortList(calculator.getInstrument().getHole());
+		PositionInterface[] sortedHoles = Instrument.sortList(calculator
+				.getInstrument().getHole());
 
 		double[] geometry = new double[nrDimensions];
 		// Set dimensions to zero, so we can accumulate group averages.
@@ -202,7 +193,8 @@ public class HoleGroupPositionObjectiveFunction extends BaseObjectiveFunction
 		for (int i = sortedHoles.length - 1; i >= 0; --i)
 		{
 			Hole hole = (Hole) sortedHoles[i];
-			geometry[dimensionByHole[i]] += (priorHolePosition - hole.getBorePosition()) / groupSize[i];
+			geometry[dimensionByHole[i]] += (priorHolePosition - hole
+					.getBorePosition()) / groupSize[i];
 			priorHolePosition = hole.getBorePosition();
 		}
 		return geometry;
@@ -211,7 +203,8 @@ public class HoleGroupPositionObjectiveFunction extends BaseObjectiveFunction
 	@Override
 	public void setGeometryPoint(double[] point)
 	{
-		if ( point.length != nrDimensions ) {
+		if (point.length != nrDimensions)
+		{
 			throw new DimensionMismatchException(point.length, nrDimensions);
 		}
 
@@ -220,22 +213,22 @@ public class HoleGroupPositionObjectiveFunction extends BaseObjectiveFunction
 
 		List<BorePoint> boreList = calculator.getInstrument().getBorePoint();
 		BorePoint endPoint = boreList.get(0);
-		
-		for (BorePoint borePoint: boreList)
+
+		for (BorePoint borePoint : boreList)
 		{
-			if ( borePoint.getBorePosition() > endPoint.getBorePosition() )
+			if (borePoint.getBorePosition() > endPoint.getBorePosition())
 			{
 				endPoint = borePoint;
 			}
-			if ( borePoint.getBorePosition() > point[0] )
+			if (borePoint.getBorePosition() > point[0])
 			{
 				borePoint.setBorePosition(point[0]);
 			}
 		}
 		endPoint.setBorePosition(point[0]);
 
-		PositionInterface[] sortedHoles
-				= Instrument.sortList(calculator.getInstrument().getHole());
+		PositionInterface[] sortedHoles = Instrument.sortList(calculator
+				.getInstrument().getHole());
 
 		// Geometry dimensions are distances between holes.
 		// Final dimension is distance between last hole and end of bore.
@@ -245,7 +238,7 @@ public class HoleGroupPositionObjectiveFunction extends BaseObjectiveFunction
 		for (int i = sortedHoles.length - 1; i >= 0; --i)
 		{
 			Hole hole = (Hole) sortedHoles[i];
-			hole.setBorePosition( priorHolePosition - point[dimensionByHole[i]] );
+			hole.setBorePosition(priorHolePosition - point[dimensionByHole[i]]);
 			priorHolePosition = hole.getBorePosition();
 		}
 		calculator.getInstrument().updateComponents();

@@ -54,8 +54,6 @@ public class HoleGroupSpacingOptimizerTest extends AbstractOptimizationTest
 					{ 5 }, { 6 } };
 			evaluator = new ReactanceEvaluator(calculator);
 			objective = new HoleGroupObjectiveFunction(calculator, tuning, evaluator, holeGroups);
-			// HoleGroupObjectiveFunction defines its own lower bound.
-			lowerBound[0] = objective.getLowerBounds()[0];
 			objective.setMaxIterations(20000);
 			objective.setOptimizerType(BaseObjectiveFunction.OptimizerType.CMAESOptimizer);
 
@@ -89,8 +87,6 @@ public class HoleGroupSpacingOptimizerTest extends AbstractOptimizationTest
 					{ 5 }, { 6 } };
 			evaluator = new ReactanceEvaluator(calculator);
 			objective = new HoleGroupObjectiveFunction(calculator, tuning, evaluator, holeGroups);
-			// HoleGroupObjectiveFunction defines its own lower bound.
-			lowerBound[0] = objective.getLowerBounds()[0];
 			objective.setMaxIterations(20000);
 			objective.setOptimizerType(BaseObjectiveFunction.OptimizerType.CMAESOptimizer);
 
@@ -127,8 +123,6 @@ public class HoleGroupSpacingOptimizerTest extends AbstractOptimizationTest
 			holeGroups = new int[][] { { 0, 1, 2 }, { 3, 4, 5 }, { 6 } };
 			evaluator = new ReactanceEvaluator(calculator);
 			objective = new HoleGroupObjectiveFunction(calculator, tuning, evaluator, holeGroups);
-			// HoleGroupObjectiveFunction defines its own lower bound.
-			lowerBound[0] = objective.getLowerBounds()[0];
 			objective.setMaxIterations(20000);
 			objective.setOptimizerType(BaseObjectiveFunction.OptimizerType.CMAESOptimizer);
 
@@ -162,8 +156,6 @@ public class HoleGroupSpacingOptimizerTest extends AbstractOptimizationTest
 			holeGroups = new int[][] { { 0, 1, 2 }, { 3, 4, 5 }, { 6 } };
 			evaluator = new ReactanceEvaluator(calculator);
 			objective = new HoleGroupObjectiveFunction(calculator, tuning, evaluator, holeGroups);
-			// HoleGroupObjectiveFunction defines its own lower bound.
-			lowerBound[0] = objective.getLowerBounds()[0];
 			objective.setMaxIterations(20000);
 			objective.setOptimizerType(BaseObjectiveFunction.OptimizerType.CMAESOptimizer);
 

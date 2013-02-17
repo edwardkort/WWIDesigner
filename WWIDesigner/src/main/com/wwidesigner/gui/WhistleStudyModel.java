@@ -129,7 +129,7 @@ public class WhistleStudyModel extends StudyModel
 				evaluator = new BellNoteEvaluator(calculator);
 				objective = new LengthObjectiveFunction(calculator, tuning,
 						evaluator);
-				lowerBound = new double[] { 0.350 };
+				lowerBound = new double[] { 0.200 };
 				upperBound = new double[] { 0.700 };
 				break;
 			case HOLESIZE_OPT_SUB_CATEGORY_ID:

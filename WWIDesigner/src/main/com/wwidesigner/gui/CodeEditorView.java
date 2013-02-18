@@ -73,6 +73,11 @@ public class CodeEditorView extends DataViewPane
 		}
 	}
 
+	public String getText()
+	{
+		return codeEditor.getText();
+	}
+
 	public void setText(String text)
 	{
 		codeEditor.setText(text);

@@ -26,6 +26,7 @@ import com.jidesoft.app.framework.file.FileDataModel;
 import com.wwidesigner.geometry.Instrument;
 import com.wwidesigner.geometry.bind.GeometryBindFactory;
 import com.wwidesigner.modelling.InstrumentCalculator;
+import com.wwidesigner.modelling.InstrumentComparisonTable;
 import com.wwidesigner.modelling.InstrumentTuner;
 import com.wwidesigner.note.Tuning;
 import com.wwidesigner.note.bind.NoteBindFactory;
@@ -357,8 +358,27 @@ public abstract class StudyModel
 		String xmlString = marshal(instrument);
 
 		return xmlString;
+	} // optimizeInstrument
+	
+	public void compareInstrument(String newName, Instrument newInstrument) throws Exception
+	{
+		Category category = getCategory(INSTRUMENT_CATEGORY_ID);
+		FileDataModel model = (FileDataModel) category.getSelectedSubValue();
+		String oldName = model.getName();
+		if (oldName.equals(newName))
+		{
+			System.out.print("\nError: Current editor tab, ");
+			System.out.print(newName);
+			System.out.println(" is the same as the selected instrument.");
+			System.out.println("Select the edit tab for a different instrument.");
+			return;
+		}
+		Instrument oldInstrument = getInstrument();
+		InstrumentComparisonTable table = new InstrumentComparisonTable("");
+		table.buildTable(oldName, oldInstrument, newName, newInstrument);
+		table.showTable(false);
 	}
-
+	
 	protected String marshal(Instrument instrument) throws Exception
 	{
 		BindFactory binder = GeometryBindFactory.getInstance();
@@ -387,6 +407,21 @@ public abstract class StudyModel
 		Instrument instrument = (Instrument) geometryBindFactory.unmarshalXml(xmlString, true);
 		instrument.updateComponents();
 		return instrument;
+	}
+
+	protected Instrument getInstrument(String xmlString)
+	{
+		try
+		{
+			BindFactory geometryBindFactory = GeometryBindFactory.getInstance();
+			Instrument instrument = (Instrument) geometryBindFactory.unmarshalXml(xmlString, true);
+			instrument.updateComponents();
+			return instrument;
+		}
+		catch (Exception e)
+		{
+			return null;
+		}
 	}
 
 	protected Tuning getTuning() throws Exception

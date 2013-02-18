@@ -26,6 +26,7 @@ import com.jidesoft.app.framework.file.FileDataModel;
 import com.jidesoft.app.framework.gui.DataViewPane;
 import com.jidesoft.app.framework.gui.filebased.FileBasedApplication;
 import com.jidesoft.tree.TreeUtils;
+import com.wwidesigner.geometry.Instrument;
 import com.wwidesigner.geometry.bind.GeometryBindFactory;
 import com.wwidesigner.gui.StudyModel.Category;
 import com.wwidesigner.note.bind.NoteBindFactory;
@@ -247,6 +248,38 @@ public class StudyView extends DataViewPane implements EventSubscriber
 			Thread.sleep(100);
 			view.updateModel(data);
 			addDataModelToStudy(data);
+		}
+		catch (Exception e)
+		{
+			System.out.println("Exception: " + e.getMessage());
+			e.printStackTrace();
+		}
+	}
+
+	public void compareInstrument()
+	{
+		try
+		{
+			FileBasedApplication app = (FileBasedApplication) getApplication();
+			DataModel data = app.getFocusedModel();
+			if (data != null)
+			{
+				CodeEditorView view = (CodeEditorView) app.getDataView(data);
+				if (view != null)
+				{
+					String xmlInstrument2 = view.getText();
+					Instrument  instrument2 = study.getInstrument(xmlInstrument2);
+					if (instrument2 == null)
+					{
+						System.out.print("\nError: Current editor tab, ");
+						System.out.print(data.getName());
+						System.out.println(", is not a valid instrument.");
+						System.out.println("Select the edit tab for a valid instrument.");
+						return;
+					}
+					study.compareInstrument(data.getName(), instrument2 );
+				}
+			}
 		}
 		catch (Exception e)
 		{

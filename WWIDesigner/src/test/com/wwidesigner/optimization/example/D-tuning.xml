@@ -32,7 +32,7 @@
 	</fingering>
 	<fingering>
 		<note>
-		<name>G</name>
+			<name>G</name>
 			<frequency>783.10</frequency>
 		</note>
 		<openHole>false</openHole><openHole>false</openHole><openHole>false</openHole>
@@ -40,7 +40,7 @@
 	</fingering>
 	<fingering>
 		<note>
-		<name>A</name>
+			<name>A</name>
 			<frequency>880.99</frequency>
 		</note>
 		<openHole>false</openHole><openHole>false</openHole><openHole>true</openHole>
@@ -48,7 +48,7 @@
 	</fingering>
 	<fingering>
 		<note>
-		<name>B</name>
+			<name>B</name>
 			<frequency>978.88</frequency>
 		</note>
 		<openHole>false</openHole><openHole>true</openHole><openHole>true</openHole>
@@ -56,7 +56,7 @@
 	</fingering>
 	<fingering>
 		<note>
-		<name>C-nat</name>
+			<name>C-nat</name>
 			<frequency>1044.1</frequency>
 		</note>
 		<openHole>true</openHole><openHole>false</openHole><openHole>false</openHole>
@@ -96,7 +96,7 @@
 	</fingering>
 	<fingering>
 		<note>
-		<name>G</name>
+			<name>G</name>
 			<frequency>1566.2</frequency>
 		</note>
 		<openHole>false</openHole><openHole>false</openHole><openHole>false</openHole>
@@ -112,20 +112,20 @@
 	</fingering>
 	<fingering>
 		<note>
-		<name>B</name>
+			<name>B</name>
 			<frequency>1957.8</frequency>
 		</note>
 		<openHole>false</openHole><openHole>true</openHole><openHole>true</openHole>
 		<openHole>true</openHole><openHole>true</openHole><openHole>true</openHole>
 	</fingering>
-	<!-- fingering>
+	<fingering>
 		<note>
 			<name>hi C-nat</name>
 			<frequency>2088.3</frequency>
 		</note>
-		<openHole>true</openHole><openHole>false</openHole><openHole>true</openHole>
-		<openHole>true</openHole><openHole>true</openHole><openHole>true</openHole>
-	</fingering -->
+		<openHole>true</openHole><openHole>false</openHole><openHole>false</openHole>
+		<openHole>false</openHole><openHole>false</openHole><openHole>true</openHole>
+	</fingering>
 	<fingering>
 		<note>
 			<name>C#</name>

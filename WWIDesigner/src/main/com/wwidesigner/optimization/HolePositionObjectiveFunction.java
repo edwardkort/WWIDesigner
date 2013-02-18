@@ -14,9 +14,11 @@ import com.wwidesigner.note.TuningInterface;
 
 /**
  * Optimization objective function for bore length and hole positions:
- * - Position of end bore point.
- * - For each hole, spacing below the hole to the next hole,
- *   or (for the last hole) to end of bore.
+ * <ul>
+ * <li>Position of end bore point.</li>
+ * <li>For each hole, spacing below the hole to the next hole,
+ *     or (for the last hole) to end of bore.</li>
+ * </ul>
  * Assumes that total spacing is less than the bore length.
  * (In practice, it will be significantly less.)
  * @author Edward Kort, Burton Patkau

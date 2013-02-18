@@ -16,9 +16,11 @@ import com.wwidesigner.note.TuningInterface;
 /**
  * Optimization objective function for bore length and hole positions, with
  * holes equally spaced within groups:
- * - Position of end bore point.
- * - For each group, spacing within group, then spacing to next group,
- *   ending with spacing from last group to end of bore.
+ * <ul>
+ * <li>Position of end bore point.</li>
+ * <li>For each group, spacing within group, then spacing to next group,
+ *     ending with spacing from last group to end of bore.</li>
+ * </ul>
  * Assumes that total spacing is less than the bore length.
  * (In practice, it will be significantly less.)
  * 

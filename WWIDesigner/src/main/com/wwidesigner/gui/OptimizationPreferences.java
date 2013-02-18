@@ -6,6 +6,7 @@ package com.wwidesigner.gui;
 import java.util.prefs.Preferences;
 
 import javax.swing.BoxLayout;
+import javax.swing.ButtonGroup;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
@@ -32,9 +33,9 @@ public class OptimizationPreferences extends PreferencesPane
 	public static final String BLOWING_LEVEL_OPT = "BlowingLevel";
 	public static final int DEFAULT_BLOWING_LEVEL = 5;
 
-	JPanel studyGroup;
 	JRadioButton nafButton;
 	JRadioButton whistleButton;
+	ButtonGroup studyGroup;
 	JSpinner blowingLevelSpinner;
 	SpinnerNumberModel blowingLevel;
 
@@ -44,14 +45,20 @@ public class OptimizationPreferences extends PreferencesPane
 		nafButton = new JRadioButton("NAF Study");
 		nafButton.setSelected(true);
 		whistleButton = new JRadioButton("Whistle Study");
-		studyGroup = new JPanel();
-		studyGroup.setLayout(new BoxLayout(studyGroup,BoxLayout.Y_AXIS));
+		studyGroup = new ButtonGroup();
+		studyGroup.add(nafButton);
+		studyGroup.add(whistleButton);
+
+		JPanel studyPanel = new JPanel();
+		studyPanel.setLayout(new BoxLayout(studyPanel,BoxLayout.Y_AXIS));
+		studyPanel.add(nafButton);
+		studyPanel.add(whistleButton);
+
 		blowingLevel = new SpinnerNumberModel(DEFAULT_BLOWING_LEVEL,0,10,1);
 		blowingLevelSpinner = new JSpinner(blowingLevel);
 		blowingLevelSpinner.setName("Blowing Level");
-		studyGroup.add(nafButton);
-		studyGroup.add(whistleButton);
-		this.add(studyGroup);
+
+		this.add(studyPanel);
 		this.add(new JLabel("Blowing Level:"));
 		this.add(blowingLevelSpinner);
 	}

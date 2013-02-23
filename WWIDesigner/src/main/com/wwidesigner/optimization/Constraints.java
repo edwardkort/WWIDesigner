@@ -70,6 +70,11 @@ public class Constraints
 		return catConstraints;
 	}
 
+	public void clearConstraints(String category)
+	{
+		constraints.remove(category);
+	}
+
 	public int getNumberOfConstraints(String category)
 	{
 		return constraints.get(category).size();

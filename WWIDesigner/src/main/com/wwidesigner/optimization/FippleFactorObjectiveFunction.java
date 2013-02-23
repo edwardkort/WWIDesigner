@@ -15,6 +15,8 @@ import com.wwidesigner.optimization.Constraint.ConstraintType;
  */
 public class FippleFactorObjectiveFunction extends BaseObjectiveFunction
 {
+	public static final String CONSTR_CAT = "Mouthpiece";
+	public static final ConstraintType CONSTR_TYPE = ConstraintType.DIMENSIONLESS;
 
 	public FippleFactorObjectiveFunction(InstrumentCalculator calculator,
 			TuningInterface tuning, EvaluatorInterface evaluator)
@@ -22,8 +24,7 @@ public class FippleFactorObjectiveFunction extends BaseObjectiveFunction
 		super(calculator, tuning, evaluator);
 		nrDimensions = 1;
 		optimizerType = OptimizerType.BrentOptimizer; // UnivariateOptimizer
-		constraints.addConstraint(new Constraint("Mouthpiece", "Fipple factor",
-				ConstraintType.DIMENSIONLESS));
+		setConstraints();
 	}
 
 	@Override
@@ -45,6 +46,12 @@ public class FippleFactorObjectiveFunction extends BaseObjectiveFunction
 		calculator.getInstrument().getMouthpiece().getFipple()
 				.setFippleFactor(point[0]);
 		calculator.getInstrument().updateComponents();
+	}
+
+	protected void setConstraints()
+	{
+		constraints.addConstraint(new Constraint(CONSTR_CAT, "Fipple factor",
+				CONSTR_TYPE));
 	}
 
 }

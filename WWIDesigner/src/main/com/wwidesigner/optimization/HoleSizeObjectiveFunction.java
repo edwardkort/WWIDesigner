@@ -18,6 +18,8 @@ import com.wwidesigner.optimization.Constraint.ConstraintType;
  */
 public class HoleSizeObjectiveFunction extends BaseObjectiveFunction
 {
+	public static final String CONSTR_CAT = "Hole size";
+	public static final ConstraintType CONSTR_TYPE = ConstraintType.DIMENSIONAL;
 
 	public HoleSizeObjectiveFunction(InstrumentCalculator calculator,
 			TuningInterface tuning, EvaluatorInterface evaluator)
@@ -25,7 +27,8 @@ public class HoleSizeObjectiveFunction extends BaseObjectiveFunction
 		super(calculator, tuning, evaluator);
 		nrDimensions = calculator.getInstrument().getHole().size();
 		optimizerType = OptimizerType.BOBYQAOptimizer; // MultivariateOptimizer
-		if ( nrDimensions == 1 ) {
+		if (nrDimensions == 1)
+		{
 			// BOBYQA doesn't support single dimension.
 			optimizerType = OptimizerType.CMAESOptimizer;
 		}
@@ -70,26 +73,16 @@ public class HoleSizeObjectiveFunction extends BaseObjectiveFunction
 
 	protected void setConstraints()
 	{
-		String constraintCategory = "Hole size";
-		ConstraintType type = ConstraintType.DIMENSIONAL;
 		PositionInterface[] sortedHoles = Instrument.sortList(calculator
 				.getInstrument().getHole());
 
 		for (int i = nrDimensions, idx = 0; i > 0; i--, idx++)
 		{
-			String givenName = ((Hole) sortedHoles[idx]).getName();
-			String name = (givenName != null && givenName.trim().length() > 0) ? givenName
-					: "Hole " + i;
-			if (i == nrDimensions)
-			{
-				name += " (top)";
-			}
-			else if (i == 1)
-			{
-				name += " (bottom)";
-			}
+			String name = Constraint.getHoleName((Hole) sortedHoles[idx], i, 1,
+					nrDimensions);
 			name += " diameter";
-			Constraint constraint = new Constraint(constraintCategory, name, type);
+			Constraint constraint = new Constraint(CONSTR_CAT, name,
+					CONSTR_TYPE);
 			constraints.addConstraint(constraint);
 		}
 	}

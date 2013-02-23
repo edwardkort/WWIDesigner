@@ -12,23 +12,27 @@ import com.wwidesigner.geometry.PositionInterface;
 import com.wwidesigner.modelling.EvaluatorInterface;
 import com.wwidesigner.modelling.InstrumentCalculator;
 import com.wwidesigner.note.TuningInterface;
+import com.wwidesigner.optimization.Constraint.ConstraintType;
 
 /**
  * Optimization objective function for bore length and hole positions, with
  * holes equally spaced within groups:
  * <ul>
  * <li>Position of end bore point.</li>
- * <li>For each group, spacing within group, then spacing to next group,
- *     ending with spacing from last group to end of bore.</li>
+ * <li>For each group, spacing within group, then spacing to next group, ending
+ * with spacing from last group to end of bore.</li>
  * </ul>
- * Assumes that total spacing is less than the bore length.
- * (In practice, it will be significantly less.)
+ * Assumes that total spacing is less than the bore length. (In practice, it
+ * will be significantly less.)
  * 
  * @author Edward Kort, Burton Patkau
  * 
  */
 public class HoleGroupPositionObjectiveFunction extends BaseObjectiveFunction
 {
+	public static final String CONSTR_CAT = "Hole position";
+	public static final ConstraintType CONSTR_TYPE = ConstraintType.DIMENSIONAL;
+
 	protected int[][] holeGroups;
 	protected int numberOfHoleSpaces;
 	// For each hole, the geometry dimension that identifies spacing after this
@@ -45,30 +49,31 @@ public class HoleGroupPositionObjectiveFunction extends BaseObjectiveFunction
 		super(calculator, tuning, evaluator);
 		optimizerType = OptimizerType.BOBYQAOptimizer; // MultivariateOptimizer
 		setHoleGroups(holeGroups);
+	}
+
+	public void setHoleGroups(int[][] groups) throws Exception
+	{
+		int numberOfHoles = getNumberOfHoles();
+
+		if (numberOfHoles > 0)
+		{
+			validateHoleGroups(groups, numberOfHoles);
+
+			computeDimensionByHole(numberOfHoles);
+		}
+
 		if (nrDimensions == 1)
 		{
 			// BOBYQA doesn't support single dimension.
 			optimizerType = OptimizerType.CMAESOptimizer;
 		}
+
+		setConstraints();
 	}
 
-	public void setHoleGroups(int[][] groups) throws Exception
+	private void validateHoleGroups(int[][] groups, int numberOfHoles)
+			throws Exception
 	{
-		// Check list of groups, and count number of hole spaces.
-
-		numberOfHoleSpaces = 0;
-		int numberOfHoles = calculator.getInstrument().getHole().size();
-		if (numberOfHoles == 0)
-		{
-			// If there are no holes, assume the list of groups is empty.
-			// Only one dimension, the length of the flute.
-			this.nrDimensions = 1;
-			this.holeGroups = new int[][] { {} };
-			dimensionByHole = null;
-			groupSize = null;
-			return;
-		}
-
 		boolean first = true;
 		int currentIdx = 0;
 		for (int[] group : groups)
@@ -98,7 +103,8 @@ public class HoleGroupPositionObjectiveFunction extends BaseObjectiveFunction
 						{
 							throw new Exception("A hole is missing from groups");
 						}
-						numberOfHoleSpaces++; // There is a space not in a group
+						numberOfHoleSpaces++; // There is a space not in a
+												// group
 					}
 				}
 				else
@@ -116,7 +122,7 @@ public class HoleGroupPositionObjectiveFunction extends BaseObjectiveFunction
 			} // for holes in group
 		} // for each group
 
-		this.holeGroups = groups;
+		holeGroups = groups;
 
 		numberOfHoleSpaces++; // The space from last hole to foot of flute
 
@@ -125,10 +131,27 @@ public class HoleGroupPositionObjectiveFunction extends BaseObjectiveFunction
 			throw new Exception("All holes are not in a group");
 		}
 
-		this.nrDimensions = 1 + numberOfHoleSpaces;
+		nrDimensions = 1 + numberOfHoleSpaces;
+	}
 
-		// Compute dimensionByHole.
+	private int getNumberOfHoles()
+	{
+		numberOfHoleSpaces = 0;
+		int numberOfHoles = calculator.getInstrument().getHole().size();
+		if (numberOfHoles == 0)
+		{
+			// If there are no holes, assume the list of groups is empty.
+			// Only one dimension, the length of the flute.
+			nrDimensions = 1;
+			holeGroups = new int[][] { {} };
+			dimensionByHole = null;
+			groupSize = null;
+		}
+		return numberOfHoles;
+	}
 
+	private void computeDimensionByHole(int numberOfHoles)
+	{
 		dimensionByHole = new int[numberOfHoles];
 		groupSize = new double[numberOfHoles];
 
@@ -159,10 +182,92 @@ public class HoleGroupPositionObjectiveFunction extends BaseObjectiveFunction
 		}
 	}
 
+	private void setConstraints()
+	{
+		constraints.clearConstraints(CONSTR_CAT); // Reentrant
+
+		constraints.addConstraint(new Constraint(CONSTR_CAT, "Bore length",
+				CONSTR_TYPE));
+
+		PositionInterface[] sortedHoles = Instrument.sortList(calculator
+				.getInstrument().getHole());
+		for (int groupIdx = 0; groupIdx < holeGroups.length; groupIdx++)
+		{
+			boolean isGroup = holeGroups[groupIdx].length > 1;
+			String firstGroupName = getGroupName(groupIdx, sortedHoles);
+			if (isGroup)
+			{
+				String constraintName = firstGroupName + " spacing";
+				constraints.addConstraint(new Constraint(CONSTR_CAT,
+						constraintName, CONSTR_TYPE));
+			}
+			String firstHoleName = getHoleNameFromGroup(groupIdx, false,
+					sortedHoles);
+			String secondHoleName = getHoleNameFromGroup(groupIdx + 1, true,
+					sortedHoles);
+			String constraintName = firstHoleName + " to " + secondHoleName
+					+ " distance";
+			constraints.addConstraint(new Constraint(CONSTR_CAT,
+					constraintName, CONSTR_TYPE));
+		}
+	}
+
+	private String getHoleNameFromGroup(int groupIdx, boolean firstHole,
+			PositionInterface[] sortedHoles)
+	{
+		String name;
+
+		if (groupIdx >= holeGroups.length)
+		{
+			name = "bore end";
+		}
+		else
+		{
+			int[] group = holeGroups[groupIdx];
+			int holeIdx = firstHole ? group[0] : group[group.length - 1];
+			int maxHoleIdx = sortedHoles.length;
+
+			name = Constraint.getHoleName((Hole) sortedHoles[holeIdx],
+					maxHoleIdx - holeIdx, 1, maxHoleIdx);
+		}
+
+		return name;
+	}
+
+	private String getGroupName(int groupIdx, PositionInterface[] sortedHoles)
+	{
+		String name = "";
+
+		int[] group = holeGroups[groupIdx];
+		boolean isGroup = group.length > 1;
+		int maxHoleIdx = sortedHoles.length;
+
+		if (isGroup)
+		{
+			name += "Group " + (groupIdx + 1) + " (";
+		}
+		for (int i = 0; i < group.length; i++)
+		{
+			if (i > 0)
+			{
+				name += ", ";
+			}
+			int holeIdx = group[i];
+			name += Constraint.getHoleName((Hole) sortedHoles[holeIdx],
+					maxHoleIdx - holeIdx, 1, maxHoleIdx);
+		}
+		if (isGroup)
+		{
+			name += ")";
+		}
+
+		return name;
+	}
+
 	/**
 	 * @return The position of the farthest bore point.
 	 */
-	protected double getEndOfBore()
+	private double getEndOfBore()
 	{
 		List<BorePoint> boreList = calculator.getInstrument().getBorePoint();
 		double endPosition = boreList.get(0).getBorePosition();

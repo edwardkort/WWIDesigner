@@ -1,5 +1,7 @@
 package com.wwidesigner.optimization;
 
+import com.wwidesigner.geometry.Hole;
+
 public class Constraint
 {
 	private String displayName;
@@ -51,6 +53,28 @@ public class Constraint
 		}
 
 		return true;
+	}
+
+	public static String getHoleName(Hole hole, int sortedIdx, int minIdx,
+			int maxIdx)
+	{
+		if (hole == null)
+		{
+			return null;
+		}
+		String givenName = hole.getName();
+		String name = (givenName != null && givenName.trim().length() > 0) ? givenName
+				: "Hole " + sortedIdx;
+		if (sortedIdx == maxIdx)
+		{
+			name += " (top)";
+		}
+		else if (sortedIdx == minIdx)
+		{
+			name += " (bottom)";
+		}
+
+		return name;
 	}
 
 }

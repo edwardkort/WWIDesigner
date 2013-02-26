@@ -9,6 +9,7 @@ import com.wwidesigner.geometry.PositionInterface;
 import com.wwidesigner.modelling.EvaluatorInterface;
 import com.wwidesigner.modelling.InstrumentCalculator;
 import com.wwidesigner.note.TuningInterface;
+import com.wwidesigner.optimization.Constraint.ConstraintType;
 
 /**
  * Optimization objective function for a simple one-section taper:
@@ -22,6 +23,8 @@ import com.wwidesigner.note.TuningInterface;
  */
 public class SingleTaperRatioObjectiveFunction extends BaseObjectiveFunction
 {
+	public static final String CONSTR_CAT = "Single bore taper";
+	public static final ConstraintType CONSTR_TYPE = ConstraintType.DIMENSIONLESS;
 
 	public SingleTaperRatioObjectiveFunction(
 			InstrumentCalculator calculator, TuningInterface tuning,
@@ -30,6 +33,18 @@ public class SingleTaperRatioObjectiveFunction extends BaseObjectiveFunction
 		super(calculator, tuning, evaluator);
 		nrDimensions = 3;
 		optimizerType = OptimizerType.BOBYQAOptimizer;		// MultivariateOptimizer
+		setConstraints();
+	}
+
+	private void setConstraints()
+	{
+		constraints.addConstraint(new Constraint(CONSTR_CAT,
+				"Bore diameter ratio (top/bottom)",
+				CONSTR_TYPE));
+		constraints.addConstraint(new Constraint(CONSTR_CAT, "Taper length ratio (to bore length)",
+				CONSTR_TYPE));
+		constraints.addConstraint(new Constraint(CONSTR_CAT,
+				"Taper start ratio (from top/untapered length)", CONSTR_TYPE));
 	}
 
 	@Override

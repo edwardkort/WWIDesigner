@@ -44,7 +44,6 @@ public abstract class MergedObjectiveFunction extends BaseObjectiveFunction
 		for (BaseObjectiveFunction component : components)
 		{
 			nrDimensions += component.getNrDimensions();
-			constraints.addConstraints(component.constraints);
 		}
 
 		lowerBounds = new double[nrDimensions];
@@ -67,10 +66,13 @@ public abstract class MergedObjectiveFunction extends BaseObjectiveFunction
 				++i;
 			}
 		}
-		if ( nrDimensions == 1 && optimizerType == OptimizerType.BOBYQAOptimizer ) {
+		if (nrDimensions == 1 && optimizerType == OptimizerType.BOBYQAOptimizer)
+		{
 			// BOBYQA doesn't support single dimension.
 			optimizerType = OptimizerType.CMAESOptimizer;
 		}
+		
+		setConstraints();
 	}
 
 	/*
@@ -167,6 +169,15 @@ public abstract class MergedObjectiveFunction extends BaseObjectiveFunction
 				subPoint[j] = upperBounds[i++];
 			}
 			component.setUpperBounds(subPoint);
+		}
+	}
+
+	private void setConstraints()
+	{
+		for (BaseObjectiveFunction component : components)
+		{
+			Constraints componentConstraints = component.getConstraints();
+			constraints.addConstraints(componentConstraints);
 		}
 	}
 

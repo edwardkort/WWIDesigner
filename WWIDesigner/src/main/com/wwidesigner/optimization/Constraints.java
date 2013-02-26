@@ -1,7 +1,7 @@
 package com.wwidesigner.optimization;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -10,18 +10,18 @@ import com.wwidesigner.util.Constants.LengthType;
 
 public class Constraints
 {
-	private Map<String, List<Constraint>> constraints;
+	private Map<String, List<Constraint>> constraintsMap;
 	private LengthType dimensionType;
 
 	public Constraints(LengthType dimensionType)
 	{
-		constraints = new HashMap<String, List<Constraint>>();
+		constraintsMap = new LinkedHashMap<String, List<Constraint>>(6);
 		this.dimensionType = dimensionType;
 	}
 
 	public Set<String> getCategories()
 	{
-		return constraints.keySet();
+		return constraintsMap.keySet();
 	}
 
 	public void addConstraint(Constraint newConstraint)
@@ -36,7 +36,7 @@ public class Constraints
 
 	public Constraint getConstraint(String category, int index)
 	{
-		return constraints.get(category).get(index);
+		return constraintsMap.get(category).get(index);
 	}
 
 	public void addConstraints(Constraints newConstraints)
@@ -60,11 +60,11 @@ public class Constraints
 			return null;
 		}
 
-		List<Constraint> catConstraints = constraints.get(category);
+		List<Constraint> catConstraints = constraintsMap.get(category);
 		if (catConstraints == null)
 		{
 			catConstraints = new ArrayList<Constraint>();
-			constraints.put(category, catConstraints);
+			constraintsMap.put(category, catConstraints);
 		}
 
 		return catConstraints;
@@ -72,12 +72,12 @@ public class Constraints
 
 	public void clearConstraints(String category)
 	{
-		constraints.remove(category);
+		constraintsMap.remove(category);
 	}
 
 	public int getNumberOfConstraints(String category)
 	{
-		return constraints.get(category).size();
+		return constraintsMap.get(category).size();
 	}
 
 }

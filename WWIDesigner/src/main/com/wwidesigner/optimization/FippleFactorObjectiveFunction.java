@@ -15,7 +15,7 @@ import com.wwidesigner.optimization.Constraint.ConstraintType;
  */
 public class FippleFactorObjectiveFunction extends BaseObjectiveFunction
 {
-	public static final String CONSTR_CAT = "Mouthpiece";
+	public static final String CONSTR_CAT = "Mouthpiece fipple";
 	public static final ConstraintType CONSTR_TYPE = ConstraintType.DIMENSIONLESS;
 
 	public FippleFactorObjectiveFunction(InstrumentCalculator calculator,

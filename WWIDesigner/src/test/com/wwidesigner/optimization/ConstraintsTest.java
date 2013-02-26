@@ -22,7 +22,7 @@ public class ConstraintsTest extends AbstractOptimizationTest
 			objective = new FippleFactorObjectiveFunction(calculator, tuning,
 					evaluator);
 			Constraints constraints = objective.getConstraints();
-			String category = "Mouthpiece";
+			String category = "Mouthpiece fipple";
 
 			assertEquals("Number of constraints incorrect",
 					objective.getNrDimensions(),
@@ -156,6 +156,70 @@ public class ConstraintsTest extends AbstractOptimizationTest
 			assertEquals(
 					"Last distance constraint incorrect",
 					"Hole 1 (bottom) to bore end distance",
+					constraints.getConstraint(category,
+							constraints.getNumberOfConstraints(category) - 1)
+							.getDisplayName());
+		}
+		catch (Exception e)
+		{
+			fail(e.getMessage());
+		}
+	}
+
+	@Test
+	public void testFullGroupingConstraints()
+	{
+		try
+		{
+			setInputInstrumentXML("com/wwidesigner/optimization/example/G7HoleNAF.xml");
+			setInputTuningXML("com/wwidesigner/optimization/example/G7HoleNAFTuning.xml");
+			setCalculator(new NAFCalculator());
+			setup();
+			int[][] holeGroups = new int[][] { { 0, 1, 2 }, { 3, 4, 5 }, { 6 } };
+			objective = new SingleTaperHoleGroupObjectiveFunction(calculator,
+					tuning, evaluator, holeGroups);
+			Constraints constraints = objective.getConstraints();
+
+			String category = "Hole position";
+			assertEquals("Number of hole position constraints incorrect", 6,
+					constraints.getNumberOfConstraints(category));
+			assertEquals("First constraint incorrect", "Bore length",
+					constraints.getConstraint(category, 0).getDisplayName());
+			assertEquals("First group constraint incorrect",
+					"Group 1 (Hole 7 (top), Hole 6, Hole 5) spacing",
+					constraints.getConstraint(category, 1).getDisplayName());
+			assertEquals("First inter-group constraint incorrect",
+					"Hole 5 to Hole 4 distance",
+					constraints.getConstraint(category, 2).getDisplayName());
+			assertEquals(
+					"Last distance constraint incorrect",
+					"Hole 1 (bottom) to bore end distance",
+					constraints.getConstraint(category,
+							constraints.getNumberOfConstraints(category) - 1)
+							.getDisplayName());
+
+			category = "Hole size";
+			assertEquals("Number of hole size constraints incorrect", 7,
+					constraints.getNumberOfConstraints(category));
+			assertEquals("First hole size constraint incorrect",
+					"Hole 7 (top) diameter",
+					constraints.getConstraint(category, 0).getDisplayName());
+			assertEquals(
+					"Last hole size constraint incorrect",
+					"Hole 1 (bottom) diameter",
+					constraints.getConstraint(category,
+							constraints.getNumberOfConstraints(category) - 1)
+							.getDisplayName());
+
+			category = "Single bore taper";
+			assertEquals("Number of bore taper constraints incorrect", 3,
+					constraints.getNumberOfConstraints(category));
+			assertEquals("First bore taper constraint incorrect",
+					"Bore diameter ratio (top/bottom)", constraints
+							.getConstraint(category, 0).getDisplayName());
+			assertEquals(
+					"Last bore taper constraint incorrect",
+					"Taper start ratio (from top/untapered length)",
 					constraints.getConstraint(category,
 							constraints.getNumberOfConstraints(category) - 1)
 							.getDisplayName());

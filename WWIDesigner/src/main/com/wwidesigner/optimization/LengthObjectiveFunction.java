@@ -8,21 +8,32 @@ import com.wwidesigner.geometry.BorePoint;
 import com.wwidesigner.modelling.EvaluatorInterface;
 import com.wwidesigner.modelling.InstrumentCalculator;
 import com.wwidesigner.note.TuningInterface;
+import com.wwidesigner.optimization.Constraint.ConstraintType;
 
 /**
  * Optimization objective function for the position of the end bore point.
+ * 
  * @author Burton
- *
+ * 
  */
 public class LengthObjectiveFunction extends BaseObjectiveFunction
 {
+	public static final String CONSTR_CAT = "Hole position";
+	public static final ConstraintType CONSTR_TYPE = ConstraintType.DIMENSIONAL;
 
-	public LengthObjectiveFunction(InstrumentCalculator calculator, TuningInterface tuning,
-			EvaluatorInterface evaluator)
+	public LengthObjectiveFunction(InstrumentCalculator calculator,
+			TuningInterface tuning, EvaluatorInterface evaluator)
 	{
 		super(calculator, tuning, evaluator);
 		nrDimensions = 1;
-		optimizerType = OptimizerType.BrentOptimizer;		// UnivariateOptimizer
+		optimizerType = OptimizerType.BrentOptimizer; // UnivariateOptimizer
+		setConstraints();
+	}
+
+	private void setConstraints()
+	{
+		constraints.addConstraint(new Constraint(CONSTR_CAT, "Bore length",
+				CONSTR_TYPE));
 	}
 
 	@Override
@@ -35,9 +46,9 @@ public class LengthObjectiveFunction extends BaseObjectiveFunction
 		List<BorePoint> boreList = calculator.getInstrument().getBorePoint();
 		BorePoint endPoint = boreList.get(0);
 
-		for (BorePoint borePoint: boreList)
+		for (BorePoint borePoint : boreList)
 		{
-			if ( borePoint.getBorePosition() > endPoint.getBorePosition() )
+			if (borePoint.getBorePosition() > endPoint.getBorePosition())
 			{
 				endPoint = borePoint;
 			}
@@ -49,7 +60,8 @@ public class LengthObjectiveFunction extends BaseObjectiveFunction
 	@Override
 	public void setGeometryPoint(double[] point)
 	{
-		if ( point.length != nrDimensions ) {
+		if (point.length != nrDimensions)
+		{
 			throw new DimensionMismatchException(point.length, nrDimensions);
 		}
 
@@ -58,14 +70,14 @@ public class LengthObjectiveFunction extends BaseObjectiveFunction
 
 		List<BorePoint> boreList = calculator.getInstrument().getBorePoint();
 		BorePoint endPoint = boreList.get(0);
-		
-		for (BorePoint borePoint: boreList)
+
+		for (BorePoint borePoint : boreList)
 		{
-			if ( borePoint.getBorePosition() > endPoint.getBorePosition() )
+			if (borePoint.getBorePosition() > endPoint.getBorePosition())
 			{
 				endPoint = borePoint;
 			}
-			if ( borePoint.getBorePosition() > point[0] )
+			if (borePoint.getBorePosition() > point[0])
 			{
 				borePoint.setBorePosition(point[0]);
 			}

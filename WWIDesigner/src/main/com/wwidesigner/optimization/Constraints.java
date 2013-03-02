@@ -12,6 +12,9 @@ public class Constraints
 {
 	private Map<String, List<Constraint>> constraintsMap;
 	private LengthType dimensionType;
+	private int numberOfHoles;
+	private String objectiveDisplayName;
+	private String objectFunctionName;
 
 	public Constraints(LengthType dimensionType)
 	{
@@ -78,6 +81,26 @@ public class Constraints
 	public int getNumberOfConstraints(String category)
 	{
 		return constraintsMap.get(category).size();
+	}
+
+	public int getNumberOfHoles()
+	{
+		return numberOfHoles;
+	}
+
+	public void setNumberOfHoles(int numberOfHoles)
+	{
+		this.numberOfHoles = numberOfHoles;
+	}
+
+	public String getObjectiveDisplayName()
+	{
+		return objectiveDisplayName;
+	}
+
+	public void setObjectiveDisplayName(String objectiveDisplayName)
+	{
+		this.objectiveDisplayName = objectiveDisplayName;
 	}
 
 }

@@ -22,8 +22,12 @@ public class ConstraintsTest extends AbstractOptimizationTest
 			objective = new FippleFactorObjectiveFunction(calculator, tuning,
 					evaluator);
 			Constraints constraints = objective.getConstraints();
-			String category = "Mouthpiece fipple";
+			assertEquals("Number of holes incorrect", 0,
+					constraints.getNumberOfHoles());
+			assertEquals("Optimizer name incorrect", "Fipple factor optimizer",
+					constraints.getObjectiveDisplayName());
 
+			String category = "Mouthpiece fipple";
 			assertEquals("Number of constraints incorrect",
 					objective.getNrDimensions(),
 					constraints.getNumberOfConstraints(category));

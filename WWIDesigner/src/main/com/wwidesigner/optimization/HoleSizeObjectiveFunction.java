@@ -85,5 +85,9 @@ public class HoleSizeObjectiveFunction extends BaseObjectiveFunction
 					CONSTR_TYPE);
 			constraints.addConstraint(constraint);
 		}
+
+		constraints.setNumberOfHoles(calculator.getInstrument().getHole()
+				.size());
+		constraints.setObjectiveDisplayName("Hole size optimizer");
 	}
 }

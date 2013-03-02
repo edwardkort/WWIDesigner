@@ -13,6 +13,7 @@ import com.wwidesigner.modelling.EvaluatorInterface;
 import com.wwidesigner.modelling.InstrumentCalculator;
 import com.wwidesigner.note.TuningInterface;
 import com.wwidesigner.optimization.Constraint.ConstraintType;
+import com.wwidesigner.util.SortedPositionList;
 
 /**
  * Optimization objective function for bore length and hole positions, with
@@ -210,6 +211,10 @@ public class HoleGroupPositionObjectiveFunction extends BaseObjectiveFunction
 			constraints.addConstraint(new Constraint(CONSTR_CAT,
 					constraintName, CONSTR_TYPE));
 		}
+
+		constraints.setNumberOfHoles(calculator.getInstrument().getHole()
+				.size());
+		constraints.setObjectiveDisplayName("Grouped hole-spacing optimizer");
 	}
 
 	private String getHoleNameFromGroup(int groupIdx, boolean firstHole,
@@ -317,24 +322,27 @@ public class HoleGroupPositionObjectiveFunction extends BaseObjectiveFunction
 			throw new DimensionMismatchException(point.length, nrDimensions);
 		}
 
-		// Ensure that no bore points are beyond the new bottom position.
+		// Ensure that no bore points are beyond the new bottom position. FOR
+		// NOW, NO.
 		// Find the farthest one out, and update its position.
 
-		List<BorePoint> boreList = calculator.getInstrument().getBorePoint();
-		BorePoint endPoint = boreList.get(0);
+		SortedPositionList<BorePoint> boreList = new SortedPositionList<BorePoint>(
+				calculator.getInstrument().getBorePoint());
+		BorePoint endPoint = boreList.getLast();
 
-		for (BorePoint borePoint : boreList)
+		// Don't let optimizer delete a borePoint
+		BorePoint almostEndPoint = boreList.get(boreList.size() - 2);
+		double almostEndPosition = almostEndPoint.getBorePosition();
+		if (point[0] <= almostEndPosition)
 		{
-			if (borePoint.getBorePosition() > endPoint.getBorePosition())
-			{
-				endPoint = borePoint;
-			}
-			if (borePoint.getBorePosition() > point[0])
-			{
-				borePoint.setBorePosition(point[0]);
-			}
+			point[0] = almostEndPosition + 0.01;
 		}
+
+		// Extrapolate/interpolate the bore diameter of end point
+		double endDiameter = BorePoint.getInterpolatedExtrapolatedBoreDiameter(
+				boreList, point[0]);
 		endPoint.setBorePosition(point[0]);
+		endPoint.setBoreDiameter(endDiameter);
 
 		PositionInterface[] sortedHoles = Instrument.sortList(calculator
 				.getInstrument().getHole());

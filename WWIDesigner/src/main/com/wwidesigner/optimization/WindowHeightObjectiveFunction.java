@@ -31,6 +31,9 @@ public class WindowHeightObjectiveFunction extends BaseObjectiveFunction
 	{
 		constraints.addConstraint(new Constraint(CONSTR_CAT, "Window height",
 				CONSTR_TYPE));
+		constraints.setNumberOfHoles(calculator.getInstrument().getHole()
+				.size());
+		constraints.setObjectiveDisplayName("Window height optimizer");
 	}
 
 	@Override

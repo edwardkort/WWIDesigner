@@ -34,6 +34,9 @@ public class LengthObjectiveFunction extends BaseObjectiveFunction
 	{
 		constraints.addConstraint(new Constraint(CONSTR_CAT, "Bore length",
 				CONSTR_TYPE));
+		constraints.setNumberOfHoles(calculator.getInstrument().getHole()
+				.size());
+		constraints.setObjectiveDisplayName("Bore length optimizer");
 	}
 
 	@Override

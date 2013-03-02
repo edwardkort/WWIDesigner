@@ -71,7 +71,7 @@ public abstract class MergedObjectiveFunction extends BaseObjectiveFunction
 			// BOBYQA doesn't support single dimension.
 			optimizerType = OptimizerType.CMAESOptimizer;
 		}
-		
+
 		setConstraints();
 	}
 
@@ -179,6 +179,8 @@ public abstract class MergedObjectiveFunction extends BaseObjectiveFunction
 			Constraints componentConstraints = component.getConstraints();
 			constraints.addConstraints(componentConstraints);
 		}
+		constraints.setNumberOfHoles(calculator.getInstrument().getHole()
+				.size());
 	}
 
 }

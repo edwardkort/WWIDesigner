@@ -5,25 +5,30 @@ import com.wwidesigner.modelling.InstrumentCalculator;
 import com.wwidesigner.note.TuningInterface;
 
 /**
- * Optimization objective function for bore length,
- * hole positions, in groups, and hole diameters.
+ * Optimization objective function for bore length, hole positions, in groups,
+ * and hole diameters.
+ * 
  * @author Edward Kort, Burton Patkau
- *
+ * 
  */
 public class HoleGroupObjectiveFunction extends MergedObjectiveFunction
 {
 
-	public HoleGroupObjectiveFunction(
-			InstrumentCalculator calculator, TuningInterface tuning,
-			EvaluatorInterface evaluator, int[][] holeGroups) throws Exception
+	public HoleGroupObjectiveFunction(InstrumentCalculator calculator,
+			TuningInterface tuning, EvaluatorInterface evaluator,
+			int[][] holeGroups) throws Exception
 	{
 		super(calculator, tuning, evaluator);
 		this.components = new BaseObjectiveFunction[2];
-		this.components[0] = new HoleGroupPositionObjectiveFunction(calculator, tuning, evaluator, holeGroups);
-		this.components[1] = new HoleSizeObjectiveFunction(calculator, tuning, evaluator);
-		optimizerType = OptimizerType.BOBYQAOptimizer;		// MultivariateOptimizer
+		this.components[0] = new HoleGroupPositionObjectiveFunction(calculator,
+				tuning, evaluator, holeGroups);
+		this.components[1] = new HoleSizeObjectiveFunction(calculator, tuning,
+				evaluator);
+		optimizerType = OptimizerType.BOBYQAOptimizer; // MultivariateOptimizer
 		maxIterations = 10000;
 		sumDimensions();
+		constraints
+				.setObjectiveDisplayName("Grouped hole-position and hole size optimizer");
 	}
 
 }

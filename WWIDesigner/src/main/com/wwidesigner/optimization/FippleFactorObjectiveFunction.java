@@ -52,6 +52,9 @@ public class FippleFactorObjectiveFunction extends BaseObjectiveFunction
 	{
 		constraints.addConstraint(new Constraint(CONSTR_CAT, "Fipple factor",
 				CONSTR_TYPE));
+		constraints.setNumberOfHoles(calculator.getInstrument().getHole()
+				.size());
+		constraints.setObjectiveDisplayName("Fipple factor optimizer");
 	}
 
 }

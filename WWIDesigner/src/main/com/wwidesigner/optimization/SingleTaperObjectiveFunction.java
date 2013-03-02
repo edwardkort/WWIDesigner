@@ -43,6 +43,10 @@ public class SingleTaperObjectiveFunction extends BaseObjectiveFunction
 				ConstraintType.DIMENSIONAL));
 		constraints.addConstraint(new Constraint(CONSTR_CAT,
 				"Taper start (from top)", ConstraintType.DIMENSIONAL));
+		constraints.setNumberOfHoles(calculator.getInstrument().getHole()
+				.size());
+		constraints
+				.setObjectiveDisplayName("Single taper (dimensional) optimizer");
 	}
 
 	@Override

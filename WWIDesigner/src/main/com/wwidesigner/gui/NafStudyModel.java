@@ -13,7 +13,6 @@ import com.wwidesigner.modelling.ReflectionEvaluator;
 import com.wwidesigner.modelling.SimpleInstrumentTuner;
 import com.wwidesigner.note.Tuning;
 import com.wwidesigner.optimization.BaseObjectiveFunction;
-import com.wwidesigner.optimization.BaseObjectiveFunction.OptimizerType;
 import com.wwidesigner.optimization.FippleFactorObjectiveFunction;
 import com.wwidesigner.optimization.HoleGroupObjectiveFunction;
 import com.wwidesigner.optimization.HoleObjectiveFunction;
@@ -254,8 +253,8 @@ public class NafStudyModel extends StudyModel
 				// ratios.
 				if (numberOfHoles == 0)
 				{
-					lowerBound = new double[] { 0.1 };
-					upperBound = new double[] { 0.7 };
+					lowerBound = new double[] { 0.2 };
+					upperBound = new double[] { 0.6 };
 				}
 				else if (numberOfHoles == 7)
 				{
@@ -303,9 +302,8 @@ public class NafStudyModel extends StudyModel
 				// ratios.
 				if (numberOfHoles == 0)
 				{
-					holeGroups = new int[][] { {} };
 					lowerBound = new double[] { 0.2 };
-					upperBound = new double[] { 0.7 };
+					upperBound = new double[] { 0.6 };
 				}
 				else if (numberOfHoles == 7)
 				{
@@ -395,11 +393,6 @@ public class NafStudyModel extends StudyModel
 
 		objective.setLowerBounds(lowerBound);
 		objective.setUpperBounds(upperBound);
-
-		if (lowerBound.length == 1)
-		{
-			objective.setOptimizerType(OptimizerType.BrentOptimizer);
-		}
 
 		Category multiStartCategory = getCategory(MULTI_START_CATEGORY_ID);
 		String multiStartSelected = multiStartCategory.getSelectedSub();

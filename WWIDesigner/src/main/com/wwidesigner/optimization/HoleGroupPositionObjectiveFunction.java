@@ -144,7 +144,7 @@ public class HoleGroupPositionObjectiveFunction extends BaseObjectiveFunction
 			// If there are no holes, assume the list of groups is empty.
 			// Only one dimension, the length of the flute.
 			nrDimensions = 1;
-			holeGroups = new int[][] { {} };
+			holeGroups = new int[0][];
 			dimensionByHole = null;
 			groupSize = null;
 		}

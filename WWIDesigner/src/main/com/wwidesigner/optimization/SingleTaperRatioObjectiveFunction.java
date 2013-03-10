@@ -12,10 +12,14 @@ import com.wwidesigner.note.TuningInterface;
 import com.wwidesigner.optimization.Constraint.ConstraintType;
 
 /**
- * Optimization objective function for a simple one-section taper: - Taper ratio
- * head diameter / foot diameter. - Fraction of bore that is tapered. - Fraction
- * of untapered length at head end. The foot diameter remains invariant. The
- * position of the top and bottom bore points remain unchanged.
+ * Optimization objective function for a simple three-section bore with a single
+ * tapered section. The foot diameter remains invariant. The position of the top
+ * and bottom bore points remain unchanged. The optimization dimensions are:
+ * <ul>
+ * <li>Taper ratio head diameter / foot diameter.</li>
+ * <li>Fraction of bore that is tapered.</li>
+ * <li>Fraction of untapered length at head end.</li>
+ * </ul>
  * 
  * @author Edward Kort, Burton Patkau
  * 

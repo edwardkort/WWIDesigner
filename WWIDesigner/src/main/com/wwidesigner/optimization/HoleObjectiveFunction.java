@@ -5,10 +5,13 @@ import com.wwidesigner.modelling.InstrumentCalculator;
 import com.wwidesigner.note.TuningInterface;
 
 /**
- * Optimization objective function for hole positions and diameters: - Position
- * of end of bore, - For each hole, spacing to next group, ending with spacing
- * from last hole to end of bore. - For each hole, ratio of hole diameter to
- * bore diameter.
+ * Optimization objective function for hole positions and diameters:
+ * <ul>
+ * <li>Position of end of bore,</li>
+ * <li>For each hole, spacing to next hole, ending with spacing
+ * from last hole to end of bore.</li>
+ * <li>For each hole, hole diameter.</li>
+ * </ul>
  * 
  * @author Edward Kort, Burton Patkau
  * 

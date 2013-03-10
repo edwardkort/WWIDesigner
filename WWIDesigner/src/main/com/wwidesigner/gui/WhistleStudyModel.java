@@ -17,7 +17,9 @@ import com.wwidesigner.modelling.WhistleCalculator;
 import com.wwidesigner.modelling.WhistleEvaluator;
 import com.wwidesigner.note.Tuning;
 import com.wwidesigner.optimization.BaseObjectiveFunction;
+import com.wwidesigner.optimization.BasicTaperObjectiveFunction;
 import com.wwidesigner.optimization.BetaObjectiveFunction;
+import com.wwidesigner.optimization.HoleAndTaperObjectiveFunction;
 import com.wwidesigner.optimization.HoleObjectiveFunction;
 import com.wwidesigner.optimization.HolePositionObjectiveFunction;
 import com.wwidesigner.optimization.HoleSizeObjectiveFunction;
@@ -38,6 +40,8 @@ public class WhistleStudyModel extends StudyModel
 	public static final String HOLESIZE_OPT_SUB_CATEGORY_ID = "4. Hole Size Optimizer";
 	public static final String HOLESPACE_OPT_SUB_CATEGORY_ID = "5. Hole Spacing Optimizer";
 	public static final String HOLE_OPT_SUB_CATEGORY_ID = "6. Hole Size+Spacing Optimizer";
+	public static final String TAPER_OPT_SUB_CATEGORY_ID = "7. Taper Optimizer";
+	public static final String HOLE_TAPER_OPT_SUB_CATEGORY_ID = "8. Hole and Taper Optimizer";
 
 	protected int blowingLevel;
 
@@ -58,6 +62,8 @@ public class WhistleStudyModel extends StudyModel
 		optimizers.addSub(HOLESIZE_OPT_SUB_CATEGORY_ID, null);
 		optimizers.addSub(HOLESPACE_OPT_SUB_CATEGORY_ID, null);
 		optimizers.addSub(HOLE_OPT_SUB_CATEGORY_ID, null);
+		optimizers.addSub(TAPER_OPT_SUB_CATEGORY_ID, null);
+		optimizers.addSub(HOLE_TAPER_OPT_SUB_CATEGORY_ID, null);
 		categories.add(optimizers);
 	}
 
@@ -137,22 +143,18 @@ public class WhistleStudyModel extends StudyModel
 				objective = new HoleSizeObjectiveFunction(calculator, tuning,
 						evaluator);
 				// Bounds are diameters, expressed in meters.
-				lowerBound = new double[] { 0.004, 0.004, 0.004, 0.004, 0.004,
-						0.004 };
-				// upperBound = new double[] { 0.010, 0.010, 0.010, 0.010,
-				// 0.010, 0.010 };
-				upperBound = new double[] { 0.009, 0.009, 0.009, 0.009, 0.009,
-						0.009 };
+				lowerBound = new double[] { 0.004, 0.004, 0.004, 0.004, 0.004, 0.004 };
+				upperBound = new double[] { 0.011, 0.011, 0.011, 0.011,	0.011, 0.011 };
 				break;
 			case HOLESPACE_OPT_SUB_CATEGORY_ID:
 				evaluator = new WhistleEvaluator(calculator, blowingLevel);
 				objective = new HolePositionObjectiveFunction(calculator,
 						tuning, evaluator);
 				// Bounds are expressed in meters.
-				lowerBound = new double[] { 0.200, 0.013, 0.013, 0.013, 0.013,
-						0.013, 0.013 };
-				upperBound = new double[] { 0.700, 0.050, 0.050, 0.050, 0.050,
-						0.050, 0.200 };
+				lowerBound = new double[] { 0.200, 0.012, 0.012, 0.012, 0.012,
+						0.012, 0.012 };
+				upperBound = new double[] { 0.700, 0.040, 0.040, 0.100, 0.040,
+						0.040, 0.200 };
 				break;
 			case HOLE_OPT_SUB_CATEGORY_ID:
 			default:
@@ -163,8 +165,29 @@ public class WhistleStudyModel extends StudyModel
 				// ratios.
 				lowerBound = new double[] { 0.200, 0.012, 0.012, 0.012, 0.012,
 						0.012, 0.012, 0.004, 0.004, 0.004, 0.004, 0.004, 0.004 };
-				upperBound = new double[] { 0.700, 0.050, 0.050, 0.050, 0.050,
-						0.050, 0.200, 0.010, 0.010, 0.010, 0.010, 0.010, 0.010 };
+				upperBound = new double[] { 0.700, 0.040, 0.040, 0.100, 0.040,
+						0.040, 0.200, 0.011, 0.011, 0.011, 0.011, 0.011, 0.011 };
+				break;
+			case TAPER_OPT_SUB_CATEGORY_ID:
+				evaluator = new WhistleEvaluator(calculator, blowingLevel);
+				objective = new BasicTaperObjectiveFunction(calculator, tuning,
+						evaluator);
+				// Dimensions are expressed as ratios: head length, foot diameter.
+				lowerBound = new double[] { 0.01, 0.3 };
+				upperBound = new double[] { 0.5,  2.0 };
+				break;
+			case HOLE_TAPER_OPT_SUB_CATEGORY_ID:
+				evaluator = new WhistleEvaluator(calculator, blowingLevel);
+				objective = new HoleAndTaperObjectiveFunction(calculator, tuning,
+						evaluator);
+				// Length bounds are expressed in meters, diameter bounds as
+				// ratios.
+				lowerBound = new double[] { 0.200, 0.012, 0.012, 0.012, 0.012,
+						0.012, 0.012, 0.004, 0.004, 0.004, 0.004, 0.004, 0.004,
+						0.01,  0.3 };
+				upperBound = new double[] { 0.700, 0.040, 0.040, 0.100, 0.040,
+						0.040, 0.200, 0.011, 0.011, 0.011, 0.011, 0.011, 0.011,
+						0.5,   2.0 };
 				break;
 		}
 

@@ -20,6 +20,7 @@ import com.wwidesigner.geometry.Mouthpiece;
 
 /**
  * Display a tabular report comparing differences between two related instruments.
+ * 
  * @author Burton Patkau
  * 
  */
@@ -133,9 +134,22 @@ public class InstrumentComparisonTable extends DefaultTableModel
 		}
 	}
 	
-	protected String segmentName(String segType, int segNumber, String dimensionName)
+	/**
+	 * Generate a name for a bore point.
+	 * 
+	 * @param segType
+	 *            : generally "Hole" or "Bore".
+	 * @param segNumber
+	 *            : zero-based index of the bore point.
+	 * @param dimensionName
+	 *            : bore point attribute being named.
+	 * @return Name for the bore point, as a string.
+	 */
+	protected String segmentName(String segType, int segNumber,
+			String dimensionName)
 	{
-		return segType + " " + format_.format(segNumber) + " " + dimensionName;
+		return segType + " " + format_.format(segNumber + 1) + " "
+				+ dimensionName;
 	}
 
 	/**
@@ -211,7 +225,7 @@ public class InstrumentComparisonTable extends DefaultTableModel
 		}
 		else
 		{
-			// If number of bore segments differ, report only the first segment here.
+			// If number of bore segments differ, report only the first two segments here.
 			// Report final segment below.
 			addValues(segmentName("Bore",0,"Position"), 
 					oldBore.get(0).getBorePosition(), 
@@ -219,6 +233,17 @@ public class InstrumentComparisonTable extends DefaultTableModel
 			addValues(segmentName("Bore",0,"Diameter"), 
 					oldBore.get(0).getBoreDiameter(),
 					newBore.get(0).getBoreDiameter(), false);
+			if ( oldBore.size() >= 2 && newBore.size() >= 2 )
+			{
+				// Since sizes are different, at least one instrument has more
+				// than two bore sections.
+				addValues(segmentName("Bore",1,"Position"), 
+						oldBore.get(1).getBorePosition(), 
+						newBore.get(1).getBorePosition(), false);
+				addValues(segmentName("Bore",1,"Diameter"), 
+						oldBore.get(1).getBoreDiameter(),
+						newBore.get(1).getBoreDiameter(), false);
+			}
 		}
 		addValues("Bore Length",
 				oldBore.get(oldBore.size()-1).getBorePosition(), 

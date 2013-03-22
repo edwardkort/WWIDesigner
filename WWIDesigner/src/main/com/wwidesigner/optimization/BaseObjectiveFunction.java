@@ -229,6 +229,7 @@ public abstract class BaseObjectiveFunction implements MultivariateFunction,
 					nrDimensions);
 		}
 		this.lowerBounds = lowerBounds;
+		constraints.setLowerBounds(lowerBounds);
 	}
 
 	public double[] getUpperBounds()
@@ -244,6 +245,7 @@ public abstract class BaseObjectiveFunction implements MultivariateFunction,
 					nrDimensions);
 		}
 		this.upperBounds = upperBounds;
+		constraints.setUpperBounds(upperBounds);
 	}
 
 	public int getNrDimensions()

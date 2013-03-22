@@ -25,8 +25,8 @@ public class HoleGroupObjectiveFunction extends MergedObjectiveFunction
 		this.components[1] = new HoleSizeObjectiveFunction(calculator, tuning,
 				evaluator);
 		optimizerType = OptimizerType.BOBYQAOptimizer; // MultivariateOptimizer
-		maxIterations = 20000;
 		sumDimensions();
+		maxIterations = 20000 + (getNrDimensions() - 1) * 5000;
 		constraints
 				.setObjectiveDisplayName("Grouped hole-position and hole size optimizer");
 	}

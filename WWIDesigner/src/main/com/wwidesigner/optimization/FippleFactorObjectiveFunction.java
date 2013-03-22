@@ -23,7 +23,7 @@ public class FippleFactorObjectiveFunction extends BaseObjectiveFunction
 	{
 		super(calculator, tuning, evaluator);
 		nrDimensions = 1;
-		optimizerType = OptimizerType.BrentOptimizer; // UnivariateOptimizer
+		optimizerType = OptimizerType.CMAESOptimizer; // UnivariateOptimizer
 		setConstraints();
 	}
 

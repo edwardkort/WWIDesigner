@@ -26,6 +26,7 @@ public class SingleTaperLengthObjectiveFunction extends MergedObjectiveFunction
 				tuning, evaluator);
 		optimizerType = OptimizerType.BOBYQAOptimizer; // MultivariateOptimizer
 		sumDimensions();
+		maxIterations = 20000 + (getNrDimensions() - 1) * 5000;
 		constraints.setObjectiveDisplayName("Single taper length optimizer");
 	}
 

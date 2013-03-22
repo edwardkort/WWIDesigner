@@ -29,8 +29,8 @@ public class SingleTaperHoleGroupObjectiveFunction extends
 		this.components[2] = new SingleTaperRatioObjectiveFunction(calculator,
 				tuning, evaluator);
 		optimizerType = OptimizerType.BOBYQAOptimizer; // MultivariateOptimizer
-		maxIterations = 15000;
 		sumDimensions();
+		maxIterations = 20000 + (getNrDimensions() - 1) * 5000;
 		constraints
 				.setObjectiveDisplayName("Single taper, grouped-hole optimizer");
 	}

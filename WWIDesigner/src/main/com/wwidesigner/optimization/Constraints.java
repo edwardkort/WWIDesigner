@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.math3.exception.DimensionMismatchException;
+
 import com.wwidesigner.util.Constants.LengthType;
 
 public class Constraints
@@ -15,6 +17,8 @@ public class Constraints
 	private int numberOfHoles;
 	private String objectiveDisplayName;
 	private String objectFunctionName;
+	private double[] lowerBounds;
+	private double[] upperBounds;
 
 	public Constraints(LengthType dimensionType)
 	{
@@ -32,6 +36,7 @@ public class Constraints
 		if (Constraint.isValid(newConstraint))
 		{
 			String category = newConstraint.getCategory();
+			newConstraint.setParent(this);
 			List<Constraint> catConstraints = getConstraints(category);
 			catConstraints.add(newConstraint);
 		}
@@ -51,6 +56,7 @@ public class Constraints
 					.getConstraints(category);
 			for (Constraint constraint : catConstraints)
 			{
+				constraint.setParent(this);
 				addConstraint(constraint);
 			}
 		}
@@ -83,6 +89,18 @@ public class Constraints
 		return constraintsMap.get(category).size();
 	}
 
+	public int getTotalNumberOfConstraints()
+	{
+		int num = 0;
+		Set<String> categories = getCategories();
+		for (String category : categories)
+		{
+			num += getNumberOfConstraints(category);
+		}
+
+		return num;
+	}
+
 	public int getNumberOfHoles()
 	{
 		return numberOfHoles;
@@ -101,6 +119,77 @@ public class Constraints
 	public void setObjectiveDisplayName(String objectiveDisplayName)
 	{
 		this.objectiveDisplayName = objectiveDisplayName;
+	}
+
+	public String getObjectFunctionName()
+	{
+		return objectFunctionName;
+	}
+
+	public void setObjectFunctionName(String objectFunctionName)
+	{
+		this.objectFunctionName = objectFunctionName;
+	}
+
+	public double[] getLowerBounds()
+	{
+		return lowerBounds;
+	}
+
+	public void setLowerBounds(double[] lowerBounds)
+	{
+		validateBounds(lowerBounds);
+		this.lowerBounds = lowerBounds;
+		updateBounds(true);
+	}
+
+	private void updateBounds(boolean isLowerBounds)
+	{
+		Set<String> categories = getCategories();
+		int idx = 0;
+		double[] bounds = isLowerBounds ? lowerBounds : upperBounds;
+		for (String category : categories)
+		{
+			List<Constraint> constraints = getConstraints(category);
+			for (Constraint constraint : constraints)
+			{
+				Double value = null;
+				if (bounds != null)
+				{
+					value = bounds[idx++];
+				}
+				if (isLowerBounds)
+				{
+					constraint.setLowerBound(value);
+				}
+				else
+				{
+					constraint.setUpperBound(value);
+				}
+			}
+		}
+	}
+
+	private void validateBounds(double[] bounds)
+	{
+		int inputSize = bounds != null ? bounds.length : 0;
+		int expectedSize = getTotalNumberOfConstraints();
+		if (bounds != null && inputSize != expectedSize)
+		{
+			throw new DimensionMismatchException(inputSize, expectedSize);
+		}
+	}
+
+	public double[] getUpperBounds()
+	{
+		return upperBounds;
+	}
+
+	public void setUpperBounds(double[] upperBounds)
+	{
+		validateBounds(upperBounds);
+		this.upperBounds = upperBounds;
+		updateBounds(false);
 	}
 
 }

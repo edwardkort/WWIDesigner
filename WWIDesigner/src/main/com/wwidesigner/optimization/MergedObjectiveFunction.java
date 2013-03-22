@@ -46,26 +46,29 @@ public abstract class MergedObjectiveFunction extends BaseObjectiveFunction
 			nrDimensions += component.getNrDimensions();
 		}
 
-		lowerBounds = new double[nrDimensions];
-		upperBounds = new double[nrDimensions];
-		int i = 0; // Index into bounds.
-		for (BaseObjectiveFunction component : components)
-		{
-			double[] subLower = component.getLowerBounds();
-			double[] subUpper = component.getUpperBounds();
-			for (int j = 0; j < component.getNrDimensions(); j++)
-			{
-				if (subLower != null)
-				{
-					lowerBounds[i] = subLower[j];
-				}
-				if (subUpper != null)
-				{
-					upperBounds[i] = subUpper[j];
-				}
-				++i;
-			}
-		}
+//		double[] lowerBounds = new double[nrDimensions];
+//		double[] upperBounds = new double[nrDimensions];
+//		int i = 0; // Index into bounds.
+//		for (BaseObjectiveFunction component : components)
+//		{
+//			double[] subLower = component.getLowerBounds();
+//			double[] subUpper = component.getUpperBounds();
+//			for (int j = 0; j < component.getNrDimensions(); j++)
+//			{
+//				if (subLower != null)
+//				{
+//					lowerBounds[i] = subLower[j];
+//				}
+//				if (subUpper != null)
+//				{
+//					upperBounds[i] = subUpper[j];
+//				}
+//				++i;
+//			}
+//		}
+//		setLowerBounds(lowerBounds);
+//		setUpperBounds(upperBounds);
+//		
 		if (nrDimensions == 1 && optimizerType == OptimizerType.BOBYQAOptimizer)
 		{
 			// BOBYQA doesn't support single dimension.

@@ -7,6 +7,8 @@ import org.junit.Test;
 
 import com.wwidesigner.modelling.NAFCalculator;
 import com.wwidesigner.optimization.Constraint.ConstraintType;
+import com.wwidesigner.optimization.gui.ConstraintsDialog;
+import com.wwidesigner.optimization.view.ConstraintsPanel;
 
 public class ConstraintsTest extends AbstractOptimizationTest
 {
@@ -232,5 +234,44 @@ public class ConstraintsTest extends AbstractOptimizationTest
 		{
 			fail(e.getMessage());
 		}
+	}
+
+	public void showConstraintsView()
+	{
+		try
+		{
+			setInputInstrumentXML("com/wwidesigner/optimization/example/G7HoleNAF.xml");
+			setInputTuningXML("com/wwidesigner/optimization/example/G7HoleNAFTuning.xml");
+			setCalculator(new NAFCalculator());
+			setup();
+			int[][] holeGroups = new int[][] { { 0, 1, 2 }, { 3, 4, 5 }, { 6 } };
+			objective = new SingleTaperHoleGroupObjectiveFunction(calculator,
+					tuning, evaluator, holeGroups);
+
+			lowerBound = new double[] { 0.2, 0.0005, 0.012, 0.012, 0.012,
+					0.012, 0.002, 0.002, 0.002, 0.002, 0.002, 0.002, 0.002,
+					0.5, 0.0, 0.0 };
+			upperBound = new double[] { 0.7, 0.003, 0.05, 0.05, 0.1, 0.30,
+					0.014, 0.014, 0.014, 0.014, 0.014, 0.008, 0.008, 2.0, 1.0,
+					1.0 };
+			objective.setLowerBounds(lowerBound);
+			objective.setUpperBounds(upperBound);
+
+			Constraints constraints = objective.getConstraints();
+			ConstraintsDialog dialog = new ConstraintsDialog(constraints);
+			dialog.setVisible(true);
+		}
+		catch (Exception e)
+		{
+			System.out.println(e.getMessage());
+		}
+
+	}
+
+	public static void main(String[] args)
+	{
+		ConstraintsTest test = new ConstraintsTest();
+		test.showConstraintsView();
+
 	}
 }

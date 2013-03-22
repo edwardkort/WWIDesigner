@@ -7,6 +7,9 @@ public class Constraint
 	private String displayName;
 	private String category;
 	private ConstraintType type;
+	private Constraints parent;
+	private Double lowerBound;
+	private Double upperBound;
 
 	public Constraint(String category, String displayName, ConstraintType type)
 	{
@@ -75,6 +78,31 @@ public class Constraint
 		}
 
 		return name;
+	}
+
+	public Double getLowerBound()
+	{
+		return lowerBound;
+	}
+
+	public void setLowerBound(Double lowerBound)
+	{
+		this.lowerBound = lowerBound;
+	}
+
+	public Double getUpperBound()
+	{
+		return upperBound;
+	}
+
+	public void setUpperBound(Double upperBound)
+	{
+		this.upperBound = upperBound;
+	}
+
+	public void setParent(Constraints parent)
+	{
+		this.parent = parent;
 	}
 
 }

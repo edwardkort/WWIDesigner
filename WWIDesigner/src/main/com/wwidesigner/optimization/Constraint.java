@@ -1,6 +1,7 @@
 package com.wwidesigner.optimization;
 
 import com.wwidesigner.geometry.Hole;
+import com.wwidesigner.util.Constants.LengthType;
 
 public class Constraint
 {
@@ -103,6 +104,35 @@ public class Constraint
 	public void setParent(Constraints parent)
 	{
 		this.parent = parent;
+	}
+
+	public double convertBound(boolean isLowerBound,
+			boolean toMetres)
+	{
+		double multiplier;
+		LengthType dimensionType = parent.getDimensionType();
+		if (getType() == ConstraintType.DIMENSIONAL)
+		{
+			multiplier = toMetres ? dimensionType.getMultiplierToMetres()
+					: dimensionType.getMultiplierFromMetres();
+		}
+		else
+		{
+			multiplier = 1.;
+		}
+
+		double bound = isLowerBound ? getLowerBound() : getUpperBound();
+		return bound * multiplier;
+	}
+
+	public String getConstraintDimension()
+	{
+		if (type == ConstraintType.DIMENSIONAL)
+		{
+			return parent.getDimensionType().toString();
+		}
+
+		return type.toString();
 	}
 
 }

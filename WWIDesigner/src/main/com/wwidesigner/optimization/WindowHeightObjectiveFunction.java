@@ -27,7 +27,7 @@ public class WindowHeightObjectiveFunction extends BaseObjectiveFunction
 		setConstraints();
 	}
 
-	private void setConstraints()
+	protected void setConstraints()
 	{
 		constraints.addConstraint(new Constraint(CONSTR_CAT, "Window height",
 				CONSTR_TYPE));

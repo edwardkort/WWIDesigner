@@ -72,7 +72,7 @@ public abstract class BaseObjectiveFunction implements MultivariateFunction,
 		rangeProcessor = null;
 		iterationsDone = 0;
 		evaluationsDone = 0;
-		constraints = new Constraints(LengthType.M);
+		constraints = new Constraints(calculator.getInstrument().getLengthType());
 	}
 
 	/*
@@ -306,5 +306,7 @@ public abstract class BaseObjectiveFunction implements MultivariateFunction,
 	{
 		return constraints;
 	}
+	
+	abstract protected void setConstraints();
 
 }

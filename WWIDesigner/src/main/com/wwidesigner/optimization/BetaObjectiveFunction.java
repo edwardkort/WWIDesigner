@@ -28,7 +28,7 @@ public class BetaObjectiveFunction extends BaseObjectiveFunction
 		setConstraints();
 	}
 
-	private void setConstraints()
+	protected void setConstraints()
 	{
 		constraints.addConstraint(new Constraint(CONSTR_CAT, "Beta",
 				CONSTR_TYPE));

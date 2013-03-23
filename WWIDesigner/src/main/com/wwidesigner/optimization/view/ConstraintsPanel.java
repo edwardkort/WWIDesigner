@@ -13,9 +13,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.JTextField;
 import javax.swing.table.AbstractTableModel;
-import javax.swing.table.DefaultTableModel;
 
 import com.wwidesigner.optimization.Constraint;
 import com.wwidesigner.optimization.Constraints;
@@ -116,11 +114,11 @@ public class ConstraintsPanel extends JPanel
 				case 0:
 					return constraint.getDisplayName();
 				case 1:
-					return constraint.getType().toString();
+					return constraint.getConstraintDimension();
 				case 2:
-					return constraint.getLowerBound();
+					return constraint.convertBound(true, false);
 				case 3:
-					return constraint.getUpperBound();
+					return constraint.convertBound(false, false);
 			}
 
 			return null;

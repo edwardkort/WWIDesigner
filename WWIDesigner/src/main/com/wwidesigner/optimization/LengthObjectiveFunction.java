@@ -30,7 +30,7 @@ public class LengthObjectiveFunction extends BaseObjectiveFunction
 		setConstraints();
 	}
 
-	private void setConstraints()
+	protected void setConstraints()
 	{
 		constraints.addConstraint(new Constraint(CONSTR_CAT, "Bore length",
 				CONSTR_TYPE));

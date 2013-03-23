@@ -183,7 +183,7 @@ public class HoleGroupPositionObjectiveFunction extends BaseObjectiveFunction
 		}
 	}
 
-	private void setConstraints()
+	protected void setConstraints()
 	{
 		constraints.clearConstraints(CONSTR_CAT); // Reentrant
 

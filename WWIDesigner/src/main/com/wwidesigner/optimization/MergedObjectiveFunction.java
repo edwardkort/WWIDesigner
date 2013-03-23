@@ -175,7 +175,7 @@ public abstract class MergedObjectiveFunction extends BaseObjectiveFunction
 		}
 	}
 
-	private void setConstraints()
+	protected void setConstraints()
 	{
 		for (BaseObjectiveFunction component : components)
 		{

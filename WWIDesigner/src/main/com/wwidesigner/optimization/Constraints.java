@@ -170,6 +170,11 @@ public class Constraints
 		}
 	}
 
+	public LengthType getDimensionType()
+	{
+		return dimensionType;
+	}
+
 	private void validateBounds(double[] bounds)
 	{
 		int inputSize = bounds != null ? bounds.length : 0;

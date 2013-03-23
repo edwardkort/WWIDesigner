@@ -39,7 +39,7 @@ public class SingleTaperRatioObjectiveFunction extends BaseObjectiveFunction
 		setConstraints();
 	}
 
-	private void setConstraints()
+	protected void setConstraints()
 	{
 		constraints.addConstraint(new Constraint(CONSTR_CAT,
 				"Bore diameter ratio (top/bottom)", CONSTR_TYPE));

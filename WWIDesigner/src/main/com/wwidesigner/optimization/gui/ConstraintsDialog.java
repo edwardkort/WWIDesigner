@@ -1,11 +1,8 @@
 package com.wwidesigner.optimization.gui;
 
 import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.GridLayout;
 
 import javax.swing.JComponent;
-import javax.swing.JPanel;
 
 import com.jidesoft.dialog.ButtonPanel;
 import com.jidesoft.dialog.StandardDialog;

@@ -37,7 +37,7 @@ public class BasicTaperObjectiveFunction extends BaseObjectiveFunction
 		setConstraints();
 	}
 
-	private void setConstraints()
+	protected void setConstraints()
 	{
 		constraints.addConstraint(new Constraint(CONSTR_CAT,
 				"Head length ratio (to bore length)", CONSTR_TYPE));

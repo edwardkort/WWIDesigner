@@ -1,9 +1,8 @@
 package com.wwidesigner.optimization;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.math3.exception.DimensionMismatchException;
@@ -12,53 +11,69 @@ import com.wwidesigner.util.Constants.LengthType;
 
 public class Constraints
 {
-	private Map<String, List<Constraint>> constraintsMap;
-	private LengthType dimensionType;
-	private int numberOfHoles;
-	private String objectiveDisplayName;
-	private String objectFunctionName;
-	private double[] lowerBounds;
-	private double[] upperBounds;
+	private transient LengthType dimensionType;
+	protected int numberOfHoles;
+	protected String objectiveDisplayName;
+	protected String objectiveFunctionName;
+	protected String constraintsName;
+	protected List<Constraint> constraint;
+	private transient double[] lowerBounds;
+	private transient double[] upperBounds;
+
+	public Constraints()
+	{
+		new Constraints(LengthType.M);
+	}
 
 	public Constraints(LengthType dimensionType)
 	{
-		constraintsMap = new LinkedHashMap<String, List<Constraint>>(6);
+		constraint = new ArrayList<Constraint>();
 		this.dimensionType = dimensionType;
 	}
 
 	public Set<String> getCategories()
 	{
-		return constraintsMap.keySet();
+		Set<String> categories = new LinkedHashSet<String>();
+		for (Constraint value : constraint)
+		{
+			categories.add(value.getCategory());
+		}
+
+		return categories;
 	}
 
 	public void addConstraint(Constraint newConstraint)
 	{
 		if (Constraint.isValid(newConstraint))
 		{
-			String category = newConstraint.getCategory();
+			constraint.add(newConstraint);
 			newConstraint.setParent(this);
-			List<Constraint> catConstraints = getConstraints(category);
-			catConstraints.add(newConstraint);
 		}
 	}
 
 	public Constraint getConstraint(String category, int index)
 	{
-		return constraintsMap.get(category).get(index);
+		int idx = 0;
+		for (Constraint thisConstraint : constraint)
+		{
+			if (category.equals(thisConstraint.getCategory()))
+			{
+				if (idx == index)
+				{
+					return thisConstraint;
+				}
+				idx++;
+			}
+		}
+
+		return null;
 	}
 
 	public void addConstraints(Constraints newConstraints)
 	{
-		Set<String> categories = newConstraints.getCategories();
-		for (String category : categories)
+		for (Constraint thisConstraint : newConstraints.getConstraint())
 		{
-			List<Constraint> catConstraints = newConstraints
-					.getConstraints(category);
-			for (Constraint constraint : catConstraints)
-			{
-				constraint.setParent(this);
-				addConstraint(constraint);
-			}
+			addConstraint(thisConstraint);
 		}
 	}
 
@@ -69,11 +84,13 @@ public class Constraints
 			return null;
 		}
 
-		List<Constraint> catConstraints = constraintsMap.get(category);
-		if (catConstraints == null)
+		List<Constraint> catConstraints = new ArrayList<Constraint>();
+		for (Constraint thisConstraint : constraint)
 		{
-			catConstraints = new ArrayList<Constraint>();
-			constraintsMap.put(category, catConstraints);
+			if (category.equals(thisConstraint.getCategory()))
+			{
+				catConstraints.add(thisConstraint);
+			}
 		}
 
 		return catConstraints;
@@ -81,24 +98,24 @@ public class Constraints
 
 	public void clearConstraints(String category)
 	{
-		constraintsMap.remove(category);
+		for (int i = constraint.size() - 1; i >= 0; i--)
+		{
+			Constraint thisConstraint = constraint.get(i);
+			if (thisConstraint.getCategory().equals(category))
+			{
+				constraint.remove(i);
+			}
+		}
 	}
 
 	public int getNumberOfConstraints(String category)
 	{
-		return constraintsMap.get(category).size();
+		return getConstraints(category).size();
 	}
 
 	public int getTotalNumberOfConstraints()
 	{
-		int num = 0;
-		Set<String> categories = getCategories();
-		for (String category : categories)
-		{
-			num += getNumberOfConstraints(category);
-		}
-
-		return num;
+		return constraint.size();
 	}
 
 	public int getNumberOfHoles()
@@ -121,14 +138,14 @@ public class Constraints
 		this.objectiveDisplayName = objectiveDisplayName;
 	}
 
-	public String getObjectFunctionName()
+	public String getObjectiveFunctionName()
 	{
-		return objectFunctionName;
+		return objectiveFunctionName;
 	}
 
-	public void setObjectFunctionName(String objectFunctionName)
+	public void setObjectiveFunctionName(String objectFunctionName)
 	{
-		this.objectFunctionName = objectFunctionName;
+		this.objectiveFunctionName = objectFunctionName;
 	}
 
 	public double[] getLowerBounds()
@@ -173,6 +190,33 @@ public class Constraints
 	public LengthType getDimensionType()
 	{
 		return dimensionType;
+	}
+
+	public String getConstraintsName()
+	{
+		return constraintsName;
+	}
+
+	public void setConstraintsName(String constraintsName)
+	{
+		this.constraintsName = constraintsName;
+	}
+
+	public void setConstraint(List<Constraint> constraintList)
+	{
+		constraint = new ArrayList<Constraint>();
+		if (constraintList != null)
+		{
+			for (Constraint thisConstraint : constraintList)
+			{
+				addConstraint(thisConstraint);
+			}
+		}
+	}
+
+	public List<Constraint> getConstraint()
+	{
+		return constraint;
 	}
 
 	private void validateBounds(double[] bounds)

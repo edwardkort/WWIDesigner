@@ -5,12 +5,17 @@ import com.wwidesigner.util.Constants.LengthType;
 
 public class Constraint
 {
-	private String displayName;
-	private String category;
-	private ConstraintType type;
-	private Constraints parent;
-	private Double lowerBound;
-	private Double upperBound;
+	protected String displayName;
+	protected String category;
+	protected ConstraintType type;
+	private transient Constraints parent;
+	protected Double lowerBound;
+	protected Double upperBound;
+
+	public Constraint()
+	{
+
+	}
 
 	public Constraint(String category, String displayName, ConstraintType type)
 	{
@@ -106,8 +111,7 @@ public class Constraint
 		this.parent = parent;
 	}
 
-	public double convertBound(boolean isLowerBound,
-			boolean toMetres)
+	public double convertBound(boolean isLowerBound, boolean toMetres)
 	{
 		double multiplier;
 		LengthType dimensionType = parent.getDimensionType();
@@ -133,6 +137,21 @@ public class Constraint
 		}
 
 		return type.toString();
+	}
+
+	public void setDisplayName(String displayName)
+	{
+		this.displayName = displayName;
+	}
+
+	public void setCategory(String category)
+	{
+		this.category = category;
+	}
+
+	public void setType(ConstraintType type)
+	{
+		this.type = type;
 	}
 
 }

@@ -257,6 +257,7 @@ public class ConstraintsTest extends AbstractOptimizationTest
 			objective.setUpperBounds(upperBound);
 
 			Constraints constraints = objective.getConstraints();
+			constraints.setConstraintsName("Broad-span bounds, 2 triplets of hole groups");
 			ConstraintsDialog dialog = new ConstraintsDialog(constraints);
 			dialog.setVisible(true);
 		}

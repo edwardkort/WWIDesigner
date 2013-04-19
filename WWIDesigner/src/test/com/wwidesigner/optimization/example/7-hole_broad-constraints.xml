@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wic:constraints xmlns:wic="http://www.wwidesigner.com/Constraints"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.wwidesigner.com/Constraints ../bind/Constraints.xsd ">
+	<constraintsName>Broad-span bounds, 2 triplets of hole groups</constraintsName>
+	<objectiveDisplayName>Single taper, grouped-hole optimizer</objectiveDisplayName>
+	<objectiveFunctionName>com.wwidesigner.optimization.SingleTaperHoleGroupObjectiveFunction</objectiveFunctionName>
+	<numberOfHoles>7</numberOfHoles>
+  	<constraint>
+		<displayName>Bore length</displayName>
+		<category>Hole position</category>
+		<type>DIMENSIONAL</type>
+		<lowerBound>0.2</lowerBound>
+		<upperBound>0.7</upperBound>
+	</constraint>
+	<constraint>
+		<displayName>Group 1 (Hole 7 (top), Hole 6, Hole 5) spacing</displayName>
+		<category>Hole position</category>
+		<type>DIMENSIONAL</type>
+		<lowerBound>0.01</lowerBound>
+		<upperBound>0.04</upperBound>
+	</constraint>
+	<constraint>
+		<displayName>Hole 5 to Hole 4 distance</displayName>
+		<category>Hole position</category>
+		<type>DIMENSIONAL</type>
+		<lowerBound>0.012</lowerBound>
+		<upperBound>0.05</upperBound>
+	</constraint>
+	<constraint>
+		<displayName>Group 2 (Hole 4, Hole 3, Hole 2) spacing</displayName>
+		<category>Hole position</category>
+		<type>DIMENSIONAL</type>
+		<lowerBound>0.012</lowerBound>
+		<upperBound>0.05</upperBound>
+	</constraint>
+	<constraint>
+		<displayName>Hole 2 to Hole 1 (bottom) distance</displayName>
+		<category>Hole position</category>
+		<type>DIMENSIONAL</type>
+		<lowerBound>0.012</lowerBound>
+		<upperBound>0.1</upperBound>
+	</constraint>
+	<constraint>
+		<displayName>Hole 1 (bottom) to bore end distance</displayName>
+		<category>Hole position</category>
+		<type>DIMENSIONAL</type>
+		<lowerBound>0.012</lowerBound>
+		<upperBound>0.3</upperBound>
+	</constraint>
+	<constraint>
+		<displayName>Hole 7 (top) diameter</displayName>
+		<category>Hole size</category>
+		<type>DIMENSIONAL</type>
+		<lowerBound>0.002</lowerBound>
+		<upperBound>0.14</upperBound>
+	</constraint>
+	<constraint>
+		<displayName>Hole 6 diameter</displayName>
+		<category>Hole size</category>
+		<type>DIMENSIONAL</type>
+		<lowerBound>0.002</lowerBound>
+		<upperBound>0.14</upperBound>
+	</constraint>
+	<constraint>
+		<displayName>Hole 5 diameter</displayName>
+		<category>Hole size</category>
+		<type>DIMENSIONAL</type>
+		<lowerBound>0.002</lowerBound>
+		<upperBound>0.14</upperBound>
+	</constraint>
+	<constraint>
+		<displayName>Hole 4 diameter</displayName>
+		<category>Hole size</category>
+		<type>DIMENSIONAL</type>
+		<lowerBound>0.002</lowerBound>
+		<upperBound>0.14</upperBound>
+	</constraint>
+	<constraint>
+		<displayName>Hole 3 diameter</displayName>
+		<category>Hole size</category>
+		<type>DIMENSIONAL</type>
+		<lowerBound>0.002</lowerBound>
+		<upperBound>0.14</upperBound>
+	</constraint>
+	<constraint>
+		<displayName>Hole 2 diameter</displayName>
+		<category>Hole size</category>
+		<type>DIMENSIONAL</type>
+		<lowerBound>0.002</lowerBound>
+		<upperBound>0.15</upperBound>
+	</constraint>
+	<constraint>
+		<displayName>Hole 1 (bottom) diameter</displayName>
+		<category>Hole size</category>
+		<type>DIMENSIONAL</type>
+		<lowerBound>0.002</lowerBound>
+		<upperBound>0.15</upperBound>
+	</constraint>
+	<constraint>
+		<displayName>Bore diameter ratio (top/bottom)</displayName>
+		<category>Single bore taper</category>
+		<type>DIMENSIONLESS</type>
+		<lowerBound>0.5</lowerBound>
+		<upperBound>2.0</upperBound>
+	</constraint>
+	<constraint>
+		<displayName>Taper length ratio (to bore length)</displayName>
+		<category>Single bore taper</category>
+		<type>DIMENSIONLESS</type>
+		<lowerBound>0.0</lowerBound>
+		<upperBound>1.0</upperBound>
+	</constraint>
+	<constraint>
+		<displayName>Taper start ratio (from top/untapered length)</displayName>
+		<category>Single bore taper</category>
+		<type>DIMENSIONLESS</type>
+		<lowerBound>0.0</lowerBound>
+		<upperBound>1.0</upperBound>
+	</constraint>
+</wic:constraints>

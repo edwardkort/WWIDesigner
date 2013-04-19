@@ -13,6 +13,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.table.AbstractTableModel;
 
 import com.wwidesigner.optimization.Constraint;
@@ -21,6 +22,7 @@ import com.wwidesigner.optimization.Constraints;
 public class ConstraintsPanel extends JPanel
 {
 	private Constraints constraints;
+	private JTextField constraintsNameField;
 	private GridBagConstraints gbc = new GridBagConstraints();
 	private int gridy = 0;
 
@@ -70,6 +72,16 @@ public class ConstraintsPanel extends JPanel
 		label.setFont(label.getFont().deriveFont(Font.PLAIN));
 		gbc.gridx = 1;
 		add(label, gbc);
+
+		label = new JLabel();
+		label.setText("Constraints name:");
+		gbc.gridx = 0;
+		gbc.gridy = ++gridy;
+		add(label, gbc);
+		constraintsNameField = new JTextField(50);
+		constraintsNameField.setText(constraints.getConstraintsName());
+		gbc.gridx = 1;
+		add(constraintsNameField, gbc);
 
 		label = new JLabel();
 		label.setText("Number of holes:");

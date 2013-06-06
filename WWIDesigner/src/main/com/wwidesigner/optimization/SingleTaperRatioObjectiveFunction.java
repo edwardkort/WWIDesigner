@@ -37,6 +37,7 @@ public class SingleTaperRatioObjectiveFunction extends BaseObjectiveFunction
 		nrDimensions = 3;
 		optimizerType = OptimizerType.BOBYQAOptimizer; // MultivariateOptimizer
 		setConstraints();
+		setStartingGeometry();
 	}
 
 	protected void setConstraints()
@@ -163,6 +164,51 @@ public class SingleTaperRatioObjectiveFunction extends BaseObjectiveFunction
 		}
 		calculator.getInstrument().setBorePoint(borePoints);
 		calculator.getInstrument().updateComponents();
+	}
+
+	/**
+	 * Reset the instrument borePoints, creating 4 borePoints:<br>
+	 * 4. Last borePoint in original instrument profile - tail<br>
+	 * 1. First borePoint in original profile, but with a bore diameter of 1.05
+	 * of the tail<br>
+	 * 2. Second borePoint a third of the way down the bore, with the first
+	 * borePoint's diameter<br>
+	 * 3. Third borePoint two-thirds down the bore, with the tail's diameter
+	 * <p>
+	 * These starting values seem to make the optimizer happy regardless of the
+	 * final solution.
+	 */
+	public void setStartingGeometry()
+	{
+		Instrument instrument = calculator.getInstrument();
+		PositionInterface[] sortedPoints = Instrument.sortList(instrument
+				.getBorePoint());
+
+		BorePoint head = (BorePoint) sortedPoints[0];
+		BorePoint tail = (BorePoint) sortedPoints[sortedPoints.length - 1];
+
+		double startPosition = head.getBorePosition();
+		double boreLength = tail.getBorePosition() - startPosition;
+
+		double tailDiameter = tail.getBoreDiameter();
+		double headDiameter = tailDiameter * 1.05;
+
+		head.setBoreDiameter(headDiameter);
+
+		BorePoint taperStart = new BorePoint();
+		taperStart.setBoreDiameter(headDiameter);
+		taperStart.setBorePosition(boreLength / 3. + startPosition);
+
+		BorePoint taperEnd = new BorePoint();
+		taperEnd.setBoreDiameter(tailDiameter);
+		taperEnd.setBorePosition(2. * boreLength / 3. + startPosition);
+
+		List<BorePoint> points = new ArrayList<BorePoint>();
+		points.add(head);
+		points.add(taperStart);
+		points.add(taperEnd);
+		points.add(tail);
+		instrument.setBorePoint(points);
 	}
 
 }

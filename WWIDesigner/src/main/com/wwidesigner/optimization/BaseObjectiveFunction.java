@@ -12,7 +12,6 @@ import com.wwidesigner.modelling.InstrumentCalculator;
 import com.wwidesigner.note.Fingering;
 import com.wwidesigner.note.TuningInterface;
 import com.wwidesigner.optimization.multistart.AbstractRangeProcessor;
-import com.wwidesigner.util.Constants.LengthType;
 
 /**
  * Base class for optimization objective functions. Each derived class supports

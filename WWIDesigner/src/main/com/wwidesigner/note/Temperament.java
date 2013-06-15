@@ -81,9 +81,9 @@ public class Temperament
 	{
 		Temperament temp = new Temperament();
 		temp.setName("12-Tone Equal Temperament");
-		temp.setComment("12-tone, equal temperament in one octave.");
+		temp.setComment("12-tone, equal temperament in three octaves.");
 
-		for (int i = 0; i < 13; i++)
+		for (int i = 0; i < 37; i++)
 		{
 			double ratio = Math.pow(2., (double) i / 12.);
 			temp.addRatio(ratio);
@@ -93,23 +93,28 @@ public class Temperament
 
 	public static Temperament makeJI_12()
 	{
+		double[] octaveMultiplier = { 1., 2., 4. };
 		Temperament temp = new Temperament();
 		temp.setName("12-Tone Just Intonation");
-		temp.setComment("12-tone, just intonation with 7-limit tritone in one octave.");
+		temp.setComment("12-tone, just intonation with 7-limit tritone in three octaves.");
 
 		temp.addRatio(1.);
-		temp.addRatio(16. / 15);
-		temp.addRatio(9. / 8);
-		temp.addRatio(6. / 5);
-		temp.addRatio(5. / 4);
-		temp.addRatio(4. / 3);
-		temp.addRatio(7. / 5);
-		temp.addRatio(3. / 2);
-		temp.addRatio(8. / 5);
-		temp.addRatio(5. / 3);
-		temp.addRatio(9. / 5);
-		temp.addRatio(15. / 8);
-		temp.addRatio(2.);
+		for (int i = 0; i < octaveMultiplier.length; i++)
+		{
+			double mult = octaveMultiplier[i];
+			temp.addRatio(mult * 16. / 15);
+			temp.addRatio(mult * 9. / 8);
+			temp.addRatio(mult * 6. / 5);
+			temp.addRatio(mult * 5. / 4);
+			temp.addRatio(mult * 4. / 3);
+			temp.addRatio(mult * 7. / 5);
+			temp.addRatio(mult * 3. / 2);
+			temp.addRatio(mult * 8. / 5);
+			temp.addRatio(mult * 5. / 3);
+			temp.addRatio(mult * 9. / 5);
+			temp.addRatio(mult * 15. / 8);
+			temp.addRatio(mult * 2.);
+		}
 
 		return temp;
 	}

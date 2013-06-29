@@ -19,6 +19,7 @@ import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
+import com.jidesoft.app.framework.BasicDataModel;
 import com.jidesoft.app.framework.DataModel;
 import com.jidesoft.app.framework.event.EventSubscriber;
 import com.jidesoft.app.framework.event.SubscriberEvent;
@@ -234,19 +235,7 @@ public class StudyView extends DataViewPane implements EventSubscriber
 			String xmlInstrument = study.optimizeInstrument();
 			FileBasedApplication app = (FileBasedApplication) getApplication();
 			DataModel data = app.newData("xml");
-			// These sleeps are due to the way JDAF handles threading.
-			// The DataModel and DataViews seem to be updated on separate
-			// threads
-			// Dumb!
-			CodeEditorView view = null;
-			while (view == null)
-			{
-				view = (CodeEditorView) app.getDataView(data);
-				Thread.sleep(100);
-			}
-			view.setText(xmlInstrument);
-			Thread.sleep(100);
-			view.updateModel(data);
+			((BasicDataModel)data).setData(xmlInstrument);
 			addDataModelToStudy(data);
 		}
 		catch (Exception e)

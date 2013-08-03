@@ -127,7 +127,7 @@ public class FingeringPatternPanel extends JPanel implements KeyListener,
 		if (numberOfHolesPopulated)
 		{
 			Integer newNumberOfHoles = Integer.parseInt(number);
-			if (newNumberOfHoles != numberOfHoles)
+			if (!newNumberOfHoles.equals(numberOfHoles))
 			{
 				resetTableData(0, 0);
 			}

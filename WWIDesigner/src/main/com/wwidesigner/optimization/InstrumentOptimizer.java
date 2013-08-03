@@ -71,12 +71,12 @@ public abstract class InstrumentOptimizer implements
 		this.upperBnd = upperBound;
 	}
 
-	public void setBaseOptimizer(OptimizerType baseOptimizerType,
+	public void setBaseOptimizer(OptimizerType thisBaseOptimizerType,
 			int numberOfInterpolationPoints)
 	{
 		this.numberOfInterpolationPoints = numberOfInterpolationPoints;
 
-		switch (baseOptimizerType)
+		switch (thisBaseOptimizerType)
 		{
 			case BOBYQAOptimizer:
 				baseOptimizer = new BOBYQAOptimizer(numberOfInterpolationPoints);

@@ -4,19 +4,17 @@
 	<classpathentry kind="src" path="src/test"/>
 	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/XMLUnit"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/ApacheCommonsMath3"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/Dozer"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/SLF4J"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/ApacheCommonsBeanUtils"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/ApacheCommonsLang2"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/ApacheCommonsLogging"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/ApacheCommonsMath3"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/Dozer"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/JIDE_Chart"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/JIDE_Editor"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/JIDE_JDAF"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/JIDE_JDAF_Helpers"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/JIDE_Dialogs"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/Batik"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/JIDE_Grid"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/JIDE_JDAF"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/SLF4J"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/XMLUnit"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/JIDE_JDAF_Helpers"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>

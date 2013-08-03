@@ -44,6 +44,7 @@ public class NafStudyModel extends StudyModel
 	public static final String HOLE_0_CONS_SUB_CATEGORY_ID = "0 holes";
 	public static final String HOLE_6_1_125_SPACING_CONS_SUB_CATEGORY_ID = "6 holes, 1-1/8\" max spacing";
 	public static final String HOLE_6_1_25_SPACING_CONS_SUB_CATEGORY_ID = "6 holes, 1-1/4\" max spacing";
+	public static final String HOLE_6_40_SPACING_CONS_SUB_CATEGORY_ID = "6 holes, 1.40\" max spacing";
 	public static final String HOLE_6_1_5_SPACING_CONS_SUB_CATEGORY_ID = "6 holes, 1-1/2\" max spacing";
 	public static final String HOLE_7_CONS_SUB_CATEGORY_ID = "7 holes";
 
@@ -86,6 +87,7 @@ public class NafStudyModel extends StudyModel
 		constraints.addSub(HOLE_0_CONS_SUB_CATEGORY_ID, null);
 		constraints.addSub(HOLE_6_1_125_SPACING_CONS_SUB_CATEGORY_ID, null);
 		constraints.addSub(HOLE_6_1_25_SPACING_CONS_SUB_CATEGORY_ID, null);
+		constraints.addSub(HOLE_6_40_SPACING_CONS_SUB_CATEGORY_ID, null);
 		constraints.addSub(HOLE_6_1_5_SPACING_CONS_SUB_CATEGORY_ID, null);
 		constraints.addSub(HOLE_7_CONS_SUB_CATEGORY_ID, null);
 		categories.add(constraints);
@@ -238,6 +240,13 @@ public class NafStudyModel extends StudyModel
 					upperBound = new double[] { 0.7, 0.032, 0.032, 0.07, 0.032,
 							0.032, 0.30 };
 				}
+				else if (constraint == HOLE_6_40_SPACING_CONS_SUB_CATEGORY_ID)
+				{
+					lowerBound = new double[] { 0.2, 0.01, 0.01, 0.01, 0.01,
+							0.01, 0.01 };
+					upperBound = new double[] { 0.7, 0.0356, 0.0356, 0.07, 0.0356,
+							0.0356, 0.30 };
+				}
 				else
 				// 6 holes, 1.5 inch spacing.
 				{
@@ -281,6 +290,15 @@ public class NafStudyModel extends StudyModel
 							0.003 };
 					upperBound = new double[] { 0.7, 0.032, 0.032, 0.07, 0.032,
 							0.032, 0.30, 0.0102, 0.0102, 0.010, 0.010, 0.010,
+							0.012 };
+				}
+				else if (constraint == HOLE_6_40_SPACING_CONS_SUB_CATEGORY_ID)
+				{
+					lowerBound = new double[] { 0.2, 0.01, 0.01, 0.01, 0.01,
+							0.01, 0.01, 0.002, 0.003, 0.003, 0.003, 0.003,
+							0.003 };
+					upperBound = new double[] { 0.7, 0.0356, 0.0356, 0.07, 0.0356,
+							0.0336, 0.30, 0.0102, 0.0102, 0.010, 0.010, 0.010,
 							0.012 };
 				}
 				else
@@ -332,6 +350,11 @@ public class NafStudyModel extends StudyModel
 						upperBound[1] = 0.032;
 						upperBound[3] = 0.032;
 					}
+					else if (constraint == HOLE_6_40_SPACING_CONS_SUB_CATEGORY_ID)
+					{
+						upperBound[1] = 0.0356;
+						upperBound[3] = 0.0356;
+					}
 				}
 				objective = new HoleGroupObjectiveFunction(calculator, tuning,
 						evaluator, holeGroups);
@@ -375,6 +398,11 @@ public class NafStudyModel extends StudyModel
 					{
 						upperBound[1] = 0.032;
 						upperBound[3] = 0.032;
+					}
+					else if (constraint == HOLE_6_40_SPACING_CONS_SUB_CATEGORY_ID)
+					{
+						upperBound[1] = 0.0356;
+						upperBound[3] = 0.0356;
 					}
 				}
 				objective = new SingleTaperHoleGroupObjectiveFunction(

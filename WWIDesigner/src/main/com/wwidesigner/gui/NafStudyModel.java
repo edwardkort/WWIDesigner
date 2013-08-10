@@ -20,6 +20,7 @@ import com.wwidesigner.optimization.HolePositionObjectiveFunction;
 import com.wwidesigner.optimization.HoleSizeObjectiveFunction;
 import com.wwidesigner.optimization.SingleTaperHoleGroupObjectiveFunction;
 import com.wwidesigner.optimization.SingleTaperLengthObjectiveFunction;
+import com.wwidesigner.optimization.SingleTaperNoHoleGroupingObjectiveFunction;
 import com.wwidesigner.optimization.multistart.GridRangeProcessor;
 import com.wwidesigner.util.Constants.TemperatureType;
 import com.wwidesigner.util.PhysicalParameters;
@@ -39,6 +40,7 @@ public class NafStudyModel extends StudyModel
 	public static final String NO_GROUP_OPT_SUB_CATEGORY_ID = "No-grouping Hole Optimizer";
 	public static final String GROUP_OPT_SUB_CATEGORY_ID = "Hole-grouping Optimizer";
 	public static final String TAPER_GROUP_OPT_SUB_CATEGORY_ID = "Taper, hole-grouping Optimizer";
+	public static final String TAPER_NO_GROUP_OPT_SUB_CATEGORY_ID = "Taper, no-hole-grouping Optimizer";
 	public static final String TAPER_LENGTH_OPT_SUB_CATEGORY_ID = "Taper and Length Optimizer";
 
 	public static final String HOLE_0_CONS_SUB_CATEGORY_ID = "0 holes";
@@ -80,6 +82,7 @@ public class NafStudyModel extends StudyModel
 		optimizers.addSub(NO_GROUP_OPT_SUB_CATEGORY_ID, null);
 		optimizers.addSub(HOLESIZE_OPT_SUB_CATEGORY_ID, null);
 		optimizers.addSub(GROUP_OPT_SUB_CATEGORY_ID, null);
+		optimizers.addSub(TAPER_NO_GROUP_OPT_SUB_CATEGORY_ID, null);
 		optimizers.addSub(TAPER_GROUP_OPT_SUB_CATEGORY_ID, null);
 		optimizers.addSub(TAPER_LENGTH_OPT_SUB_CATEGORY_ID, null);
 		categories.add(optimizers);
@@ -244,8 +247,8 @@ public class NafStudyModel extends StudyModel
 				{
 					lowerBound = new double[] { 0.2, 0.01, 0.01, 0.01, 0.01,
 							0.01, 0.01 };
-					upperBound = new double[] { 0.7, 0.0356, 0.0356, 0.07, 0.0356,
-							0.0356, 0.30 };
+					upperBound = new double[] { 0.7, 0.0356, 0.0356, 0.07,
+							0.0356, 0.0356, 0.30 };
 				}
 				else
 				// 6 holes, 1.5 inch spacing.
@@ -297,9 +300,9 @@ public class NafStudyModel extends StudyModel
 					lowerBound = new double[] { 0.2, 0.01, 0.01, 0.01, 0.01,
 							0.01, 0.01, 0.002, 0.003, 0.003, 0.003, 0.003,
 							0.003 };
-					upperBound = new double[] { 0.7, 0.0356, 0.0356, 0.07, 0.0356,
-							0.0336, 0.30, 0.0102, 0.0102, 0.010, 0.010, 0.010,
-							0.012 };
+					upperBound = new double[] { 0.7, 0.0356, 0.0356, 0.07,
+							0.0356, 0.0336, 0.30, 0.0102, 0.0102, 0.010, 0.010,
+							0.010, 0.012 };
 				}
 				else
 				// 6 holes, 1.5 inch spacing.
@@ -358,6 +361,65 @@ public class NafStudyModel extends StudyModel
 				}
 				objective = new HoleGroupObjectiveFunction(calculator, tuning,
 						evaluator, holeGroups);
+				break;
+			case TAPER_NO_GROUP_OPT_SUB_CATEGORY_ID:
+				evaluator = new ReflectionEvaluator(calculator);
+				// Length bounds are expressed in meters, diameter bounds as
+				// ratios,
+				// taper bounds as ratios.
+				if (numberOfHoles == 0)
+				{
+					lowerBound = new double[] { 0.2, 0.5, 0.0, 0.0 };
+					upperBound = new double[] { 0.7, 2.0, 1.0, 1.0 };
+				}
+				else if (numberOfHoles == 7)
+				{
+					lowerBound = new double[] { 0.2, 0.012, 0.012, 0.012,
+							0.012, 0.012, 0.0005, 0.012, 0.002, 0.002, 0.002,
+							0.002, 0.002, 0.002, 0.002, 0.5, 0.0, 0.0 };
+					upperBound = new double[] { 0.7, 0.05, 0.05, 0.1, 0.05,
+							0.05, 0.003, 0.20, 0.014, 0.014, 0.014, 0.014,
+							0.014, 0.008, 0.008, 2.0, 1.0, 1.0 };
+				}
+				else if (constraint == HOLE_6_1_125_SPACING_CONS_SUB_CATEGORY_ID)
+				{
+					lowerBound = new double[] { 0.2, 0.01, 0.01, 0.01, 0.01,
+							0.01, 0.01, 0.002, 0.003, 0.003, 0.003, 0.003,
+							0.003, 0.5, 0.0, 0.0 };
+					upperBound = new double[] { 0.7, 0.029, 0.029, 0.07, 0.029,
+							0.029, 0.30, 0.0102, 0.0102, 0.010, 0.010, 0.010,
+							0.012, 2.0, 1.0, 1.0 };
+				}
+				else if (constraint == HOLE_6_1_25_SPACING_CONS_SUB_CATEGORY_ID)
+				{
+					lowerBound = new double[] { 0.2, 0.01, 0.01, 0.01, 0.01,
+							0.01, 0.01, 0.002, 0.003, 0.003, 0.003, 0.003,
+							0.003, 0.5, 0.0, 0.0 };
+					upperBound = new double[] { 0.7, 0.032, 0.032, 0.07, 0.032,
+							0.032, 0.30, 0.0102, 0.0102, 0.010, 0.010, 0.010,
+							0.012, 2.0, 1.0, 1.0 };
+				}
+				else if (constraint == HOLE_6_40_SPACING_CONS_SUB_CATEGORY_ID)
+				{
+					lowerBound = new double[] { 0.2, 0.01, 0.01, 0.01, 0.01,
+							0.01, 0.01, 0.002, 0.003, 0.003, 0.003, 0.003,
+							0.003, 0.5, 0.0, 0.0 };
+					upperBound = new double[] { 0.7, 0.0356, 0.0356, 0.07,
+							0.0356, 0.0336, 0.30, 0.0102, 0.0102, 0.010, 0.010,
+							0.010, 0.012, 2.0, 1.0, 1.0 };
+				}
+				else
+				// 6 holes, 1.5 inch spacing.
+				{
+					lowerBound = new double[] { 0.2, 0.01, 0.01, 0.01, 0.01,
+							0.01, 0.01, 0.002, 0.003, 0.003, 0.003, 0.003,
+							0.003, 0.5, 0.0, 0.0 };
+					upperBound = new double[] { 0.7, 0.038, 0.038, 0.07, 0.038,
+							0.038, 0.30, 0.0102, 0.0102, 0.010, 0.010, 0.010,
+							0.012, 2.0, 1.0, 1.0 };
+				}
+				objective = new SingleTaperNoHoleGroupingObjectiveFunction(
+						calculator, tuning, evaluator);
 				break;
 			case TAPER_GROUP_OPT_SUB_CATEGORY_ID:
 				evaluator = new ReflectionEvaluator(calculator);

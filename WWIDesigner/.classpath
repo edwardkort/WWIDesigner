@@ -16,5 +16,6 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/SLF4J"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/XMLUnit"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/JIDE_JDAF_Helpers"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/JIDE_Dialogs"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>

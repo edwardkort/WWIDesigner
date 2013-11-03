@@ -234,10 +234,13 @@ public class StudyView extends DataViewPane implements EventSubscriber
 		try
 		{
 			String xmlInstrument = study.optimizeInstrument();
-			FileBasedApplication app = (FileBasedApplication) getApplication();
-			DataModel data = app.newData("xml");
-			((BasicDataModel)data).setData(xmlInstrument);
-			addDataModelToStudy(data);
+			if (xmlInstrument != null && ! xmlInstrument.isEmpty())
+			{
+				FileBasedApplication app = (FileBasedApplication) getApplication();
+				DataModel data = app.newData("xml");
+				((BasicDataModel)data).setData(xmlInstrument);
+				addDataModelToStudy(data);
+			}
 		}
 		catch (Exception e)
 		{

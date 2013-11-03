@@ -10,29 +10,6 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.prefs.Preferences;
 
-import org.apache.commons.math3.exception.TooManyEvaluationsException;
-import org.apache.commons.math3.optim.ConvergenceChecker;
-import org.apache.commons.math3.optim.InitialGuess;
-import org.apache.commons.math3.optim.MaxEval;
-import org.apache.commons.math3.optim.MaxIter;
-import org.apache.commons.math3.optim.PointValuePair;
-import org.apache.commons.math3.optim.SimpleBounds;
-import org.apache.commons.math3.optim.SimpleValueChecker;
-import org.apache.commons.math3.optim.nonlinear.scalar.GoalType;
-import org.apache.commons.math3.optim.nonlinear.scalar.MultiStartMultivariateOptimizer;
-import org.apache.commons.math3.optim.nonlinear.scalar.MultivariateOptimizer;
-import org.apache.commons.math3.optim.nonlinear.scalar.ObjectiveFunction;
-import org.apache.commons.math3.optim.nonlinear.scalar.noderiv.BOBYQAOptimizer;
-import org.apache.commons.math3.optim.nonlinear.scalar.noderiv.CMAESOptimizer;
-import org.apache.commons.math3.optim.nonlinear.scalar.noderiv.MultiDirectionalSimplex;
-import org.apache.commons.math3.optim.nonlinear.scalar.noderiv.PowellOptimizer;
-import org.apache.commons.math3.optim.nonlinear.scalar.noderiv.SimplexOptimizer;
-import org.apache.commons.math3.optim.univariate.BrentOptimizer;
-import org.apache.commons.math3.optim.univariate.SearchInterval;
-import org.apache.commons.math3.optim.univariate.UnivariateObjectiveFunction;
-import org.apache.commons.math3.optim.univariate.UnivariatePointValuePair;
-import org.apache.commons.math3.random.MersenneTwister;
-
 import com.jidesoft.app.framework.file.FileDataModel;
 import com.wwidesigner.geometry.Instrument;
 import com.wwidesigner.geometry.bind.GeometryBindFactory;
@@ -42,6 +19,7 @@ import com.wwidesigner.modelling.InstrumentTuner;
 import com.wwidesigner.note.Tuning;
 import com.wwidesigner.note.bind.NoteBindFactory;
 import com.wwidesigner.optimization.BaseObjectiveFunction;
+import com.wwidesigner.optimization.ObjectiveFunctionOptimizer;
 import com.wwidesigner.util.BindFactory;
 import com.wwidesigner.util.PhysicalParameters;
 
@@ -266,32 +244,15 @@ public abstract class StudyModel
 		tuner.plotTuning(title + ": " + instrumentName + "/" + tuningName,
 				false);
 	}
-	
-	protected static void printErrors(String description, double errorNorm, double[] errorVector)
-	{
-		boolean firstPass = true;
-		System.out.print(description);
-		System.out.print(errorNorm);
-		System.out.print(" from [");
-		for (double err: errorVector)
-		{
-			if (! firstPass)
-			{
-				System.out.print(",  ");
-			}
-			else
-			{
-				firstPass = false;
-			}
-			System.out.print(err);
-		}
-		System.out.println("].");
-	}
 
+	/**
+	 * Optimize the currently-selected objective function
+	 * @return XML string defining the optimized instrument, if optimization succeeds,
+	 * or {@code null} if optimization fails.
+	 */
 	public String optimizeInstrument() throws Exception
 	{
 		BaseObjectiveFunction objective = getObjectiveFunction();
-		ConvergenceChecker<PointValuePair> convergenceChecker = new SimpleValueChecker(0.00001, 0.0000001);
 		BaseObjectiveFunction.OptimizerType optimizerType = objective.getOptimizerType();
 		if ( preferredOptimizerType != null 
 				&& ! optimizerType.equals(BaseObjectiveFunction.OptimizerType.BrentOptimizer))
@@ -299,126 +260,15 @@ public abstract class StudyModel
 			optimizerType = preferredOptimizerType;
 		}
 		
-		double[] startPoint = objective.getInitialPoint();
-		double[] errorVector = objective.getErrorVector(startPoint);
-		double initialNorm = BaseObjectiveFunction.calcNorm(errorVector);
-		System.out.println();
-		printErrors("Initial error: ", initialNorm, errorVector);
-		
-		try
+		if ( ObjectiveFunctionOptimizer.optimizeObjectiveFunction(objective, optimizerType) )
 		{
-			if ( optimizerType.equals(BaseObjectiveFunction.OptimizerType.BrentOptimizer) )
-			{
-				// Univariate optimization.
-				BrentOptimizer optimizer = new BrentOptimizer(0.00001, 0.00001);
-				UnivariatePointValuePair  outcome;
-				outcome = optimizer.optimize(GoalType.MINIMIZE,
-						new UnivariateObjectiveFunction(objective),
-						new MaxEval(objective.getMaxEvaluations()), MaxIter.unlimited(),
-						new SearchInterval(objective.getLowerBounds()[0], 
-								objective.getUpperBounds()[0],
-								startPoint[0]));
-				double[] geometry = new double[1];
-				geometry[0] = outcome.getPoint();
-				objective.setGeometryPoint(geometry);
-			}
-			else if ( optimizerType.equals(BaseObjectiveFunction.OptimizerType.PowellOptimizer) )
-			{
-				// Multivariate optimization, without bounds.
-				PowellOptimizer optimizer = new PowellOptimizer(0.00001, 0.000001);
-				PointValuePair  outcome;
-				outcome = optimizer.optimize(GoalType.MINIMIZE,
-						new ObjectiveFunction(objective),
-						new MaxEval(objective.getMaxEvaluations()), MaxIter.unlimited(),
-						new InitialGuess(startPoint));
-				objective.setGeometryPoint(outcome.getPoint());
-			}
-			else if ( optimizerType.equals(BaseObjectiveFunction.OptimizerType.SimplexOptimizer) )
-			{
-				// Multivariate optimization, without bounds.
-				SimplexOptimizer optimizer = new SimplexOptimizer(convergenceChecker);
-				MultiDirectionalSimplex simplex 
-					= new MultiDirectionalSimplex(objective.getSimplexStepSize());
-				PointValuePair  outcome;
-				outcome = optimizer.optimize(GoalType.MINIMIZE,
-						new ObjectiveFunction(objective),
-						new MaxEval(objective.getMaxEvaluations()), MaxIter.unlimited(),
-						new InitialGuess(startPoint),
-						simplex);
-				objective.setGeometryPoint(outcome.getPoint());
-			}
-			else {
-				// Multivariate optimization, with bounds.
-				MultivariateOptimizer optimizer;
-				PointValuePair  outcome;
-				if ( optimizerType.equals(BaseObjectiveFunction.OptimizerType.CMAESOptimizer)
-						|| objective.getNrDimensions() == 1 )	// BOBYQA requires 2 or more dimensions.
-				{
-					optimizer = new CMAESOptimizer(objective.getMaxEvaluations(), 
-							0.01 * initialNorm, true, 0, 0, new MersenneTwister(), false,
-							convergenceChecker);
-				}
-				else {
-					double trustRegion = objective.getInitialTrustRegionRadius();
-					optimizer = new BOBYQAOptimizer(objective.getNrInterpolations(), 
-							trustRegion, 1e-8 * trustRegion);
-				}
-				if ( objective.isMultiStart())
-				{
-					MultiStartMultivariateOptimizer multiStartOptimizer 
-						= new MultiStartMultivariateOptimizer(optimizer,
-								objective.getRangeProcessor().getNumberOfStarts(),
-								objective.getRangeProcessor()); 
-					outcome = multiStartOptimizer.optimize(GoalType.MINIMIZE,
-							new ObjectiveFunction(objective),
-							new MaxEval(objective.getMaxEvaluations()), MaxIter.unlimited(),
-							new InitialGuess(startPoint),
-							new SimpleBounds(objective.getLowerBounds(), 
-									objective.getUpperBounds()),
-							new CMAESOptimizer.PopulationSize(objective.getNrInterpolations()),
-							new CMAESOptimizer.Sigma(objective.getStdDev()));
-				}
-				else
-				{
-					outcome = optimizer.optimize(GoalType.MINIMIZE,
-						new ObjectiveFunction(objective),
-						new MaxEval(objective.getMaxEvaluations()), MaxIter.unlimited(),
-						new InitialGuess(startPoint),
-						new SimpleBounds(objective.getLowerBounds(), 
-								objective.getUpperBounds()),
-						new CMAESOptimizer.PopulationSize(objective.getNrInterpolations()),
-						new CMAESOptimizer.Sigma(objective.getStdDev()));
-				}
-				objective.setGeometryPoint(outcome.getPoint());
-			}
+			Instrument instrument = objective.getInstrument();
+			// Convert back to the input unit-of-measure values
+			instrument.convertToLengthType();
+			String xmlString = marshal(instrument);
+			return xmlString;
 		}
-		catch (TooManyEvaluationsException e)
-		{
-			System.out.println("Exception: " + e.getMessage());
-		}
-		catch (Exception e)
-		{
-			System.out.println("Exception: " + e.getMessage());
-			e.printStackTrace();
-		}
-		
-		System.out.print("Performed ");
-		System.out.print(objective.getNumberOfTunings());
-		System.out.print(" tuning calculations in ");
-		System.out.print(objective.getNumberOfEvaluations());
-		System.out.println(" error norm evaluations.");
-		errorVector = objective.getErrorVector(objective.getInitialPoint());
-		double finalNorm = BaseObjectiveFunction.calcNorm(errorVector);
-		printErrors("Final error:  ", finalNorm, errorVector);
-		System.out.print("Residual error ratio: ");
-		System.out.println(finalNorm/initialNorm);
-
-		Instrument instrument = objective.getInstrument();
-		// Convert back to the input unit-of-measure values
-		instrument.convertToLengthType();
-		String xmlString = marshal(instrument);
-
-		return xmlString;
+		return null;
 	} // optimizeInstrument
 	
 	public void compareInstrument(String newName, Instrument newInstrument) throws Exception

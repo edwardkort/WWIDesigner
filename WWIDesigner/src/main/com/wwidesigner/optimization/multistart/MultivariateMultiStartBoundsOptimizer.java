@@ -15,6 +15,7 @@ import org.apache.commons.math3.optimization.MultivariateOptimizer;
 import org.apache.commons.math3.optimization.PointValuePair;
 import org.apache.commons.math3.optimization.direct.BaseAbstractMultivariateSimpleBoundsOptimizer;
 
+@Deprecated
 public class MultivariateMultiStartBoundsOptimizer implements
 		MultivariateOptimizer,
 		BaseMultivariateSimpleBoundsOptimizer<MultivariateFunction>
@@ -121,7 +122,6 @@ public class MultivariateMultiStartBoundsOptimizer implements
 			final GoalType goal, double[] startPoint)
 	{
 		maxEvaluations = maxEval;
-		RuntimeException lastException = null;
 		optima = new PointValuePair[starts];
 		totalEvaluations = 0;
 		generator.setStaticValues(startPoint);
@@ -138,7 +138,6 @@ public class MultivariateMultiStartBoundsOptimizer implements
 			}
 			catch (RuntimeException mue)
 			{
-				lastException = mue;
 				optima[i] = null;
 			}
 			// CHECKSTYLE: resume IllegalCatch
@@ -150,7 +149,7 @@ public class MultivariateMultiStartBoundsOptimizer implements
 
 		if (optima[0] == null)
 		{
-			throw lastException; // cannot be null if starts >=1
+			return new PointValuePair(startPoint, 10.0);
 		}
 
 		// Return the found point given the best objective function value.
@@ -166,7 +165,6 @@ public class MultivariateMultiStartBoundsOptimizer implements
 		if (optimizer instanceof BaseAbstractMultivariateSimpleBoundsOptimizer)
 		{
 			maxEvaluations = maxEval;
-			RuntimeException lastException = null;
 			optima = new PointValuePair[starts];
 			totalEvaluations = 0;
 			generator.setStaticValues(startPoint);
@@ -187,7 +185,6 @@ public class MultivariateMultiStartBoundsOptimizer implements
 				}
 				catch (RuntimeException mue)
 				{
-					lastException = mue;
 					optima[i] = null;
 					System.out.println("Start " + (int) (i + 1) + " failed, " + mue);
 				}
@@ -200,7 +197,7 @@ public class MultivariateMultiStartBoundsOptimizer implements
 
 			if (optima[0] == null)
 			{
-				throw lastException; // cannot be null if starts >=1
+				return new PointValuePair(startPoint, 10.0);
 			}
 
 			// Return the found point given the best objective function value.

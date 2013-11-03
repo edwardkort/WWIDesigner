@@ -6,13 +6,6 @@ package com.wwidesigner.optimization;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.OutputStreamWriter;
-import org.apache.commons.math3.analysis.MultivariateFunction;
-import org.apache.commons.math3.optimization.BaseMultivariateSimpleBoundsOptimizer;
-import org.apache.commons.math3.optimization.GoalType;
-import org.apache.commons.math3.optimization.PointValuePair;
-import org.apache.commons.math3.optimization.direct.BOBYQAOptimizer;
-import org.apache.commons.math3.optimization.direct.CMAESOptimizer;
-
 import com.wwidesigner.geometry.Instrument;
 import com.wwidesigner.geometry.bind.GeometryBindFactory;
 import com.wwidesigner.modelling.EvaluatorInterface;
@@ -122,24 +115,11 @@ public class AbstractOptimizationTest
 	{
 		objective.setLowerBounds(lowerBound);
 		objective.setUpperBounds(upperBound);
-		double[] startPoint = objective.getInitialPoint();
-		BaseMultivariateSimpleBoundsOptimizer<MultivariateFunction> optimizer;
-		PointValuePair  outcome;
-		if ( objective.getOptimizerType() == BaseObjectiveFunction.OptimizerType.CMAESOptimizer
-				|| objective.getOptimizerType() == BaseObjectiveFunction.OptimizerType.BrentOptimizer )
-		{
-			optimizer = new CMAESOptimizer(objective.getNrInterpolations());
-		}
-		else {
-			optimizer = new BOBYQAOptimizer(objective.getNrInterpolations());
-		}
 
 		showTuning(instrument, calculator, tuning, title
 				+ ", before optimization");
-
-		outcome = optimizer.optimize(objective.getMaxEvaluations(),objective,GoalType.MINIMIZE,
-				startPoint, objective.getLowerBounds(), objective.getUpperBounds());
-		objective.setGeometryPoint(outcome.getPoint());
+		
+		ObjectiveFunctionOptimizer.optimizeObjectiveFunction(objective, objective.getOptimizerType());
 
 		showTuning(instrument, calculator, tuning, title
 				+ ", after optimization");

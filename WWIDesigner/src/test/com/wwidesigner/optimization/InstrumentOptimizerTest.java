@@ -10,9 +10,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.List;
 
-import org.apache.commons.math3.optimization.GoalType;
-import org.apache.commons.math3.optimization.PointValuePair;
-import org.apache.commons.math3.optimization.direct.BOBYQAOptimizer;
 import org.junit.Test;
 
 import com.wwidesigner.geometry.BorePoint;
@@ -67,13 +64,9 @@ public class InstrumentOptimizerTest
 				calculator, tuning, evaluator);
 		objective.setLowerBounds(lowerBound);
 		objective.setUpperBounds(upperBound);
-
-		BOBYQAOptimizer optimizer = new BOBYQAOptimizer(30);
-
-		PointValuePair outcome = optimizer.optimize(20000, objective,
-				GoalType.MINIMIZE, objective.getInitialPoint(), objective.getLowerBounds(),
-				objective.getUpperBounds());
-		objective.setGeometryPoint(outcome.getKey());
+		
+		ObjectiveFunctionOptimizer.optimizeObjectiveFunction(objective,
+				BaseObjectiveFunction.OptimizerType.BOBYQAOptimizer);
 
 		// Convert back to the input unit-of-measure values
 		instrument.convertToLengthType();

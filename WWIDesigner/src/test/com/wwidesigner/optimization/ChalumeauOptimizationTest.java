@@ -10,9 +10,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.List;
 
-import org.apache.commons.math3.optimization.GoalType;
-import org.apache.commons.math3.optimization.PointValuePair;
-import org.apache.commons.math3.optimization.direct.BOBYQAOptimizer;
 import org.junit.Test;
 
 import com.wwidesigner.geometry.BorePoint;
@@ -76,12 +73,9 @@ public class ChalumeauOptimizationTest
 		// both hole size and position. Slight changes in number of
 		// interpolation points
 		// can lead to drastic changes in the optimum found.
-		BOBYQAOptimizer optimizer = new BOBYQAOptimizer(70);
-
-		PointValuePair outcome = optimizer.optimize(20000, objective,
-				GoalType.MINIMIZE, objective.getInitialPoint(), objective.getLowerBounds(),
-				objective.getUpperBounds());
-		objective.setGeometryPoint(outcome.getKey());
+		
+		ObjectiveFunctionOptimizer.optimizeObjectiveFunction(objective,
+				BaseObjectiveFunction.OptimizerType.BOBYQAOptimizer);
 
 		// Convert back to the input unit-of-measure values
 		instrument.convertToLengthType();

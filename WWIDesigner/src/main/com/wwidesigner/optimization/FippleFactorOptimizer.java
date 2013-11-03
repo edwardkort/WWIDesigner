@@ -11,6 +11,7 @@ import com.wwidesigner.note.TuningInterface;
  * @author kort
  *
  */
+@Deprecated
 public class FippleFactorOptimizer extends InstrumentOptimizer
 {
 	protected static int defaultNumberOfInterpolationPoints = 2;

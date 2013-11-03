@@ -10,6 +10,7 @@ import com.wwidesigner.geometry.PositionInterface;
 import com.wwidesigner.modelling.InstrumentCalculator;
 import com.wwidesigner.note.TuningInterface;
 
+@Deprecated
 public class SingleTaperHoleGroupingOptimizer extends HoleGroupSpacingOptimizer
 {
 	static
@@ -63,7 +64,7 @@ public class SingleTaperHoleGroupingOptimizer extends HoleGroupSpacingOptimizer
 		double boreLength = newVector[0];
 		
 		int idx = originalVector.length;
-		newVector[idx++] = 1.05; //headDiameter/footDiameter;
+		newVector[idx++] = headDiameter/footDiameter;
 		newVector[idx++] = 0.25 * boreLength;
 		newVector[idx] = 0.25 * boreLength;
 		

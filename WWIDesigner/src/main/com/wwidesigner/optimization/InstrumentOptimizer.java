@@ -15,6 +15,7 @@ import com.wwidesigner.optimization.multistart.GridRangeProcessor;
 import com.wwidesigner.optimization.multistart.MultivariateMultiStartBoundsOptimizer;
 import com.wwidesigner.optimization.multistart.RandomRangeProcessor;
 
+@Deprecated
 public abstract class InstrumentOptimizer implements
 		InstrumentOptimizerInterface
 {

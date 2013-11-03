@@ -9,6 +9,7 @@ import com.wwidesigner.optimization.HoleGroupSpacingOptimizer;
  * @author kort
  * 
  */
+@Deprecated
 public class HoleGroupSpacingOptimizationRunnner extends BaseOptimizationRunner
 {
 	protected int[][] holeGroups;

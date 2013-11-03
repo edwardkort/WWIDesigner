@@ -14,6 +14,7 @@ import com.wwidesigner.note.TuningInterface;
  * @author kort
  * 
  */
+@Deprecated
 public class HoleGroupSpacingOptimizer extends InstrumentOptimizer
 {
 	protected static int defaultNumberOfInterpolationPoints = 30;

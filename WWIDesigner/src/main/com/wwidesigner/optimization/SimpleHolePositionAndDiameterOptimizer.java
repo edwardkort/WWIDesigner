@@ -7,6 +7,7 @@ import com.wwidesigner.modelling.InstrumentCalculator;
 import com.wwidesigner.note.TuningInterface;
 import com.wwidesigner.util.SortedPositionList;
 
+@Deprecated
 public class SimpleHolePositionAndDiameterOptimizer extends InstrumentOptimizer
 {
 	private static int defaultNumberOfInterpolationPoints = 60;

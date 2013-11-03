@@ -14,6 +14,7 @@ import com.wwidesigner.note.TuningInterface;
  * @author kort
  * 
  */
+@Deprecated
 public class BasicImpedanceOptimizationFunction implements
 		OptimizationFunctionInterface
 {

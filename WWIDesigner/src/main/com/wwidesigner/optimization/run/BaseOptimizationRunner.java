@@ -21,6 +21,7 @@ import com.wwidesigner.util.PhysicalParameters;
  * @author kort
  * 
  */
+@Deprecated
 public class BaseOptimizationRunner
 {
 	protected String inputInstrumentXML;

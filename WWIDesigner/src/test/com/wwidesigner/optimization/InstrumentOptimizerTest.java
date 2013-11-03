@@ -71,8 +71,8 @@ public class InstrumentOptimizerTest
 		BOBYQAOptimizer optimizer = new BOBYQAOptimizer(30);
 
 		PointValuePair outcome = optimizer.optimize(20000, objective,
-				GoalType.MINIMIZE, objective.getStartingPoint(), lowerBound,
-				upperBound);
+				GoalType.MINIMIZE, objective.getInitialPoint(), objective.getLowerBounds(),
+				objective.getUpperBounds());
 		objective.setGeometryPoint(outcome.getKey());
 
 		// Convert back to the input unit-of-measure values

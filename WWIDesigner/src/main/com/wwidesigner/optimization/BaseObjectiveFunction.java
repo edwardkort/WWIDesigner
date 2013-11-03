@@ -31,26 +31,26 @@ public abstract class BaseObjectiveFunction implements MultivariateFunction,
 	// supports.
 	protected int nrDimensions; // Number of geometry values.
 								// Constant for each derived class.
-	protected double[] lowerBounds; // Lower bound for each geometry value.
-	protected double[] upperBounds; // Upper bound for each geometry value.
-	protected Constraints constraints; // Description of bounds.
+	protected double[] lowerBounds; 		// Lower bound for each geometry value.
+	protected double[] upperBounds; 		// Upper bound for each geometry value.
+	protected Constraints constraints; 		// Description of bounds.
 
 	// Recommended optimization method.
 	public enum OptimizerType
 	{
-		BrentOptimizer, PowellOptimizer, BOBYQAOptimizer, CMAESOptimizer
+		BrentOptimizer, PowellOptimizer, SimplexOptimizer, BOBYQAOptimizer, CMAESOptimizer
 	}
 
 	protected OptimizerType optimizerType;
-	protected int maxIterations;
+	protected int maxEvaluations;		// Limit on number of error norm calculations.
 	protected AbstractRangeProcessor rangeProcessor;
 	protected static final int MaxInterpolations = 40; // Maximum number of
 														// interpolations for
 														// BOBYQA.
 
 	// Statistics for the results of an optimization.
-	protected int evaluationsDone; // Number of error calculations.
-	protected int iterationsDone; // Number of calculations of error norm.
+	protected int tuningsDone; 		// Number of tuning error calculations.
+	protected int evaluationsDone; 	// Number of calculations of error norm.
 
 	/**
 	 * The constructor sets what is to be optimized.
@@ -67,33 +67,42 @@ public abstract class BaseObjectiveFunction implements MultivariateFunction,
 		this.evaluator = evaluator;
 		nrDimensions = 1;
 		optimizerType = OptimizerType.BOBYQAOptimizer;
-		maxIterations = 5000;
+		maxEvaluations = 5000;
 		rangeProcessor = null;
-		iterationsDone = 0;
 		evaluationsDone = 0;
-		constraints = new Constraints(calculator.getInstrument().getLengthType());
+		tuningsDone = 0;
+		constraints = new Constraints(calculator.getInstrument()
+				.getLengthType());
 	}
 
-	/*
+	/**
 	 * The multivariate objective function to be optimized, a sum of squares of
-	 * the error value specific to the derived class. (non-Javadoc)
+	 * the error value specific to the derived class.
+	 * 
+	 * @param point - geometry values to test.
+	 *              point.length == nrDimensions.
+	 * @return value of objective function at the specified point.
 	 * 
 	 * @see org.apache.commons.math3.analysis.MultivariateFunction#value(double*
-	 * [])
+	 *      [])
 	 */
 	@Override
 	public double value(double[] point)
 	{
 		double[] errorVector = getErrorVector(point);
-		++iterationsDone;
-		evaluationsDone += errorVector.length;
+		++evaluationsDone;
+		tuningsDone += errorVector.length;
 		return calcNorm(errorVector);
 	}
 
-	/*
+	/**
 	 * The univariate objective function to be optimized, a sum of squares of
-	 * the error value specific to the derived class. Requires nrDimensions == 1
-	 * (non-Javadoc)
+	 * the error value specific to the derived class.
+	 * 
+	 * Requires nrDimensions == 1.
+	 * 
+	 * @param point - geometry value to test.
+	 * @return value of objective function at the specified point.
 	 * 
 	 * @see org.apache.commons.math3.analysis.UnivariateFunction#value(double)
 	 */
@@ -108,7 +117,8 @@ public abstract class BaseObjectiveFunction implements MultivariateFunction,
 	/**
 	 * Calculate errors at each fingering target.
 	 * 
-	 * @param point
+	 * @param point - geometry values to test.
+	 *              point.length == nrDimensions.
 	 * @return array of error values, one for each fingering target.
 	 * @throws DimensionMismatchException.
 	 */
@@ -129,7 +139,7 @@ public abstract class BaseObjectiveFunction implements MultivariateFunction,
 	 * @param errorVector
 	 * @return sum of squared errors
 	 */
-	public double calcNorm(double[] errorVector)
+	public static double calcNorm(double[] errorVector)
 	{
 		double norm = 0.0;
 		for (double error : errorVector)
@@ -140,49 +150,54 @@ public abstract class BaseObjectiveFunction implements MultivariateFunction,
 	}
 
 	/**
-	 * Retrieve geometry values from the instrument. Specific values depend on
+	 * Retrieve physical geometry values from the instrument. Specific values depend on
 	 * the derived class.
 	 * 
-	 * @return point representing current geometry values. point.length ==
-	 *         nrDimensions.
+	 * @return point representing current physical geometry values.
+	 * 		   point.length == nrDimensions.
 	 */
 	public abstract double[] getGeometryPoint();
+
+	/**
+	 * Set physical geometry values for an instrument. Specific values depend on
+	 * the derived class.
+	 * 
+	 * @param point - physical geometry values to set. 
+	 *            point.length == nrDimensions.
+	 * @throws DimensionMismatchException.
+	 */
+	public abstract void setGeometryPoint(double[] point);
 
 	/**
 	 * Retrieve geometry values from the instrument, ensuring the values lie
 	 * within the current bounds. Specific values depend on the derived class.
 	 * 
-	 * @return point representing current geometry values. point.length ==
-	 *         nrDimensions.
+	 * @return point representing current geometry values.
+	 * 				 lowerBounds[i] <= point[i] <= upperBounds[i].
+	 * 				 point.length == nrDimensions.
 	 */
-	public double[] getStartingPoint()
+	public double[] getInitialPoint()
 	{
-		double[] startPoint = this.getGeometryPoint();
+		double[] unnormalized = this.getGeometryPoint();
+		double[] normalized = new double[unnormalized.length];
 
-		// Ensure startPoint is within bounds.
-		for (int i = 0; i < startPoint.length; i++)
+		for (int i = 0; i < unnormalized.length; i++)
 		{
-			if (startPoint[i] < lowerBounds[i])
+			if (unnormalized[i] <= lowerBounds[i])
 			{
-				startPoint[i] = lowerBounds[i];
+				normalized[i] = lowerBounds[i];
 			}
-			else if (startPoint[i] > upperBounds[i])
+			else if (unnormalized[i] >= upperBounds[i])
 			{
-				startPoint[i] = upperBounds[i];
+				normalized[i] = upperBounds[i];
+			}
+			else
+			{
+				normalized[i] = unnormalized[i];
 			}
 		}
-		return startPoint;
+		return normalized;
 	}
-
-	/**
-	 * Set geometry values for an instrument. Specific values depend on the
-	 * derived class.
-	 * 
-	 * @param point
-	 *            - geometry to set. point.length == nrDimensions.
-	 * @throws DimensionMismatchException.
-	 */
-	public abstract void setGeometryPoint(double[] point);
 
 	/**
 	 * From the number of dimensions, propose a useful number of interpolations
@@ -190,24 +205,101 @@ public abstract class BaseObjectiveFunction implements MultivariateFunction,
 	 */
 	public int getNrInterpolations()
 	{
-		int nrInterpolations = 0; // The default value for CMAES
-
-		if (OptimizerType.BOBYQAOptimizer.equals(optimizerType))
+		if (optimizerType.equals(OptimizerType.CMAESOptimizer))
 		{
-			if (isMultiStart())
+			// Typical population size used for CMAES.
+			return 4 + (int) (3 * Math.log(nrDimensions));
+		}
+
+		if (optimizerType.equals(OptimizerType.BOBYQAOptimizer))
+		{
+			// Largest recommended value for BOBYQA.
+			return 2 * nrDimensions + 1;
+		}
+		// Not required for other optimizers.
+		return 1;
+	}
+	
+	/**
+	 * From the bounds, propose a useful standard deviation for each dimension,
+	 * should the optimizer type require it (CMAES).
+	 */
+	public double[] getStdDev()
+	{
+		double [] sigma = new double[nrDimensions];
+		for ( int i = 0; i < nrDimensions; i++ )
+		{
+			if ( upperBounds[i] <= lowerBounds[i] )
 			{
-				nrInterpolations = 2 * nrDimensions;
+				sigma[i] = 0.0;
 			}
 			else
 			{
-				nrInterpolations = (nrDimensions + 1) * (nrDimensions + 2) / 2;
-			}
-			if (nrInterpolations > MaxInterpolations)
-			{
-				nrInterpolations = MaxInterpolations;
+				sigma[i] = 0.2 * ( upperBounds[i] - lowerBounds[i] );
 			}
 		}
-		return nrInterpolations;
+		return sigma;
+	}
+	
+	/**
+	 * From the bounds and the initial value, determine the maximum feasible value
+	 * for the initial trust region radius.
+	 */
+	public double getInitialTrustRegionRadius()
+	{
+		double minRadius = 1.0;
+		double minDimensionRadius;
+		double initial[] = getInitialPoint();
+
+		for (int i = 0; i < nrDimensions; ++ i)
+		{
+			// For each dimension, the radius should not be more than
+			// the distance from the initial point to either bound,
+			// but let it be at least 10% of the distance
+			// between the bounds.
+			minDimensionRadius = initial[i] - lowerBounds[i];
+			if (minDimensionRadius > upperBounds[i] - initial[i])
+			{
+				minDimensionRadius = upperBounds[i] - initial[i];
+			}
+			if (minDimensionRadius < 0.1 * (upperBounds[i] - lowerBounds[i]))
+			{
+				minDimensionRadius = 0.1 * (upperBounds[i] - lowerBounds[i]);
+			}
+			if (minDimensionRadius < minRadius)
+			{
+				minRadius = minDimensionRadius;
+			}
+		}
+		return minRadius;
+	}
+
+	/**
+	 * From the bounds and the initial value, generate suggested side lengths
+	 * in each direction for a simplex.
+	 */
+	public double[] getSimplexStepSize()
+	{
+		double [] stepSize = new double[nrDimensions];
+		double initial[] = getInitialPoint();
+
+		for (int i = 0; i < nrDimensions; ++ i)
+		{
+			// For each dimension, the step size will be part-way
+			// to the more distant bound.
+			stepSize[i] = upperBounds[i] - initial[i];
+			if (stepSize[i] < initial[i] - lowerBounds[i])
+			{
+				// Step size is negative, toward lower bound.
+				stepSize[i] = lowerBounds[i] - initial[i];
+			}
+			stepSize[i] = 0.25 * stepSize[i];
+			if (stepSize[i] == 0.0)
+			{
+				stepSize[i] = 0.1 * initial[i];
+			}
+		}
+		return stepSize;
 	}
 
 	public Instrument getInstrument()
@@ -227,13 +319,8 @@ public abstract class BaseObjectiveFunction implements MultivariateFunction,
 			throw new DimensionMismatchException(lowerBounds.length,
 					nrDimensions);
 		}
-		this.lowerBounds = lowerBounds;
-		constraints.setLowerBounds(lowerBounds);
-	}
-
-	public double[] getUpperBounds()
-	{
-		return upperBounds;
+		this.lowerBounds = lowerBounds.clone();
+		constraints.setLowerBounds(this.lowerBounds);
 	}
 
 	public void setUpperBounds(double[] upperBounds)
@@ -243,13 +330,26 @@ public abstract class BaseObjectiveFunction implements MultivariateFunction,
 			throw new DimensionMismatchException(upperBounds.length,
 					nrDimensions);
 		}
-		this.upperBounds = upperBounds;
-		constraints.setUpperBounds(upperBounds);
+		this.upperBounds = upperBounds.clone();
+		constraints.setUpperBounds(this.upperBounds);
 	}
-
+	
 	public int getNrDimensions()
 	{
 		return nrDimensions;
+	}
+
+	public double[] getUpperBounds()
+	{
+		double[] bounds = upperBounds.clone();
+		for (int i = 0; i < bounds.length; i++)
+		{
+			if (bounds[i] <= lowerBounds[i])
+			{
+				bounds[i] = lowerBounds[i];
+			}
+		}
+		return bounds;
 	}
 
 	public OptimizerType getOptimizerType()
@@ -262,14 +362,14 @@ public abstract class BaseObjectiveFunction implements MultivariateFunction,
 		this.optimizerType = optimizerType;
 	}
 
-	public int getMaxIterations()
+	public int getMaxEvaluations()
 	{
-		return maxIterations;
+		return maxEvaluations;
 	}
 
-	public void setMaxIterations(int maxIterations)
+	public void setMaxEvaluations(int maxEvaluations)
 	{
-		this.maxIterations = maxIterations;
+		this.maxEvaluations = maxEvaluations;
 	}
 
 	public boolean isMultiStart()
@@ -291,21 +391,21 @@ public abstract class BaseObjectiveFunction implements MultivariateFunction,
 		this.rangeProcessor = rangeProcessor;
 	}
 
-	public int getIterationsDone()
-	{
-		return iterationsDone;
-	}
-
-	public int getEvaluationsDone()
+	public int getNumberOfEvaluations()
 	{
 		return evaluationsDone;
+	}
+
+	public int getNumberOfTunings()
+	{
+		return tuningsDone;
 	}
 
 	public Constraints getConstraints()
 	{
 		return constraints;
 	}
-	
+
 	abstract protected void setConstraints();
 
 }

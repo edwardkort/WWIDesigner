@@ -30,7 +30,7 @@ public class SingleTaperNoHoleGroupingObjectiveFunction extends
 				tuning, evaluator);
 		optimizerType = OptimizerType.BOBYQAOptimizer; // MultivariateOptimizer
 		sumDimensions();
-		maxIterations = 20000 + (getNrDimensions() - 1) * 5000;
+		maxEvaluations = 20000 + (getNrDimensions() - 1) * 5000;
 		constraints
 				.setObjectiveDisplayName("Single taper, no-hole-grouping optimizer");
 	}

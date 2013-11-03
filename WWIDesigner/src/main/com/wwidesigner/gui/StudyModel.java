@@ -10,17 +10,28 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.prefs.Preferences;
 
-import org.apache.commons.math3.analysis.MultivariateFunction;
 import org.apache.commons.math3.exception.TooManyEvaluationsException;
-import org.apache.commons.math3.optimization.BaseMultivariateSimpleBoundsOptimizer;
-import org.apache.commons.math3.optimization.GoalType;
-import org.apache.commons.math3.optimization.MultivariateOptimizer;
-import org.apache.commons.math3.optimization.PointValuePair;
-import org.apache.commons.math3.optimization.direct.BOBYQAOptimizer;
-import org.apache.commons.math3.optimization.direct.CMAESOptimizer;
-import org.apache.commons.math3.optimization.direct.PowellOptimizer;
-import org.apache.commons.math3.optimization.univariate.BrentOptimizer;
-import org.apache.commons.math3.optimization.univariate.UnivariatePointValuePair;
+import org.apache.commons.math3.optim.ConvergenceChecker;
+import org.apache.commons.math3.optim.InitialGuess;
+import org.apache.commons.math3.optim.MaxEval;
+import org.apache.commons.math3.optim.MaxIter;
+import org.apache.commons.math3.optim.PointValuePair;
+import org.apache.commons.math3.optim.SimpleBounds;
+import org.apache.commons.math3.optim.SimpleValueChecker;
+import org.apache.commons.math3.optim.nonlinear.scalar.GoalType;
+import org.apache.commons.math3.optim.nonlinear.scalar.MultiStartMultivariateOptimizer;
+import org.apache.commons.math3.optim.nonlinear.scalar.MultivariateOptimizer;
+import org.apache.commons.math3.optim.nonlinear.scalar.ObjectiveFunction;
+import org.apache.commons.math3.optim.nonlinear.scalar.noderiv.BOBYQAOptimizer;
+import org.apache.commons.math3.optim.nonlinear.scalar.noderiv.CMAESOptimizer;
+import org.apache.commons.math3.optim.nonlinear.scalar.noderiv.MultiDirectionalSimplex;
+import org.apache.commons.math3.optim.nonlinear.scalar.noderiv.PowellOptimizer;
+import org.apache.commons.math3.optim.nonlinear.scalar.noderiv.SimplexOptimizer;
+import org.apache.commons.math3.optim.univariate.BrentOptimizer;
+import org.apache.commons.math3.optim.univariate.SearchInterval;
+import org.apache.commons.math3.optim.univariate.UnivariateObjectiveFunction;
+import org.apache.commons.math3.optim.univariate.UnivariatePointValuePair;
+import org.apache.commons.math3.random.MersenneTwister;
 
 import com.jidesoft.app.framework.file.FileDataModel;
 import com.wwidesigner.geometry.Instrument;
@@ -31,7 +42,6 @@ import com.wwidesigner.modelling.InstrumentTuner;
 import com.wwidesigner.note.Tuning;
 import com.wwidesigner.note.bind.NoteBindFactory;
 import com.wwidesigner.optimization.BaseObjectiveFunction;
-import com.wwidesigner.optimization.multistart.MultivariateMultiStartBoundsOptimizer;
 import com.wwidesigner.util.BindFactory;
 import com.wwidesigner.util.PhysicalParameters;
 
@@ -48,6 +58,9 @@ public abstract class StudyModel
 	public static final String OPTIMIZER_CATEGORY_ID = "Optimizer";
 	public static final String CONSTRAINT_CATEGORY_ID = "Constraint set";
 
+	// Preferences.
+	protected BaseObjectiveFunction.OptimizerType preferredOptimizerType;
+
 	/**
 	 * Tree of selectable categories that the study model supports. 
 	 */
@@ -61,6 +74,7 @@ public abstract class StudyModel
 	public StudyModel()
 	{
 		setCategories();
+		preferredOptimizerType = null;
 	}
 
 	protected void setCategories()
@@ -277,57 +291,104 @@ public abstract class StudyModel
 	public String optimizeInstrument() throws Exception
 	{
 		BaseObjectiveFunction objective = getObjectiveFunction();
+		ConvergenceChecker<PointValuePair> convergenceChecker = new SimpleValueChecker(0.00001, 0.0000001);
+		BaseObjectiveFunction.OptimizerType optimizerType = objective.getOptimizerType();
+		if ( preferredOptimizerType != null 
+				&& ! optimizerType.equals(BaseObjectiveFunction.OptimizerType.BrentOptimizer))
+		{
+			optimizerType = preferredOptimizerType;
+		}
 		
-		double[] startPoint = objective.getStartingPoint();
+		double[] startPoint = objective.getInitialPoint();
 		double[] errorVector = objective.getErrorVector(startPoint);
-		double initialNorm = objective.calcNorm(errorVector);
+		double initialNorm = BaseObjectiveFunction.calcNorm(errorVector);
 		System.out.println();
 		printErrors("Initial error: ", initialNorm, errorVector);
 		
 		try
 		{
-			if ( objective.getOptimizerType() == BaseObjectiveFunction.OptimizerType.BrentOptimizer )
+			if ( optimizerType.equals(BaseObjectiveFunction.OptimizerType.BrentOptimizer) )
 			{
 				// Univariate optimization.
 				BrentOptimizer optimizer = new BrentOptimizer(0.00001, 0.00001);
 				UnivariatePointValuePair  outcome;
-				outcome = optimizer.optimize(objective.getMaxIterations(),objective,GoalType.MINIMIZE,
-						objective.getLowerBounds()[0], objective.getUpperBounds()[0],
-						startPoint[0]);
+				outcome = optimizer.optimize(GoalType.MINIMIZE,
+						new UnivariateObjectiveFunction(objective),
+						new MaxEval(objective.getMaxEvaluations()), MaxIter.unlimited(),
+						new SearchInterval(objective.getLowerBounds()[0], 
+								objective.getUpperBounds()[0],
+								startPoint[0]));
 				double[] geometry = new double[1];
 				geometry[0] = outcome.getPoint();
 				objective.setGeometryPoint(geometry);
 			}
-			else if ( objective.getOptimizerType() == BaseObjectiveFunction.OptimizerType.PowellOptimizer )
+			else if ( optimizerType.equals(BaseObjectiveFunction.OptimizerType.PowellOptimizer) )
 			{
 				// Multivariate optimization, without bounds.
-				PowellOptimizer optimizer = new PowellOptimizer(0.00001, 0.00001);
+				PowellOptimizer optimizer = new PowellOptimizer(0.00001, 0.000001);
 				PointValuePair  outcome;
-				outcome = optimizer.optimize(objective.getMaxIterations(),objective,GoalType.MINIMIZE,
-						startPoint);
+				outcome = optimizer.optimize(GoalType.MINIMIZE,
+						new ObjectiveFunction(objective),
+						new MaxEval(objective.getMaxEvaluations()), MaxIter.unlimited(),
+						new InitialGuess(startPoint));
+				objective.setGeometryPoint(outcome.getPoint());
+			}
+			else if ( optimizerType.equals(BaseObjectiveFunction.OptimizerType.SimplexOptimizer) )
+			{
+				// Multivariate optimization, without bounds.
+				SimplexOptimizer optimizer = new SimplexOptimizer(convergenceChecker);
+				MultiDirectionalSimplex simplex 
+					= new MultiDirectionalSimplex(objective.getSimplexStepSize());
+				PointValuePair  outcome;
+				outcome = optimizer.optimize(GoalType.MINIMIZE,
+						new ObjectiveFunction(objective),
+						new MaxEval(objective.getMaxEvaluations()), MaxIter.unlimited(),
+						new InitialGuess(startPoint),
+						simplex);
 				objective.setGeometryPoint(outcome.getPoint());
 			}
 			else {
 				// Multivariate optimization, with bounds.
-				BaseMultivariateSimpleBoundsOptimizer<MultivariateFunction> optimizer;
+				MultivariateOptimizer optimizer;
 				PointValuePair  outcome;
-				if ( objective.getOptimizerType() == BaseObjectiveFunction.OptimizerType.CMAESOptimizer
+				if ( optimizerType.equals(BaseObjectiveFunction.OptimizerType.CMAESOptimizer)
 						|| objective.getNrDimensions() == 1 )	// BOBYQA requires 2 or more dimensions.
 				{
-					optimizer = new CMAESOptimizer(objective.getNrInterpolations());
+					optimizer = new CMAESOptimizer(objective.getMaxEvaluations(), 
+							0.01 * initialNorm, true, 0, 0, new MersenneTwister(), false,
+							convergenceChecker);
 				}
 				else {
-					optimizer = new BOBYQAOptimizer(objective.getNrInterpolations());
+					double trustRegion = objective.getInitialTrustRegionRadius();
+					optimizer = new BOBYQAOptimizer(objective.getNrInterpolations(), 
+							trustRegion, 1e-8 * trustRegion);
 				}
 				if ( objective.isMultiStart())
 				{
-					MultivariateOptimizer baseOptimizer = (MultivariateOptimizer) optimizer;
-					optimizer = new MultivariateMultiStartBoundsOptimizer(
-							baseOptimizer, objective.getRangeProcessor().getNumberOfStarts(),
-							objective.getRangeProcessor());
+					MultiStartMultivariateOptimizer multiStartOptimizer 
+						= new MultiStartMultivariateOptimizer(optimizer,
+								objective.getRangeProcessor().getNumberOfStarts(),
+								objective.getRangeProcessor()); 
+					outcome = multiStartOptimizer.optimize(GoalType.MINIMIZE,
+							new ObjectiveFunction(objective),
+							new MaxEval(objective.getMaxEvaluations()), MaxIter.unlimited(),
+							new InitialGuess(startPoint),
+							new SimpleBounds(objective.getLowerBounds(), 
+									objective.getUpperBounds()),
+							new CMAESOptimizer.PopulationSize(objective.getNrInterpolations()),
+							new CMAESOptimizer.Sigma(objective.getStdDev()));
 				}
-				outcome = optimizer.optimize(objective.getMaxIterations(),objective,GoalType.MINIMIZE,
-						startPoint, objective.getLowerBounds(), objective.getUpperBounds());
+				else
+				{
+					outcome = optimizer.optimize(GoalType.MINIMIZE,
+						new ObjectiveFunction(objective),
+						new MaxEval(objective.getMaxEvaluations()), MaxIter.unlimited(),
+						new InitialGuess(startPoint),
+						new SimpleBounds(objective.getLowerBounds(), 
+								objective.getUpperBounds()),
+						new CMAESOptimizer.PopulationSize(objective.getNrInterpolations()),
+						new CMAESOptimizer.Sigma(objective.getStdDev()));
+				}
 				objective.setGeometryPoint(outcome.getPoint());
 			}
 		}
@@ -342,12 +403,12 @@ public abstract class StudyModel
 		}
 		
 		System.out.print("Performed ");
-		System.out.print(objective.getEvaluationsDone());
-		System.out.print(" error evaluations in ");
-		System.out.print(objective.getIterationsDone());
-		System.out.println(" iterations.");
-		errorVector = objective.getErrorVector(objective.getGeometryPoint());
-		double finalNorm = objective.calcNorm(errorVector);
+		System.out.print(objective.getNumberOfTunings());
+		System.out.print(" tuning calculations in ");
+		System.out.print(objective.getNumberOfEvaluations());
+		System.out.println(" error norm evaluations.");
+		errorVector = objective.getErrorVector(objective.getInitialPoint());
+		double finalNorm = BaseObjectiveFunction.calcNorm(errorVector);
 		printErrors("Final error:  ", finalNorm, errorVector);
 		System.out.print("Residual error ratio: ");
 		System.out.println(finalNorm/initialNorm);
@@ -449,7 +510,32 @@ public abstract class StudyModel
 	 */
 	public void setPreferences(Preferences newPreferences)
 	{
-		// No preferences yet in base class.
+		String optimizerPreference = newPreferences.get(
+				OptimizationPreferences.OPTIMIZER_TYPE_OPT, OptimizationPreferences.OPT_DEFAULT_NAME);
+		if ( optimizerPreference.contentEquals(OptimizationPreferences.OPT_DEFAULT_NAME) )
+		{
+			preferredOptimizerType = null;
+		}
+		else if ( optimizerPreference.contentEquals(OptimizationPreferences.OPT_POWELL_NAME) )
+		{
+			preferredOptimizerType = BaseObjectiveFunction.OptimizerType.PowellOptimizer;
+		}
+		else if ( optimizerPreference.contentEquals(OptimizationPreferences.OPT_SIMPLEX_NAME) )
+		{
+			preferredOptimizerType = BaseObjectiveFunction.OptimizerType.SimplexOptimizer;
+		}
+		else if ( optimizerPreference.contentEquals(OptimizationPreferences.OPT_BOBYQA_NAME) )
+		{
+			preferredOptimizerType = BaseObjectiveFunction.OptimizerType.BOBYQAOptimizer;
+		}
+		else if ( optimizerPreference.contentEquals(OptimizationPreferences.OPT_CMAES_NAME) )
+		{
+			preferredOptimizerType = BaseObjectiveFunction.OptimizerType.CMAESOptimizer;
+		}
+		else
+		{
+			preferredOptimizerType = null;
+		}
 	}
 
 	// Methods to create objects that will perform this study,

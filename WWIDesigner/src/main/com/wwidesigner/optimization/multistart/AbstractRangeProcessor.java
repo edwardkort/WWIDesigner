@@ -2,7 +2,9 @@ package com.wwidesigner.optimization.multistart;
 
 import java.util.Arrays;
 
-public abstract class AbstractRangeProcessor
+import org.apache.commons.math3.random.RandomVectorGenerator;
+
+public abstract class AbstractRangeProcessor implements RandomVectorGenerator
 {
 	protected double[] lowVector;
 	protected double[] range;
@@ -39,8 +41,23 @@ public abstract class AbstractRangeProcessor
 			}
 		}
 	}
+	
+	/**
+	 * For dimensions that are not varying, use values given in startValues.
+	 * @param startValues
+	 */
+	public void setStaticValues(double[] startValues)
+	{
+		for ( int i = 0; i < valuesToVary.length; ++ i )
+		{
+			if (valuesToVary[i])
+			{
+				lowVector[i] = startValues[i];
+			}
+		}
+	}
 
-	public abstract double[] nextVector(double[] startValues);
+	public abstract double[] nextVector();
 
 	public int getNumberOfStarts()
 	{

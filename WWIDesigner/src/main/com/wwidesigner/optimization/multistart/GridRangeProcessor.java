@@ -40,7 +40,7 @@ public class GridRangeProcessor extends AbstractRangeProcessor
 	}
 
 	@Override
-	public double[] nextVector(double[] startValues)
+	public double[] nextVector()
 	{
 		int vectorLength = lowVector.length;
 		double[] vector = new double[vectorLength];
@@ -53,7 +53,7 @@ public class GridRangeProcessor extends AbstractRangeProcessor
 			}
 			else
 			{
-				vector[i] = startValues[i];
+				vector[i] = lowVector[i];
 			}
 		}
 

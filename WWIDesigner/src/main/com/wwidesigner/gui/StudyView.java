@@ -81,6 +81,7 @@ public class StudyView extends DataViewPane implements EventSubscriber
 		String modelName = myPreferences.get(OptimizationPreferences.STUDY_MODEL_OPT,
 				OptimizationPreferences.NAF_STUDY_NAME);
 		setStudyModel(modelName);
+		study.setPreferences(myPreferences);
 
 		getApplication().getEventManager().subscribe(
 				NafOptimizationRunner.FILE_OPENED_EVENT_ID, this);

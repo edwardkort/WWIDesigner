@@ -54,7 +54,7 @@ public class HoleGroupSpacingOptimizerTest extends AbstractOptimizationTest
 					{ 5 }, { 6 } };
 			evaluator = new ReactanceEvaluator(calculator);
 			objective = new HoleGroupObjectiveFunction(calculator, tuning, evaluator, holeGroups);
-			objective.setMaxIterations(20000);
+			objective.setMaxEvaluations(20000);
 			objective.setOptimizerType(BaseObjectiveFunction.OptimizerType.CMAESOptimizer);
 
 			Instrument optimizedInstrument = doInstrumentOptimization("No hole groups, Gordon Calculator");
@@ -87,7 +87,7 @@ public class HoleGroupSpacingOptimizerTest extends AbstractOptimizationTest
 					{ 5 }, { 6 } };
 			evaluator = new ReactanceEvaluator(calculator);
 			objective = new HoleGroupObjectiveFunction(calculator, tuning, evaluator, holeGroups);
-			objective.setMaxIterations(20000);
+			objective.setMaxEvaluations(20000);
 			objective.setOptimizerType(BaseObjectiveFunction.OptimizerType.CMAESOptimizer);
 
 			Instrument optimizedInstrument = doInstrumentOptimization("No hole groups, NAF Calculator");
@@ -123,7 +123,7 @@ public class HoleGroupSpacingOptimizerTest extends AbstractOptimizationTest
 			holeGroups = new int[][] { { 0, 1, 2 }, { 3, 4, 5 }, { 6 } };
 			evaluator = new ReactanceEvaluator(calculator);
 			objective = new HoleGroupObjectiveFunction(calculator, tuning, evaluator, holeGroups);
-			objective.setMaxIterations(20000);
+			objective.setMaxEvaluations(20000);
 			objective.setOptimizerType(BaseObjectiveFunction.OptimizerType.CMAESOptimizer);
 
 			Instrument optimizedInstrument = doInstrumentOptimization("Two hole groups, Gordon Calculator");
@@ -156,7 +156,7 @@ public class HoleGroupSpacingOptimizerTest extends AbstractOptimizationTest
 			holeGroups = new int[][] { { 0, 1, 2 }, { 3, 4, 5 }, { 6 } };
 			evaluator = new ReactanceEvaluator(calculator);
 			objective = new HoleGroupObjectiveFunction(calculator, tuning, evaluator, holeGroups);
-			objective.setMaxIterations(20000);
+			objective.setMaxEvaluations(20000);
 			objective.setOptimizerType(BaseObjectiveFunction.OptimizerType.CMAESOptimizer);
 
 			Instrument optimizedInstrument = doInstrumentOptimization("Two hole groups, NAF Calculator");

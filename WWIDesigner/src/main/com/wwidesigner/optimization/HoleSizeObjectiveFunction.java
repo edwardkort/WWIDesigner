@@ -32,7 +32,7 @@ public class HoleSizeObjectiveFunction extends BaseObjectiveFunction
 			// BOBYQA doesn't support single dimension.
 			optimizerType = OptimizerType.CMAESOptimizer;
 		}
-		maxIterations = 20000 + (getNrDimensions() - 1) * 5000;
+		maxEvaluations = 20000 + (getNrDimensions() - 1) * 5000;
 		setConstraints();
 	}
 

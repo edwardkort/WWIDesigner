@@ -107,7 +107,7 @@ public class NafOptimizationTest extends AbstractOptimizationTest
 					0.3, 0.3, 0.012, 0.012, 0.012, 0.012, 0.012, 0.012, 0.012 });
 			evaluator = new ReactanceEvaluator(calculator);
 			objective = new HoleObjectiveFunction(calculator, tuning, evaluator);
-			objective.setMaxIterations(30000);
+			objective.setMaxEvaluations(30000);
 
 			Instrument optimizedInstrument = doInstrumentOptimization("7-hole taper");
 
@@ -142,7 +142,7 @@ public class NafOptimizationTest extends AbstractOptimizationTest
 					0.003, 0.2, 0.013, 0.013, 0.013, 0.013, 0.013, 0.010, 0.010 });
 			evaluator = new ReactanceEvaluator(calculator);
 			objective = new HoleObjectiveFunction(calculator, tuning, evaluator);
-			objective.setMaxIterations(20000);
+			objective.setMaxEvaluations(20000);
 
 			Instrument optimizedInstrument = doInstrumentOptimization("7-hole taper2");
 

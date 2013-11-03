@@ -122,7 +122,7 @@ public class AbstractOptimizationTest
 	{
 		objective.setLowerBounds(lowerBound);
 		objective.setUpperBounds(upperBound);
-		double[] startPoint = objective.getStartingPoint();
+		double[] startPoint = objective.getInitialPoint();
 		BaseMultivariateSimpleBoundsOptimizer<MultivariateFunction> optimizer;
 		PointValuePair  outcome;
 		if ( objective.getOptimizerType() == BaseObjectiveFunction.OptimizerType.CMAESOptimizer
@@ -137,7 +137,7 @@ public class AbstractOptimizationTest
 		showTuning(instrument, calculator, tuning, title
 				+ ", before optimization");
 
-		outcome = optimizer.optimize(objective.getMaxIterations(),objective,GoalType.MINIMIZE,
+		outcome = optimizer.optimize(objective.getMaxEvaluations(),objective,GoalType.MINIMIZE,
 				startPoint, objective.getLowerBounds(), objective.getUpperBounds());
 		objective.setGeometryPoint(outcome.getPoint());
 
@@ -191,7 +191,7 @@ public class AbstractOptimizationTest
 	protected File getInputFile(String fileName, BindFactory bindFactory)
 			throws FileNotFoundException
 	{
-		String inputPath = bindFactory.getPathFromName(fileName);
+		String inputPath = BindFactory.getPathFromName(fileName);
 		File inputFile = new File(inputPath);
 
 		return inputFile;

@@ -3,6 +3,7 @@
  */
 package com.wwidesigner.gui;
 
+import java.util.Arrays;
 import java.util.prefs.Preferences;
 
 import com.wwidesigner.geometry.Instrument;
@@ -143,30 +144,43 @@ public class WhistleStudyModel extends StudyModel
 				objective = new HoleSizeObjectiveFunction(calculator, tuning,
 						evaluator);
 				// Bounds are diameters, expressed in meters.
-				lowerBound = new double[] { 0.004, 0.004, 0.004, 0.004, 0.004, 0.004 };
-				upperBound = new double[] { 0.011, 0.011, 0.011, 0.011,	0.011, 0.011 };
+				lowerBound = new double[tuning.getNumberOfHoles()];
+				upperBound = new double[tuning.getNumberOfHoles()];
+				Arrays.fill(lowerBound, 0.004);
+				Arrays.fill(upperBound, 0.011);
 				break;
 			case HOLESPACE_OPT_SUB_CATEGORY_ID:
 				evaluator = new WhistleEvaluator(calculator, blowingLevel);
 				objective = new HolePositionObjectiveFunction(calculator,
 						tuning, evaluator);
-				// Bounds are expressed in meters.
-				lowerBound = new double[] { 0.200, 0.012, 0.012, 0.012, 0.012,
-						0.012, 0.012 };
-				upperBound = new double[] { 0.700, 0.040, 0.040, 0.100, 0.040,
-						0.040, 0.200 };
+				// Bounds are hole separations, expressed in meters.
+				lowerBound = new double[tuning.getNumberOfHoles() + 1];
+				upperBound = new double[tuning.getNumberOfHoles() + 1];
+				Arrays.fill(lowerBound, 0.012);
+				lowerBound[0] = 0.200;
+				Arrays.fill(upperBound, 0.040);
+				upperBound[0] = 0.700;
+				upperBound[tuning.getNumberOfHoles()] = 0.200;
+				upperBound[tuning.getNumberOfHoles() - 3] = 0.100;
 				break;
 			case HOLE_OPT_SUB_CATEGORY_ID:
 			default:
 				evaluator = new WhistleEvaluator(calculator, blowingLevel);
 				objective = new HoleObjectiveFunction(calculator, tuning,
 						evaluator);
-				// Length bounds are expressed in meters, diameter bounds as
-				// ratios.
-				lowerBound = new double[] { 0.200, 0.012, 0.012, 0.012, 0.012,
-						0.012, 0.012, 0.004, 0.004, 0.004, 0.004, 0.004, 0.004 };
-				upperBound = new double[] { 0.700, 0.040, 0.040, 0.100, 0.040,
-						0.040, 0.200, 0.011, 0.011, 0.011, 0.011, 0.011, 0.011 };
+				// Separation and diameter bounds, expressed in meters.
+				lowerBound = new double[2 * tuning.getNumberOfHoles() + 1];
+				upperBound = new double[2 * tuning.getNumberOfHoles() + 1];
+				Arrays.fill(lowerBound, 0.004);		// Minimum hole diameter.
+				Arrays.fill(upperBound, 0.011);		// Maximum hole diameter.
+				lowerBound[0] = 0.200;
+				upperBound[0] = 0.700;
+				for (int gapNr = 1; gapNr < tuning.getNumberOfHoles(); ++gapNr ) {
+					lowerBound[gapNr] = 0.012;
+					upperBound[gapNr] = 0.040;
+				}
+				upperBound[tuning.getNumberOfHoles()] = 0.200;
+				upperBound[tuning.getNumberOfHoles() - 3] = 0.100;
 				break;
 			case TAPER_OPT_SUB_CATEGORY_ID:
 				evaluator = new WhistleEvaluator(calculator, blowingLevel);
@@ -180,14 +194,24 @@ public class WhistleStudyModel extends StudyModel
 				evaluator = new WhistleEvaluator(calculator, blowingLevel);
 				objective = new HoleAndTaperObjectiveFunction(calculator, tuning,
 						evaluator);
-				// Length bounds are expressed in meters, diameter bounds as
-				// ratios.
-				lowerBound = new double[] { 0.200, 0.012, 0.012, 0.012, 0.012,
-						0.012, 0.012, 0.004, 0.004, 0.004, 0.004, 0.004, 0.004,
-						0.01,  0.3 };
-				upperBound = new double[] { 0.700, 0.040, 0.040, 0.100, 0.040,
-						0.040, 0.200, 0.011, 0.011, 0.011, 0.011, 0.011, 0.011,
-						0.5,   2.0 };
+				// Separation bounds and diameter bounds, expressed in meters,
+				// and two taper ratios.
+				lowerBound = new double[2 * tuning.getNumberOfHoles() + 3];
+				upperBound = new double[2 * tuning.getNumberOfHoles() + 3];
+				Arrays.fill(lowerBound, 0.004);		// Minimum hole diameter.
+				Arrays.fill(upperBound, 0.011);		// Maximum hole diameter.
+				lowerBound[0] = 0.200;
+				upperBound[0] = 0.700;
+				for (int gapNr = 1; gapNr < tuning.getNumberOfHoles(); ++gapNr ) {
+					lowerBound[gapNr] = 0.012;
+					upperBound[gapNr] = 0.040;
+				}
+				upperBound[tuning.getNumberOfHoles()] = 0.200;
+				upperBound[tuning.getNumberOfHoles() - 3] = 0.100;
+				lowerBound[lowerBound.length-2] = 0.01;
+				lowerBound[lowerBound.length-1] = 0.3;
+				upperBound[upperBound.length-2] = 0.5;
+				upperBound[upperBound.length-1] = 2.0;
 				break;
 		}
 

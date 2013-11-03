@@ -10,7 +10,7 @@ public class RandomRangeProcessor extends AbstractRangeProcessor
 	}
 
 	@Override
-	public double[] nextVector(double[] startValues)
+	public double[] nextVector()
 	{
 		int vectorLength = lowVector.length;
 		double[] vector = new double[vectorLength];
@@ -23,7 +23,7 @@ public class RandomRangeProcessor extends AbstractRangeProcessor
 			}
 			else
 			{
-				vector[i] = startValues[i];
+				vector[i] = lowVector[i];
 			}
 		}
 

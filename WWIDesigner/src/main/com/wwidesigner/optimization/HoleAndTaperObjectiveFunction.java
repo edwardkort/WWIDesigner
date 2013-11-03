@@ -33,7 +33,7 @@ public class HoleAndTaperObjectiveFunction extends MergedObjectiveFunction
 				evaluator);
 		this.components[2] = new BasicTaperObjectiveFunction(calculator, tuning, evaluator);
 		optimizerType = OptimizerType.BOBYQAOptimizer; // MultivariateOptimizer
-		maxIterations = 20000;
+		maxEvaluations = 20000;
 		sumDimensions();
 		constraints.setObjectiveDisplayName("Hole position and size optimizer");
 	}

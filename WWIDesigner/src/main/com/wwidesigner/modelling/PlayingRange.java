@@ -7,10 +7,14 @@ import org.apache.commons.math3.analysis.UnivariateFunction;
 import org.apache.commons.math3.analysis.solvers.BrentSolver;
 import org.apache.commons.math3.analysis.solvers.UnivariateSolver;
 import org.apache.commons.math3.complex.Complex;
-import org.apache.commons.math3.optimization.GoalType;
-import org.apache.commons.math3.optimization.univariate.BrentOptimizer;
-import org.apache.commons.math3.optimization.univariate.UnivariateOptimizer;
-import org.apache.commons.math3.optimization.univariate.UnivariatePointValuePair;
+import org.apache.commons.math3.optim.MaxEval;
+import org.apache.commons.math3.optim.MaxIter;
+import org.apache.commons.math3.optim.nonlinear.scalar.GoalType;
+import org.apache.commons.math3.optim.univariate.BrentOptimizer;
+import org.apache.commons.math3.optim.univariate.SearchInterval;
+import org.apache.commons.math3.optim.univariate.UnivariateObjectiveFunction;
+import org.apache.commons.math3.optim.univariate.UnivariateOptimizer;
+import org.apache.commons.math3.optim.univariate.UnivariatePointValuePair;
 
 import com.wwidesigner.note.Fingering;
 
@@ -371,8 +375,11 @@ public class PlayingRange
 		}
 		// Find the local minimum of Im(Z)/Re(Z).
 		try {
-			UnivariatePointValuePair  minimum
-				= optimizer.optimize( 50, zRatio, GoalType.MINIMIZE, lowerFreq, fmax );
+			UnivariatePointValuePair  minimum;
+			minimum = optimizer.optimize(GoalType.MINIMIZE,
+					new UnivariateObjectiveFunction(zRatio),
+					new MaxEval(50), MaxIter.unlimited(),
+					new SearchInterval(lowerFreq, fmax, 0.5*(lowerFreq+fmax)));
 			freqRatio = minimum.getPoint();
 		}
 		catch (Exception e)

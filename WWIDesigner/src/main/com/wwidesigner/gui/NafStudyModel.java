@@ -471,6 +471,7 @@ public class NafStudyModel extends StudyModel
 						calculator, tuning, evaluator, holeGroups);
 				break;
 			case TAPER_LENGTH_OPT_SUB_CATEGORY_ID:
+			default:
 				evaluator = new ReflectionEvaluator(calculator);
 				// Length bounds are expressed in meters, taper bounds as
 				// ratios.
@@ -491,14 +492,14 @@ public class NafStudyModel extends StudyModel
 			GridRangeProcessor rangeProcessor = new GridRangeProcessor(
 					lowerBound, upperBound, new int[] { 0 }, 30);
 			objective.setRangeProcessor(rangeProcessor);
-			objective.setMaxIterations(30 * objective.getMaxIterations());
+			objective.setMaxEvaluations(30 * objective.getMaxEvaluations());
 		}
 		else if (multiStartSelected == VARY_ALL_MULTI_START_SUB_CATEGORY_ID)
 		{
 			GridRangeProcessor rangeProcessor = new GridRangeProcessor(
 					lowerBound, upperBound, null, 30);
 			objective.setRangeProcessor(rangeProcessor);
-			objective.setMaxIterations(30 * objective.getMaxIterations());
+			objective.setMaxEvaluations(30 * objective.getMaxEvaluations());
 		}
 
 		return objective;

@@ -124,6 +124,7 @@ public class MultivariateMultiStartBoundsOptimizer implements
 		RuntimeException lastException = null;
 		optima = new PointValuePair[starts];
 		totalEvaluations = 0;
+		generator.setStaticValues(startPoint);
 
 		// Multi-start loop.
 		for (int i = 0; i < starts; ++i)
@@ -133,7 +134,7 @@ public class MultivariateMultiStartBoundsOptimizer implements
 			{
 				optima[i] = optimizer.optimize(maxEval - totalEvaluations, f,
 						goal,
-						i == 0 ? startPoint : generator.nextVector(startPoint));
+						i == 0 ? startPoint : generator.nextVector());
 			}
 			catch (RuntimeException mue)
 			{
@@ -168,6 +169,7 @@ public class MultivariateMultiStartBoundsOptimizer implements
 			RuntimeException lastException = null;
 			optima = new PointValuePair[starts];
 			totalEvaluations = 0;
+			generator.setStaticValues(startPoint);
 
 			// Multi-start loop.
 			for (int i = 0; i < starts; ++i)
@@ -176,7 +178,7 @@ public class MultivariateMultiStartBoundsOptimizer implements
 				try
 				{
 					double[] start = i == 0 ? startPoint : generator
-							.nextVector(startPoint);
+							.nextVector();
 					optima[i] = ((BaseAbstractMultivariateSimpleBoundsOptimizer) optimizer)
 							.optimize(maxEval - totalEvaluations, f, goalType,
 									start, lowerBound, upperBound);

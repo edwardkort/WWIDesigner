@@ -22,7 +22,8 @@ public class Constraints
 
 	public Constraints()
 	{
-		new Constraints(LengthType.M);
+		constraint = new ArrayList<Constraint>();
+		this.dimensionType = LengthType.M;
 	}
 
 	public Constraints(LengthType dimensionType)

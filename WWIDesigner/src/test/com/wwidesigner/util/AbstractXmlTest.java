@@ -37,7 +37,7 @@ public abstract class AbstractXmlTest<T>
 		setInputSymbolXML();
 		setOutputSymbolXML();
 		setBindFactory();
-		String inputFilePath = bindFactory.getPathFromName(inputSymbolXML);
+		String inputFilePath = BindFactory.getPathFromName(inputSymbolXML);
 		inputFile = new File(inputFilePath);
 		String inputFileName = inputFile.getName();
 		writePath = inputFilePath.substring(0,

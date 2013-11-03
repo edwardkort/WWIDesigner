@@ -54,7 +54,7 @@ public class ExplicitTuningMappingTest
 
 	private File getInputFile() throws FileNotFoundException
 	{
-		String inputXmlPath = bindFactory.getPathFromName(inputXmlName);
+		String inputXmlPath = BindFactory.getPathFromName(inputXmlName);
 		File inputFile = new File(inputXmlPath);
 
 		return inputFile;
@@ -62,7 +62,7 @@ public class ExplicitTuningMappingTest
 
 	private File getOutputFile() throws FileNotFoundException
 	{
-		String inputFilePath = bindFactory.getPathFromName(inputXmlName);
+		String inputFilePath = BindFactory.getPathFromName(inputXmlName);
 		String writePath = inputFilePath.substring(0,
 				inputFilePath.lastIndexOf('/') + 1);
 

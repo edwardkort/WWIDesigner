@@ -3,7 +3,6 @@ package com.wwidesigner.modelling;
 import org.apache.commons.math3.complex.Complex;
 
 import com.wwidesigner.geometry.Instrument;
-import com.wwidesigner.geometry.calculation.DefaultBoreSectionCalculator;
 import com.wwidesigner.geometry.calculation.FlangedEndCalculator;
 import com.wwidesigner.geometry.calculation.SimpleBoreSectionCalculator;
 import com.wwidesigner.geometry.calculation.SimpleFippleMouthpieceCalculator;

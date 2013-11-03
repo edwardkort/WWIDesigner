@@ -95,7 +95,7 @@ public class NafImpedancePlot
 	protected File getInputFile(String fileName, BindFactory bindFactory)
 			throws FileNotFoundException
 	{
-		String inputPath = bindFactory.getPathFromName(fileName);
+		String inputPath = BindFactory.getPathFromName(fileName);
 		File inputFile = new File(inputPath);
 
 		return inputFile;

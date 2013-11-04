@@ -79,8 +79,8 @@ public class DefaultFippleMouthpieceCalculator extends MouthpieceCalculator
 			volume += getSectionVolume(section);
 		}
 
-		return volume * 1.0; // Multiplier set by eye to fit LightG6HoleNaf
-								// tuning: 1.5.
+		return volume * 1.5; // Multiplier set by eye to fit LightG6HoleNaf
+								// tuning: 1.5 and subsequent NAFs.
 	}
 
 	protected double getSectionVolume(BoreSection section)

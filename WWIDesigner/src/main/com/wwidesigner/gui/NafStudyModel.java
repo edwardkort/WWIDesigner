@@ -14,8 +14,8 @@ import com.wwidesigner.modelling.SimpleInstrumentTuner;
 import com.wwidesigner.note.Tuning;
 import com.wwidesigner.optimization.BaseObjectiveFunction;
 import com.wwidesigner.optimization.FippleFactorObjectiveFunction;
+import com.wwidesigner.optimization.HoleFromTopObjectiveFunction;
 import com.wwidesigner.optimization.HoleGroupObjectiveFunction;
-import com.wwidesigner.optimization.HoleObjectiveFunction;
 import com.wwidesigner.optimization.HoleSizeObjectiveFunction;
 import com.wwidesigner.optimization.SingleTaperHoleGroupObjectiveFunction;
 import com.wwidesigner.optimization.SingleTaperNoHoleGroupingObjectiveFunction;
@@ -218,52 +218,52 @@ public class NafStudyModel extends StudyModel
 				}
 				else if (numberOfHoles == 7)
 				{
-					lowerBound = new double[] { 0.2, 0.0203, 0.0203, 0.0203,
-							0.0203, 0.0203, 0.0005, 0.012, 0.002, 0.002, 0.002,
-							0.002, 0.002, 0.002, 0.002 };
-					upperBound = new double[] { 0.7, 0.05, 0.05, 0.1, 0.05,
-							0.05, 0.003, 0.20, 0.014, 0.014, 0.014, 0.014,
+					lowerBound = new double[] { 0.2, 0.0762, 0.0203, 0.0203,
+							0.0203, 0.0203, 0.0203, 0.0005, 0.012, 0.002,
+							0.002, 0.002, 0.002, 0.002, 0.002, 0.002 };
+					upperBound = new double[] { 0.7, 0.30, 0.05, 0.05, 0.1,
+							0.05, 0.05, 0.003, 0.014, 0.014, 0.014, 0.014,
 							0.014, 0.008, 0.008 };
 				}
 				else if (constraint == HOLE_6_1_125_SPACING_CONS_SUB_CATEGORY_ID)
 				{
-					lowerBound = new double[] { 0.2, 0.0203, 0.0203, 0.0203,
-							0.0203, 0.0203, 0.01, 0.002, 0.003, 0.003, 0.003,
+					lowerBound = new double[] { 0.2, 0.0762, 0.0203, 0.0203,
+							0.0203, 0.0203, 0.0203, 0.002, 0.003, 0.003, 0.003,
 							0.003, 0.003 };
-					upperBound = new double[] { 0.7, 0.029, 0.029, 0.07, 0.029,
-							0.029, 0.30, 0.0102, 0.0102, 0.010, 0.010, 0.010,
+					upperBound = new double[] { 0.7, 0.30, 0.029, 0.029, 0.07,
+							0.029, 0.029, 0.0102, 0.0102, 0.010, 0.010, 0.010,
 							0.012 };
 				}
 				else if (constraint == HOLE_6_1_25_SPACING_CONS_SUB_CATEGORY_ID)
 				{
-					lowerBound = new double[] { 0.2, 0.0203, 0.0203, 0.0203,
-							0.0203, 0.0203, 0.01, 0.002, 0.003, 0.003, 0.003,
+					lowerBound = new double[] { 0.2, 0.0762, 0.0203, 0.0203,
+							0.0203, 0.0203, 0.0203, 0.002, 0.003, 0.003, 0.003,
 							0.003, 0.003 };
-					upperBound = new double[] { 0.7, 0.032, 0.032, 0.07, 0.032,
-							0.032, 0.30, 0.0102, 0.0102, 0.010, 0.010, 0.010,
-							0.012 };
+					upperBound = new double[] { 0.7, 0.30, 0.032, 0.032, 0.07,
+							0.032, 0.032, 0.30, 0.0102, 0.0102, 0.010, 0.010,
+							0.010, 0.012 };
 				}
 				else if (constraint == HOLE_6_40_SPACING_CONS_SUB_CATEGORY_ID)
 				{
-					lowerBound = new double[] { 0.2, 0.0203, 0.0203, 0.0203,
-							0.0203, 0.0203, 0.01, 0.002, 0.003, 0.003, 0.003,
+					lowerBound = new double[] { 0.2, 0.0762, 0.0203, 0.0203,
+							0.0203, 0.0203, 0.0203, 0.002, 0.003, 0.003, 0.003,
 							0.003, 0.003 };
-					upperBound = new double[] { 0.7, 0.0356, 0.0356, 0.07,
-							0.0356, 0.0336, 0.30, 0.0102, 0.0102, 0.010, 0.010,
+					upperBound = new double[] { 0.7, 0.30, 0.0356, 0.0356,
+							0.07, 0.0356, 0.0336, 0.0102, 0.0102, 0.010, 0.010,
 							0.010, 0.012 };
 				}
 				else
 				// 6 holes, 1.5 inch spacing.
 				{
-					lowerBound = new double[] { 0.2, 0.0203, 0.0203, 0.0203,
-							0.0203, 0.0203, 0.01, 0.002, 0.003, 0.003, 0.003,
+					lowerBound = new double[] { 0.2, 0.0762, 0.0203, 0.0203,
+							0.0203, 0.0203, 0.0203, 0.002, 0.003, 0.003, 0.003,
 							0.003, 0.003 };
-					upperBound = new double[] { 0.7, 0.038, 0.038, 0.07, 0.038,
-							0.038, 0.30, 0.0102, 0.0102, 0.010, 0.010, 0.010,
+					upperBound = new double[] { 0.7, 0.30, 0.038, 0.038, 0.07,
+							0.038, 0.038, 0.0102, 0.0102, 0.010, 0.010, 0.010,
 							0.012 };
 				}
-				objective = new HoleObjectiveFunction(calculator, tuning,
-						evaluator);
+				objective = new HoleFromTopObjectiveFunction(calculator,
+						tuning, evaluator);
 				break;
 			case GROUP_OPT_SUB_CATEGORY_ID:
 				evaluator = new ReflectionEvaluator(calculator);

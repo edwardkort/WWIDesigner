@@ -92,6 +92,28 @@ public class HolePositionObjectiveFunction extends BaseObjectiveFunction
 	@Override
 	public void setGeometryPoint(double[] point)
 	{
+		setBore(point);
+
+		PositionInterface[] sortedHoles = Instrument.sortList(calculator
+				.getInstrument().getHole());
+
+		// Geometry dimensions are distances between holes.
+		// Final dimension is distance between last hole and end of bore.
+		// Position the holes from bottom to top.
+		double priorHolePosition = point[0];
+
+		for (int i = sortedHoles.length - 1; i >= 0; --i)
+		{
+			Hole hole = (Hole) sortedHoles[i];
+			hole.setBorePosition(priorHolePosition - point[i + 1]);
+			priorHolePosition = hole.getBorePosition();
+		}
+
+		calculator.getInstrument().updateComponents();
+	}
+
+	protected void setBore(double[] point)
+	{
 		if (point.length != nrDimensions)
 		{
 			throw new DimensionMismatchException(point.length, nrDimensions);
@@ -118,23 +140,6 @@ public class HolePositionObjectiveFunction extends BaseObjectiveFunction
 				boreList, point[0]);
 		endPoint.setBorePosition(point[0]);
 		endPoint.setBoreDiameter(endDiameter);
-
-		PositionInterface[] sortedHoles = Instrument.sortList(calculator
-				.getInstrument().getHole());
-
-		// Geometry dimensions are distances between holes.
-		// Final dimension is distance between last hole and end of bore.
-		// Position the holes from bottom to top.
-		double priorHolePosition = point[0];
-
-		for (int i = sortedHoles.length - 1; i >= 0; --i)
-		{
-			Hole hole = (Hole) sortedHoles[i];
-			hole.setBorePosition(priorHolePosition - point[i + 1]);
-			priorHolePosition = hole.getBorePosition();
-		}
-
-		calculator.getInstrument().updateComponents();
 	}
 
 	protected void setConstraints()

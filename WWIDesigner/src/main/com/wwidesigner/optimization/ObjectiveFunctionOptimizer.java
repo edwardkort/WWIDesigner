@@ -16,7 +16,6 @@ import org.apache.commons.math3.optim.PointValuePair;
 import org.apache.commons.math3.optim.SimpleBounds;
 import org.apache.commons.math3.optim.SimpleValueChecker;
 import org.apache.commons.math3.optim.nonlinear.scalar.GoalType;
-import org.apache.commons.math3.optim.nonlinear.scalar.MultiStartMultivariateOptimizer;
 import org.apache.commons.math3.optim.nonlinear.scalar.MultivariateOptimizer;
 import org.apache.commons.math3.optim.nonlinear.scalar.ObjectiveFunction;
 import org.apache.commons.math3.optim.nonlinear.scalar.noderiv.BOBYQAOptimizer;
@@ -31,6 +30,7 @@ import org.apache.commons.math3.optim.univariate.UnivariatePointValuePair;
 import org.apache.commons.math3.random.MersenneTwister;
 
 import com.wwidesigner.optimization.multistart.AbstractRangeProcessor;
+import com.wwidesigner.optimization.multistart.RandomRangeProcessor;
 
 public class ObjectiveFunctionOptimizer
 {
@@ -119,40 +119,29 @@ public class ObjectiveFunctionOptimizer
 						simplex);
 				objective.setGeometryPoint(outcome.getPoint());
 			}
-			else {
-				// Multivariate optimization, with bounds.
-				MultivariateOptimizer optimizer;
+			else if ( optimizerType.equals(BaseObjectiveFunction.OptimizerType.MultiStartOptimizer) )
+			{
 				PointValuePair  outcome;
-				if ( optimizerType.equals(BaseObjectiveFunction.OptimizerType.CMAESOptimizer)
-						|| objective.getNrDimensions() == 1 )	// BOBYQA requires 2 or more dimensions.
+				outcome = optimizeMultiStart(objective, startPoint);
+				if (outcome == null)
 				{
-					optimizer = new CMAESOptimizer(objective.getMaxEvaluations(), 
-							0.01 * initialNorm, true, 0, 0, new MersenneTwister(), false,
-							convergenceChecker);
-				}
-				else {
-					double trustRegion = objective.getInitialTrustRegionRadius();
-					optimizer = new BOBYQAOptimizer(objective.getNrInterpolations(), 
-							trustRegion, 1e-8 * trustRegion);
-				}
-				if ( objective.isMultiStart())
-				{
-					MultiStartMultivariateOptimizer multiStartOptimizer 
-						= new MultiStartMultivariateOptimizer(optimizer,
-								objective.getRangeProcessor().getNumberOfStarts(),
-								objective.getRangeProcessor()); 
-					outcome = multiStartOptimizer.optimize(GoalType.MINIMIZE,
-							new ObjectiveFunction(objective),
-							new MaxEval(objective.getMaxEvaluations()), MaxIter.unlimited(),
-							new InitialGuess(startPoint),
-							new SimpleBounds(objective.getLowerBounds(), 
-									objective.getUpperBounds()),
-							new CMAESOptimizer.PopulationSize(objective.getNrInterpolations()),
-							new CMAESOptimizer.Sigma(objective.getStdDev()));
+					// Restore starting point.
+					objective.setGeometryPoint(startPoint);
 				}
 				else
 				{
-					outcome = optimizer.optimize(GoalType.MINIMIZE,
+					objective.setGeometryPoint(outcome.getPoint());
+				}
+			}
+			else if ( optimizerType.equals(BaseObjectiveFunction.OptimizerType.CMAESOptimizer) )
+			{
+				// Multivariate optimization, with bounds.
+				MultivariateOptimizer optimizer;
+				PointValuePair  outcome;
+				optimizer = new CMAESOptimizer(objective.getMaxEvaluations(), 
+							0.01 * initialNorm, true, 0, 0, new MersenneTwister(), false,
+							convergenceChecker);
+				outcome = optimizer.optimize(GoalType.MINIMIZE,
 						new ObjectiveFunction(objective),
 						new MaxEval(objective.getMaxEvaluations()), MaxIter.unlimited(),
 						new InitialGuess(startPoint),
@@ -160,7 +149,21 @@ public class ObjectiveFunctionOptimizer
 								objective.getUpperBounds()),
 						new CMAESOptimizer.PopulationSize(objective.getNrInterpolations()),
 						new CMAESOptimizer.Sigma(objective.getStdDev()));
-				}
+				objective.setGeometryPoint(outcome.getPoint());
+			}
+			else {
+				// Multivariate BOBYQA optimization, with bounds.
+				MultivariateOptimizer optimizer;
+				double trustRegion = objective.getInitialTrustRegionRadius();
+				PointValuePair  outcome;
+				optimizer = new BOBYQAOptimizer(objective.getNrInterpolations(), 
+							trustRegion, 1e-8 * trustRegion);
+				outcome = optimizer.optimize(GoalType.MINIMIZE,
+						new ObjectiveFunction(objective),
+						new MaxEval(objective.getMaxEvaluations()), MaxIter.unlimited(),
+						new InitialGuess(startPoint),
+						new SimpleBounds(objective.getLowerBounds(), 
+								objective.getUpperBounds()) );
 				objective.setGeometryPoint(outcome.getPoint());
 			}
 		}
@@ -191,80 +194,85 @@ public class ObjectiveFunctionOptimizer
 
 	/**
 	 * Use a multi-start BOBYQA optimization to optimize a specified objective function.
+	 * Use range processor and number of starts from {@code objective} if available;
+	 * otherwise use a RandomRangeProcessor with 30 starts.
 	 * @param objective - objective function to optimize
-	 * @param nrStarts - number of different starts to attempt
+	 * @return best point and value found, or {@code null} if no good point found.
 	 */
-	public static PointValuePair optimizeMultiStart(BaseObjectiveFunction  objective, int nrStarts)
+	public static PointValuePair optimizeMultiStart(BaseObjectiveFunction  objective,
+			double[] startPoint)
 	{
-		double[] startPoint = objective.getInitialPoint();
-		double[] errorVector = objective.getErrorVector(startPoint);
-		double initialNorm = BaseObjectiveFunction.calcNorm(errorVector);
+		AbstractRangeProcessor  rangeProcessor = objective.getRangeProcessor();
+		int nrStarts = 30;
+		if (rangeProcessor == null)
+		{
+			rangeProcessor = new RandomRangeProcessor(objective.getLowerBounds(), 
+						objective.getUpperBounds(), null, nrStarts);
+		}
+		else
+		{
+			nrStarts = rangeProcessor.getNumberOfStarts();
+		}
 		PointValuePair[] optima = new PointValuePair[nrStarts];
-		double trustRegion = objective.getInitialTrustRegionRadius();
-		BOBYQAOptimizer optimizer = new BOBYQAOptimizer(objective.getNrInterpolations(), 
-				trustRegion, 1e-8 * trustRegion);
-		AbstractRangeProcessor generator = objective.getRangeProcessor();
 		int maxEvaluations = objective.getMaxEvaluations();
 		int totalEvaluations = 0;
-
-		System.out.println();
-		printErrors("Initial error: ", initialNorm, errorVector);
-		generator.setStaticValues(startPoint);
+		rangeProcessor.setStaticValues(startPoint);
 
 		// Multi-start loop.
-		double[] start = startPoint.clone();
+		double[] nextStart = startPoint.clone();
 
-		for (int i = 0; i < nrStarts && totalEvaluations < maxEvaluations; ++i)
+		for (int startNr = 0; startNr < nrStarts; ++startNr)
 		{
 			if (totalEvaluations >= maxEvaluations)
 			{
-				optima[i] = null;
+				optima[startNr] = null;
 			}
 			else {
+				double trustRegion = objective.getInitialTrustRegionRadius(nextStart);
+				BOBYQAOptimizer optimizer = new BOBYQAOptimizer(objective.getNrInterpolations(), 
+						trustRegion, 1e-8 * trustRegion);
 				try
 				{
-					optima[i] = optimizer.optimize(GoalType.MINIMIZE,
+					System.out.print("Start " + (int) (startNr + 1) + ": " );
+					optima[startNr] = optimizer.optimize(GoalType.MINIMIZE,
 							new ObjectiveFunction(objective),
 							new MaxEval(maxEvaluations - totalEvaluations), MaxIter.unlimited(),
-							new InitialGuess(start),
+							new InitialGuess(nextStart),
 							new SimpleBounds(objective.getLowerBounds(), 
 									objective.getUpperBounds()));
-					System.out.println("Start " + (int) (i + 1)
-							+ ", optimum: " + optima[i].getValue()
-							+ ", start point: " + Arrays.toString(start));
+					System.out.println("optimum " + optima[startNr].getValue()
+							+ " at start point " + Arrays.toString(nextStart));
 				}
 				catch (TooManyEvaluationsException e)
 				{
-					System.out.println("Exception on start " + (int) (i+1) + ": " + e.getMessage());
-					optima[i] = null;
+					System.out.println("Exception: " + e.getMessage());
+					optima[startNr] = null;
 				}
 				catch (Exception e)
 				{
-					System.out.println("Exception on start " + (int) (i+1) + ": " + e.getMessage());
-					e.printStackTrace();
-					optima[i] = null;
+					System.out.println("Exception: " + e.getMessage());
+					// e.printStackTrace();
+					optima[startNr] = null;
 				}
 	
 				totalEvaluations += optimizer.getEvaluations();
-				start = generator.nextVector();
+				nextStart = rangeProcessor.nextVector();
 			}
 		}
 
 		sortPairs(GoalType.MINIMIZE, optima);
 
-		if (optima[0] == null)
+		if (optima[0] != null)
 		{
-			// Return geometry unchanged.
-			return new PointValuePair(startPoint, initialNorm);
+			// Return the found point given the best objective function value.
+			System.out.println("Best optimum: " + optima[0].getValue());
 		}
 
-		// Return the found point given the best objective function value.
-		System.out.println("Best optimum: " + optima[0].getValue());
 		return optima[0];
 	}
 	
 	/**
-	 * Sort the optima from best to worst, followed by {@code null} elements.
+	 * Sort PointValuePairs from best to worst, followed by {@code null} elements.
 	 * 
 	 * @param goal - GoalType.MINIMIZE or GoalType.MAXIMIZE
 	 * @param optima - array of point-value pairs from successive optimizations.

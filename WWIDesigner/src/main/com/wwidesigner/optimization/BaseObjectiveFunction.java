@@ -38,15 +38,12 @@ public abstract class BaseObjectiveFunction implements MultivariateFunction,
 	// Recommended optimization method.
 	public enum OptimizerType
 	{
-		BrentOptimizer, PowellOptimizer, SimplexOptimizer, BOBYQAOptimizer, CMAESOptimizer
+		BrentOptimizer, BOBYQAOptimizer, CMAESOptimizer, MultiStartOptimizer, SimplexOptimizer, PowellOptimizer
 	}
 
 	protected OptimizerType optimizerType;
 	protected int maxEvaluations;		// Limit on number of error norm calculations.
 	protected AbstractRangeProcessor rangeProcessor;
-	protected static final int MaxInterpolations = 40; // Maximum number of
-														// interpolations for
-														// BOBYQA.
 
 	// Statistics for the results of an optimization.
 	protected int tuningsDone; 		// Number of tuning error calculations.
@@ -208,7 +205,8 @@ public abstract class BaseObjectiveFunction implements MultivariateFunction,
 		if (optimizerType.equals(OptimizerType.CMAESOptimizer))
 		{
 			// Typical population size used for CMAES.
-			return 4 + (int) (3 * Math.log(nrDimensions));
+			// return 4 + (int) (3 * Math.log(nrDimensions));
+			return 5 + (int) (5 * Math.log(nrDimensions));
 		}
 
 		if (optimizerType.equals(OptimizerType.BOBYQAOptimizer))
@@ -247,9 +245,18 @@ public abstract class BaseObjectiveFunction implements MultivariateFunction,
 	 */
 	public double getInitialTrustRegionRadius()
 	{
+		double initial[] = getInitialPoint();
+		return getInitialTrustRegionRadius( initial );
+	}
+	
+	/**
+	 * From the bounds and the initial value, determine the maximum feasible value
+	 * for the initial trust region radius.
+	 */
+	public double getInitialTrustRegionRadius(double[] initial)
+	{
 		double minRadius = 1.0;
 		double minDimensionRadius;
-		double initial[] = getInitialPoint();
 
 		for (int i = 0; i < nrDimensions; ++ i)
 		{
@@ -354,6 +361,10 @@ public abstract class BaseObjectiveFunction implements MultivariateFunction,
 
 	public OptimizerType getOptimizerType()
 	{
+		if (isMultiStart())
+		{
+			return OptimizerType.MultiStartOptimizer; 
+		}
 		return optimizerType;
 	}
 

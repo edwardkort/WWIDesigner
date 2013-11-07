@@ -50,7 +50,7 @@ public abstract class AbstractRangeProcessor implements RandomVectorGenerator
 	{
 		for ( int i = 0; i < valuesToVary.length; ++ i )
 		{
-			if (valuesToVary[i])
+			if (! valuesToVary[i])
 			{
 				lowVector[i] = startValues[i];
 			}

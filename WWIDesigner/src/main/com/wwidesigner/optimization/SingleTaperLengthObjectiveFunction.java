@@ -5,7 +5,7 @@ import com.wwidesigner.modelling.InstrumentCalculator;
 import com.wwidesigner.note.TuningInterface;
 
 /**
- * Optimization objective function for hole positions and diameters, and a
+ * Optimization objective function for a
  * simple one-section taper The foot diameter remains invariant.
  * 
  * @author Edward Kort, Burton Patkau

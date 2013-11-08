@@ -69,7 +69,11 @@ public class ObjectiveFunctionOptimizer
 	public static boolean optimizeObjectiveFunction(BaseObjectiveFunction  objective,
 			BaseObjectiveFunction.OptimizerType optimizerType )
 	{
-		ConvergenceChecker<PointValuePair> convergenceChecker = new SimpleValueChecker(0.00001, 0.0000001);
+		// Rely on relative difference to test convergence,
+		// to allow for vast differences in absolute error scale
+		// between objective functions.
+		ConvergenceChecker<PointValuePair> convergenceChecker 
+			= new SimpleValueChecker(1.e-6, 1.e-14);
 		
 		double[] startPoint = objective.getInitialPoint();
 		double[] errorVector = objective.getErrorVector(startPoint);
@@ -82,7 +86,7 @@ public class ObjectiveFunctionOptimizer
 			if ( optimizerType.equals(BaseObjectiveFunction.OptimizerType.BrentOptimizer) )
 			{
 				// Univariate optimization.
-				BrentOptimizer optimizer = new BrentOptimizer(0.00001, 0.00001);
+				BrentOptimizer optimizer = new BrentOptimizer(1.e-6, 1.e-14);
 				UnivariatePointValuePair  outcome;
 				outcome = optimizer.optimize(GoalType.MINIMIZE,
 						new UnivariateObjectiveFunction(objective),
@@ -97,7 +101,7 @@ public class ObjectiveFunctionOptimizer
 			else if ( optimizerType.equals(BaseObjectiveFunction.OptimizerType.PowellOptimizer) )
 			{
 				// Multivariate optimization, without bounds.
-				PowellOptimizer optimizer = new PowellOptimizer(0.00001, 0.000001);
+				PowellOptimizer optimizer = new PowellOptimizer(1.e-6, 1.e-14);
 				PointValuePair  outcome;
 				outcome = optimizer.optimize(GoalType.MINIMIZE,
 						new ObjectiveFunction(objective),

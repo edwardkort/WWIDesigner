@@ -11,8 +11,8 @@ import com.wwidesigner.note.TuningInterface;
  * Optimization objective function for bore length and hole positions:
  * <ul>
  * <li>Position of end bore point.</li>
- * <li>For each hole, spacing below the hole to the next hole, or (for the first
- * hole) to top of bore.</li>
+ * <li>Position of top hole as fraction of bore length.</li>
+ * <li>For each hole, spacing below the hole to the next hole.</li>
  * </ul>
  * Assumes that total spacing is less than the bore length. (In practice, it
  * will be significantly less.)
@@ -36,7 +36,8 @@ public class HolePositionFromTopObjectiveFunction extends
 	{
 		// Geometry dimensions are distances between holes.
 		// First dimension is bore length.
-		// Second dimension is distance between first hole and top of bore.
+		// Second dimension is distance between first hole and top of bore,
+		// expressed as a fraction of the bore length.
 
 		PositionInterface[] sortedHoles = Instrument.sortList(calculator
 				.getInstrument().getHole());
@@ -50,6 +51,10 @@ public class HolePositionFromTopObjectiveFunction extends
 		{
 			Hole hole = (Hole) sortedHoles[i];
 			geometry[i + 1] = hole.getBorePosition() - priorHolePosition;
+			if (i == 0)
+			{
+				geometry[i + 1] /= geometry[0];
+			}
 			priorHolePosition = hole.getBorePosition();
 		}
 		return geometry;
@@ -65,13 +70,18 @@ public class HolePositionFromTopObjectiveFunction extends
 
 		// Geometry dimensions are distances between holes.
 		// First dimension is bore length.
-		// Second dimension is distance between first hole and top of bore.
+		// Second dimension is distance between first hole and top of bore, as
+		// fraction of bore length.
 		double priorHolePosition = 0.;
 
 		for (int i = 0; i < sortedHoles.length; i++)
 		{
 			Hole hole = (Hole) sortedHoles[i];
 			double holePosition = priorHolePosition + point[i + 1];
+			if (i == 0)
+			{
+				holePosition *= point[0];
+			}
 			hole.setBorePosition(holePosition);
 			priorHolePosition = holePosition;
 		}
@@ -91,20 +101,24 @@ public class HolePositionFromTopObjectiveFunction extends
 		{
 			String name = Constraint.getHoleName((Hole) sortedHoles[idx], i, 1,
 					lastIdx);
-			String priorName = "";
+			String constraintName = "";
+			Constraint.ConstraintType constraintType;
 			if (idx == 0)
 			{
-				priorName = "Top of bore end";
+				constraintName = "Bore top to " + name
+						+ ", bore-length fraction";
+				constraintType = Constraint.ConstraintType.DIMENSIONLESS;
 			}
 			else
 			{
-				priorName = Constraint.getHoleName((Hole) sortedHoles[idx - 1],
-						i + 1, 1, lastIdx);
+				String priorName = Constraint.getHoleName(
+						(Hole) sortedHoles[idx - 1], i + 1, 1, lastIdx);
+				constraintName = priorName + " to " + name + " distance";
+				constraintType = Constraint.ConstraintType.DIMENSIONAL;
 			}
-			String constraintName = priorName + " to " + name + " distance";
 
 			constraints.addConstraint(new Constraint(CONSTR_CAT,
-					constraintName, CONSTR_TYPE));
+					constraintName, constraintType));
 		}
 
 		constraints.setNumberOfHoles(calculator.getInstrument().getHole()

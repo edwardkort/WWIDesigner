@@ -8,8 +8,8 @@ import com.wwidesigner.note.TuningInterface;
  * Optimization objective function for hole positions and diameters:
  * <ul>
  * <li>Position of end of bore,</li>
- * <li>For each hole, spacing to next hole, ending with spacing
- * from last hole to end of bore.</li>
+ * <li>For each hole, spacing below the hole to the next hole, or (for the first
+ * hole) to top of bore.</li>
  * <li>For each hole, hole diameter.</li>
  * </ul>
  * 

@@ -360,6 +360,15 @@ public abstract class StudyModel
 	 */
 	public void setPreferences(Preferences newPreferences)
 	{
+		double currentTemperature = newPreferences.getDouble(OptimizationPreferences.TEMPERATURE_OPT, 
+				OptimizationPreferences.DEFAULT_TEMPERATURE);
+		double currentPressure = newPreferences.getDouble(OptimizationPreferences.PRESSURE_OPT, OptimizationPreferences.DEFAULT_PRESSURE);
+		int currentHumidity = newPreferences.getInt(OptimizationPreferences.HUMIDITY_OPT, OptimizationPreferences.DEFAULT_HUMIDITY);
+		int currentCO2 = newPreferences.getInt(OptimizationPreferences.CO2_FRACTION_OPT, OptimizationPreferences.DEFAULT_CO2_FRACTION);
+		double xCO2 = currentCO2 * 1.0e-6;
+		getParams().setProperties(currentTemperature, currentPressure, currentHumidity, xCO2);
+		getParams().printProperties();
+
 		String optimizerPreference = newPreferences.get(
 				OptimizationPreferences.OPTIMIZER_TYPE_OPT, OptimizationPreferences.OPT_DEFAULT_NAME);
 		if ( optimizerPreference.contentEquals(OptimizationPreferences.OPT_DEFAULT_NAME) )

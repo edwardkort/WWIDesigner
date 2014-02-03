@@ -64,8 +64,8 @@ public class CalculationTest
 			assertEquals("Determinant.imag incorrect", 0.0, tm.determinant().getImaginary(), 0.0001);
 			Complex zLoad = tm.multiply(sv).Impedance().divide(z0);
 
-			assertEquals("Re(Z) incorrect",  0.03712, zLoad.getReal(), 0.00001);
-			assertEquals("Im(Z) incorrect", -0.48647, zLoad.getImaginary(), 0.00001);
+			assertEquals("Re(Z) incorrect",  0.03696, zLoad.getReal(), 0.00001);
+			assertEquals("Im(Z) incorrect", -0.48516, zLoad.getImaginary(), 0.00001);
 
 			BoreSectionCalculator boreCalc = new DefaultBoreSectionCalculator();
 			BoreSection bore = new BoreSection(BaseLength, BaseRadius, BaseRadius);
@@ -74,8 +74,8 @@ public class CalculationTest
 			assertEquals("Determinant.imag 2 incorrect", 0.0, tm2.determinant().getImaginary(), 0.0001);
 			Complex zLoad2 = tm2.multiply(sv).Impedance().divide(z0);
 
-			assertEquals("Re(Z2) incorrect",  0.03712, zLoad2.getReal(), 0.00001);
-			assertEquals("Im(Z2) incorrect", -0.48647, zLoad2.getImaginary(), 0.00001);
+			assertEquals("Re(Z2) incorrect",  0.03696, zLoad2.getReal(), 0.00001);
+			assertEquals("Im(Z2) incorrect", -0.48516, zLoad2.getImaginary(), 0.00001);
 		}
 		catch (Exception e)
 		{
@@ -101,8 +101,8 @@ public class CalculationTest
 			assertEquals("Determinant.imag incorrect", 0.0, tm.determinant().getImaginary(), 0.0001);
 			Complex zLoad = tm.multiply(sv).Impedance().divide(z0);
 
-			assertEquals("Re(Z) incorrect",  0.03871, zLoad.getReal(), 0.00001);
-			assertEquals("Im(Z) incorrect", -0.46038, zLoad.getImaginary(), 0.00001);
+			assertEquals("Re(Z) incorrect",  0.03856, zLoad.getReal(), 0.00001);
+			assertEquals("Im(Z) incorrect", -0.45920, zLoad.getImaginary(), 0.00001);
 
 			BoreSectionCalculator boreCalc = new DefaultBoreSectionCalculator();
 			BoreSection bore = new BoreSection(BaseLength, BaseRadius, 0.75 * BaseRadius);
@@ -111,8 +111,8 @@ public class CalculationTest
 			assertEquals("Determinant.imag 2 incorrect", 0.0, tm2.determinant().getImaginary(), 0.0001);
 			Complex zLoad2 = tm2.multiply(sv).Impedance().divide(z0);
 
-			assertEquals("Re(Z2) incorrect",  0.03871, zLoad2.getReal(), 0.00001);
-			assertEquals("Im(Z2) incorrect", -0.46038, zLoad2.getImaginary(), 0.00001);
+			assertEquals("Re(Z2) incorrect",  0.03856, zLoad2.getReal(), 0.00001);
+			assertEquals("Im(Z2) incorrect", -0.45920, zLoad2.getImaginary(), 0.00001);
 		}
 		catch (Exception e)
 		{

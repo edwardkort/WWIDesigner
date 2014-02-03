@@ -55,7 +55,7 @@ public class WhistleStudyModel extends StudyModel
 
 	protected void setLocalCategories()
 	{
-		setParams(new PhysicalParameters(28.2, TemperatureType.C));
+		setParams(new PhysicalParameters(27, TemperatureType.C, 98.4, 100, 0.04));
 		Category optimizers = new Category(OPTIMIZER_CATEGORY_ID);
 		optimizers.addSub(WINDOW_OPT_SUB_CATEGORY_ID, null);
 		optimizers.addSub(BETA_OPT_SUB_CATEGORY_ID, null);

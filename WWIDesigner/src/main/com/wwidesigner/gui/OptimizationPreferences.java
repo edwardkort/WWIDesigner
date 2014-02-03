@@ -3,14 +3,18 @@
  */
 package com.wwidesigner.gui;
 
+import java.awt.Color;
+import java.text.NumberFormat;
 import java.util.prefs.Preferences;
 
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
+import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JSpinner;
+import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
 
 import com.jidesoft.app.framework.ApplicationVetoException;
@@ -34,6 +38,15 @@ public class OptimizationPreferences extends PreferencesPane
 	public static final String BLOWING_LEVEL_OPT = "BlowingLevel";
 	public static final int DEFAULT_BLOWING_LEVEL = 5;
 	
+	public static final String TEMPERATURE_OPT = "AirTemperature";
+	public static final String PRESSURE_OPT = "AirPressure";
+	public static final String HUMIDITY_OPT = "RelHumidity";
+	public static final String CO2_FRACTION_OPT = "CO2Fraction";
+	public static final double DEFAULT_TEMPERATURE = 20;
+	public static final double DEFAULT_PRESSURE = 101.325;
+	public static final int    DEFAULT_HUMIDITY = 45;
+	public static final int    DEFAULT_CO2_FRACTION = 390;
+	
 	public static final int NrOptimizers = 6;	// Including default
 	public static final String OPTIMIZER_TYPE_OPT = "OptimizerType";
 	public static final String OPT_DEFAULT_NAME = "Default";
@@ -55,10 +68,23 @@ public class OptimizationPreferences extends PreferencesPane
 
 	JSpinner blowingLevelSpinner;
 	SpinnerNumberModel blowingLevel;
+	
+	NumberFormat floatFormat;
 
-	@Override
+    JFormattedTextField  temperatureField;
+    JFormattedTextField  pressureField;
+    JFormattedTextField  humidityField;
+    JFormattedTextField  co2Field;
+    
+    JTextField  messageField;
+
+    @Override
 	protected void initializeComponents(DialogRequest request) {
 		// Setup dialog components.
+
+		JPanel studyPanel = new JPanel();
+		studyPanel.setLayout(new BoxLayout(studyPanel,BoxLayout.Y_AXIS));
+
 		nafButton = new JRadioButton("NAF Study");
 		nafButton.setSelected(true);
 		whistleButton = new JRadioButton("Whistle Study");
@@ -66,15 +92,56 @@ public class OptimizationPreferences extends PreferencesPane
 		studyGroup.add(nafButton);
 		studyGroup.add(whistleButton);
 
-		JPanel studyPanel = new JPanel();
-		studyPanel.setLayout(new BoxLayout(studyPanel,BoxLayout.Y_AXIS));
-		studyPanel.add(nafButton);
-		studyPanel.add(whistleButton);
-
 		blowingLevel = new SpinnerNumberModel(DEFAULT_BLOWING_LEVEL,0,10,1);
 		blowingLevelSpinner = new JSpinner(blowingLevel);
 		blowingLevelSpinner.setName("Blowing Level");
 
+		studyPanel.add(nafButton);
+		studyPanel.add(whistleButton);
+		studyPanel.add(new JLabel(" "));
+		studyPanel.add(new JLabel("Blowing Level:"));
+		studyPanel.add(blowingLevelSpinner);
+		studyPanel.add(new JLabel(" "));
+		studyPanel.add(new JLabel(" "));
+
+		JPanel airPanel = new JPanel();
+		airPanel.setLayout(new BoxLayout(airPanel,BoxLayout.Y_AXIS));
+        floatFormat = NumberFormat.getNumberInstance();
+        floatFormat.setMinimumFractionDigits(1);
+        temperatureField = new JFormattedTextField(floatFormat);
+        pressureField = new JFormattedTextField(floatFormat);
+        humidityField = new JFormattedTextField();
+        co2Field = new JFormattedTextField();
+        temperatureField.setColumns(5);
+        pressureField.setColumns(5);
+        humidityField.setColumns(5);
+        co2Field.setColumns(5);
+        JLabel temperatureLabel = new JLabel("Temperature, C:");
+        JLabel pressureLabel = new JLabel("Pressure, kPa:");
+        JLabel humidityLabel = new JLabel("Relative Humidity, %:");
+        JLabel co2Label = new JLabel("CO2, ppm:");
+        temperatureLabel.setLabelFor(temperatureField);
+        pressureLabel.setLabelFor(pressureField);
+        humidityLabel.setLabelFor(humidityField);
+        co2Label.setLabelFor(co2Field);
+        airPanel.add(temperatureLabel);
+        airPanel.add(temperatureField);
+        airPanel.add(pressureLabel);
+        airPanel.add(pressureField);
+        airPanel.add(humidityLabel);
+        airPanel.add(humidityField);
+        airPanel.add(co2Label);
+        airPanel.add(co2Field);
+
+		messageField = new JTextField();
+		messageField.setEditable(false);
+		messageField.setText("");
+		airPanel.add(messageField);
+
+		JPanel optimizerPanel = new JPanel();
+		optimizerPanel.setLayout(new BoxLayout(optimizerPanel,BoxLayout.Y_AXIS));
+		optimizerPanel.add(new JLabel("Optimizer Type:"));
+		
 		optimizerGroup = new ButtonGroup();
 		
 		for (int i = 0; i < NrOptimizers; ++ i)
@@ -84,20 +151,21 @@ public class OptimizationPreferences extends PreferencesPane
 		}
 		optButton[0].setSelected(true);
 
-		JPanel optimizerPanel = new JPanel();
-		optimizerPanel.setLayout(new BoxLayout(optimizerPanel,BoxLayout.Y_AXIS));
-		
 		// Add all but Powell optimizer to the optimizerPanel.
 		for (int i = 0; i < NrOptimizers - 1; ++ i)
 		{
 			optimizerPanel.add(optButton[i]);
 		}
 
-		this.add(studyPanel);
-		this.add(new JLabel("Blowing Level:"));
-		this.add(blowingLevelSpinner);
-		this.add(new JLabel("Optimizer Type:"));
-		this.add(optimizerPanel);
+    	JPanel optionsPanel = new JPanel();
+		optionsPanel.setLayout(new BoxLayout(optionsPanel,BoxLayout.X_AXIS));
+		optionsPanel.add(studyPanel);
+		optionsPanel.add(airPanel);
+		optionsPanel.add(optimizerPanel);
+
+		this.setLayout(new BoxLayout(this,BoxLayout.Y_AXIS));
+		this.add(optionsPanel);
+		this.add(messageField);
 	}
 
 	@Override
@@ -117,6 +185,14 @@ public class OptimizationPreferences extends PreferencesPane
 		}
 		Number currentLevel = myPreferences.getInt(BLOWING_LEVEL_OPT, DEFAULT_BLOWING_LEVEL);
 		blowingLevel.setValue(currentLevel);
+		Number currentTemperature = myPreferences.getDouble(TEMPERATURE_OPT, DEFAULT_TEMPERATURE);
+		temperatureField.setValue(currentTemperature);
+		Number currentPressure = myPreferences.getDouble(PRESSURE_OPT, DEFAULT_PRESSURE);
+		pressureField.setValue(currentPressure);
+		Number currentHumidity = myPreferences.getInt(HUMIDITY_OPT, DEFAULT_HUMIDITY);
+		humidityField.setValue(currentHumidity);
+		Number currentCO2 = myPreferences.getInt(CO2_FRACTION_OPT, DEFAULT_CO2_FRACTION);
+		co2Field.setValue(currentCO2);
 		
 		String optimizerType = myPreferences.get(OPTIMIZER_TYPE_OPT, OPT_DEFAULT_NAME);
 
@@ -165,6 +241,10 @@ public class OptimizationPreferences extends PreferencesPane
 		
 		myPreferences.put( STUDY_MODEL_OPT, studyName );
 		myPreferences.putInt(BLOWING_LEVEL_OPT, blowingLevel.getNumber().intValue());
+		myPreferences.putDouble(TEMPERATURE_OPT, ((Number) temperatureField.getValue()).doubleValue());
+		myPreferences.putDouble(PRESSURE_OPT, ((Number) pressureField.getValue()).doubleValue());
+		myPreferences.putInt(HUMIDITY_OPT, ((Number) humidityField.getValue()).intValue());
+		myPreferences.putInt(CO2_FRACTION_OPT, ((Number) co2Field.getValue()).intValue());
 		myPreferences.put( OPTIMIZER_TYPE_OPT, optimizerName );
 
 		DataView[] views = application.getFocusedViews();
@@ -187,5 +267,36 @@ public class OptimizationPreferences extends PreferencesPane
 	protected void validateComponents(DialogRequest request, DialogResponse response) 
 			throws ApplicationVetoException {
 		// Validate the preferences.
+		messageField.setText("");
+		messageField.setForeground(Color.BLACK);
+
+		double currentTemperature = ((Number) temperatureField.getValue()).doubleValue();
+		if ( currentTemperature < 0 || currentTemperature > 50 )
+		{
+			messageField.setText("Temperature must be between 0 and 50 C.");
+			messageField.setForeground(Color.RED);
+			throw new ApplicationVetoException();
+		}
+		double currentPressure = ((Number) pressureField.getValue()).doubleValue();
+		if ( currentPressure < 10 || currentPressure > 150 )
+		{
+			messageField.setText("Pressure must be between 10 and 150 kPa.");
+			messageField.setForeground(Color.RED);
+			throw new ApplicationVetoException();
+		}
+		int currentHumidity = ((Number) humidityField.getValue()).intValue();
+		if ( currentHumidity < 0 || currentHumidity > 100 )
+		{
+			messageField.setText("Humidity must be between 0 and 100%.");
+			messageField.setForeground(Color.RED);
+			throw new ApplicationVetoException();
+		}
+		int currentCO2 = ((Number) co2Field.getValue()).intValue();
+		if ( currentCO2 < 0 || currentCO2 > 100000 )
+		{
+			messageField.setText("CO2 must be between 0 and 100,000 ppm.");
+			messageField.setForeground(Color.RED);
+			throw new ApplicationVetoException();
+		}
 	}
 }

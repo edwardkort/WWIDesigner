@@ -30,7 +30,7 @@ public class SimpleFippleMouthpieceCalculator extends MouthpieceCalculator
 	public TransferMatrix calcTransferMatrix(Mouthpiece mouthpiece,
 			double waveNumber, PhysicalParameters parameters)
 	{
-		double freq = waveNumber * parameters.getSpeedOfSound() / ( 2* Math.PI );
+		double freq = parameters.calcFrequency(waveNumber);
 		
 		Complex Zwindow = calcZ(mouthpiece, freq, parameters);
 		
@@ -49,7 +49,38 @@ public class SimpleFippleMouthpieceCalculator extends MouthpieceCalculator
 		return -1;
 	}
 
+	/**
+	 * Calculate the impedance of the whistle window, at specified frequency.
+	 * @param mouthpiece
+	 * @param freq
+	 * @param physicalParams
+	 * @return Complex impedance of whistle window.
+	 */
 	public Complex calcZ(Mouthpiece mouthpiece,
+			double freq, PhysicalParameters physicalParams)
+	{
+		// Reactance modeled from measurements of real whistles.
+		double effSize = Math.sqrt(mouthpiece.getFipple().getWindowLength()
+				* mouthpiece.getFipple().getWindowWidth() );
+		// Model for use in absence of blade height measurement.
+		double Xw = physicalParams.getRho() * freq/effSize
+				* ( 5.07 - 10.7 * freq*effSize/physicalParams.getSpeedOfSound()
+						+ 1.85 * mouthpiece.getFipple().getWindowHeight()/effSize );
+		// Model for use when blade height measurement is available.
+		// double Xw = physicalParams.getRho() * freq/effSize
+		// 		* ( 6.26 - 13.8 * freq*effSize/physicalParams.getSpeedOfSound()
+		//				+ 1.84 * mouthpiece.getFipple().getWindowHeight()/effSize
+		//				- 4.55 * mouthpiece.getFipple().getBladeHeight()/mouthpiece.getFipple().getWindwayHeight());
+		
+		// Resistance modeled as short cylindrical tube with same area as window.
+		double Rw = physicalParams.getRho()
+				* ( 6.42 * freq*freq/physicalParams.getSpeedOfSound()
+						+ 0.0184 * Math.sqrt(freq)*mouthpiece.getFipple().getWindowHeight()
+							/ (effSize*effSize*effSize));
+		return new Complex(Rw,Xw);
+	}
+
+	public Complex calcZ_old(Mouthpiece mouthpiece,
 			double freq, PhysicalParameters physicalParams)
 	{
 		// Assume the open window acts as a flanged tube with an effective radius

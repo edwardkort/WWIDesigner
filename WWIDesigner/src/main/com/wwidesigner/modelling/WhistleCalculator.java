@@ -3,9 +3,9 @@ package com.wwidesigner.modelling;
 import org.apache.commons.math3.complex.Complex;
 
 import com.wwidesigner.geometry.Instrument;
-import com.wwidesigner.geometry.calculation.FlangedEndCalculator;
 import com.wwidesigner.geometry.calculation.SimpleBoreSectionCalculator;
 import com.wwidesigner.geometry.calculation.SimpleFippleMouthpieceCalculator;
+import com.wwidesigner.geometry.calculation.UnflangedEndCalculator;
 import com.wwidesigner.geometry.calculation.WhistleHoleCalculator;
 import com.wwidesigner.note.Fingering;
 import com.wwidesigner.util.PhysicalParameters;
@@ -24,14 +24,14 @@ public class WhistleCalculator extends DefaultInstrumentCalculator
 			PhysicalParameters physicalParams)
 	{
 		super(instrument, new SimpleFippleMouthpieceCalculator(),
-				new FlangedEndCalculator(), new WhistleHoleCalculator(),
+				new UnflangedEndCalculator(), new WhistleHoleCalculator(),
 				new SimpleBoreSectionCalculator(), physicalParams);
 	}
 
 	public WhistleCalculator()
 	{
 		super(new SimpleFippleMouthpieceCalculator(),
-				new FlangedEndCalculator(), new WhistleHoleCalculator(),
+				new UnflangedEndCalculator(), new WhistleHoleCalculator(),
 				new SimpleBoreSectionCalculator());
 	}
 	

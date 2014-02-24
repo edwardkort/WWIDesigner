@@ -33,12 +33,12 @@ public class WhistleEvaluator implements EvaluatorInterface
 
 	// Standard ranges for BottomFraction and TopFraction.
 	// Evaluator uses blowing level, 0 .. 10, to interpolate between these ranges,
-	// using the Lo value at blowin level 0 and the Hi value at blowing level 10.
+	// using the Lo value at blowing level 0 and the Hi value at blowing level 10.
 	// Default fractions are the average of Hi and Lo values, blowing level 5.
-	protected static final double BottomLo = 0.08;
+	protected static final double BottomLo = 0.30;
 	protected static final double BottomHi = 0.02;
-	protected static final double TopLo = 0.9;
-	protected static final double TopHi = 0.1;
+	protected static final double TopLo = 0.95;
+	protected static final double TopHi = 0.20;
 
 	protected double fLow;		// Lowest frequency in target range.
 	protected double fHigh;		// Highest frequency in target range.
@@ -55,7 +55,7 @@ public class WhistleEvaluator implements EvaluatorInterface
 	public WhistleEvaluator( WhistleCalculator calculator, int blowingLevel )
 	{
 		this(calculator,
-				BottomLo + (double)blowingLevel * 0.1 * (BottomHi - BottomLo),
+				BottomHi - (double)((10-blowingLevel)*(10-blowingLevel)) * 0.01 * (BottomHi - BottomLo),
 				TopLo + (double)blowingLevel * 0.1 * (TopHi - TopLo));
 	}
 

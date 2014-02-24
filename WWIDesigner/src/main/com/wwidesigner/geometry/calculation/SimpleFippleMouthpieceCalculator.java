@@ -64,13 +64,13 @@ public class SimpleFippleMouthpieceCalculator extends MouthpieceCalculator
 				* mouthpiece.getFipple().getWindowWidth() );
 		// Model for use in absence of blade height measurement.
 		double Xw = physicalParams.getRho() * freq/effSize
-				* ( 5.07 - 10.7 * freq*effSize/physicalParams.getSpeedOfSound()
-						+ 1.85 * mouthpiece.getFipple().getWindowHeight()/effSize );
+				* ( 7.345 - 2.18e-4 * freq
+					- 3.95e-3 / mouthpiece.getFipple().getWindowHeight() );
 		// Model for use when blade height measurement is available.
 		// double Xw = physicalParams.getRho() * freq/effSize
-		// 		* ( 6.26 - 13.8 * freq*effSize/physicalParams.getSpeedOfSound()
-		//				+ 1.84 * mouthpiece.getFipple().getWindowHeight()/effSize
-		//				- 4.55 * mouthpiece.getFipple().getBladeHeight()/mouthpiece.getFipple().getWindwayHeight());
+		// 		* ( 5.824 - 2.76e-4 * freq
+		//				+ 2.04 * mouthpiece.getFipple().getWindowHeight()/effSize
+		//				- 3.36 * mouthpiece.getFipple().getBladeHeight()/mouthpiece.getFipple().getWindwayHeight());
 		
 		// Resistance modeled as short cylindrical tube with same area as window.
 		double Rw = physicalParams.getRho()

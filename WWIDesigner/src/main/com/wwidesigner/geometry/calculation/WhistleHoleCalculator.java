@@ -22,15 +22,101 @@ public class WhistleHoleCalculator extends HoleCalculator
 	// For bare (key-less) toneholes, assume the player's finger
 	// occupies a fixed length of the tonehole, in meters.
 	private static double AssumedFingerSize = 0.000;
+	
+	// End-correction applied to open toneholes,
+	// typically 0.61 for unflanged holes,
+	// up to 0.85 for flanged holes.
+	
+	private static double RadiationEndCorrection = 0.61;
 
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see com.wwidesigner.geometry.HoleCalculator#calcTransferMatrix(double,
 	 * com.wwidesigner.util.PhysicalParameters)
+	 *
+	 * Reference:
+	 * Antoine Lefebvre, Computational Acoustic Methods for the Design of
+     * Woodwind Instruments.  Ph.D. thesis, McGill University, 2010.
 	 */
 	@Override
 	public TransferMatrix calcTransferMatrix(Hole hole,
+			double waveNumber, PhysicalParameters parameters)
+	{
+		double radius = hole.getDiameter() / 2;
+		double boreRadius = hole.getBoreDiameter() / 2;
+		double delta = radius / boreRadius;
+
+		Complex Ys = Complex.ZERO;	// 1/Zs
+		Complex Za = Complex.ZERO;
+		// double Z0 = parameters.calcZ0(boreRadius);
+		double Z0h = parameters.calcZ0(radius);
+		double ta = 0.;
+
+		if (hole.isOpenHole()) // open
+		{
+			double fx = -0.044+delta*(0.269+delta*(-1.519+delta*(2.332+delta*(-1.897+delta*0.560))));
+			double gx = 1 - Math.tanh(0.788*hole.getHeight()/radius);
+			double hx = 1.643+delta*(-0.684+delta*(0.182+delta*(-0.394+delta*(0.295-delta*0.063))));
+			double te = hole.getHeight() + radius * ( 1 + fx*gx ) * hx;
+			double kb = waveNumber * radius;
+			double xhi = 0.25 * kb * kb;
+
+			fx = 1 + (0.261-delta*0.022)*(1-Math.tanh(2.364*hole.getHeight()/radius));
+			gx = 0.302+delta*(-0.010-delta*0.006);
+			ta = - fx * gx * radius * delta * delta * delta * delta;
+
+			Ys = Complex.ONE.divide( Complex.I.multiply(Math.tan(waveNumber * te)).add(xhi).multiply(Z0h) );
+
+		}
+		else
+		{
+			double delta_t = radius/(boreRadius + hole.getHeight());
+			double tm = (radius*delta/8.) * (1. + 0.207 * delta*delta*delta)
+						- (radius*delta_t/8.) * (1. + 0.207 * delta_t*delta_t*delta_t);
+			double te = hole.getHeight() + tm;
+
+			// Tonehole closed by player's finger.
+			if ( hole.getHeight() <= AssumedFingerSize )
+			{
+				// Finger is likely to fill the hole.  Ignore the hole entirely.
+				ta = 0.;
+				Ys = Complex.ZERO;
+			}
+			else {
+				double fx = 1 - (0.956 - 0.104*delta)*(1-Math.tanh(2.390*hole.getHeight()/radius));
+				double gx = 0.299 + delta*(-0.018 + 0.006*delta);
+				ta = (-fx*gx) * radius * delta*delta*delta*delta;
+				Ys = Complex.valueOf( 0, 
+						Math.tan(waveNumber * (te-AssumedFingerSize)) / Z0h );
+			}
+		}
+
+		Za = Complex.I.multiply(Z0h * waveNumber * ta);
+		Complex Za_Zs = Za.multiply(Ys);
+
+		Complex A = Za_Zs.divide(2.).add(1.);
+		Complex B = Za.multiply(Za_Zs.divide(4.).add(1.));
+		Complex C = Ys;
+		TransferMatrix result = new TransferMatrix( A, B, C, A );
+		
+		assert result.determinant() == Complex.valueOf(1.0,0.0);
+
+		return result;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.wwidesigner.geometry.HoleCalculator#calcTransferMatrix(double,
+	 * com.wwidesigner.util.PhysicalParameters)
+	 *
+	 * Reference:
+	 * Antoine Lefebvre and Gary P. Scavone, Characterization of woodwind instrument
+	 * toneholes with the finite element method, J. Acoust. Soc. Am. V. 131 (n. 4), April 2012.
+	 */
+	//@Override
+	public TransferMatrix calcTransferMatrix_2012(Hole hole,
 			double waveNumber, PhysicalParameters parameters)
 	{
 		double radius = hole.getDiameter() / 2;
@@ -60,7 +146,7 @@ public class WhistleHoleCalculator extends HoleCalculator
 			ta = (-0.35 + 0.06 * Math.tanh(2.7 * hole.getHeight() / radius))
 					* radius * delta * delta * delta * delta;
 
-			Complex Zr = Complex.I.multiply(waveNumber * 0.61 * radius)
+			Complex Zr = Complex.I.multiply(waveNumber * RadiationEndCorrection * radius)
 					.add(xhi);
 
 			Complex Zo = (Zr.multiply(Math.cos(waveNumber * te)).add(Complex.I

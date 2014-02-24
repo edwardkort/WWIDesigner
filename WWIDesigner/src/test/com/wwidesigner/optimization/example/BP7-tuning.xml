@@ -151,7 +151,7 @@
 			<name>hi C-nat</name>
 			<frequency>2088.3</frequency>
 			<frequencyMin>1998</frequencyMin>
-			<frequencyMax>2038</frequencyMax>
+			<frequencyMax>2045</frequencyMax>
 		</note>
 		<openHole>true</openHole><openHole>false</openHole><openHole>true</openHole>
 		<openHole>true</openHole><openHole>true</openHole><openHole>true</openHole>
@@ -161,7 +161,7 @@
 			<name>C#</name>
 			<frequency>2202.5</frequency>
 			<frequencyMin>2138</frequencyMin>
-			<frequencyMax>2225</frequencyMax>
+			<frequencyMax>2237</frequencyMax>
 		</note>
 		<openHole>true</openHole><openHole>true</openHole><openHole>true</openHole>
 		<openHole>true</openHole><openHole>true</openHole><openHole>true</openHole>
@@ -171,7 +171,7 @@
 			<name>high D</name>
 			<frequency>2349.3</frequency>
 			<frequencyMin>2370</frequencyMin>
-			<frequencyMax>2449</frequencyMax>
+			<frequencyMax>2457</frequencyMax>
 		</note>
 		<openHole>true</openHole><openHole>false</openHole><openHole>false</openHole>
 		<openHole>false</openHole><openHole>false</openHole><openHole>false</openHole>

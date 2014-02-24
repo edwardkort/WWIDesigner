@@ -31,15 +31,16 @@ public class InstrumentImpedanceReport
 
 	/**
 	 * For the standard instrument, calculate the impedance for
-	 * selected notes at the known fmax, where Imag(Z) == 0.
+	 * selected notes at measured fmax values.
 	 * Predict fmax, and compare to measured values.
 	 */
 	public static void main(String[] args)
 	{
 		try
 		{
-			double temperature = 28.2;
-			PhysicalParameters params = new PhysicalParameters(temperature, TemperatureType.C);
+			double temperature = 27.0;
+			PhysicalParameters params = new PhysicalParameters(temperature, TemperatureType.C,
+					98.4, 100, 0.04);
 			Instrument instrument = getInstrumentFromXml(inputInstrumentXML);
 			InstrumentCalculator calculator = new WhistleCalculator(instrument,params);
 			Tuning tuning = getTuningFromXml(inputTuningXML);
@@ -47,15 +48,16 @@ public class InstrumentImpedanceReport
 			List<Fingering>  noteList = tuning.getFingering();
 
 			Double fmax[]
-				  = { 588.,   665.,   741.,   791.,   899.,  1005.,  1087.,  1147.,
-			         1202.,  1333.,  1485.,  1586.,  1787.,  1997.,  2048.,  2245.,
-			         2437.,   908.};
+					= { 589.,   663.,   740.,   791.,   892.,   998.,  1086.,  1143.,
+						1207.,  1334.,  1493.,  1595.,  1803.,  2007.,  2038.,  2235.,
+						2449.,   905.};
 
 			instrument.convertToMetres();
-			double Z0 = params.calcZ0(instrument.getMouthpiece().getBoreDiameter()/2.0);
+			double Z0 = params.calcZ0(instrument.getMouthpiece()
+									  .getBoreDiameter() / 2.0);
 
 			pw.println("Note  fmax       Z.real       Z.imag      imag/real");
-			for ( int i = 0; i < fmax.length; ++ i )
+			for (int i = 0; i < fmax.length; ++i)
 			{
 				pw.printf("%2d  %7.2f", i, fmax[i]);
 				Fingering fingering = noteList.get(i);
@@ -67,7 +69,7 @@ public class InstrumentImpedanceReport
 			}
 			pw.println();
 			pw.flush();
-			
+
 			pw.println("Note  Nominal   fmax   Pred fmax   cents       Z.real       Z.imag      imag/real");
 			for ( int i = 0; i < noteList.size(); ++ i )
 			{
@@ -104,7 +106,7 @@ public class InstrumentImpedanceReport
 				}
 			}
 			pw.println();
-			
+
 		}
 		catch (Exception e)
 		{
@@ -145,9 +147,10 @@ public class InstrumentImpedanceReport
 	 *            that manages the elements in the file.
 	 * @return A file representation of the fileName, as found somewhere in the
 	 *         classpath.
-	 * @throws FileNotFoundException 
+	 * @throws FileNotFoundException
 	 */
-	protected static File getInputFile(String fileName, BindFactory bindFactory) throws FileNotFoundException
+	protected static File getInputFile(String fileName, BindFactory bindFactory)
+			throws FileNotFoundException
 	{
 		String inputPath = BindFactory.getPathFromName(fileName);
 		File inputFile = new File(inputPath);

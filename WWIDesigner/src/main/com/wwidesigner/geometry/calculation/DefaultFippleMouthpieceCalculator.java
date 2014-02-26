@@ -11,6 +11,7 @@ public class DefaultFippleMouthpieceCalculator extends MouthpieceCalculator
 {
 	private PhysicalParameters mParams;
 	private static final double DEFAULT_WINDWAY_HEIGHT = 0.00078740d;
+	private static final double AIR_GAMMA = 1.4018297351222222d;
 
 	@Override
 	public TransferMatrix calcTransferMatrix(Mouthpiece mouthpiece,
@@ -54,7 +55,7 @@ public class DefaultFippleMouthpieceCalculator extends MouthpieceCalculator
 
 	protected double calcJYE(Mouthpiece mouthpiece, double omega)
 	{
-		double gamma = mParams.getGamma();
+		double gamma = AIR_GAMMA;	// mParams.getGamma();
 		double result = getCharacteristicLength(mouthpiece) / (gamma * omega);
 
 		return result;
@@ -62,7 +63,7 @@ public class DefaultFippleMouthpieceCalculator extends MouthpieceCalculator
 
 	protected double calcJYC(Mouthpiece mouthpiece, double omega)
 	{
-		double gamma = mParams.getGamma();
+		double gamma = AIR_GAMMA;	// mParams.getGamma();
 		double speedOfSound = mParams.getSpeedOfSound();
 		double v = 2. * calcHeadspaceVolume(mouthpiece);
 

@@ -296,10 +296,10 @@ public class PhysicalParameters
 	public void printProperties()
 	{
 		System.out.print("Properties of air at ");
-		System.out.printf("%5.1f C, %8.3f kPa, %3.0f%% humidity, %3.0f ppm CO2:\n",
+		System.out.printf("%6.2f C, %8.3f kPa, %3.0f%% humidity, %3.0f ppm CO2:\n",
 				mTemperature, mPressure, mHumidity, m_xCO2*1.0e6);
-		System.out.printf("Speed of sound is %7.2f m/s.\n", mSpeedOfSound);
-		System.out.printf("Density is %6.3f kg/m^3.\n", mRho);
+		System.out.printf("Speed of sound is %8.3f m/s.\n", mSpeedOfSound);
+		System.out.printf("Density is %7.4f kg/m^3.\n", mRho);
 		System.out.printf("Epsilon factor is %9.3e.\n", mEpsilonConstant);
 	}
 

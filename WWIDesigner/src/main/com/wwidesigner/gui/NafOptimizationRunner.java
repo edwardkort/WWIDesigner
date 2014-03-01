@@ -104,7 +104,11 @@ public class NafOptimizationRunner extends FileBasedApplication implements
 		getApplicationUIManager().setUseJideDocumentPane(true);
 
 		// Add my UI customizations
-		PreferencesPane preferencesDialog = new OptimizationPreferences();
+		// TODO Remove the reference to
+		// OptimizationPreferencesWithTempConstraint, which sets
+		// minTopHoleRatio, when Constraints are exposed.
+		// PreferencesPane preferencesDialog = new OptimizationPreferences();
+		PreferencesPane preferencesDialog = new OptimizationPreferencesWithTempConstraint();
 		PreferencesDialogRequest.installPreferences(this, preferencesDialog);
 
 		addFileMapping(new TextFileFormat("xml", "XML"), CodeEditorView.class);

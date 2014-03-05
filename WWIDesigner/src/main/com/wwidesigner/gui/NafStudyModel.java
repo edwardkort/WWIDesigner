@@ -457,5 +457,9 @@ public class NafStudyModel extends StudyModel
 				.getDouble(
 						OptimizationPreferencesWithTempConstraint.MIN_TOP_HOLE_RATIO_OPT,
 						OptimizationPreferencesWithTempConstraint.DEFAULT_MIN_TOP_HOLE_RATIO);
+		System.out
+				.printf("%s is %5.3f.\n",
+						OptimizationPreferencesWithTempConstraint.MIN_TOP_HOLE_RATIO_OPT,
+						minTopHoleRatio);
 	}
 }

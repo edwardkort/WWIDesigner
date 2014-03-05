@@ -1,14 +1,21 @@
 package com.wwidesigner.optimization;
 
+import java.util.List;
+
 import org.apache.commons.math3.exception.DimensionMismatchException;
 
 import com.wwidesigner.modelling.EvaluatorInterface;
 import com.wwidesigner.modelling.InstrumentCalculator;
+import com.wwidesigner.note.Fingering;
+import com.wwidesigner.note.Note;
+import com.wwidesigner.note.Tuning;
 import com.wwidesigner.note.TuningInterface;
 import com.wwidesigner.optimization.Constraint.ConstraintType;
 
 /**
  * Optimization objective function for an instrument's fipple factor.
+ * If the Tuning has more than one note, only the one with the
+ * lowest frequency is used to determine the fipple factor.
  * 
  * @author Burton Patkau
  * 
@@ -21,7 +28,7 @@ public class FippleFactorObjectiveFunction extends BaseObjectiveFunction
 	public FippleFactorObjectiveFunction(InstrumentCalculator calculator,
 			TuningInterface tuning, EvaluatorInterface evaluator)
 	{
-		super(calculator, tuning, evaluator);
+		super(calculator, getLowestNote(tuning), evaluator);
 		nrDimensions = 1;
 		optimizerType = OptimizerType.BrentOptimizer; // UnivariateOptimizer
 		setConstraints();
@@ -55,6 +62,39 @@ public class FippleFactorObjectiveFunction extends BaseObjectiveFunction
 		constraints.setNumberOfHoles(calculator.getInstrument().getHole()
 				.size());
 		constraints.setObjectiveDisplayName("Fipple factor optimizer");
+	}
+
+	protected static TuningInterface getLowestNote(TuningInterface tuning)
+	{
+		Tuning reducedTuning = new Tuning();
+
+		reducedTuning.setComment(tuning.getComment());
+		reducedTuning.setName(tuning.getName());
+		reducedTuning.setNumberOfHoles(tuning.getNumberOfHoles());
+
+		List<Fingering> fingerings = tuning.getFingering();
+		Fingering lowestFingering = null;
+		Double lowestFrequency = Double.POSITIVE_INFINITY;
+		for (Fingering fingering : fingerings)
+		{
+			Note note = fingering.getNote();
+			if (note != null)
+			{
+				Double frequency = note.getFrequency();
+				if (frequency != null)
+				{
+					if (frequency < lowestFrequency)
+					{
+						lowestFrequency = frequency;
+						lowestFingering = fingering;
+					}
+				}
+			}
+		}
+		
+		reducedTuning.addFingering(lowestFingering);
+
+		return reducedTuning;
 	}
 
 }

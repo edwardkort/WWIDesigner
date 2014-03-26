@@ -127,12 +127,25 @@ public class HolePositionObjectiveFunction extends BaseObjectiveFunction
 				calculator.getInstrument().getBorePoint());
 		BorePoint endPoint = boreList.getLast();
 
-		// Don't let optimizer delete a borePoint
+		// Don't let optimizer delete a borePoint.
+		// Instead, evenly space out the bore points
 		BorePoint almostEndPoint = boreList.get(boreList.size() - 2);
 		double almostEndPosition = almostEndPoint.getBorePosition();
 		if (point[0] <= almostEndPosition)
 		{
-			point[0] = almostEndPosition + 0.01;
+			int borePositions = boreList.size() - 1;
+			double lastPosition = point[0];
+			for (int i = borePositions - 1; i >= 0; i--)
+			{
+				BorePoint currentPoint = boreList.get(i);
+				double currentPosition = currentPoint.getBorePosition();
+				if (currentPosition >= lastPosition)
+				{
+					double newPosition = point[0] * i / borePositions;
+					currentPoint.setBorePosition(newPosition);
+					lastPosition = newPosition;
+				}
+			}
 		}
 
 		// Extrapolate/interpolate the bore diameter of end point

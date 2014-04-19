@@ -6,6 +6,7 @@ package com.wwidesigner.gui;
 import java.util.prefs.Preferences;
 
 import com.wwidesigner.geometry.Instrument;
+import com.wwidesigner.modelling.CentDeviationEvaluator;
 import com.wwidesigner.modelling.EvaluatorInterface;
 import com.wwidesigner.modelling.GordonCalculator;
 import com.wwidesigner.modelling.InstrumentCalculator;
@@ -168,7 +169,8 @@ public class NafStudyModel extends StudyModel
 		Tuning tuning = getTuning();
 		InstrumentCalculator calculator = getCalculator();
 		calculator.setInstrument(instrument);
-		EvaluatorInterface evaluator;
+		EvaluatorInterface evaluator = new CentDeviationEvaluator(calculator);
+//		EvaluatorInterface evaluator = new ReflectionEvaluator(calculator);
 		int numberOfHoles = instrument.getHole().size();
 
 		BaseObjectiveFunction objective = null;
@@ -179,14 +181,12 @@ public class NafStudyModel extends StudyModel
 		switch (optimizer)
 		{
 			case FIPPLE_OPT_SUB_CATEGORY_ID:
-				evaluator = new ReflectionEvaluator(calculator);
 				objective = new FippleFactorObjectiveFunction(calculator,
 						tuning, evaluator);
 				lowerBound = new double[] { 0.2 };
 				upperBound = new double[] { 1.5 };
 				break;
 			case HOLESIZE_OPT_SUB_CATEGORY_ID:
-				evaluator = new ReflectionEvaluator(calculator);
 				objective = new HoleSizeObjectiveFunction(calculator, tuning,
 						evaluator);
 				// Bounds are hole diameters expressed in meters.
@@ -212,7 +212,6 @@ public class NafStudyModel extends StudyModel
 				}
 				break;
 			case NO_GROUP_OPT_SUB_CATEGORY_ID:
-				evaluator = new ReflectionEvaluator(calculator);
 				// Length bounds are expressed in meters, diameter bounds as
 				// ratios.
 				if (numberOfHoles == 0)
@@ -270,7 +269,6 @@ public class NafStudyModel extends StudyModel
 						tuning, evaluator);
 				break;
 			case GROUP_OPT_SUB_CATEGORY_ID:
-				evaluator = new ReflectionEvaluator(calculator);
 				// Length bounds are expressed in meters, diameter bounds as
 				// ratios.
 				if (numberOfHoles == 0)
@@ -315,7 +313,6 @@ public class NafStudyModel extends StudyModel
 						evaluator, holeGroups);
 				break;
 			case TAPER_NO_GROUP_OPT_SUB_CATEGORY_ID:
-				evaluator = new ReflectionEvaluator(calculator);
 				// Length bounds are expressed in meters, diameter bounds as
 				// ratios,
 				// taper bounds as ratios.
@@ -375,7 +372,6 @@ public class NafStudyModel extends StudyModel
 						calculator, tuning, evaluator);
 				break;
 			case TAPER_GROUP_OPT_SUB_CATEGORY_ID:
-				evaluator = new ReflectionEvaluator(calculator);
 				// Length bounds are expressed in meters, diameter bounds as
 				// ratios,
 				// taper bounds as ratios.

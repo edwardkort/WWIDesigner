@@ -18,10 +18,12 @@ import com.wwidesigner.note.Note;
 public class CentDeviationEvaluator implements EvaluatorInterface
 {
 	protected InstrumentCalculator calculator;
+	protected InstrumentTuner tuner;
 
 	public CentDeviationEvaluator(InstrumentCalculator calculator)
 	{
 		this.calculator = calculator;
+		tuner = configureTuner();
 	}
 
 	/**
@@ -34,7 +36,6 @@ public class CentDeviationEvaluator implements EvaluatorInterface
 	public double[] calculateErrorVector(List<Fingering> fingeringTargets)
 	{
 		double[] errorValues = new double[fingeringTargets.size()];
-		InstrumentTuner tuner = configureTuner();
 
 		int index = 0;
 		for (Fingering targetFingering : fingeringTargets)

@@ -17,7 +17,7 @@ public class PrintTuningReports
 
 	public static void printReport(String instrumentFile, String tuningFile, double temperature)
 	{
-		InstrumentRangeTuner tuner = new InstrumentRangeTuner();
+		LinearXInstrumentTuner tuner = new LinearXInstrumentTuner();
 		TuningComparisonTable table = new TuningComparisonTable("Tuning for " + instrumentFile);
 		try
 		{

@@ -38,9 +38,9 @@ public abstract class InstrumentTuner
 			InstrumentCalculator calculator, PhysicalParameters params)
 	{
 		setInstrument(instrument);
-		setTuning(tuning);
 		setCalculator(calculator);
 		setParams(params);
+		setTuning(tuning);
 	}
 
 	public void showTuning(String title)

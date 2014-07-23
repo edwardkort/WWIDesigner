@@ -12,7 +12,7 @@ import com.wwidesigner.modelling.EvaluatorInterface;
 import com.wwidesigner.modelling.FmaxEvaluator;
 import com.wwidesigner.modelling.FminEvaluator;
 import com.wwidesigner.modelling.InstrumentCalculator;
-import com.wwidesigner.modelling.InstrumentRangeTuner;
+import com.wwidesigner.modelling.LinearXInstrumentTuner;
 import com.wwidesigner.modelling.InstrumentTuner;
 import com.wwidesigner.modelling.WhistleCalculator;
 import com.wwidesigner.modelling.WhistleEvaluator;
@@ -95,7 +95,7 @@ public class WhistleStudyModel extends StudyModel
 	@Override
 	protected InstrumentTuner getInstrumentTuner()
 	{
-		InstrumentTuner tuner = new InstrumentRangeTuner(blowingLevel);
+		InstrumentTuner tuner = new LinearXInstrumentTuner(blowingLevel);
 		tuner.setParams(params);
 		return tuner;
 	}

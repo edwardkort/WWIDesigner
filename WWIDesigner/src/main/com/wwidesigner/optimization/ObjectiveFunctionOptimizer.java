@@ -34,6 +34,11 @@ import com.wwidesigner.optimization.multistart.RandomRangeProcessor;
 
 public class ObjectiveFunctionOptimizer
 {
+	// Statistics saved from the most recent call to optimizeObjectiveFunction
+	
+	protected static double initialNorm;		// Initial value of objective function.
+	protected static double finalNorm;		// Final value of objective function.
+
 	/**
 	 * Print a vector of error values during optimization.
 	 * 
@@ -87,9 +92,10 @@ public class ObjectiveFunctionOptimizer
 
 		double[] startPoint = objective.getInitialPoint();
 		double[] errorVector = objective.getErrorVector(startPoint);
-		double initialNorm = BaseObjectiveFunction.calcNorm(errorVector);
+		initialNorm = BaseObjectiveFunction.calcNorm(errorVector);
 		System.out.println();
 		printErrors("Initial error: ", initialNorm, errorVector);
+		finalNorm = initialNorm;
 
 		try
 		{
@@ -211,7 +217,7 @@ public class ObjectiveFunctionOptimizer
 		System.out.print(objective.getNumberOfEvaluations());
 		System.out.println(" error norm evaluations.");
 		errorVector = objective.getErrorVector(objective.getInitialPoint());
-		double finalNorm = BaseObjectiveFunction.calcNorm(errorVector);
+		finalNorm = BaseObjectiveFunction.calcNorm(errorVector);
 		printErrors("Final error:  ", finalNorm, errorVector);
 		System.out.print("Residual error ratio: ");
 		System.out.println(finalNorm / initialNorm);
@@ -344,5 +350,20 @@ public class ObjectiveFunctionOptimizer
 						: Double.compare(v2, v1);
 			}
 		});
+	}
+
+	public static double getInitialNorm()
+	{
+		return initialNorm;
+	}
+
+	public static double getFinalNorm()
+	{
+		return finalNorm;
+	}
+	
+	public static double getResidualErrorRatio()
+	{
+		return finalNorm/initialNorm;
 	}
 }

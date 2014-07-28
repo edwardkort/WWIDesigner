@@ -17,7 +17,7 @@
 	<fingering>
 		<note>
 			<name>E</name>
-			<frequency>660.74</frequency>
+			<frequency>660.75</frequency>
 		</note>
 		<openHole>false</openHole><openHole>false</openHole><openHole>false</openHole>
 		<openHole>false</openHole><openHole>false</openHole><openHole>true</openHole>
@@ -123,8 +123,8 @@
 			<name>hi C-nat</name>
 			<frequency>2088.3</frequency>
 		</note>
-		<openHole>true</openHole><openHole>false</openHole><openHole>false</openHole>
-		<openHole>false</openHole><openHole>false</openHole><openHole>true</openHole>
+		<openHole>true</openHole><openHole>false</openHole><openHole>true</openHole>
+		<openHole>true</openHole><openHole>true</openHole><openHole>true</openHole>
 	</fingering>
 	<fingering>
 		<note>

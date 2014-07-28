@@ -50,7 +50,7 @@ public class WhistleStudyModel extends StudyModel
 	{
 		super();
 		setLocalCategories();
-		blowingLevel = 5;
+		setBlowingLevel(5);
 	}
 
 	protected void setLocalCategories()
@@ -78,9 +78,14 @@ public class WhistleStudyModel extends StudyModel
 	@Override
 	public void setPreferences(Preferences newPreferences)
 	{
-		blowingLevel = newPreferences.getInt(
-				OptimizationPreferences.BLOWING_LEVEL_OPT, 5);
+		setBlowingLevel(newPreferences.getInt(
+				OptimizationPreferences.BLOWING_LEVEL_OPT, 5));
 		super.setPreferences(newPreferences);
+	}
+	
+	public void setBlowingLevel(int blowingLevel)
+	{
+		this.blowingLevel = blowingLevel;
 	}
 
 	@Override

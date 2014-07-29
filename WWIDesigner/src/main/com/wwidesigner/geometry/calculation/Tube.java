@@ -85,7 +85,16 @@ public class Tube
 
 		// Mean complex wave vector along the whole cone, from Lefebvre and Kergomard.
 		double alpha_0 = params.getAlphaConstant()/Math.sqrt(waveNumber);
-		double epsilon = alpha_0/(loadRadius - sourceRadius) * Math.log(loadRadius/sourceRadius);
+		double epsilon;
+		if (Math.abs(loadRadius - sourceRadius) <= 0.00001 * sourceRadius)
+		{
+			// Use limiting value as loadRadius approaches sourceRadius.
+			epsilon = alpha_0/loadRadius;
+		}
+		else
+		{
+			epsilon = alpha_0/(loadRadius - sourceRadius) * Math.log(loadRadius/sourceRadius);
+		}
 		Complex mean = new Complex( 1.0 + epsilon, - epsilon );
 		Complex kMeanL = mean.multiply(waveNumber * length);
 		

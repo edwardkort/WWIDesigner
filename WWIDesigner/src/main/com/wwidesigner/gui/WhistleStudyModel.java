@@ -43,6 +43,9 @@ public class WhistleStudyModel extends StudyModel
 	public static final String HOLE_OPT_SUB_CATEGORY_ID = "6. Hole Size+Spacing Optimizer";
 	public static final String TAPER_OPT_SUB_CATEGORY_ID = "7. Taper Optimizer";
 	public static final String HOLE_TAPER_OPT_SUB_CATEGORY_ID = "8. Hole and Taper Optimizer";
+	
+	public static final double MIN_HOLE_DIAMETER = 0.0040;	// Minimum hole diameter, in meters.
+	public static final double MAX_HOLE_DIAMETER = 0.0095;	// Maximum hole diameter, in meters.
 
 	protected int blowingLevel;
 
@@ -151,8 +154,8 @@ public class WhistleStudyModel extends StudyModel
 				// Bounds are diameters, expressed in meters.
 				lowerBound = new double[tuning.getNumberOfHoles()];
 				upperBound = new double[tuning.getNumberOfHoles()];
-				Arrays.fill(lowerBound, 0.004);
-				Arrays.fill(upperBound, 0.011);
+				Arrays.fill(lowerBound, MIN_HOLE_DIAMETER);
+				Arrays.fill(upperBound, MAX_HOLE_DIAMETER);
 				break;
 			case HOLESPACE_OPT_SUB_CATEGORY_ID:
 				evaluator = new WhistleEvaluator(calculator, blowingLevel);
@@ -176,14 +179,15 @@ public class WhistleStudyModel extends StudyModel
 				// Separation and diameter bounds, expressed in meters.
 				lowerBound = new double[2 * tuning.getNumberOfHoles() + 1];
 				upperBound = new double[2 * tuning.getNumberOfHoles() + 1];
-				Arrays.fill(lowerBound, 0.004);		// Minimum hole diameter.
-				Arrays.fill(upperBound, 0.011);		// Maximum hole diameter.
+				Arrays.fill(lowerBound, MIN_HOLE_DIAMETER);		// Minimum hole diameter.
+				Arrays.fill(upperBound, MAX_HOLE_DIAMETER);		// Maximum hole diameter.
 				lowerBound[0] = 0.200;
 				upperBound[0] = 0.700;
 				for (int gapNr = 1; gapNr < tuning.getNumberOfHoles(); ++gapNr ) {
 					lowerBound[gapNr] = 0.012;
 					upperBound[gapNr] = 0.040;
 				}
+				lowerBound[tuning.getNumberOfHoles()] = 0.012;
 				upperBound[tuning.getNumberOfHoles()] = 0.200;
 				upperBound[tuning.getNumberOfHoles() - 3] = 0.100;
 				break;
@@ -203,14 +207,15 @@ public class WhistleStudyModel extends StudyModel
 				// and two taper ratios.
 				lowerBound = new double[2 * tuning.getNumberOfHoles() + 3];
 				upperBound = new double[2 * tuning.getNumberOfHoles() + 3];
-				Arrays.fill(lowerBound, 0.004);		// Minimum hole diameter.
-				Arrays.fill(upperBound, 0.011);		// Maximum hole diameter.
+				Arrays.fill(lowerBound, MIN_HOLE_DIAMETER);		// Minimum hole diameter.
+				Arrays.fill(upperBound, MAX_HOLE_DIAMETER);		// Maximum hole diameter.
 				lowerBound[0] = 0.200;
 				upperBound[0] = 0.700;
 				for (int gapNr = 1; gapNr < tuning.getNumberOfHoles(); ++gapNr ) {
 					lowerBound[gapNr] = 0.012;
 					upperBound[gapNr] = 0.040;
 				}
+				lowerBound[tuning.getNumberOfHoles()] = 0.012;
 				upperBound[tuning.getNumberOfHoles()] = 0.200;
 				upperBound[tuning.getNumberOfHoles() - 3] = 0.100;
 				lowerBound[lowerBound.length-2] = 0.01;

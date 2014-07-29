@@ -1,8 +1,6 @@
-/**
- * 
- */
 package com.wwidesigner.gui;
 
+import java.io.File;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +22,8 @@ import com.wwidesigner.util.BindFactory;
 import com.wwidesigner.util.PhysicalParameters;
 
 /**
+ * Abstract class to encapsulate processes for analyzing and optimizing
+ * instrument models.  
  * @author kort
  * 
  */
@@ -38,6 +38,11 @@ public abstract class StudyModel
 
 	// Preferences.
 	protected BaseObjectiveFunction.OptimizerType preferredOptimizerType;
+
+	// Statistics saved from the most recent call to optimizeInstrument
+	
+	protected double initialNorm;	// Initial value of objective function.
+	protected double finalNorm;		// Final value of objective function.
 
 	/**
 	 * Tree of selectable categories that the study model supports. 
@@ -94,6 +99,15 @@ public abstract class StudyModel
 		}
 	}
 
+	/**
+	 * Class to encapsulate a main branch of the study model selection tree.
+	 * The derived study model defines a set of main branches, typically
+	 * a static set.
+	 * At present, this class is public, to allow StudyView to display
+	 * and select items in the category tree.  Should be changed to
+	 * expose only category names, not the Category type.
+	 *
+	 */
 	public static class Category
 	{
 		private String name;
@@ -130,7 +144,11 @@ public abstract class StudyModel
 
 		public Map<String, Object> getSubs()
 		{
-			return subs == null ? new TreeMap<String, Object>() : subs;
+			if (subs == null)
+			{
+				subs = new TreeMap<String, Object>();
+			}
+			return subs;
 		}
 
 		public void setSelectedSub(String key)
@@ -145,6 +163,10 @@ public abstract class StudyModel
 
 		public Object getSelectedSubValue()
 		{
+			if (subs == null)
+			{
+				return null;
+			}
 			return subs.get(selectedSub);
 		}
 
@@ -153,6 +175,10 @@ public abstract class StudyModel
 			// Find sub by matching dataModel reference
 			String oldName = null;
 			boolean isSelected = false;
+			if (subs == null)
+			{
+				subs = new TreeMap<String, Object>();
+			}
 			for (Map.Entry<String, Object> entry : subs.entrySet())
 			{
 				FileDataModel model = (FileDataModel) entry.getValue();
@@ -178,6 +204,113 @@ public abstract class StudyModel
 		}
 	}
 
+	protected static String getCategoryName(String xmlString)
+	{
+		// Check for an Instrument
+		BindFactory bindFactory = GeometryBindFactory.getInstance();
+		if (bindFactory.isValidXml(xmlString, "Instrument", true)) // TODO Make
+																	// constants
+																	// in
+																	// binding
+																	// framework
+		{
+			return INSTRUMENT_CATEGORY_ID;
+		}
+
+		// Check for a Tuning
+		bindFactory = NoteBindFactory.getInstance();
+		if (bindFactory.isValidXml(xmlString, "Tuning", true)) // TODO Make
+																// constants in
+																// binding
+																// framework
+		{
+			return TUNING_CATEGORY_ID;
+		}
+
+		return null;
+	}
+
+	/**
+	 * Add an Instrument or Tuning to the category tree, from a JIDE FileDataModel.
+	 * Post: If dataModel is valid XML, it is added to INSTRUMENT_CATEGORY_ID,
+	 *       or TUNING_CATEGORY_ID, as appropriate, and addDataModel returns true.
+	 * @param dataModel - FileDataModel containing instrument or tuning XML.
+	 * @return true if the dataModel contained valid instrument or tuning XML.
+	 */
+	public boolean addDataModel(FileDataModel dataModel)
+	{
+		String data = (String) dataModel.getData();
+		String categoryName = getCategoryName(data);
+		if (categoryName == null)
+		{
+			return false;
+		}
+		Category category = getCategory(categoryName);
+		category.addSub(dataModel.getName(), dataModel);
+		category.setSelectedSub(dataModel.getName());
+		return true;
+	}
+	
+	/**
+	 * Remove an Instrument or Tuning from the category tree,
+	 * given a JIDE FileDataModel.
+	 * Pre:  Assumes that the type of XML, Instrument or Tuning,
+	 *       has not changed since the call to addDataModel.
+	 * Post: The specified dataModel is no longer in INSTRUMENT_CATEGORY_ID,
+	 *       or TUNING_CATEGORY_ID, as appropriate.
+	 * @param dataModel - FileDataModel containing instrument or tuning XML.
+	 * @return true.
+	 */
+	public boolean removeDataModel(FileDataModel dataModel)
+	{
+		String data = (String) dataModel.getData();
+		String categoryName = getCategoryName(data);
+		Category category;
+		if (categoryName == null)
+		{
+			// Invalid XML.  Remove from both categories.
+			category = getCategory(INSTRUMENT_CATEGORY_ID);
+			category.removeSub(dataModel.getName());
+			category = getCategory(TUNING_CATEGORY_ID);
+			category.removeSub(dataModel.getName());
+			return true;
+		}
+		category = getCategory(categoryName);
+		category.removeSub(dataModel.getName());
+		return true;
+	}
+
+	/**
+	 * Add an Instrument or Tuning to the category tree, from a JIDE FileDataModel,
+	 * replacing any existing instance.
+	 * Pre:  Assumes that the type of XML, Instrument or Tuning,
+	 *       has not changed since the call to addDataModel (if any).
+	 * Post: The prior instance of dataModel is removed from INSTRUMENT_CATEGORY_ID,
+	 *       or TUNING_CATEGORY_ID, as appropriate 
+	 * 		 If dataModel is valid XML, it is added to INSTRUMENT_CATEGORY_ID,
+	 *       or TUNING_CATEGORY_ID, as appropriate, and addDataModel returns true.
+	 * @param dataModel - FileDataModel containing instrument or tuning XML.
+	 * @return true if the dataModel contained valid instrument or tuning XML.
+	 */
+	public boolean replaceDataModel(FileDataModel dataModel)
+	{
+		String data = (String) dataModel.getData();
+		String categoryName = getCategoryName(data);
+		if (categoryName == null)
+		{
+			removeDataModel(dataModel);
+			return false;
+		}
+		Category category = getCategory(categoryName);
+		category.replaceSub(dataModel.getName(), dataModel);
+		category.setSelectedSub(dataModel.getName());
+		return true;
+	}
+	
+	/**
+	 * @return true if category selections are sufficient for calls to
+	 * calculateTuning() and graphTuning().
+	 */
 	public boolean canTune()
 	{
 		Category tuningCategory = getCategory(TUNING_CATEGORY_ID);
@@ -189,6 +322,10 @@ public abstract class StudyModel
 		return tuningSelected != null && instrumentSelected != null;
 	}
 
+	/**
+	 * @return true if category selections are sufficient for calls to
+	 * optimizeInstrument().
+	 */
 	public boolean canOptimize()
 	{
 		if ( ! canTune() )
@@ -207,15 +344,11 @@ public abstract class StudyModel
 
 		Category category = this.getCategory(INSTRUMENT_CATEGORY_ID);
 		String instrumentName = category.getSelectedSub();
-		FileDataModel model = (FileDataModel) category.getSelectedSubValue();
-		model.getApplication().getDataView(model).updateModel(model);
-		tuner.setInstrument((String) model.getData());
+		tuner.setInstrument(getSelectedXmlString(INSTRUMENT_CATEGORY_ID));
 
 		category = getCategory(TUNING_CATEGORY_ID);
 		String tuningName = category.getSelectedSub();
-		model = (FileDataModel) category.getSelectedSubValue();
-		model.getApplication().getDataView(model).updateModel(model);
-		tuner.setTuning((String) model.getData());
+		tuner.setTuning(getSelectedXmlString(TUNING_CATEGORY_ID));
 
 		tuner.setCalculator(getCalculator());
 
@@ -229,15 +362,11 @@ public abstract class StudyModel
 
 		Category category = this.getCategory(INSTRUMENT_CATEGORY_ID);
 		String instrumentName = category.getSelectedSub();
-		FileDataModel model = (FileDataModel) category.getSelectedSubValue();
-		model.getApplication().getDataView(model).updateModel(model);
-		tuner.setInstrument((String) model.getData());
+		tuner.setInstrument(getSelectedXmlString(INSTRUMENT_CATEGORY_ID));
 
 		category = getCategory(TUNING_CATEGORY_ID);
 		String tuningName = category.getSelectedSub();
-		model = (FileDataModel) category.getSelectedSubValue();
-		model.getApplication().getDataView(model).updateModel(model);
-		tuner.setTuning((String) model.getData());
+		tuner.setTuning(getSelectedXmlString(TUNING_CATEGORY_ID));
 
 		tuner.setCalculator(getCalculator());
 
@@ -260,12 +389,16 @@ public abstract class StudyModel
 			optimizerType = preferredOptimizerType;
 		}
 		
+		initialNorm = 1.0;
+		finalNorm = 1.0;
 		if ( ObjectiveFunctionOptimizer.optimizeObjectiveFunction(objective, optimizerType) )
 		{
 			Instrument instrument = objective.getInstrument();
 			// Convert back to the input unit-of-measure values
 			instrument.convertToLengthType();
 			String xmlString = marshal(instrument);
+			initialNorm = ObjectiveFunctionOptimizer.getInitialNorm();
+			finalNorm = ObjectiveFunctionOptimizer.getFinalNorm();
 			return xmlString;
 		}
 		return null;
@@ -289,12 +422,21 @@ public abstract class StudyModel
 		table.buildTable(oldName, oldInstrument, newName, newInstrument);
 		table.showTable(false);
 	}
-	
-	protected String marshal(Instrument instrument) throws Exception
+
+	public static String marshal(Instrument instrument) throws Exception
 	{
 		BindFactory binder = GeometryBindFactory.getInstance();
 		StringWriter writer = new StringWriter();
 		binder.marshalToXml(instrument, writer);
+
+		return writer.toString();
+	}
+
+	public static String marshal(Tuning tuning) throws Exception
+	{
+		BindFactory binder = NoteBindFactory.getInstance();
+		StringWriter writer = new StringWriter();
+		binder.marshalToXml(tuning, writer);
 
 		return writer.toString();
 	}
@@ -305,7 +447,12 @@ public abstract class StudyModel
 
 		Category category = getCategory(categoryName);
 		FileDataModel model = (FileDataModel) category.getSelectedSubValue();
-		model.getApplication().getDataView(model).updateModel(model);
+		if (model.getApplication() != null)
+		{
+			// If the file is a data view in an active application,
+			// update the data in model with the latest from the application's data view.
+			model.getApplication().getDataView(model).updateModel(model);
+		}
 		xmlString = (String) model.getData();
 
 		return xmlString;
@@ -320,7 +467,7 @@ public abstract class StudyModel
 		return instrument;
 	}
 
-	protected Instrument getInstrument(String xmlString)
+	public static Instrument getInstrument(String xmlString)
 	{
 		try
 		{
@@ -340,6 +487,28 @@ public abstract class StudyModel
 		BindFactory noteBindFactory = NoteBindFactory.getInstance();
 		String xmlString = getSelectedXmlString(TUNING_CATEGORY_ID);
 		Tuning tuning = (Tuning) noteBindFactory.unmarshalXml(xmlString, true);
+
+		return tuning;
+	}
+
+	public static Instrument getInstrumentFromFile(String fileName) throws Exception
+	{
+		BindFactory geometryBindFactory = GeometryBindFactory.getInstance();
+		String inputPath = BindFactory.getPathFromName(fileName);
+		File inputFile = new File(inputPath);
+		Instrument instrument = (Instrument) geometryBindFactory.unmarshalXml(
+				inputFile, true);
+		instrument.updateComponents();
+
+		return instrument;
+	}
+
+	public static Tuning getTuningFromFile(String fileName) throws Exception
+	{
+		BindFactory noteBindFactory = NoteBindFactory.getInstance();
+		String inputPath = BindFactory.getPathFromName(fileName);
+		File inputFile = new File(inputPath);
+		Tuning tuning = (Tuning) noteBindFactory.unmarshalXml(inputFile, true);
 
 		return tuning;
 	}
@@ -399,6 +568,23 @@ public abstract class StudyModel
 		{
 			preferredOptimizerType = null;
 		}
+	}
+	
+	// Methods to return statistics from an optimization.
+	
+	public double getInitialNorm()
+	{
+		return initialNorm;
+	}
+
+	public double getFinalNorm()
+	{
+		return finalNorm;
+	}
+	
+	public double getResidualErrorRatio()
+	{
+		return finalNorm/initialNorm;
 	}
 
 	// Methods to create objects that will perform this study,

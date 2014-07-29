@@ -19,7 +19,6 @@ import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
-import com.jidesoft.app.framework.BasicDataModel;
 import com.jidesoft.app.framework.DataModel;
 import com.jidesoft.app.framework.event.EventSubscriber;
 import com.jidesoft.app.framework.event.SubscriberEvent;
@@ -28,10 +27,7 @@ import com.jidesoft.app.framework.gui.DataViewPane;
 import com.jidesoft.app.framework.gui.filebased.FileBasedApplication;
 import com.jidesoft.tree.TreeUtils;
 import com.wwidesigner.geometry.Instrument;
-import com.wwidesigner.geometry.bind.GeometryBindFactory;
 import com.wwidesigner.gui.StudyModel.Category;
-import com.wwidesigner.note.bind.NoteBindFactory;
-import com.wwidesigner.util.BindFactory;
 
 /**
  * @author kort
@@ -149,58 +145,37 @@ public class StudyView extends DataViewPane implements EventSubscriber
 	public void doEvent(SubscriberEvent event)
 	{
 		String eventId = event.getEvent();
-		DataModel source = (DataModel) event.getSource();
-		if (source instanceof FileDataModel)
+		Object eventSource = event.getSource();
+		if (eventSource instanceof FileDataModel)
 		{
-			String data = (String) ((FileDataModel) source).getData();
-			String categoryName = getCategoryName(data);
-			if (categoryName != null)
+			FileDataModel source = (FileDataModel) eventSource;
+			switch (eventId)
 			{
-				Category category = study.getCategory(categoryName);
-				String subName = source.getName();
-				switch (eventId)
-				{
-					case NafOptimizationRunner.FILE_OPENED_EVENT_ID:
-						category.addSub(subName, source);
-						category.setSelectedSub(subName);
-						break;
-					case NafOptimizationRunner.FILE_CLOSED_EVENT_ID:
-						category.removeSub(subName);
-						break;
-					case NafOptimizationRunner.FILE_SAVED_EVENT_ID:
-					case NafOptimizationRunner.WINDOW_RENAMED_EVENT_ID:
-						category.replaceSub(subName, (FileDataModel) source);
-						break;
-				}
-				updateView();
+				case NafOptimizationRunner.FILE_OPENED_EVENT_ID:
+					if (! study.addDataModel(source))
+					{
+						System.out.print("\nError: Data in editor tab, ");
+						System.out.print(source.getName());
+						System.out.println(", is not valid Instrument or Tuning XML.");
+						System.out.println("Fix and close the file, then re-open it.");
+					}
+					break;
+				case NafOptimizationRunner.FILE_CLOSED_EVENT_ID:
+					study.removeDataModel(source);
+					break;
+				case NafOptimizationRunner.FILE_SAVED_EVENT_ID:
+				case NafOptimizationRunner.WINDOW_RENAMED_EVENT_ID:
+					if (! study.replaceDataModel(source))
+					{
+						System.out.print("\nError: Data in editor tab, ");
+						System.out.print(source.getName());
+						System.out.println(", is not valid Instrument or Tuning XML.");
+						System.out.println("Fix and close the file, then re-open it.");
+					}
+					break;
 			}
+			updateView();
 		}
-	}
-
-	protected String getCategoryName(String xmlString)
-	{
-		// Check Instrument
-		BindFactory bindFactory = GeometryBindFactory.getInstance();
-		if (bindFactory.isValidXml(xmlString, "Instrument", true)) // TODO Make
-																	// constants
-																	// in
-																	// binding
-																	// framework
-		{
-			return StudyModel.INSTRUMENT_CATEGORY_ID;
-		}
-
-		// Check Tuning
-		bindFactory = NoteBindFactory.getInstance();
-		if (bindFactory.isValidXml(xmlString, "Tuning", true)) // TODO Make
-																// constants in
-																// binding
-																// framework
-		{
-			return StudyModel.TUNING_CATEGORY_ID;
-		}
-
-		return null;
 	}
 
 	public void getTuning()
@@ -237,9 +212,10 @@ public class StudyView extends DataViewPane implements EventSubscriber
 			if (xmlInstrument != null && ! xmlInstrument.isEmpty())
 			{
 				FileBasedApplication app = (FileBasedApplication) getApplication();
-				DataModel data = app.newData("xml");
-				((BasicDataModel)data).setData(xmlInstrument);
-				addDataModelToStudy(data);
+				FileDataModel data = (FileDataModel) app.newData("xml");
+				data.setData(xmlInstrument);
+				study.addDataModel(data);
+				updateView();
 			}
 		}
 		catch (Exception e)
@@ -261,7 +237,7 @@ public class StudyView extends DataViewPane implements EventSubscriber
 				if (view != null)
 				{
 					String xmlInstrument2 = view.getText();
-					Instrument  instrument2 = study.getInstrument(xmlInstrument2);
+					Instrument  instrument2 = StudyModel.getInstrument(xmlInstrument2);
 					if (instrument2 == null)
 					{
 						System.out.print("\nError: Current editor tab, ");
@@ -281,21 +257,6 @@ public class StudyView extends DataViewPane implements EventSubscriber
 		}
 	}
 
-	private void addDataModelToStudy(DataModel dataModel)
-	{
-		if (dataModel instanceof FileDataModel)
-		{
-			String data = (String) ((FileDataModel) dataModel).getData();
-			String categoryName = getCategoryName(data);
-			if (categoryName != null)
-			{
-				Category category = study.getCategory(categoryName);
-				category.addSub(dataModel.getName(), dataModel);
-				updateView();
-			}
-		}
-	}
-
 	public StudyModel getStudyModel()
 	{
 		return study;
@@ -306,13 +267,22 @@ public class StudyView extends DataViewPane implements EventSubscriber
 	 */
 	public void setStudyModel(StudyModel study)
 	{
-		DataModel[] models = getApplication().getDataModels();
 		this.study = study;
-		updateView();
+
+		DataModel[] models = getApplication().getDataModels();
 		for ( DataModel model : models )
 		{
-			addDataModelToStudy(model);
+			if (model instanceof FileDataModel)
+			{
+				if (! study.addDataModel((FileDataModel) model))
+				{
+					System.out.print("\nError: Data in editor tab, ");
+					System.out.print(model.getName());
+					System.out.println(", is not valid Instrument or Tuning XML.");
+				}
+			}
 		}
+		updateView();
 	}
 
 	/**

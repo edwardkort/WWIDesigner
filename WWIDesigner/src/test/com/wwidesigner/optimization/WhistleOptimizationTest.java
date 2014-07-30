@@ -5,7 +5,6 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 import com.wwidesigner.gui.WhistleStudyModel;
-import com.wwidesigner.gui.StudyModel.Category;
 
 public class WhistleOptimizationTest extends PerturbedInstrumentOptimization
 {
@@ -24,8 +23,8 @@ public class WhistleOptimizationTest extends PerturbedInstrumentOptimization
 		WhistleStudyModel myStudy = new WhistleStudyModel();
 		myStudy.getParams().setProperties(27.0, 98.4, 100, 0.040);
 		myStudy.setBlowingLevel(4);
-		Category optimizerCat = myStudy.getCategory(WhistleStudyModel.OPTIMIZER_CATEGORY_ID);
-		myStudy.setCategorySelection(optimizerCat, WhistleStudyModel.HOLE_OPT_SUB_CATEGORY_ID);
+		myStudy.setCategorySelection(WhistleStudyModel.OPTIMIZER_CATEGORY_ID,
+				WhistleStudyModel.HOLE_OPT_SUB_CATEGORY_ID);
 		
 		setStudyModel(myStudy);
 		setTuning(tuningFile);
@@ -42,7 +41,8 @@ public class WhistleOptimizationTest extends PerturbedInstrumentOptimization
 		testOptimization("Optimize instrument after 4% shrink...", 0.5);
 		assertEquals("Residual error incorrect", 1.0, study.getFinalNorm()/initialNorm, 0.02);
 
-		myStudy.setCategorySelection(optimizerCat, WhistleStudyModel.HOLESIZE_OPT_SUB_CATEGORY_ID);
+		myStudy.setCategorySelection(WhistleStudyModel.OPTIMIZER_CATEGORY_ID,
+				WhistleStudyModel.HOLESIZE_OPT_SUB_CATEGORY_ID);
 		perturbInstrument(1.0,1.0,1.10);
 		testOptimization("Optimize instrument from 10% larger holes...", 0.5);
 		assertEquals("Residual error incorrect", 1.0, study.getFinalNorm()/initialNorm, 0.02);

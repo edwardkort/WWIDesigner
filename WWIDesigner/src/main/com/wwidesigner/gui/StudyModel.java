@@ -3,8 +3,10 @@ package com.wwidesigner.gui;
 import java.io.File;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.prefs.Preferences;
 
@@ -67,12 +69,24 @@ public abstract class StudyModel
 		categories.add(new Category(TUNING_CATEGORY_ID));
 	}
 
-	public List<Category> getCategories()
+	/**
+	 * @return List of names of the categories in this study model.
+	 */
+	public List<String> getCategoryNames()
 	{
-		return categories;
+		List<String> names = new ArrayList<String>();
+		for (Category thisCategory : categories)
+		{
+			names.add(thisCategory.name);
+		}
+		return names;
 	}
 
-	public Category getCategory(String name)
+	/**
+	 * @param Name of category to retrieve.
+	 * @return The named category, or null if named category not found.
+	 */
+	protected Category getCategory(String name)
 	{
 		Category category = null;
 
@@ -88,27 +102,60 @@ public abstract class StudyModel
 		return category;
 	}
 
-	public void setCategorySelection(Category category, String subCategoryName)
+	/**
+	 * @param categoryName - Name of category to select.
+	 * @param subcategoryName - Name of subcategory to select in the named category.
+	 * Post: getSelectedSub(categoryName) returns subCategoryName. 
+	 */
+	public void setCategorySelection(String categoryName, String subcategoryName)
 	{
 		for (Category thisCategory : categories)
 		{
-			if (thisCategory.name.equals(category.name))
+			if (thisCategory.name.equals(categoryName))
 			{
-				thisCategory.setSelectedSub(subCategoryName);
+				thisCategory.setSelectedSub(subcategoryName);
 			}
 		}
+	}
+
+	/**
+	 * @param categoryName - Name of category to look up.
+	 * @return Set of names of subcategories of the named category.
+	 */
+	public Set<String> getSubcategories(String categoryName)
+	{
+		for (Category thisCategory : categories)
+		{
+			if (thisCategory.name.equals(categoryName))
+			{
+				return thisCategory.getSubs().keySet();
+			}
+		}
+		return new HashSet<String>();
+	}
+
+	/**
+	 * @param categoryName - Name of category to look up.
+	 * @return Subcategory name supplied to setCategorySelection(categoryName, subcategoryName).
+	 */
+	public String getSelectedSub(String categoryName)
+	{
+		for (Category thisCategory : categories)
+		{
+			if (thisCategory.name.equals(categoryName))
+			{
+				return thisCategory.getSelectedSub();
+			}
+		}
+		return "";
 	}
 
 	/**
 	 * Class to encapsulate a main branch of the study model selection tree.
 	 * The derived study model defines a set of main branches, typically
 	 * a static set.
-	 * At present, this class is public, to allow StudyView to display
-	 * and select items in the category tree.  Should be changed to
-	 * expose only category names, not the Category type.
-	 *
 	 */
-	public static class Category
+	protected static class Category
 	{
 		private String name;
 		private Map<String, Object> subs;
@@ -204,6 +251,11 @@ public abstract class StudyModel
 		}
 	}
 
+	/**
+	 * @param xmlString - XML defining an Instrument or a Tuning.
+	 * @return Name of category that the definition of xmlString fits,
+	 * 		   either INSTRUMENT_CATEGORY_ID or TUNING_CATEGORY_ID.
+	 */
 	protected static String getCategoryName(String xmlString)
 	{
 		// Check for an Instrument
@@ -235,7 +287,7 @@ public abstract class StudyModel
 	 * Post: If dataModel is valid XML, it is added to INSTRUMENT_CATEGORY_ID,
 	 *       or TUNING_CATEGORY_ID, as appropriate, and addDataModel returns true.
 	 * @param dataModel - FileDataModel containing instrument or tuning XML.
-	 * @return true if the dataModel contained valid instrument or tuning XML.
+	 * @return true iff the dataModel contained valid instrument or tuning XML.
 	 */
 	public boolean addDataModel(FileDataModel dataModel)
 	{

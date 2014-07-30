@@ -8,7 +8,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.prefs.Preferences;
 
 import javax.swing.JScrollPane;
@@ -27,7 +26,6 @@ import com.jidesoft.app.framework.gui.DataViewPane;
 import com.jidesoft.app.framework.gui.filebased.FileBasedApplication;
 import com.jidesoft.tree.TreeUtils;
 import com.wwidesigner.geometry.Instrument;
-import com.wwidesigner.gui.StudyModel.Category;
 
 /**
  * @author kort
@@ -62,7 +60,7 @@ public class StudyView extends DataViewPane implements EventSubscriber
 						DefaultMutableTreeNode parentNode = (DefaultMutableTreeNode) node
 								.getParent();
 						study.setCategorySelection(
-								(Category) parentNode.getUserObject(),
+								(String) parentNode.getUserObject(),
 								(String) node.getUserObject());
 					}
 					updateView();
@@ -98,7 +96,7 @@ public class StudyView extends DataViewPane implements EventSubscriber
 		
 		// Add all static categories and selection options to the tree.
 
-		for (Category category : study.getCategories())
+		for (String category : study.getCategoryNames())
 		{
 			DefaultMutableTreeNode node = new DefaultMutableTreeNode(category);
 			if (node != null)
@@ -106,9 +104,8 @@ public class StudyView extends DataViewPane implements EventSubscriber
 				node.setAllowsChildren(true);
 				root.add(node);
 			}
-			Map<String, Object> subcategories = category.getSubs();
-			String selectedSub = category.getSelectedSub();
-			for (String name : subcategories.keySet())
+			String selectedSub = study.getSelectedSub(category);
+			for (String name : study.getSubcategories(category))
 			{
 				DefaultMutableTreeNode childNode = new DefaultMutableTreeNode(
 						name);

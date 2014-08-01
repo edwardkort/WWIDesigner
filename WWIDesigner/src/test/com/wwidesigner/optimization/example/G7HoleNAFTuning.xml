@@ -4,7 +4,7 @@
 	xsi:schemaLocation="http://www.wwidesigner.com/Tuning ../../../../../main/com/wwidesigner/note/bind/Tuning.xsd ">
 	<name>G verdi 7 hole NAF tuning</name>
 	<comment>Verdi tuning for G 7 Hole NAF.xml</comment>
-	<numberOfHoles>6</numberOfHoles>
+	<numberOfHoles>7</numberOfHoles>
 	<fingering>
 		<note>
 			<name>G4</name>

@@ -169,7 +169,11 @@ public class WhistleStudyModel extends StudyModel
 				Arrays.fill(upperBound, 0.040);
 				upperBound[0] = 0.700;
 				upperBound[tuning.getNumberOfHoles()] = 0.200;
-				upperBound[tuning.getNumberOfHoles() - 3] = 0.100;
+				if (tuning.getNumberOfHoles() >= 5)
+				{
+					// Allow extra space between hands.
+					upperBound[tuning.getNumberOfHoles() - 3] = 0.100;
+				}
 				break;
 			case HOLE_OPT_SUB_CATEGORY_ID:
 			default:
@@ -181,6 +185,7 @@ public class WhistleStudyModel extends StudyModel
 				upperBound = new double[2 * tuning.getNumberOfHoles() + 1];
 				Arrays.fill(lowerBound, MIN_HOLE_DIAMETER);		// Minimum hole diameter.
 				Arrays.fill(upperBound, MAX_HOLE_DIAMETER);		// Maximum hole diameter.
+				// Bounds on hole spacing.
 				lowerBound[0] = 0.200;
 				upperBound[0] = 0.700;
 				for (int gapNr = 1; gapNr < tuning.getNumberOfHoles(); ++gapNr ) {
@@ -189,7 +194,11 @@ public class WhistleStudyModel extends StudyModel
 				}
 				lowerBound[tuning.getNumberOfHoles()] = 0.012;
 				upperBound[tuning.getNumberOfHoles()] = 0.200;
-				upperBound[tuning.getNumberOfHoles() - 3] = 0.100;
+				if (tuning.getNumberOfHoles() >= 5)
+				{
+					// Allow extra space between hands.
+					upperBound[tuning.getNumberOfHoles() - 3] = 0.100;
+				}
 				break;
 			case TAPER_OPT_SUB_CATEGORY_ID:
 				evaluator = new WhistleEvaluator(calculator, blowingLevel);
@@ -209,6 +218,7 @@ public class WhistleStudyModel extends StudyModel
 				upperBound = new double[2 * tuning.getNumberOfHoles() + 3];
 				Arrays.fill(lowerBound, MIN_HOLE_DIAMETER);		// Minimum hole diameter.
 				Arrays.fill(upperBound, MAX_HOLE_DIAMETER);		// Maximum hole diameter.
+				// Bounds on hole spacing.
 				lowerBound[0] = 0.200;
 				upperBound[0] = 0.700;
 				for (int gapNr = 1; gapNr < tuning.getNumberOfHoles(); ++gapNr ) {
@@ -217,7 +227,12 @@ public class WhistleStudyModel extends StudyModel
 				}
 				lowerBound[tuning.getNumberOfHoles()] = 0.012;
 				upperBound[tuning.getNumberOfHoles()] = 0.200;
-				upperBound[tuning.getNumberOfHoles() - 3] = 0.100;
+				if (tuning.getNumberOfHoles() >= 5)
+				{
+					// Allow extra space between hands.
+					upperBound[tuning.getNumberOfHoles() - 3] = 0.100;
+				}
+				// Bounds on taper.
 				lowerBound[lowerBound.length-2] = 0.01;
 				lowerBound[lowerBound.length-1] = 0.3;
 				upperBound[upperBound.length-2] = 0.5;

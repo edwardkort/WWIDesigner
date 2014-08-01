@@ -345,6 +345,11 @@ public abstract class BaseObjectiveFunction implements MultivariateFunction,
 	{
 		return nrDimensions;
 	}
+	
+	public int getNrNotes()
+	{
+		return fingeringTargets.size();
+	}
 
 	public double[] getUpperBounds()
 	{

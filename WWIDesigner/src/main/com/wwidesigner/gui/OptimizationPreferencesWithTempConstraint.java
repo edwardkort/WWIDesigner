@@ -67,8 +67,12 @@ public class OptimizationPreferencesWithTempConstraint extends
 	{
 		if (nafButton.isSelected())
 		{
-			double currentRatio = ((Number) topHoleRatioField.getValue())
+			double currentRatio = -1.0;
+			if (topHoleRatioField.getValue() != null)
+			{
+				currentRatio = ((Number) topHoleRatioField.getValue())
 					.doubleValue();
+			}
 			if (currentRatio < 0 || currentRatio > 1)
 			{
 				messageField

@@ -1,9 +1,9 @@
 package com.wwidesigner.modelling;
 
 import com.wwidesigner.geometry.Instrument;
-import com.wwidesigner.geometry.calculation.DefaultBoreSectionCalculator;
 import com.wwidesigner.geometry.calculation.DefaultFippleMouthpieceCalculator;
 import com.wwidesigner.geometry.calculation.DefaultHoleCalculator;
+import com.wwidesigner.geometry.calculation.SimpleBoreSectionCalculator;
 import com.wwidesigner.geometry.calculation.ThickFlangedOpenEndCalculator;
 import com.wwidesigner.util.PhysicalParameters;
 
@@ -16,7 +16,7 @@ public class NAFCalculator extends DefaultInstrumentCalculator
 		setMouthpieceCalculator(new DefaultFippleMouthpieceCalculator());
 		setTerminationCalculator(new ThickFlangedOpenEndCalculator());
 		setHoleCalculator(new DefaultHoleCalculator(0.9427));
-		setBoreSectionCalculator(new DefaultBoreSectionCalculator());
+		setBoreSectionCalculator(new SimpleBoreSectionCalculator());
 	}
 
 	public NAFCalculator()
@@ -26,7 +26,7 @@ public class NAFCalculator extends DefaultInstrumentCalculator
 		setMouthpieceCalculator(new DefaultFippleMouthpieceCalculator());
 		setTerminationCalculator(new ThickFlangedOpenEndCalculator());
 		setHoleCalculator(new DefaultHoleCalculator(0.9427));
-		setBoreSectionCalculator(new DefaultBoreSectionCalculator());
+		setBoreSectionCalculator(new SimpleBoreSectionCalculator());
 	}
 }
 

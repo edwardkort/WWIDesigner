@@ -10,9 +10,11 @@ import com.wwidesigner.math.TransferMatrix;
 import com.wwidesigner.util.PhysicalParameters;
 
 /**
+ * Replaced by SimpleBoreSectionCalculator.
  * @author kort
  * 
  */
+@Deprecated
 public class DefaultBoreSectionCalculator extends BoreSectionCalculator
 {
 	/*

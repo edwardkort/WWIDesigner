@@ -9,11 +9,11 @@ import com.wwidesigner.geometry.Instrument;
 import com.wwidesigner.note.Fingering;
 import com.wwidesigner.util.PhysicalParameters;
 import com.wwidesigner.geometry.calculation.BoreSectionCalculator;
-import com.wwidesigner.geometry.calculation.DefaultBoreSectionCalculator;
 import com.wwidesigner.geometry.calculation.HoleCalculator;
 import com.wwidesigner.geometry.calculation.DefaultHoleCalculator;
 import com.wwidesigner.geometry.calculation.MouthpieceCalculator;
 import com.wwidesigner.geometry.calculation.NoOpMouthpieceCalculator;
+import com.wwidesigner.geometry.calculation.SimpleBoreSectionCalculator;
 import com.wwidesigner.geometry.calculation.TerminationCalculator;
 import com.wwidesigner.geometry.calculation.IdealOpenEndCalculator;
 
@@ -47,7 +47,7 @@ public abstract class InstrumentCalculator
 		this.mouthpieceCalculator = new NoOpMouthpieceCalculator();
 		this.terminationCalculator = new IdealOpenEndCalculator();
 		this.holeCalculator = new DefaultHoleCalculator();
-		this.boreSectionCalculator = new DefaultBoreSectionCalculator();
+		this.boreSectionCalculator = new SimpleBoreSectionCalculator();
 		this.params = physicalParams;
 	}
 

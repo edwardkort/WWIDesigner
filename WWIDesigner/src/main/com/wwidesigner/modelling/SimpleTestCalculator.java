@@ -1,10 +1,10 @@
 package com.wwidesigner.modelling;
 
 import com.wwidesigner.geometry.Instrument;
-import com.wwidesigner.geometry.calculation.DefaultBoreSectionCalculator;
 import com.wwidesigner.geometry.calculation.DefaultHoleCalculator;
 import com.wwidesigner.geometry.calculation.IdealOpenEndCalculator;
 import com.wwidesigner.geometry.calculation.NoOpMouthpieceCalculator;
+import com.wwidesigner.geometry.calculation.SimpleBoreSectionCalculator;
 import com.wwidesigner.util.PhysicalParameters;
 
 public class SimpleTestCalculator extends DefaultInstrumentCalculator
@@ -14,7 +14,7 @@ public class SimpleTestCalculator extends DefaultInstrumentCalculator
 	{
 		super(instrument, new NoOpMouthpieceCalculator(),
 				new IdealOpenEndCalculator(),
-				new DefaultHoleCalculator(), new DefaultBoreSectionCalculator(),
+				new DefaultHoleCalculator(), new SimpleBoreSectionCalculator(),
 				physicalParams);
 	}
 }

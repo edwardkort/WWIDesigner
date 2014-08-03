@@ -67,7 +67,7 @@ public class CalculationTest
 			assertEquals("Re(Z) incorrect",  0.03696, zLoad.getReal(), 0.00001);
 			assertEquals("Im(Z) incorrect", -0.48516, zLoad.getImaginary(), 0.00001);
 
-			BoreSectionCalculator boreCalc = new DefaultBoreSectionCalculator();
+			BoreSectionCalculator boreCalc = new SimpleBoreSectionCalculator();
 			BoreSection bore = new BoreSection(BaseLength, BaseRadius, BaseRadius);
 			TransferMatrix tm2 = boreCalc.calcTransferMatrix(bore, waveNumber, parameters);
 			assertEquals("Determinant 2 incorrect", 1.0, tm2.determinant().getReal(), 0.0001);
@@ -104,7 +104,7 @@ public class CalculationTest
 			assertEquals("Re(Z) incorrect",  0.03856, zLoad.getReal(), 0.00001);
 			assertEquals("Im(Z) incorrect", -0.45920, zLoad.getImaginary(), 0.00001);
 
-			BoreSectionCalculator boreCalc = new DefaultBoreSectionCalculator();
+			BoreSectionCalculator boreCalc = new SimpleBoreSectionCalculator();
 			BoreSection bore = new BoreSection(BaseLength, BaseRadius, 0.75 * BaseRadius);
 			TransferMatrix tm2 = boreCalc.calcTransferMatrix(bore, waveNumber, parameters);
 			assertEquals("Determinant 2 incorrect", 1.0, tm2.determinant().getReal(), 0.0001);

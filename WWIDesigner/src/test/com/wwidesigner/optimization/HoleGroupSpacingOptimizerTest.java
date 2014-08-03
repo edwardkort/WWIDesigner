@@ -55,7 +55,7 @@ public class HoleGroupSpacingOptimizerTest extends AbstractOptimizationTest
 			evaluator = new ReactanceEvaluator(calculator);
 			objective = new HoleGroupObjectiveFunction(calculator, tuning, evaluator, holeGroups);
 			objective.setMaxEvaluations(20000);
-			objective.setOptimizerType(BaseObjectiveFunction.OptimizerType.CMAESOptimizer);
+			objective.setOptimizerType(BaseObjectiveFunction.OptimizerType.BOBYQAOptimizer);
 
 			Instrument optimizedInstrument = doInstrumentOptimization("No hole groups, Gordon Calculator");
 
@@ -88,7 +88,7 @@ public class HoleGroupSpacingOptimizerTest extends AbstractOptimizationTest
 			evaluator = new ReactanceEvaluator(calculator);
 			objective = new HoleGroupObjectiveFunction(calculator, tuning, evaluator, holeGroups);
 			objective.setMaxEvaluations(20000);
-			objective.setOptimizerType(BaseObjectiveFunction.OptimizerType.CMAESOptimizer);
+			objective.setOptimizerType(BaseObjectiveFunction.OptimizerType.BOBYQAOptimizer);
 
 			Instrument optimizedInstrument = doInstrumentOptimization("No hole groups, NAF Calculator");
 

@@ -12,8 +12,8 @@ import com.jidesoft.app.framework.gui.DialogRequest;
 import com.jidesoft.app.framework.gui.DialogResponse;
 import com.jidesoft.app.framework.gui.GUIApplication;
 
-// TODO Remove this class, which sets minTopHoleRatio for the NAF, when Constraints are
-// exposed.
+// Functionality moved into OptimizationPreferences.
+@Deprecated
 public class OptimizationPreferencesWithTempConstraint extends
 		OptimizationPreferences
 {

@@ -12,7 +12,6 @@ import com.wwidesigner.modelling.GordonCalculator;
 import com.wwidesigner.modelling.InstrumentCalculator;
 import com.wwidesigner.modelling.InstrumentTuner;
 import com.wwidesigner.modelling.NAFCalculator;
-import com.wwidesigner.modelling.ReflectionEvaluator;
 import com.wwidesigner.modelling.SimpleInstrumentTuner;
 import com.wwidesigner.note.Tuning;
 import com.wwidesigner.optimization.BaseObjectiveFunction;
@@ -452,11 +451,11 @@ public class NafStudyModel extends StudyModel
 		super.setPreferences(newPreferences);
 		minTopHoleRatio = newPreferences
 				.getDouble(
-						OptimizationPreferencesWithTempConstraint.MIN_TOP_HOLE_RATIO_OPT,
-						OptimizationPreferencesWithTempConstraint.DEFAULT_MIN_TOP_HOLE_RATIO);
+						OptimizationPreferences.MIN_TOP_HOLE_RATIO_OPT,
+						OptimizationPreferences.DEFAULT_MIN_TOP_HOLE_RATIO);
 		System.out
 				.printf("%s is %5.3f.\n",
-						OptimizationPreferencesWithTempConstraint.MIN_TOP_HOLE_RATIO_OPT,
+						OptimizationPreferences.MIN_TOP_HOLE_RATIO_OPT,
 						minTopHoleRatio);
 	}
 	

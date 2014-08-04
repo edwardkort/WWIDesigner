@@ -47,6 +47,9 @@ public class OptimizationPreferences extends PreferencesPane
 	public static final int    DEFAULT_HUMIDITY = 45;
 	public static final int    DEFAULT_CO2_FRACTION = 390;
 	
+	public static final String MIN_TOP_HOLE_RATIO_OPT = "Minimum top-hole position (ratio to bore length)";
+	public static final double DEFAULT_MIN_TOP_HOLE_RATIO = 0.25;
+
 	public static final int NrOptimizers = 6;	// Including default
 	public static final String OPTIMIZER_TYPE_OPT = "OptimizerType";
 	public static final String OPT_DEFAULT_NAME = "Default";
@@ -75,6 +78,7 @@ public class OptimizationPreferences extends PreferencesPane
     JFormattedTextField  pressureField;
     JFormattedTextField  humidityField;
     JFormattedTextField  co2Field;
+	JFormattedTextField topHoleRatioField;
     
     JTextField  messageField;
 
@@ -133,6 +137,13 @@ public class OptimizationPreferences extends PreferencesPane
         airPanel.add(co2Label);
         airPanel.add(co2Field);
 
+		JPanel topHolePanel = new JPanel();
+		floatFormat.setMinimumFractionDigits(1);
+		topHoleRatioField = new JFormattedTextField(floatFormat);
+		topHoleRatioField.setColumns(5);
+		topHolePanel.add(new JLabel(MIN_TOP_HOLE_RATIO_OPT + ": "));
+		topHolePanel.add(topHoleRatioField);
+
 		messageField = new JTextField();
 		messageField.setEditable(false);
 		messageField.setText("");
@@ -165,6 +176,7 @@ public class OptimizationPreferences extends PreferencesPane
 
 		this.setLayout(new BoxLayout(this,BoxLayout.Y_AXIS));
 		this.add(optionsPanel);
+		this.add(topHolePanel);
 		this.add(messageField);
 	}
 
@@ -210,6 +222,16 @@ public class OptimizationPreferences extends PreferencesPane
 				optButton[i].setSelected(false);
 			}
 		}
+		if (nafButton.isSelected())
+		{
+			Number currentRatio = myPreferences.getDouble(
+					MIN_TOP_HOLE_RATIO_OPT, DEFAULT_MIN_TOP_HOLE_RATIO);
+			topHoleRatioField.setValue(currentRatio);
+		}
+		else
+		{
+			topHoleRatioField.setValue(DEFAULT_MIN_TOP_HOLE_RATIO);
+		}
 	}
 
 	@Override
@@ -246,6 +268,16 @@ public class OptimizationPreferences extends PreferencesPane
 		myPreferences.putInt(HUMIDITY_OPT, ((Number) humidityField.getValue()).intValue());
 		myPreferences.putInt(CO2_FRACTION_OPT, ((Number) co2Field.getValue()).intValue());
 		myPreferences.put( OPTIMIZER_TYPE_OPT, optimizerName );
+
+		if (nafButton.isSelected())
+		{
+			myPreferences.putDouble(MIN_TOP_HOLE_RATIO_OPT,
+					((Number) topHoleRatioField.getValue()).doubleValue());
+		}
+		else
+		{
+			myPreferences.putDouble(MIN_TOP_HOLE_RATIO_OPT, DEFAULT_MIN_TOP_HOLE_RATIO);
+		}
 
 		DataView[] views = application.getFocusedViews();
 		for (DataView view : views)
@@ -297,6 +329,22 @@ public class OptimizationPreferences extends PreferencesPane
 			messageField.setText("CO2 must be between 0 and 100,000 ppm.");
 			messageField.setForeground(Color.RED);
 			throw new ApplicationVetoException();
+		}
+		if (nafButton.isSelected())
+		{
+			double currentRatio = -1.0;
+			if (topHoleRatioField.getValue() != null)
+			{
+				currentRatio = ((Number) topHoleRatioField.getValue())
+					.doubleValue();
+			}
+			if (currentRatio < 0 || currentRatio > 1)
+			{
+				messageField
+						.setText("Top hole position ratio must be between 0 and 1");
+				messageField.setForeground(Color.RED);
+				throw new ApplicationVetoException();
+			}
 		}
 	}
 }

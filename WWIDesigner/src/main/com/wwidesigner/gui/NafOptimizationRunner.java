@@ -108,7 +108,7 @@ public class NafOptimizationRunner extends FileBasedApplication implements
 		// OptimizationPreferencesWithTempConstraint, which sets
 		// minTopHoleRatio, when Constraints are exposed.
 		// PreferencesPane preferencesDialog = new OptimizationPreferences();
-		PreferencesPane preferencesDialog = new OptimizationPreferencesWithTempConstraint();
+		PreferencesPane preferencesDialog = new OptimizationPreferences();
 		PreferencesDialogRequest.installPreferences(this, preferencesDialog);
 
 		addFileMapping(new TextFileFormat("xml", "XML"), CodeEditorView.class);

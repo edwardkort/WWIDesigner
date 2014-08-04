@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns2:instrument xmlns:ns2="http://www.wwidesigner.com/Instrument">
+    <name>D 6-hole NAF</name>
+    <description>Flat flue, G#4 but not D#5 in optimization</description>
+    <lengthType>in</lengthType>
+    <mouthpiece>
+        <position>0.200</position>
+        <fipple>
+            <windowLength>0.170</windowLength>
+            <windowWidth>0.680</windowWidth>
+            <fippleFactor>0.79</fippleFactor>
+            <windwayHeight>0.031</windwayHeight>
+        </fipple>
+    </mouthpiece>
+    <borePoint>
+        <borePosition>0.0</borePosition>
+        <boreDiameter>1.208</boreDiameter>
+    </borePoint>
+    <borePoint>
+        <borePosition>7.763</borePosition>
+        <boreDiameter>1.208</boreDiameter>
+    </borePoint>
+    <borePoint>
+        <borePosition>12.787</borePosition>
+        <boreDiameter>1.070</boreDiameter>
+    </borePoint>
+    <borePoint>
+        <borePosition>18.040</borePosition>
+        <boreDiameter>1.070</boreDiameter>
+    </borePoint>
+    <hole>
+        <name>Hole 6</name>
+        <borePosition>5.577</borePosition>
+        <diameter>0.360</diameter>
+        <height>0.188</height>
+    </hole>
+    <hole>
+        <name>Hole 5</name>
+        <borePosition>6.515</borePosition>
+        <diameter>0.392</diameter>
+        <height>0.188</height>
+    </hole>
+    <hole>
+        <name>Hole 4</name>
+        <borePosition>7.452</borePosition>
+        <diameter>0.343</diameter>
+        <height>0.188</height>
+    </hole>
+    <hole>
+        <name>Hole 3</name>
+        <borePosition>9.233</borePosition>
+        <diameter>0.364</diameter>
+        <height>0.188</height>
+    </hole>
+    <hole>
+        <name>Hole 2</name>
+        <borePosition>10.493</borePosition>
+        <diameter>0.352</diameter>
+        <height>0.188</height>
+    </hole>
+    <hole>
+        <name>Hole 1</name>
+        <borePosition>11.753</borePosition>
+        <diameter>0.326</diameter>
+        <height>0.188</height>
+    </hole>
+    <termination>
+        <flangeDiameter>1.070</flangeDiameter>
+    </termination>
+</ns2:instrument>

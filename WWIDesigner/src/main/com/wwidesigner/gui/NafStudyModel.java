@@ -217,7 +217,7 @@ public class NafStudyModel extends StudyModel
 				if (numberOfHoles == 0)
 				{
 					lowerBound = new double[] { 0.2 };
-					upperBound = new double[] { 0.6 };
+					upperBound = new double[] { 0.7 };
 				}
 				else if (numberOfHoles == 7)
 				{
@@ -273,8 +273,9 @@ public class NafStudyModel extends StudyModel
 				// ratios.
 				if (numberOfHoles == 0)
 				{
+					holeGroups = new int[][] { {} };
 					lowerBound = new double[] { 0.2 };
-					upperBound = new double[] { 0.6 };
+					upperBound = new double[] { 0.7 };
 				}
 				else if (numberOfHoles == 7)
 				{
@@ -283,7 +284,7 @@ public class NafStudyModel extends StudyModel
 							0.0005, 0.012, 0.002, 0.002, 0.002, 0.002, 0.002,
 							0.002, 0.002 };
 					upperBound = new double[] { 0.7, 0.05, 0.05, 0.1, 0.003,
-							0.20, 0.014, 0.014, 0.014, 0.014, 0.014, 0.008,
+							0.30, 0.014, 0.014, 0.014, 0.014, 0.014, 0.008,
 							0.008 };
 				}
 				else
@@ -324,9 +325,9 @@ public class NafStudyModel extends StudyModel
 				else if (numberOfHoles == 7)
 				{
 					lowerBound = new double[] { 0.2, minTopHoleRatio, 0.0203,
-							0.0203, 0.0203, 0.0203, 0.0203, 0.0005, 0.002,
-							0.002, 0.002, 0.002, 0.002, 0.002, 0.002, 0.8, 0.2,
-							0.0 };
+							0.0203, 0.0203, 0.0203, 0.0203, 0.0005, 0.012,
+							0.002, 0.002, 0.002, 0.002, 0.002, 0.002, 0.002,
+							0.8, 0.2, 0.0 };
 					upperBound = new double[] { 0.7, 0.50, 0.05, 0.05, 0.1,
 							0.05, 0.05, 0.003, 0.014, 0.014, 0.014, 0.014,
 							0.014, 0.008, 0.008, 1.2, 1.0, 1.0 };
@@ -385,9 +386,9 @@ public class NafStudyModel extends StudyModel
 				{
 					holeGroups = new int[][] { { 0, 1, 2 }, { 3, 4, 5 }, { 6 } };
 					lowerBound = new double[] { 0.2, 0.0203, 0.0203, 0.0203,
-							0.0203, 0.012, 0.002, 0.002, 0.002, 0.002, 0.002,
+							0.0005, 0.012, 0.002, 0.002, 0.002, 0.002, 0.002,
 							0.002, 0.002, 0.8, 0.2, 0.0 };
-					upperBound = new double[] { 0.7, 0.003, 0.05, 0.05, 0.1,
+					upperBound = new double[] { 0.7, 0.05, 0.05, 0.1, 0.003,
 							0.30, 0.014, 0.014, 0.014, 0.014, 0.014, 0.008,
 							0.008, 1.2, 1.0, 1.0 };
 				}
@@ -397,7 +398,7 @@ public class NafStudyModel extends StudyModel
 					lowerBound = new double[] { 0.2, 0.0203, 0.0203, 0.0203,
 							0.01, 0.002, 0.003, 0.003, 0.003, 0.003, 0.003,
 							0.8, 0.2, 0.0 };
-					upperBound = new double[] { 0.7, 0.038, 0.07, 0.038, 0.20,
+					upperBound = new double[] { 0.7, 0.038, 0.07, 0.038, 0.30,
 							0.0102, 0.0102, 0.010, 0.010, 0.010, 0.012, 1.2,
 							1.0, 1.0 };
 					if (constraint == HOLE_6_1_125_SPACING_CONS_SUB_CATEGORY_ID)
@@ -457,5 +458,10 @@ public class NafStudyModel extends StudyModel
 				.printf("%s is %5.3f.\n",
 						OptimizationPreferencesWithTempConstraint.MIN_TOP_HOLE_RATIO_OPT,
 						minTopHoleRatio);
+	}
+	
+	public void setMinTopHoleRatio(double minRatio)
+	{
+		this.minTopHoleRatio = minRatio;
 	}
 }

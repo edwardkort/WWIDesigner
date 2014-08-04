@@ -98,12 +98,33 @@ public abstract class InstrumentTuner
 	}
 
 	/**
+	 * Predict the nominal playing frequency that the instrument will produce
+	 * for a given target note.
+	 * @param fingering - Target note and fingering.
+	 * @return Predicted nominal playing frequency for the specified fingering.
+	 */
+	public abstract Double predictedFrequency(Fingering fingering);
+
+	/**
 	 * Predict the played note that the instrument will produce
 	 * for a given target note.
-	 * @param fingering
+	 * predictedNote(fg).getFrequency() = predictedFrequency(fg).
+	 * For a derived class, predictedNote(fg) may also supply frequencyMax and frequencyMin.
+	 * @param fingering - Target note and fingering.
 	 * @return note object with predicted frequencies for the specified fingering
 	 */
-	public abstract Note predictedNote(Fingering fingering);
+	public Note predictedNote(Fingering fingering)
+	{
+		Note predNote = new Note();
+		predNote.setName(fingering.getNote().getName());
+		Double predicted = predictedFrequency(fingering);
+		if (predicted != null)
+		{
+			// Assign a predicted frequency only if one is available.
+			predNote.setFrequency(predicted);
+		}
+		return predNote;
+	}
 
 	public Instrument getInstrument()
 	{

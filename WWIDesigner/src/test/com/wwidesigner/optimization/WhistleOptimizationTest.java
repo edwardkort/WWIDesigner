@@ -37,8 +37,8 @@ public class WhistleOptimizationTest extends PerturbedInstrumentOptimization
 		testOptimization("Optimize instrument after 5% stretch...", 0.5);
 		assertEquals("Residual error incorrect", 1.0, study.getFinalNorm()/initialNorm, 0.02);
 
-		perturbInstrument(0.96,0.96,1.04);
-		testOptimization("Optimize instrument after 4% shrink...", 0.5);
+		perturbInstrument(0.99,0.95,1.05);
+		testOptimization("Optimize instrument after shrink...", 0.5);
 		assertEquals("Residual error incorrect", 1.0, study.getFinalNorm()/initialNorm, 0.02);
 
 		myStudy.setCategorySelection(WhistleStudyModel.OPTIMIZER_CATEGORY_ID,

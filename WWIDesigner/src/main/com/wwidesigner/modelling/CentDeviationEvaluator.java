@@ -7,6 +7,7 @@ import java.util.List;
 
 import com.wwidesigner.note.Fingering;
 import com.wwidesigner.note.Note;
+import com.wwidesigner.note.Tuning;
 
 /**
  * Evaluates a calculator based on deviation from expected tuning frequencies,
@@ -23,7 +24,13 @@ public class CentDeviationEvaluator implements EvaluatorInterface
 	public CentDeviationEvaluator(InstrumentCalculator calculator)
 	{
 		this.calculator = calculator;
-		tuner = configureTuner();
+		setTuner(new SimpleInstrumentTuner());
+	}
+
+	public CentDeviationEvaluator(InstrumentCalculator calculator, InstrumentTuner tuner)
+	{
+		this.calculator = calculator;
+		setTuner(tuner);
 	}
 
 	/**
@@ -37,16 +44,18 @@ public class CentDeviationEvaluator implements EvaluatorInterface
 	{
 		double[] errorValues = new double[fingeringTargets.size()];
 
+		Tuning targetTuning = new Tuning();
+		targetTuning.setFingering(fingeringTargets);
+		tuner.setTuning(targetTuning);
+
 		int index = 0;
 		for (Fingering targetFingering : fingeringTargets)
 		{
-			double centDeviation = Double.MAX_VALUE;
+			double centDeviation = 400.0;
 			try
 			{
-				Note predictedNote = tuner.predictedNote(targetFingering);
-				Note targetNote = targetFingering.getNote();
-				centDeviation = Note.cents(predictedNote.getFrequency(),
-						targetNote.getFrequency());
+				centDeviation = Note.cents(tuner.predictedFrequency(targetFingering),
+						targetFingering.getNote().getFrequency());
 			}
 			catch (RuntimeException e)
 			{
@@ -57,14 +66,12 @@ public class CentDeviationEvaluator implements EvaluatorInterface
 		return errorValues;
 	}
 
-	protected InstrumentTuner configureTuner()
+	protected void setTuner(InstrumentTuner tuner)
 	{
-		InstrumentTuner tuner = new SimpleInstrumentTuner();
-		tuner.setCalculator(calculator);
-		tuner.setInstrument(calculator.getInstrument());
-		tuner.setParams(calculator.getPhysicalParameters());
-
-		return tuner;
+		this.tuner = tuner;
+		this.tuner.setCalculator(calculator);
+		this.tuner.setInstrument(calculator.getInstrument());
+		this.tuner.setParams(calculator.getPhysicalParameters());
 	}
 
 }

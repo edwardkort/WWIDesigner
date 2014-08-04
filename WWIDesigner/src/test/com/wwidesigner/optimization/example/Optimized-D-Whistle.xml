@@ -28,32 +28,32 @@
         <boreDiameter>11.9</boreDiameter>
     </borePoint>
     <hole>
-        <borePosition>121.0</borePosition>
-        <diameter>6.2</diameter>
+        <borePosition>125.0</borePosition>
+        <diameter>6.3</diameter>
         <height>1.9</height>
     </hole>
     <hole>
-        <borePosition>134.0</borePosition>
-        <diameter>4.9</diameter>
+        <borePosition>141.2</borePosition>
+        <diameter>5.8</diameter>
         <height>1.9</height>
     </hole>
     <hole>
-        <borePosition>161.0</borePosition>
-        <diameter>7.6</diameter>
+        <borePosition>167.3</borePosition>
+        <diameter>9.5</diameter>
         <height>1.9</height>
     </hole>
     <hole>
-        <borePosition>179.5</borePosition>
-        <diameter>4.6</diameter>
+        <borePosition>184.3</borePosition>
+        <diameter>5.2</diameter>
         <height>1.9</height>
     </hole>
     <hole>
-        <borePosition>195.0</borePosition>
-        <diameter>5.9</diameter>
+        <borePosition>199.5</borePosition>
+        <diameter>6.7</diameter>
         <height>1.9</height>
     </hole>
     <hole>
-        <borePosition>228.0</borePosition>
+        <borePosition>230.0</borePosition>
         <diameter>9.5</diameter>
         <height>1.9</height>
     </hole>

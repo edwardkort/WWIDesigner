@@ -48,13 +48,22 @@ public class PlayingRange
 	protected InstrumentCalculator calculator;
 
 	// Classes used to find solutions.
+	
+	/**
+	 * Extension of UnivariateFunction that includes a function
+	 * to provide a value at a specified impedance.
+	 */
+	protected interface UnivariateZFunction extends UnivariateFunction
+	{
+		double value(Complex z);
+	}
 
 	/**
 	 * UnivariateFunction class for finding frequencies
 	 * at which reactance is zero, or other specified value.
 	 * Satisfies value = 0 when X = x0, and d/df value = d/df X.
 	 */
-	protected class Reactance implements UnivariateFunction
+	protected class Reactance implements UnivariateZFunction
 	{
 		double targetX;
 
@@ -67,7 +76,7 @@ public class PlayingRange
 		}
 		
 		/**
-		 * Create a function for frequencies at which reactance
+		 * Create a function for finding frequencies at which reactance
 		 * has a specified value.
 		 * @param targetReactance
 		 */
@@ -113,7 +122,7 @@ public class PlayingRange
 		{
 			this.targetGain = targetGain;
 		}
-		
+
 		public double value(double f)
 		{
 			return calculator.calcGain(f) - targetGain;
@@ -121,14 +130,40 @@ public class PlayingRange
 	}
 
 	/**
-	 *  UnivariateFunction class for finding local minima of Im(Z)/Re(Z).
+	 *  UnivariateFunction class for finding local minima of Im(Z)/Re(Z),
+	 *  or a specified value of Im(Z)/Re(Z), the tangent of the phase angle.
 	 */
-	protected class ZRatio implements UnivariateFunction
+	protected class ZRatio implements UnivariateZFunction
 	{
+		double targetRatio;
+
+		/**
+		 * Create a function for finding zeros or minima of the Z ratio.
+		 */
+		public ZRatio()
+		{
+			targetRatio = 0.0;
+		}
+		
+		/**
+		 * Create a function for finding frequencies at which the Z ratio
+		 * has a specified value.
+		 * @param target - target value of Im(Z)/Re(Z).
+		 */
+		public ZRatio(double target)
+		{
+			targetRatio = target;
+		}
+
+		public double value(Complex z)
+		{
+			return z.getImaginary()/z.getReal() - targetRatio;
+		}
+
 		public double value(double f)
 		{
 			Complex z = calculator.calcZ(f);
-			return z.getImaginary()/z.getReal();
+			return z.getImaginary()/z.getReal() - targetRatio;
 		}
 	}
 
@@ -184,20 +219,20 @@ public class PlayingRange
 	}
 
 	/**
-	 * Find a bracket for a specified reactance near a specified frequency.
+	 * Find a bracket near a specified frequency for a specified impedance-valued function.
 	 * The target frequency may be fnom or fmax, depending on the calculator.
 	 * Post: nearFreq/RangeWithin <= lowerFreq < upperFreq <= nearFreq*RangeWithin.
-	 *       reactance(lowerFreq).value < 0.
-	 *       reactance(upperFreq).value > 0.
-	 *       So there a freq with reactance(freq).value = 0
+	 *       function(lowerFreq).value < 0.
+	 *       function(upperFreq).value > 0.
+	 *       So there a freq with function(freq).value = 0
 	 * 	     between lowerFreq and upperFreq.
 	 *       nearFreq is not necessarily between the two bounds.
 	 * @param nearFreq - The target frequency for the bracket.
-	 * @param reactance - A function with a zero at the target reactance.
+	 * @param function - A function with a zero at the target impedance.
 	 * @returns array { lowerFreq, upperFreq }
 	 * @throws NoPlayingRange if no playing range is found to satisfy the post-condition.
 	 */
-	public double[] findBracket(double nearFreq, Reactance reactance)
+	public double[] findBracket(double nearFreq, UnivariateZFunction function)
 			throws NoPlayingRange
 	{
 		final double delta = nearFreq * (Granularity-1.0);	// Step size for derivatives.
@@ -213,12 +248,12 @@ public class PlayingRange
 		// If X > x0 and d/df X < 0, search lower for upper bound.
 		// If X < x0 and d/df X < 0, (an awkward spot) search lower for upper bound.
 		// If X < x0 and d/df X > 0, search higher for upper bound.
-		if ( reactance.value(z2) <= reactance.value(z1) )
+		if ( function.value(z2) <= function.value(z1) )
 		{
 			// d/df X <= 0.  Search lower.
 			// Invariant z2 = Z(upperFreq), z1 = Z(upperFreq-delta).
-			while ( reactance.value(z2) <= reactance.value(z1) 
-					|| reactance.value(z2) <= 0.0 )
+			while ( function.value(z2) <= function.value(z1) 
+					|| function.value(z2) <= 0.0 )
 			{
 				upperFreq -= stepSize;
 				if ( upperFreq < nearFreq/DefaultRangeWithin )
@@ -233,7 +268,7 @@ public class PlayingRange
 		}
 		else {
 			// Search higher, if necessary.
-			while ( reactance.value(z2) <= 0.0 )
+			while ( function.value(z2) <= 0.0 )
 			{
 				upperFreq += stepSize;
 				if ( upperFreq > nearFreq*DefaultRangeWithin )
@@ -250,7 +285,7 @@ public class PlayingRange
 		// At this point, we know that d/df X > 0.
 		// Search lower for lower bound, if necessary.
 		z2 = calculator.calcZ(lowerFreq);
-		while ( reactance.value(z2) >= 0.0 )
+		while ( function.value(z2) >= 0.0 )
 		{
 			lowerFreq -= stepSize;
 			if ( lowerFreq < nearFreq/DefaultRangeWithin )
@@ -392,5 +427,31 @@ public class PlayingRange
 			return freqRatio;
 		}
 		return freqGain;
+	}
+	
+	/**
+	 * Find the frequency with a specified reactance nearest to nearFreq
+	 * satisfying nearFreq/RangeWithin <= f <= nearFreq*RangeWithin
+	 * @param nearFreq
+	 * @param targetX
+	 * @throws NoPlayingRange if there is no zero of X
+	 * within the specified range of nearFreq.
+	 */
+	public double findZRatio(double nearFreq, double targetRatio) throws NoPlayingRange
+	{
+		double rootFreq;		// Frequency at which Z.imag == targetX.
+		ZRatio ratio = new ZRatio( targetRatio );
+		double[] bracket = findBracket(nearFreq, ratio);
+
+		try {
+			rootFreq = solver.solve( 50, ratio, bracket[0], bracket[1] );
+		}
+		catch (Exception e)
+		{
+			System.out.println("Exception in findZRatio: " + e.getMessage());
+			// e.printStackTrace();
+			throw new NoPlayingRange(nearFreq);
+		}
+		return rootFreq;
 	}
 }

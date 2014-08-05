@@ -46,37 +46,37 @@ public class WhistleEvaluator implements EvaluatorInterface
 		int i = 0;
 		for (Fingering target: fingeringTargets)
 		{
-			deviation = 400.0;
+			deviation = Double.MAX_VALUE;
 			if ( target.getNote() != null && target.getNote().getFrequency() != null )
 			{
-				Double predicted = tuner.predictedFrequency(target);
-				if (predicted == null )
+				double f = target.getNote().getFrequency();
+				if (tuner instanceof LinearXInstrumentTuner)
 				{
-					deviation = 400.0;
+					// Reactances will be negative; subtract actual from target,
+					// so sign is positive for sharp notes and negative for flat notes.
+					double targetReactance = ((LinearXInstrumentTuner)tuner).getNominalX(f);
+					double calcReactance = calculator.calcZ(f, target).getImaginary();
+					deviation = (targetReactance - calcReactance)/f;
 				}
-				else {
-					double f = target.getNote().getFrequency();
-					if (tuner instanceof LinearXInstrumentTuner)
+				else if (tuner instanceof LinearVInstrumentTuner)
+				{
+					// For velocity deviation, use percentage difference.
+					double windowLength = calculator.getInstrument().getMouthpiece().getFipple().getWindowLength();
+					double targetVelocity = ((LinearVInstrumentTuner)tuner).getNominalV(f);
+					double calcVelocity = LinearVInstrumentTuner.velocity(f, windowLength, 
+							calculator.calcZ(f, target));
+					deviation = 100.0*(targetVelocity/calcVelocity) - 100.0;
+				}
+				else
+				{
+					Double predicted = tuner.predictedFrequency(target);
+					if (predicted == null )
 					{
-						// Reactances will be negative; subtract actual from target,
-						// so sign is positive for sharp notes and negative for flat notes.
-						double targetReactance = ((LinearXInstrumentTuner)tuner).getNominalX(f);
-						double calcReactance = calculator.calcZ(f, target).getImaginary();
-						deviation = (targetReactance - calcReactance)/f;
+						deviation = 400.0;
 					}
-					else if (tuner instanceof LinearVInstrumentTuner)
-					{
-						// For velocity deviation, use percentage difference.
-						double windowLength = calculator.getInstrument().getMouthpiece().getFipple().getWindowLength();
-						double targetVelocity = ((LinearVInstrumentTuner)tuner).getNominalV(f);
-						double calcVelocity = LinearVInstrumentTuner.velocity(f, windowLength, 
-								calculator.calcZ(f, target));
-						deviation = 100.0*(targetVelocity/calcVelocity) - 100.0;
-					}
-					else
-					{
+					else {
 						deviation = Note.cents(f, predicted);
-//						deviation = 100.0*(f/predicted) - 100.0;
+//							deviation = 100.0*(f/predicted) - 100.0;
 					}
 				}
 			}

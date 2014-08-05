@@ -26,10 +26,12 @@ import com.wwidesigner.optimization.HolePositionObjectiveFunction;
 import com.wwidesigner.optimization.HoleSizeObjectiveFunction;
 import com.wwidesigner.optimization.LengthObjectiveFunction;
 import com.wwidesigner.optimization.WindowHeightObjectiveFunction;
+import com.wwidesigner.optimization.multistart.GridRangeProcessor;
 import com.wwidesigner.util.Constants.TemperatureType;
 import com.wwidesigner.util.PhysicalParameters;
 
 /**
+ * Class to encapsulate methods for analyzing and optimizing whistle models.
  * @author Burton Patkau
  * 
  */
@@ -43,7 +45,8 @@ public class WhistleStudyModel extends StudyModel
 	public static final String HOLE_OPT_SUB_CATEGORY_ID = "6. Hole Size+Spacing Optimizer";
 	public static final String TAPER_OPT_SUB_CATEGORY_ID = "7. Taper Optimizer";
 	public static final String HOLE_TAPER_OPT_SUB_CATEGORY_ID = "8. Hole and Taper Optimizer";
-	
+	public static final String ROUGH_CUT_OPT_SUB_CATEGORY_ID = "9. Rough-Cut Optimizer";
+
 	public static final double MIN_HOLE_DIAMETER = 0.0040;	// Minimum hole diameter, in meters.
 	public static final double MAX_HOLE_DIAMETER = 0.0095;	// Maximum hole diameter, in meters.
 
@@ -68,6 +71,7 @@ public class WhistleStudyModel extends StudyModel
 		optimizers.addSub(HOLE_OPT_SUB_CATEGORY_ID, null);
 		optimizers.addSub(TAPER_OPT_SUB_CATEGORY_ID, null);
 		optimizers.addSub(HOLE_TAPER_OPT_SUB_CATEGORY_ID, null);
+		optimizers.addSub(ROUGH_CUT_OPT_SUB_CATEGORY_ID, null);
 		categories.add(optimizers);
 	}
 
@@ -158,6 +162,7 @@ public class WhistleStudyModel extends StudyModel
 				Arrays.fill(upperBound, MAX_HOLE_DIAMETER);
 				break;
 			case HOLESPACE_OPT_SUB_CATEGORY_ID:
+			case ROUGH_CUT_OPT_SUB_CATEGORY_ID:
 				evaluator = new CentDeviationEvaluator(calculator, getInstrumentTuner());
 				objective = new HolePositionObjectiveFunction(calculator,
 						tuning, evaluator);
@@ -173,6 +178,17 @@ public class WhistleStudyModel extends StudyModel
 				{
 					// Allow extra space between hands.
 					upperBound[tuning.getNumberOfHoles() - 3] = 0.100;
+				}
+				
+				// For a rough-cut optimization, use multi-start optimization.
+
+				if (optimizer == ROUGH_CUT_OPT_SUB_CATEGORY_ID)
+				{
+					int nrOfStarts = 4 * tuning.getNumberOfHoles();
+					GridRangeProcessor rangeProcessor = new GridRangeProcessor(
+							lowerBound, upperBound, null, nrOfStarts);
+					objective.setRangeProcessor(rangeProcessor);
+					objective.setMaxEvaluations(nrOfStarts * objective.getMaxEvaluations());
 				}
 				break;
 			case HOLE_OPT_SUB_CATEGORY_ID:

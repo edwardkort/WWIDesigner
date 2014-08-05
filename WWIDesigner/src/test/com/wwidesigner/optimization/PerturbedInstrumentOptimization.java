@@ -106,13 +106,20 @@ public class PerturbedInstrumentOptimization
 		}
 
 		// Load the perturbed instrument into the study model.
+		
+		replaceInstrument(perturbedInstrument.getName(),
+				StudyModel.marshal(perturbedInstrument));
 
+	}
+
+	public void replaceInstrument(String instrumentName, String xmlString)
+	{
 		FileDataModel fileData = new FileDataModel();
-		fileData.setData(StudyModel.marshal(perturbedInstrument));
-		fileData.setName(perturbedInstrument.getName());
+		fileData.setData(xmlString);
+		fileData.setName(instrumentName);
 		study.replaceDataModel(fileData);
 	}
-	
+
 	/**
 	 * Optimize the current instrument, and compare it to the original instrument.
 	 * Pre:  setStudyModel() and setInstrument() have been called.

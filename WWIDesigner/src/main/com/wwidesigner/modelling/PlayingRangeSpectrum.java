@@ -24,8 +24,9 @@ import com.wwidesigner.note.Note;
 import com.wwidesigner.note.Tuning;
 
 /**
- * Representation of a complex spectrum, along with information about its
- * extreme points.
+ * Class to plot the impedance and playing ranges of an instrument
+ * over a range of frequencies with specified fingering.
+ * Includes the ratio of X/R, and the estimated loop gain.
  */
 public class PlayingRangeSpectrum
 {
@@ -44,13 +45,13 @@ public class PlayingRangeSpectrum
 	/**
 	 * Add or replace a point in the spectrum.
 	 */
-	public void setDataPoint(double frequency, Complex impedance, Double loopGain)
+	protected void setDataPoint(double frequency, Complex impedance, Double loopGain)
 	{
 		mImpedance.put(frequency, impedance);
 		mGain.put(frequency, loopGain);
 	}
 
-	public void calcImpedance(InstrumentCalculator calculator, Fingering fingering,
+	protected void calcImpedance(InstrumentCalculator calculator, Fingering fingering,
 			double freqStart, double freqEnd, int nfreq)
 	{
 		Note myNote = fingering.getNote();
@@ -93,17 +94,17 @@ public class PlayingRangeSpectrum
 		}
 	}
 
-	public Map<Double, Complex> getSpectrum()
+	protected Map<Double, Complex> getSpectrum()
 	{
 		return mImpedance;
 	}
 
-	public void setSpectrum(Map<Double, Complex> spectrum)
+	protected void setSpectrum(Map<Double, Complex> spectrum)
 	{
 		mImpedance = spectrum;
 	}
 
-	public void plotImpedanceSpectrum()
+	protected void plotImpedanceSpectrum()
 	{
 		SwingUtilities.invokeLater(new Runnable()
 		{
@@ -140,7 +141,7 @@ public class PlayingRangeSpectrum
 		});
 	}
 
-	public void plotPlayingRange()
+	protected void plotPlayingRange()
 	{
 		SwingUtilities.invokeLater(new Runnable()
 		{
@@ -266,6 +267,13 @@ public class PlayingRangeSpectrum
 
 	}
 	
+	/**
+	 * Plot the impedance and playing range for each note in a given list of notes,
+	 * for a given calculator and fingering.
+	 * @param calculator
+	 * @param tuning
+	 * @param noteList
+	 */
 	public static void plotNotes( InstrumentCalculator calculator, Tuning tuning,
 			int[] noteList )
 	{

@@ -17,8 +17,11 @@ import com.wwidesigner.note.Tuning;
 import com.wwidesigner.util.Constants;
 
 /**
- * Representation of a complex spectrum, along with information about its
- * extreme points.
+ * Class to plot the reactance of an instrument when played with a specified tuning.
+ * Marks minimum, maximum, and nominal playing frequencies if the instrument
+ * provides them, and the position of the target tuning frequency
+ * within the range of a note.
+ * Call buildGraph(), then plotGraph().
  */
 public class PlotPlayingRanges
 {
@@ -347,7 +350,11 @@ public class PlotPlayingRanges
 		}
 	}
 
-	public void plotGraph(final boolean exitOnClose )
+	/**
+	 * Display the graph generated in buildGraph().
+	 * @param exitOnClose - If true, the application will exit when the user closes the plot window.
+	 */
+	public void plotGraph(final boolean exitOnClose)
 	{
 		final Chart graph = chart;
 		SwingUtilities.invokeLater(new Runnable()

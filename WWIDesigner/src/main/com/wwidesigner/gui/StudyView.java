@@ -26,6 +26,7 @@ import com.jidesoft.app.framework.gui.DataViewPane;
 import com.jidesoft.app.framework.gui.filebased.FileBasedApplication;
 import com.jidesoft.tree.TreeUtils;
 import com.wwidesigner.geometry.Instrument;
+import com.wwidesigner.modelling.SketchInstrument;
 
 /**
  * @author kort
@@ -214,6 +215,20 @@ public class StudyView extends DataViewPane implements EventSubscriber
 				study.addDataModel(data);
 				updateView();
 			}
+		}
+		catch (Exception e)
+		{
+			System.out.println("Exception: " + e.getMessage());
+			e.printStackTrace();
+		}
+	}
+
+	public void sketchInstrument()
+	{
+		try
+		{
+			SketchInstrument sketch = new SketchInstrument();
+			sketch.draw(study.getInstrument(), false);
 		}
 		catch (Exception e)
 		{

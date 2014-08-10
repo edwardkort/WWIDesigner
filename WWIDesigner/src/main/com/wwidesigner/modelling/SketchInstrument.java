@@ -35,22 +35,22 @@ public class SketchInstrument
 
 	protected double[] drawBore(Chart chart)
 	{
+		// Use separate lines for top and bottom profile,
+		// so we can draw the whole bore in a single pass.
 		DefaultChartModel modelTop = new DefaultChartModel("Interior Top");
 		DefaultChartModel modelBottom = new DefaultChartModel("Interior Bottom");
-		ChartStyle styleInternal = new ChartStyle(Color.black, false, true);
+		ChartStyle styleInterior = new ChartStyle(Color.black, false, true);
 		float[] dashes = new float[2];
 		dashes[0] = 10.0f;
 		dashes[1] = 2.0f;
 		BasicStroke stroke = new BasicStroke(2, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND,
 				10, dashes, 0.0f);
 		LineStyle lineStyle = new LineStyle(Color.black, stroke);
-		styleInternal.setLineStyle(lineStyle);
+		styleInterior.setLineStyle(lineStyle);
 		double boreLength = 0.0;
 		double boreWidth = 0.0;
 		double boreStart = borePoints[0].getBorePosition();
-		// Start at the top end of the tube.
-		modelTop.addPoint(boreStart, 0.0);
-		modelBottom.addPoint(boreStart, 0.0);
+		// Leave top of bore open, for window and windway.
 		for (PositionInterface borePoint: borePoints)
 		{
 			if (borePoint instanceof BorePoint)
@@ -65,11 +65,11 @@ public class SketchInstrument
 				modelBottom.addPoint(boreLength,-y);
 			}
 		}
-		// Close the end of the tube.
+		// Close the bottom of the tube.
 		modelTop.addPoint(boreLength, 0.0);
 		modelBottom.addPoint(boreLength, 0.0);
-		chart.addModel(modelTop, styleInternal);
-		chart.addModel(modelBottom, styleInternal);
+		chart.addModel(modelTop, styleInterior);
+		chart.addModel(modelBottom, styleInterior);
 		double[] boreDimensions = new double[2];
 		boreDimensions[0] = boreLength - boreStart;
 		boreDimensions[1] = boreWidth;
@@ -107,13 +107,16 @@ public class SketchInstrument
 			// Draw window as a closed rectangle.
 			ChartStyle styleWindow = new ChartStyle(Color.black, false, true);
 			DefaultChartModel modelWindow = new DefaultChartModel("Window");
-			modelWindow.addPoint(mouthpiece.getBorePosition(), 0.5 * window.getWindowWidth());
-			modelWindow.addPoint(mouthpiece.getBorePosition() + window.getWindowLength(),
+			modelWindow.addPoint(mouthpiece.getBorePosition(),
 					0.5 * window.getWindowWidth());
-			modelWindow.addPoint(mouthpiece.getBorePosition() + window.getWindowLength(),
+			modelWindow.addPoint(mouthpiece.getBorePosition(),
 					- 0.5 * window.getWindowWidth());
-			modelWindow.addPoint(mouthpiece.getBorePosition(), -0.5 * window.getWindowWidth());
-			modelWindow.addPoint(mouthpiece.getBorePosition(), 0.5 * window.getWindowWidth());
+			modelWindow.addPoint(mouthpiece.getBorePosition() - window.getWindowLength(),
+					- 0.5 * window.getWindowWidth());
+			modelWindow.addPoint(mouthpiece.getBorePosition() - window.getWindowLength(),
+					0.5 * window.getWindowWidth());
+			modelWindow.addPoint(mouthpiece.getBorePosition(),
+					0.5 * window.getWindowWidth());
 			chart.addModel(modelWindow, styleWindow);
 			if (window.getWindwayLength() != null)
 			{
@@ -127,13 +130,14 @@ public class SketchInstrument
 						10, dashes, 0.0f);
 				LineStyle lineStyle = new LineStyle(Color.black, stroke);
 				styleWindway.setLineStyle(lineStyle);
-				modelWindway.addPoint(mouthpiece.getBorePosition() - window.getWindwayLength(),
+				double windwayExit = mouthpiece.getBorePosition() - window.getWindowLength();
+				modelWindway.addPoint(windwayExit - window.getWindwayLength(),
 						0.5 * window.getWindowWidth());
-				modelWindway.addPoint(mouthpiece.getBorePosition(),
+				modelWindway.addPoint(windwayExit,
 						0.5 * window.getWindowWidth());
-				modelWindway.addPoint(mouthpiece.getBorePosition(),
+				modelWindway.addPoint(windwayExit,
 						- 0.5 * window.getWindowWidth());
-				modelWindway.addPoint(mouthpiece.getBorePosition() - window.getWindwayLength(),
+				modelWindway.addPoint(windwayExit - window.getWindwayLength(),
 						- 0.5 * window.getWindowWidth());
 				chart.addModel(modelWindway, styleWindway);
 			}

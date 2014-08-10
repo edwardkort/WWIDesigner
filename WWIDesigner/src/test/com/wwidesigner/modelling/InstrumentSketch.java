@@ -29,7 +29,7 @@ public class InstrumentSketch
 
 			Instrument instrument = getInstrumentFromXml(inputInstrumentXML);
 			SketchInstrument sketch = new SketchInstrument();
-			sketch.draw(instrument, false);
+			sketch.draw(instrument, true);
 		}
 		catch (Exception e)
 		{

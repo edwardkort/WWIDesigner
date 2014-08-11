@@ -48,7 +48,7 @@ public class WhistleStudyModel extends StudyModel
 	public static final String ROUGH_CUT_OPT_SUB_CATEGORY_ID = "9. Rough-Cut Optimizer";
 
 	public static final double MIN_HOLE_DIAMETER = 0.0040;	// Minimum hole diameter, in meters.
-	public static final double MAX_HOLE_DIAMETER = 0.0095;	// Maximum hole diameter, in meters.
+	public static final double MAX_HOLE_DIAMETER = 0.0087;	// Maximum hole diameter, in meters.
 
 	protected int blowingLevel;
 

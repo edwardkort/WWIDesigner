@@ -45,7 +45,7 @@ public class LinearVInstrumentTuner extends InstrumentTuner
 	// Default fractions are the average of Hi and Lo values, blowing level 5.
 	protected static final double BottomLo = 0.20;
 	protected static final double BottomHi = 0.05;
-	protected static final double TopLo = 0.90;
+	protected static final double TopLo = 0.99;
 	protected static final double TopHi = 0.30;
 
 	protected double fLow;		// Lowest frequency in target range.
@@ -173,47 +173,55 @@ public class LinearVInstrumentTuner extends InstrumentTuner
 		noteHigh.getNote().setFrequency(fHigh);
 		
 		// Locate playing ranges at fLow and fHigh,
-		// and calculate nominal velocity at these frequencies.
+		// and calculate nominal velocity at these frequencies,
+		// to establish two basis points for the linear interpolation:
+		// (flow, vLow) and (fhigh, vHigh).
 		
 		double fmax, fmin;
+		double vMax, vMin;
 
 		calculator.setFingering(noteLow);
 		PlayingRange range = new PlayingRange(calculator);
 		try 
 		{
+			// Find playing range for lowest note.
 			fmax = range.findXZero(fLow);
 			fmin = range.findFmin(fmax);
-			double vMax = velocity(fmax,windowLength,calculator.calcZ(fmax));
-			double vMin = velocity(fmin,windowLength,calculator.calcZ(fmin));
+			// Interpolate a velocity within this playing range.
+			vMax = velocity(fmax,windowLength,calculator.calcZ(fmax));
+			vMin = velocity(fmin,windowLength,calculator.calcZ(fmin));
 			vLow = vMax - BottomFraction * (vMax - vMin);
 		}
 		catch ( NoPlayingRange e )
 		{
 			fmax = fmin = fLow;
-			// Use predicted velocity if fLow is fmax, at which Im(Z)=0.
+			// Use predicted velocity for fLow set to fmax, at which Im(Z)=0.
 			vLow =  velocity(fLow,windowLength,Complex.ONE);
 		}
-		fLow = fmax;	// Nominal frequency for our interpolation.
-		
+		// For velocity interpolation, use fmax as the nominal low frequency.
+		fLow = fmax;
+
 		calculator.setFingering(noteHigh);
 		try
 		{
+			// Find the playing range for the highest note.
 			fmax = range.findXZero(fHigh);
 			fmin = range.findFmin(fmax);
-			double vMax = velocity(fmax,windowLength,calculator.calcZ(fmax));
-			double vMin = velocity(fmin,windowLength,calculator.calcZ(fmin));
+			vMax = velocity(fmax,windowLength,calculator.calcZ(fmax));
+			vMin = velocity(fmin,windowLength,calculator.calcZ(fmin));
 			vHigh = vMax - TopFraction * (vMax - vMin);
 		}
 		catch ( NoPlayingRange e )
 		{
 			fmax = fmin = fHigh;
-			// Use predicted velocity if fHigh is fmax, at which Im(Z)=0.
+			// Use predicted velocity at fHigh set to fmax, at which Im(Z)=0.
 			vHigh =  velocity(fHigh,windowLength,Complex.ONE);
 		}
-		fHigh = fmax;	// Nominal frequency for our interpolation.
+		// For velocity interpolation, use fmin as the nominal low frequency.
+		fHigh = fmin;
 		
-		// Nominal velocity is a linear interpolation between (fLow,imagLow) and (fHigh,imagHigh),
-		// imagNom = slope * frequency + intercept.
+		// Nominal velocity is a linear interpolation between (fLow,vLow) and (fHigh,vHigh),
+		// vNom = slope * frequency + intercept.
 		slope = (vHigh - vLow)/(fHigh - fLow);
 		intercept = vLow - slope * fLow;
 	}
@@ -326,7 +334,8 @@ public class LinearVInstrumentTuner extends InstrumentTuner
 		}
 		try {
 			double windowLength = calculator.getInstrument().getMouthpiece().getFipple().getWindowLength();
-			double zRatio = zRatio(target, windowLength, getNominalV(target));
+			double velocity = getNominalV(target);
+			double zRatio = zRatio(target, windowLength, velocity);
 			fnom = range.findZRatio(target, zRatio);
 			predNote.setFrequency(fnom);
 		}

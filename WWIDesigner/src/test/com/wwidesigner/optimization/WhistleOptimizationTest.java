@@ -17,7 +17,7 @@ public class WhistleOptimizationTest extends PerturbedInstrumentOptimization
 	protected String instrumentFile = "com/wwidesigner/optimization/example/Optimized-D-Whistle.xml";
 	protected String tuningFile = "com/wwidesigner/optimization/example/D-Tuning.xml";
 	protected String remoteTuningFile = "com/wwidesigner/optimization/example/A4-Just-Tuning.xml";
-	protected double initialNorm = 0.0;
+	protected double finalNorm = 0.0;
 
 	public WhistleOptimizationTest()
 	{
@@ -40,22 +40,22 @@ public class WhistleOptimizationTest extends PerturbedInstrumentOptimization
 		setTuning(tuningFile);
 		setInstrument(instrumentFile, 1.0, 1.0, 1.0);
 		testOptimization("Re-optimize the un-perturbed instrument...", 0.5);
-		initialNorm = study.getInitialNorm();
-		assertEquals("Residual error incorrect", 1.0, study.getResidualErrorRatio(), 0.02);
+		finalNorm = study.getFinalNorm();
+		assertEquals("Residual error incorrect", 1.0, study.getResidualErrorRatio(), 0.05);
 
 		perturbInstrument(1.05,1.05,0.95);
 		testOptimization("Optimize instrument after 5% stretch...", 0.5);
-		assertEquals("Residual error incorrect", 1.0, study.getFinalNorm()/initialNorm, 0.02);
+		assertEquals("Residual error incorrect", 1.0, study.getFinalNorm()/finalNorm, 0.01);
 
 		perturbInstrument(0.99,0.95,1.05);
 		testOptimization("Optimize instrument after shrink...", 0.5);
-		assertEquals("Residual error incorrect", 1.0, study.getFinalNorm()/initialNorm, 0.02);
+		assertEquals("Residual error incorrect", 1.0, study.getFinalNorm()/finalNorm, 0.01);
 
 		myStudy.setCategorySelection(WhistleStudyModel.OPTIMIZER_CATEGORY_ID,
 				WhistleStudyModel.HOLESIZE_OPT_SUB_CATEGORY_ID);
 		perturbInstrument(1.0,1.0,1.10);
 		testOptimization("Optimize instrument from 10% larger holes...", 0.5);
-		assertEquals("Residual error incorrect", 1.0, study.getFinalNorm()/initialNorm, 0.02);
+		assertEquals("Residual error incorrect", 1.0, study.getFinalNorm()/finalNorm, 0.01);
 	}
 
 	@Test
@@ -85,7 +85,7 @@ public class WhistleOptimizationTest extends PerturbedInstrumentOptimization
 		Instrument optimizedInstrument = StudyModel.getInstrument(study.optimizeInstrument());
 		
 		// Test final error norm.
-		assertEquals("Final error norm incorrect", 827.2, study.getFinalNorm(), 1.0);
+		assertEquals("Final error norm incorrect", 841.0, study.getFinalNorm(), 1.0);
 
 		// Test bore length
 

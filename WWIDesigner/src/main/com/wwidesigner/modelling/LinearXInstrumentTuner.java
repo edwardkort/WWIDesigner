@@ -262,10 +262,6 @@ public class LinearXInstrumentTuner extends InstrumentTuner
 		Note targetNote = fingering.getNote();
 		Note predNote = new Note();
 		predNote.setName(targetNote.getName());
-		if ( targetNote.getFrequency() != null )
-		{
-			predNote.setFrequency(targetNote.getFrequency());
-		}
 		double target = getFrequencyTarget(targetNote);
 		
 		if (target == 0.0)

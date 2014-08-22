@@ -27,7 +27,6 @@ import com.wwidesigner.util.PhysicalParameters;
  * cf. Fletcher and Rossing, The physics of musical instruments, 2nd ed.,
  * New York: Springer, 2010, section 16.10 and figure 16.23.
  * 
- * 
  * @author Burton Patkau
  */
 public class LinearVInstrumentTuner extends InstrumentTuner
@@ -67,7 +66,6 @@ public class LinearVInstrumentTuner extends InstrumentTuner
 		// the lowest blowing levels.
 		// For top note, we want to stick close to BottomLo, except at
 		// the highest blowing levels.
-		// For top note, we use linear interpolation between TopLow and TopHi.
 		this(BottomHi - (double)((10-blowingLevel)*(10-blowingLevel)) * 0.01 * (BottomHi - BottomLo),
 			 TopLo + (double)(blowingLevel*blowingLevel) * 0.01 * (TopHi - TopLo));
 	}
@@ -306,10 +304,6 @@ public class LinearVInstrumentTuner extends InstrumentTuner
 		Note targetNote = fingering.getNote();
 		Note predNote = new Note();
 		predNote.setName(targetNote.getName());
-		if ( targetNote.getFrequency() != null )
-		{
-			predNote.setFrequency(targetNote.getFrequency());
-		}
 		double target = getFrequencyTarget(targetNote);
 		
 		if (target == 0.0)

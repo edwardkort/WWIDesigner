@@ -49,18 +49,27 @@ public class CentDeviationEvaluator implements EvaluatorInterface
 		tuner.setTuning(targetTuning);
 
 		int index = 0;
-		for (Fingering targetFingering : fingeringTargets)
+		for (Fingering target : fingeringTargets)
 		{
 			double centDeviation = 400.0;
-			try
+			if ( target.getNote() != null && target.getNote().getFrequency() != null )
 			{
-				centDeviation = Note.cents(tuner.predictedFrequency(targetFingering),
-						targetFingering.getNote().getFrequency());
+				try
+				{
+					centDeviation = Note.cents(target.getNote().getFrequency(),
+							tuner.predictedFrequency(target));
+				}
+				catch (RuntimeException e)
+				{
+				}
+				errorValues[index++] = centDeviation;
 			}
-			catch (RuntimeException e)
+			else
 			{
+				// No target available for this fingering.
+				// Don't include it in optimization.
+				centDeviation = 0.0;
 			}
-			errorValues[index++] = centDeviation;
 		}
 
 		return errorValues;

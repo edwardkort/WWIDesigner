@@ -131,14 +131,14 @@ public class WhistleStudyModel extends StudyModel
 		switch (optimizer)
 		{
 			case WINDOW_OPT_SUB_CATEGORY_ID:
-				evaluator = new FmaxEvaluator(calculator);
+				evaluator = new FmaxEvaluator(calculator, getInstrumentTuner());
 				objective = new WindowHeightObjectiveFunction(calculator,
 						tuning, evaluator);
 				lowerBound = new double[] { 0.000 };
 				upperBound = new double[] { 0.010 };
 				break;
 			case BETA_OPT_SUB_CATEGORY_ID:
-				evaluator = new FminEvaluator(calculator);
+				evaluator = new FminEvaluator(calculator, getInstrumentTuner());
 				objective = new BetaObjectiveFunction(calculator, tuning,
 						evaluator);
 				lowerBound = new double[] { 0.2 };

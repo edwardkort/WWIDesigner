@@ -90,6 +90,15 @@ public class ObjectiveFunctionOptimizer
 		ConvergenceChecker<PointValuePair> convergenceChecker = new SimpleValueChecker(
 				1.e-6, 1.e-14);
 
+		if (objective.getNrDimensions() > objective.getNrNotes())
+		{
+			System.out.print("System is underconstrained, with ");
+			System.out.print(objective.getNrDimensions());
+			System.out.print(" dimensions, and only ");
+			System.out.print(objective.getNrNotes());
+			System.out.print(" notes.");
+		}
+		long startTime = System.currentTimeMillis();
 		double[] startPoint = objective.getInitialPoint();
 		double[] errorVector = objective.getErrorVector(startPoint);
 		initialNorm = BaseObjectiveFunction.calcNorm(errorVector);
@@ -221,6 +230,11 @@ public class ObjectiveFunctionOptimizer
 		printErrors("Final error:  ", finalNorm, errorVector);
 		System.out.print("Residual error ratio: ");
 		System.out.println(finalNorm / initialNorm);
+		long elapsedTime = System.currentTimeMillis() - startTime;
+		double elapsedSeconds = 0.001 * (double)elapsedTime;
+		System.out.print("Elapsed time: ");
+		System.out.printf("%3.1f", elapsedSeconds);
+		System.out.println(" seconds.");
 
 		return true;
 	} // optimizeObjectiveFunction

@@ -443,14 +443,6 @@ public abstract class StudyModel
 		
 		initialNorm = 1.0;
 		finalNorm = 1.0;
-		if (objective.getNrDimensions() > objective.getNrNotes())
-		{
-			System.out.print("System is underconstrained, with ");
-			System.out.print(objective.getNrDimensions());
-			System.out.print(" dimensions, and only ");
-			System.out.print(objective.getNrNotes());
-			System.out.print(" notes.");
-		}
 		if ( ObjectiveFunctionOptimizer.optimizeObjectiveFunction(objective, optimizerType) )
 		{
 			Instrument instrument = objective.getInstrument();

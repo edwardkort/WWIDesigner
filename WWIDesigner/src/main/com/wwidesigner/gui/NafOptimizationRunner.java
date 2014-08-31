@@ -47,12 +47,24 @@ import com.jidesoft.docking.DockContext;
 import com.wwidesigner.note.wizard.TuningWizardDialog;
 
 /**
- * DockedTextEditor2.java
- * <p/>
- * This example is similar to DockedTextEditor, but uses the
- * DockingApplicationFeature. No docking content it provided, this is just to
- * show how to facilitate Dockable DataViews. Notice that the DataModels used by
- * the docking are of secondary status. This is required.
+ *  Main program to present study views to the user,
+ *  and allow them to interact with instrument study models
+ *  to analyze and optimize instruments.
+ *  
+ *  Copyright (C) 2014, Edward Kort, Antoine Lefebvre, Burton Patkau.
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 public class NafOptimizationRunner extends FileBasedApplication implements
 		EventSubscriber
@@ -82,6 +94,7 @@ public class NafOptimizationRunner extends FileBasedApplication implements
 	{
 		com.jidesoft.utils.Lm.verifyLicense("Edward Kort", "WWIDesigner",
 				"DfuwPRAUR5KQYgePf:CH0LWIp63V8cs2");
+
 		new NafOptimizationRunner().run(args);
 	}
 

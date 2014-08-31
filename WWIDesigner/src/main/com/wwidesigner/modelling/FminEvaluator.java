@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.wwidesigner.note.Fingering;
 import com.wwidesigner.note.Note;
+import com.wwidesigner.note.Tuning;
 
 /**
  * Class to evaluate how well a calculator predicts fmin for an instrument,
@@ -38,6 +39,10 @@ public class FminEvaluator implements EvaluatorInterface
 	public double[] calculateErrorVector(List<Fingering> fingeringActualData)
 	{
 		double[] errorVector = new double[fingeringActualData.size()];
+
+		Tuning targetTuning = new Tuning();
+		targetTuning.setFingering(fingeringActualData);
+		tuner.setTuning(targetTuning);
 
 		int i = 0;
 		for (Fingering actual: fingeringActualData)

@@ -47,7 +47,7 @@ import com.jidesoft.docking.DockContext;
 import com.wwidesigner.note.wizard.TuningWizardDialog;
 
 /**
- *  Main program to present study views to the user,
+ *  Main program to present a study view to the user,
  *  and allow them to interact with instrument study models
  *  to analyze and optimize instruments.
  *  

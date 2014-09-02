@@ -7,6 +7,7 @@ import org.apache.commons.math3.complex.Complex;
 import com.wwidesigner.note.Fingering;
 import com.wwidesigner.note.TuningInterface;
 
+@Deprecated
 public class BasicOptimizationFunction implements OptimizationFunctionInterface
 {
 	private InstrumentOptimizerInterface optimizer;

@@ -7,6 +7,7 @@ import com.wwidesigner.modelling.PlayingRange.NoPlayingRange;
 import com.wwidesigner.note.Fingering;
 import com.wwidesigner.note.TuningInterface;
 
+@Deprecated
 public class TuningOptimizationFunction implements
 		OptimizationFunctionInterface
 {

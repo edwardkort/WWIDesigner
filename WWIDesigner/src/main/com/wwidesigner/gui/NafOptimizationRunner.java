@@ -9,6 +9,7 @@ import javax.swing.Action;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JDialog;
 import javax.swing.JMenu;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JTextPane;
 
@@ -27,6 +28,7 @@ import com.jidesoft.app.framework.event.EventSubscriber;
 import com.jidesoft.app.framework.event.SubscriberEvent;
 import com.jidesoft.app.framework.file.TextFileFormat;
 import com.jidesoft.app.framework.gui.ActionKeys;
+import com.jidesoft.app.framework.gui.ApplicationDialogsUI;
 import com.jidesoft.app.framework.gui.ApplicationMenuBarsUI;
 import com.jidesoft.app.framework.gui.ApplicationWindowsUI;
 import com.jidesoft.app.framework.gui.DataViewAdapter;
@@ -37,6 +39,7 @@ import com.jidesoft.app.framework.gui.MenuConstants;
 import com.jidesoft.app.framework.gui.MenuGroup;
 import com.jidesoft.app.framework.gui.PreferencesDialogRequest;
 import com.jidesoft.app.framework.gui.PreferencesPane;
+import com.jidesoft.app.framework.gui.StandardDialogRequest;
 import com.jidesoft.app.framework.gui.actions.ComponentAction;
 import com.jidesoft.app.framework.gui.feature.AutoInstallActionsFeature;
 import com.jidesoft.app.framework.gui.filebased.FileBasedApplication;
@@ -86,7 +89,15 @@ public class NafOptimizationRunner extends FileBasedApplication implements
 	static final String COMPARE_INSTRUMENT_ACTION_ID = "Compare instruments";
 	static final String CLEAR_CONSOLE_ACTION_ID = "Clear Console";
 	static final String WARN_ON_DIRTY_CLOSE_ACTION_ID = "Warn on dirty close";
-	static final String RENAME_WINIDOW_ACTION_ID = "Rename window";
+	static final String RENAME_WINDOW_ACTION_ID = "Rename window";
+	
+	static final String LICENSE_TEXT
+		= "NAF Optimization Runner\n\n"
+			+ "Copyright (C) 2014, Edward Kort, Antoine Lefebvre, Burton Patkau.\n\n"
+			+ "This program comes with ABSOLUTELY NO WARRANTY.\n"
+			+ "This is free software, and you are welcome to redistribute it\n"
+			+ "under the terms of the GNU General Public License, version 3 or later,\n"
+			+ "available at http://www.gnu.org/licenses/gpl.html.";
 
 	protected boolean isWarnOnDirtyClose = false;
 
@@ -118,10 +129,6 @@ public class NafOptimizationRunner extends FileBasedApplication implements
 		getApplicationUIManager().setUseJideDocumentPane(true);
 
 		// Add my UI customizations
-		// TODO Remove the reference to
-		// OptimizationPreferencesWithTempConstraint, which sets
-		// minTopHoleRatio, when Constraints are exposed.
-		// PreferencesPane preferencesDialog = new OptimizationPreferences();
 		PreferencesPane preferencesDialog = new OptimizationPreferences();
 		PreferencesDialogRequest.installPreferences(this, preferencesDialog);
 
@@ -130,6 +137,8 @@ public class NafOptimizationRunner extends FileBasedApplication implements
 		addEvents();
 		addWindowMenuToggles();
 		addToolMenu();
+		
+		customizeAboutBox();
 
 		// The stock JDAF UndoAction and RedoAction are focused on the state of
 		// the UndoManager of the focused DataModel. But the CodeEditor has its
@@ -189,7 +198,7 @@ public class NafOptimizationRunner extends FileBasedApplication implements
 					DataModel model = getDataModel(view);
 					String name = model.getName();
 					Action action = getActionMap()
-							.get(RENAME_WINIDOW_ACTION_ID);
+							.get(RENAME_WINDOW_ACTION_ID);
 					if (name.length() > 0 && name.startsWith("Untitled"))
 					{
 						action.setEnabled(true);
@@ -386,7 +395,7 @@ public class NafOptimizationRunner extends FileBasedApplication implements
 		};
 		getActionMap().put(WARN_ON_DIRTY_CLOSE_ACTION_ID, action);
 
-		action = new GUIApplicationAction(RENAME_WINIDOW_ACTION_ID)
+		action = new GUIApplicationAction(RENAME_WINDOW_ACTION_ID)
 		{
 			/**
 			 * 
@@ -413,7 +422,7 @@ public class NafOptimizationRunner extends FileBasedApplication implements
 			}
 		};
 		action.setEnabled(false);
-		getActionMap().put(RENAME_WINIDOW_ACTION_ID, action);
+		getActionMap().put(RENAME_WINDOW_ACTION_ID, action);
 
 		addMenuBarCustomizer(new MenuBarCustomizer()
 		{
@@ -421,12 +430,20 @@ public class NafOptimizationRunner extends FileBasedApplication implements
 					ApplicationMenuBarsUI menuBarUI)
 			{
 				JMenu menu = menuBarUI.defaultMenu("Tool Menu", "Tool");
-				menu.add(menuBarUI.getAction(CALCULATE_TUNING_ACTION_ID));
-				menu.add(menuBarUI.getAction(GRAPH_TUNING_ACTION_ID));
-				menu.add(menuBarUI.getAction(OPTIMIZE_INSTRUMENT_ACTION_ID));
-				menu.add(menuBarUI.getAction(SKETCH_INSTRUMENT_ACTION_ID));
-				menu.add(menuBarUI.getAction(CREATE_TUNING_FILE_ACTION_ID));
-				menu.add(menuBarUI.getAction(COMPARE_INSTRUMENT_ACTION_ID));
+				JMenuItem menuItem;
+				menuItem = menu.add(menuBarUI.getAction(CALCULATE_TUNING_ACTION_ID));
+				menuItem.setMnemonic('C');
+				menuItem = menu.add(menuBarUI.getAction(GRAPH_TUNING_ACTION_ID));
+				menuItem.setMnemonic('G');
+				menuItem = menu.add(menuBarUI.getAction(OPTIMIZE_INSTRUMENT_ACTION_ID));
+				menuItem.setMnemonic('O');
+				menuItem = menu.add(menuBarUI.getAction(SKETCH_INSTRUMENT_ACTION_ID));
+				menuItem.setMnemonic('S');
+				menuItem = menu.add(menuBarUI.getAction(CREATE_TUNING_FILE_ACTION_ID));
+				menuItem.setMnemonic('T');
+				menuItem = menu.add(menuBarUI.getAction(COMPARE_INSTRUMENT_ACTION_ID));
+				menuItem.setMnemonic('m');
+				menu.setMnemonic('T');
 				return new JMenu[] { menu };
 			}
 
@@ -438,13 +455,18 @@ public class NafOptimizationRunner extends FileBasedApplication implements
 				{
 					MenuGroup group = menuBarsUI.getMenuGroup(
 							WINDOW_USER_GROUP_ID, menu);
-					group.addMenuItem(menuBarsUI
-							.getAction(CLEAR_CONSOLE_ACTION_ID));
+					JMenuItem menuItem;
+					Action action;
+					action = menuBarsUI.getAction(CLEAR_CONSOLE_ACTION_ID);
+					menuItem = group.addMenuItem(action);
+					menuItem.setMnemonic('l');
+					action = menuBarsUI.getAction(RENAME_WINDOW_ACTION_ID);
+					menuItem = group.addMenuItem(action);
+					menuItem.setMnemonic('R');
 					JCheckBoxMenuItem cbItem = new JCheckBoxMenuItem(
 							menuBarsUI.getAction(WARN_ON_DIRTY_CLOSE_ACTION_ID));
 					cbItem.setSelected(isWarnOnDirtyClose);
-					group.addMenuItem(menuBarsUI
-							.getAction(RENAME_WINIDOW_ACTION_ID));
+					cbItem.setMnemonic('W');
 					group.addMenuItem(cbItem);
 					group.insertSeparator(3);
 					group.insertSeparator(5);
@@ -507,6 +529,17 @@ public class NafOptimizationRunner extends FileBasedApplication implements
 
 		// add feature
 		addApplicationFeature(docking);
+	}
+
+	protected void customizeAboutBox()
+	{
+		JTextPane aboutText = new JTextPane();
+		aboutText.setText(LICENSE_TEXT);
+		aboutText.setEditable(false);
+		
+		StandardDialogRequest.setQueuedDialogRequestComponent(this,
+				ApplicationDialogsUI.ABOUT_DIALOG_REQUEST_KEY, aboutText);
+
 	}
 
 	protected final class BlockingProgressListener implements ProgressListener

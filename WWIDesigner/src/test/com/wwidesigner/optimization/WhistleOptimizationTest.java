@@ -47,8 +47,8 @@ public class WhistleOptimizationTest extends PerturbedInstrumentOptimization
 		testOptimization("Optimize instrument after 5% stretch...", 0.5);
 		assertEquals("Residual error incorrect", 1.0, study.getFinalNorm()/finalNorm, 0.01);
 
-		perturbInstrument(0.99,0.95,1.05);
-		testOptimization("Optimize instrument after shrink...", 0.5);
+		perturbInstrument(0.95,0.95,1.05);
+		testOptimization("Optimize instrument after 5% shrink...", 0.5);
 		assertEquals("Residual error incorrect", 1.0, study.getFinalNorm()/finalNorm, 0.01);
 
 		myStudy.setCategorySelection(WhistleStudyModel.OPTIMIZER_CATEGORY_ID,
@@ -85,7 +85,7 @@ public class WhistleOptimizationTest extends PerturbedInstrumentOptimization
 		Instrument optimizedInstrument = StudyModel.getInstrument(study.optimizeInstrument());
 		
 		// Test final error norm.
-		assertEquals("Final error norm incorrect", 841.0, study.getFinalNorm(), 1.0);
+		assertEquals("Final error norm incorrect", 836.8, study.getFinalNorm(), 1.0);
 
 		// Test bore length
 

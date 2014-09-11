@@ -38,7 +38,7 @@ import com.wwidesigner.note.Fingering;
  * Depending on the calculator, some of the following conditions will
  * determine the playing frequency:
  * 
- *      fnom satisfies Im(Z(fnom)) = 0.0
+ *      fnom satisfies Im(Z(fnom)) = 0.0 and d/df Im(Z(fnom)) > 0.0
  * or   fnom satisfies Im(Z(fnom)) = x0, for some x0.
  * 
  *      fmin < fmax
@@ -50,12 +50,17 @@ import com.wwidesigner.note.Fingering;
  */
 public class PlayingRange
 {
-	/* Find playing ranges within a ratio of DefaultRangeWithin
+	/* Find playing ranges within a ratio of SearchBoundRatio
 	 * of a specified frequency. */
-	protected static final double DefaultRangeWithin = 1.4;	// Within half an octave.
+	protected static final double SearchBoundRatio = 2.0;	// Within an octave.
+	/* Acceptable solutions are within this ratio of specified frequency.
+	 * Only search beyond this if necessary.
+	 */
+	protected static final double PreferredSolutionRatio = 1.12;		// Within 200 cents.
+
 	/* Basic step size for bracket search, as a fraction of f.
 	 * Big assumption: within the range of interest, function(f).value
-	 * has no more than one root between f and f+stepSize.
+	 * has no more than one root between f and f*(1+Granularity).
 	 * A larger step size will find a bracket faster, but increase the risk
 	 * that this assumption is violated. */
 	protected static final double Granularity = 0.012;	// About 20 cents.
@@ -237,9 +242,133 @@ public class PlayingRange
 	}
 
 	/**
+	 * Find a bracket for a root of function.value(calcZ(f)) above a specified frequency.
+	 * Pre:  zNear = calculator.calcZ(nearFreq)
+	 * Post: Either returns {lowerFreq,upperFreq} that satisfy
+	 *       function(lowerFreq) < 0 and function(upperFreq) > 0.
+	 *       and nearFreq <= lowerFreq < upperFreq <= upperBound
+	 *       or returns {-1,0} if no such bracket found.
+	 * @param nearFreq - lower bound on the bracket
+	 * @param zNear - impedance at nearFreq
+	 * @param function - objective function.
+	 * @param upperBound - upper bound on the bracket
+	 * @returns array { lowerFreq, upperFreq }
+	 */
+	protected double[] findBracketAbove(double nearFreq, Complex zNear, UnivariateZFunction function,
+			double upperBound)
+	{
+		final double stepSize = nearFreq * Granularity;		// Step size for search.
+		double lowerFreq, upperFreq;
+		Complex zLower, zUpper;
+		lowerFreq = nearFreq;
+		zLower = zNear;
+
+		// First, ensure that function(lowerFreq) < 0.
+		// This will usually be the case, but not always.
+
+		while (function.value(zLower) >= 0.0)
+		{
+			lowerFreq += stepSize;
+			if (lowerFreq >= upperBound)
+			{
+				double[] bracket = {-1.0,0.0};
+				return bracket;
+			}
+			zLower = calculator.calcZ(lowerFreq);
+		}
+
+		// Search up until function(upperFreq) > 0.
+
+		upperFreq = lowerFreq + stepSize;
+		zUpper = calculator.calcZ(upperFreq);
+		
+		while (function.value(zUpper) <= 0.0)
+		{
+			if (function.value(zUpper) < 0.0)
+			{
+				// Move up the lower end of the bracket.
+				lowerFreq = upperFreq;
+				zLower = zUpper;
+			}
+			upperFreq += stepSize;
+			if (upperFreq > upperBound)
+			{
+				double[] bracket = {-1.0,0.0};
+				return bracket;
+			}
+			zUpper = calculator.calcZ(upperFreq);
+		}
+
+		double[] bracket = {lowerFreq, upperFreq};
+		return bracket;
+	} // findBracketAbove
+
+	/**
+	 * Find a bracket for a root of function.value(calcZ(f)) below a specified frequency.
+	 * Pre:  zNear = calculator.calcZ(nearFreq)
+	 * Post: Either returns {lowerFreq,upperFreq} that satisfy
+	 *       function(lowerFreq) < 0 and function(upperFreq) > 0.
+	 *       and lowerBound <= lowerFreq < upperFreq <= nearFreq
+	 *       or returns {-1,0} if no such bracket found.
+	 * @param nearFreq - upper bound on the bracket
+	 * @param zNear - impedance at nearFreq
+	 * @param function - objective function.
+	 * @param lowerBound - lower bound on the bracket
+	 * @returns array { lowerFreq, upperFreq }
+	 */
+	protected double[] findBracketBelow(double nearFreq, Complex zNear, UnivariateZFunction function,
+			double lowerBound)
+	{
+		final double stepSize = nearFreq * Granularity;		// Step size for search.
+		double lowerFreq, upperFreq;
+		Complex zLower, zUpper;
+		upperFreq = nearFreq;
+		zUpper = zNear;
+
+		// First, ensure that function(upperFreq) > 0.
+		// This will usually be the case, but not always.
+
+		while (function.value(zUpper) <= 0.0)
+		{
+			upperFreq -= stepSize;
+			if (upperFreq <= lowerBound)
+			{
+				double[] bracket = {-1.0,0.0};
+				return bracket;
+			}
+			zUpper = calculator.calcZ(upperFreq);
+		}
+
+		// Search down until function(lowerFreq) < 0.
+
+		lowerFreq = upperFreq - stepSize;
+		zLower = calculator.calcZ(lowerFreq);
+		
+		while (function.value(zLower) >= 0.0)
+		{
+			if (function.value(zLower) > 0.0)
+			{
+				// Move down the upper end of the bracket.
+				upperFreq = lowerFreq;
+				zUpper = zLower;
+			}
+			lowerFreq -= stepSize;
+			if (lowerFreq < lowerBound)
+			{
+				double[] bracket = {-1.0,0.0};
+				return bracket;
+			}
+			zLower = calculator.calcZ(lowerFreq);
+		}
+
+		double[] bracket = {lowerFreq, upperFreq};
+		return bracket;
+	} // findBracketBelow
+
+	/**
 	 * Find a bracket near a specified frequency for a specified impedance-valued function.
 	 * The target frequency may be fnom or fmax, depending on the calculator.
-	 * Post: nearFreq/DefaultRangeWithin <= lowerFreq < upperFreq <= nearFreq*DefaultRangeWithin.
+	 * Post: nearFreq/SearchBoundRatio <= lowerFreq < upperFreq <= nearFreq*SearchBoundRatio.
 	 *       function(lowerFreq).value < 0.
 	 *       function(upperFreq).value > 0.
 	 *       There is a single root of function(freq).value
@@ -255,72 +384,90 @@ public class PlayingRange
 	public double[] findBracket(double nearFreq, UnivariateZFunction function)
 			throws NoPlayingRange
 	{
-		final double stepSize = nearFreq * Granularity;		// Step size for search.
-		double lowerFreq;
-		double upperFreq; 
-		Complex zLower, zUpper;
-		lowerFreq = nearFreq - 0.5*stepSize;
-		upperFreq = nearFreq + 0.5*stepSize;
-		zLower = calculator.calcZ(lowerFreq);
-		zUpper = calculator.calcZ(upperFreq);
-
-		// If value(lowerFreq) < 0, then we have a lower bound,
-		// and need only look higher for an upper bound.
-		// If value(upperFreq) > 0, but the slope is negative,
-		// we could look lower for a lower bound, but it is
-		// possible that a closer root is actually higher.
-		// Ideally, we would try both, and find the closer one,
-		// but for now, we assume that the closer root is higher.
+		double freq = nearFreq;
+		Complex zNear = calculator.calcZ(freq);
+		double limitFreq;
+		double [] upwardBracket;
+		double [] downwardBracket;
 		
-		while (function.value(zLower) >= 0.0
-				&& function.value(zUpper) <= function.value(zLower) )
+		while (function.value(zNear) == 0.0)
 		{
-			// Search higher.
-			lowerFreq = upperFreq;
-			zLower = zUpper;
-			upperFreq += stepSize;
-			if ( upperFreq > nearFreq*DefaultRangeWithin )
+			// For the unlikely case that we landed right on a zero,
+			// adjust the frequency slightly.
+			// We don't know whether slope is positive or negative.
+			freq = freq * 0.999;
+			zNear = calculator.calcZ(freq);
+		}
+		
+		if (function.value(zNear) < 0.0)
+		{
+			// If starting function value is negative, start searching upward.
+			upwardBracket = findBracketAbove(freq, zNear, function,
+					nearFreq*SearchBoundRatio);
+			if (upwardBracket[0] <= 0.0
+				|| upwardBracket[1] > nearFreq * PreferredSolutionRatio)
 			{
+				// If result isn't close enough, search downward as well.
+				if (upwardBracket[0] <= 0.0)
+				{
+					limitFreq = nearFreq / SearchBoundRatio;
+				}
+				else
+				{
+					limitFreq = nearFreq * nearFreq/upwardBracket[1]; 
+				}
+				downwardBracket = findBracketBelow(freq, zNear, function,
+						limitFreq);
+				if (downwardBracket[0] > 0.0)
+				{
+					// We found a better solution searching downward.
+					return downwardBracket;
+				}
+			}
+			if (upwardBracket[0] <= 0.0)
+			{
+				// We didn't find a bracket searching upward.
 				throw new NoPlayingRange(nearFreq);
 			}
-			zUpper = calculator.calcZ(upperFreq);
+			return upwardBracket;
 		}
-		// In searching upward, we will most likely hit function.value(lowerFreq) < 0.0
-		// before we hit a positive slope, so we do not need to worry
-		// about lowerFreq re-tracing its steps, which would be inefficient.
-
-		// At this point, function.value(lowerFreq) < 0.0,
-		// or function.value(upperFreq) > function.value(lowerFreq) >= 0.0.
-
-		// Search lower for lower bound, if necessary.
-		while ( function.value(zLower) >= 0.0 )
+		else
 		{
-			lowerFreq -= stepSize;
-			if ( lowerFreq < nearFreq/DefaultRangeWithin )
+			// If starting function value is positive, start searching downward.
+			downwardBracket = findBracketBelow(freq, zNear, function, 
+					nearFreq/SearchBoundRatio);
+			if (downwardBracket[0] <= 0.0
+				|| downwardBracket[0] < nearFreq / PreferredSolutionRatio)
 			{
+				// If result isn't close enough, search upward as well.
+				if (downwardBracket[0] <= 0.0)
+				{
+					limitFreq = nearFreq * SearchBoundRatio;
+				}
+				else
+				{
+					limitFreq = nearFreq * nearFreq/downwardBracket[0]; 
+				}
+				upwardBracket = findBracketAbove(freq, zNear, function,
+						limitFreq);
+				if (upwardBracket[0] > 0.0)
+				{
+					// We found a better solution searching upward.
+					return upwardBracket;
+				}
+			}
+			if (downwardBracket[0] <= 0.0)
+			{
+				// We didn't find a bracket searching downward.
 				throw new NoPlayingRange(nearFreq);
 			}
-			zLower = calculator.calcZ(lowerFreq);
+			return downwardBracket;
 		}
-
-		// Search higher for upper bound, if necessary.
-		while ( function.value(zUpper) <= 0.0 )
-		{
-			upperFreq += stepSize;
-			if ( upperFreq > nearFreq*DefaultRangeWithin )
-			{
-				throw new NoPlayingRange(nearFreq);
-			}
-			zUpper = calculator.calcZ(upperFreq);
-		}
-
-		double[] bracket = {lowerFreq, upperFreq};
-		return bracket;
-	}
+	} // findBracket
 
 	/**
 	 * Find the zero of reactance nearest to nearFreq
-	 * satisfying nearFreq/DefaultRangeWithin <= f <= nearFreq*DefaultRangeWithin
+	 * satisfying nearFreq/SearchBoundRatio <= f <= nearFreq*SearchBoundRatio
 	 * @param nearFreq
 	 * @throws NoPlayingRange if there is no zero of X
 	 * within the specified range of nearFreq.
@@ -344,7 +491,7 @@ public class PlayingRange
 
 	/**
 	 * Find the frequency with a specified reactance nearest to nearFreq
-	 * satisfying nearFreq/DefaultRangeWithin <= f <= nearFreq*DefaultRangeWithin
+	 * satisfying nearFreq/SearchBoundRatio <= f <= nearFreq*SearchBoundRatio
 	 * @param nearFreq
 	 * @param targetX
 	 * @throws NoPlayingRange if there is no zero of X
@@ -399,7 +546,7 @@ public class PlayingRange
 		{
 			minRatio = ratio;
 			lowerFreq -= stepSize;
-			if ( lowerFreq < fmax/DefaultRangeWithin )
+			if ( lowerFreq < fmax/SearchBoundRatio )
 			{
 				throw new NoPlayingRange(fmax);
 			}
@@ -450,7 +597,7 @@ public class PlayingRange
 	
 	/**
 	 * Find the frequency with a specified reactance nearest to nearFreq
-	 * satisfying nearFreq/DefaultRangeWithin <= f <= nearFreq*DefaultRangeWithin
+	 * satisfying nearFreq/SearchBoundRatio <= f <= nearFreq*SearchBoundRatio
 	 * @param nearFreq
 	 * @param targetX
 	 * @throws NoPlayingRange if there is no zero of X

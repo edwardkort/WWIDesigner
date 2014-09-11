@@ -34,12 +34,12 @@
     </hole>
     <hole>
         <borePosition>141.5</borePosition>
-        <diameter>5.9</diameter>
+        <diameter>5.8</diameter>
         <height>1.9</height>
     </hole>
     <hole>
-        <borePosition>166.0</borePosition>
-        <diameter>8.7</diameter>
+        <borePosition>166.5</borePosition>
+        <diameter>9.1</diameter>
         <height>1.9</height>
     </hole>
     <hole>
@@ -49,12 +49,12 @@
     </hole>
     <hole>
         <borePosition>199.5</borePosition>
-        <diameter>6.6</diameter>
+        <diameter>6.7</diameter>
         <height>1.9</height>
     </hole>
     <hole>
-        <borePosition>228.5</borePosition>
-        <diameter>8.7</diameter>
+        <borePosition>229.0</borePosition>
+        <diameter>9.1</diameter>
         <height>1.9</height>
     </hole>
     <termination>

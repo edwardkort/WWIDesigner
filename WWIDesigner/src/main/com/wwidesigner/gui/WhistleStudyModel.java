@@ -23,13 +23,13 @@ import java.util.prefs.Preferences;
 
 import com.wwidesigner.geometry.Instrument;
 import com.wwidesigner.modelling.BellNoteEvaluator;
+import com.wwidesigner.modelling.CentDeviationEvaluator;
 import com.wwidesigner.modelling.EvaluatorInterface;
 import com.wwidesigner.modelling.FmaxEvaluator;
 import com.wwidesigner.modelling.FminEvaluator;
 import com.wwidesigner.modelling.InstrumentCalculator;
 import com.wwidesigner.modelling.LinearVInstrumentTuner;
 import com.wwidesigner.modelling.InstrumentTuner;
-import com.wwidesigner.modelling.RangeEvaluator;
 import com.wwidesigner.modelling.WhistleCalculator;
 import com.wwidesigner.note.Tuning;
 import com.wwidesigner.optimization.BaseObjectiveFunction;
@@ -167,7 +167,7 @@ public class WhistleStudyModel extends StudyModel
 				upperBound = new double[] { 0.700 };
 				break;
 			case HOLESIZE_OPT_SUB_CATEGORY_ID:
-				evaluator = new RangeEvaluator(calculator, getInstrumentTuner());
+				evaluator = new CentDeviationEvaluator(calculator, getInstrumentTuner());
 				objective = new HoleSizeObjectiveFunction(calculator, tuning,
 						evaluator);
 				// Bounds are diameters, expressed in meters.
@@ -178,7 +178,7 @@ public class WhistleStudyModel extends StudyModel
 				break;
 			case HOLESPACE_OPT_SUB_CATEGORY_ID:
 			case ROUGH_CUT_OPT_SUB_CATEGORY_ID:
-				evaluator = new RangeEvaluator(calculator, getInstrumentTuner());
+				evaluator = new CentDeviationEvaluator(calculator, getInstrumentTuner());
 				objective = new HolePositionObjectiveFunction(calculator,
 						tuning, evaluator);
 				// Bounds are hole separations, expressed in meters.
@@ -208,7 +208,7 @@ public class WhistleStudyModel extends StudyModel
 				break;
 			case HOLE_OPT_SUB_CATEGORY_ID:
 			default:
-				evaluator = new RangeEvaluator(calculator, getInstrumentTuner());
+				evaluator = new CentDeviationEvaluator(calculator, getInstrumentTuner());
 				objective = new HoleObjectiveFunction(calculator, tuning,
 						evaluator);
 				// Separation and diameter bounds, expressed in meters.
@@ -232,7 +232,7 @@ public class WhistleStudyModel extends StudyModel
 				}
 				break;
 			case TAPER_OPT_SUB_CATEGORY_ID:
-				evaluator = new RangeEvaluator(calculator, getInstrumentTuner());
+				evaluator = new CentDeviationEvaluator(calculator, getInstrumentTuner());
 				objective = new BasicTaperObjectiveFunction(calculator, tuning,
 						evaluator);
 				// Dimensions are expressed as ratios: head length, foot diameter.
@@ -240,7 +240,7 @@ public class WhistleStudyModel extends StudyModel
 				upperBound = new double[] { 0.5,  2.0 };
 				break;
 			case HOLE_TAPER_OPT_SUB_CATEGORY_ID:
-				evaluator = new RangeEvaluator(calculator, getInstrumentTuner());
+				evaluator = new CentDeviationEvaluator(calculator, getInstrumentTuner());
 				objective = new HoleAndTaperObjectiveFunction(calculator, tuning,
 						evaluator);
 				// Separation bounds and diameter bounds, expressed in meters,

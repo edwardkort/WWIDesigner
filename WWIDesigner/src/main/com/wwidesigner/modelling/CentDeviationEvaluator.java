@@ -66,7 +66,7 @@ public class CentDeviationEvaluator implements EvaluatorInterface
 		int index = 0;
 		for (Fingering target : fingeringTargets)
 		{
-			double centDeviation = 400.0;
+			double centDeviation = 1200.0;
 			if ( target.getNote() != null && target.getNote().getFrequency() != null )
 			{
 				try

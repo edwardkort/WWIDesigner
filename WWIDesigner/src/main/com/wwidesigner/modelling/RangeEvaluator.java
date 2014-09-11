@@ -99,7 +99,7 @@ public class RangeEvaluator implements EvaluatorInterface
 		int i = 0;
 		for (Fingering target: fingeringTargets)
 		{
-			double centDeviation = 400.0;
+			double centDeviation = 1200.0;
 			if ( target.getNote() != null && target.getNote().getFrequency() != null )
 			{
 				double targetFreq = target.getNote().getFrequency();

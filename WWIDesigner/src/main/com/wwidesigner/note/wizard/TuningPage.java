@@ -1,3 +1,21 @@
+/**
+ * A wizard page to display scales and fingering patterns and combine them into a tuning.
+ * 
+ * Copyright (C) 2014, Edward Kort, Antoine Lefebvre, Burton Patkau.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.wwidesigner.note.wizard;
 
 import java.awt.Component;
@@ -28,7 +46,6 @@ import com.wwidesigner.gui.util.MultiLineButton;
 import com.wwidesigner.gui.util.XmlFileChooser;
 import com.wwidesigner.note.FingeringPattern;
 import com.wwidesigner.note.Scale;
-import com.wwidesigner.note.Tuning;
 import com.wwidesigner.note.view.FingeringPatternPanel;
 import com.wwidesigner.note.view.ScalePanel;
 import com.wwidesigner.note.view.TuningPanel;
@@ -90,7 +107,7 @@ public class TuningPage extends AbstractWizardPage implements
 		gbc.anchor = GridBagConstraints.CENTER;
 		panel.add(createTuningButtons(), gbc);
 
-		tuningPanel = new TuningPanel();
+		tuningPanel = new TuningPanel( 320 );
 		addDataPopulatedListener(this);
 		gbc.gridx = 0;
 		gbc.gridy = 2;
@@ -166,7 +183,7 @@ public class TuningPage extends AbstractWizardPage implements
 				tuningPanel.resetTableData(numHoles + 1, numHoles);
 			}
 		});
-		newButton.setEnabled(false);
+		newButton.setEnabled(true);
 		panel.add(newButton);
 
 		panel.add(createLoadButton());
@@ -178,25 +195,20 @@ public class TuningPage extends AbstractWizardPage implements
 
 	private JButton createLoadButton()
 	{
-		JButton button = new MultiLineButton(new String[] { "Load tuning",
-				"from", "XML file" }, 1);
+		JButton button = new MultiLineButton(new String[] { "Load from",
+				"XML file" }, 1);
 		button.addActionListener(new ActionListener()
 		{
 
 			@Override
 			public void actionPerformed(ActionEvent arg0)
 			{
-				Tuning tuning = null;
 				JFileChooser chooser = new XmlFileChooser();
 				int state = chooser.showOpenDialog(getParent());
 				if (state == JFileChooser.APPROVE_OPTION)
 				{
 					File file = chooser.getSelectedFile();
-					tuning = tuningPanel.loadFingeringPattern(file);
-					if (tuning != null)
-					{
-						tuningPanel.populateWidgets(tuning);
-					}
+					tuningPanel.loadFingeringPattern(file);
 				}
 			}
 
@@ -380,7 +392,7 @@ public class TuningPage extends AbstractWizardPage implements
 				if (fingeringPattern != null)
 				{
 					fingeringPanel.populateWidgets(new FingeringPattern(
-							fingeringPattern));
+							fingeringPattern), false);
 				}
 			}
 		});
@@ -395,17 +407,12 @@ public class TuningPage extends AbstractWizardPage implements
 			@Override
 			public void actionPerformed(ActionEvent arg0)
 			{
-				FingeringPattern temp = null;
 				JFileChooser chooser = new XmlFileChooser();
 				int state = chooser.showOpenDialog(getParent());
 				if (state == JFileChooser.APPROVE_OPTION)
 				{
 					File file = chooser.getSelectedFile();
-					temp = fingeringPanel.loadFingeringPattern(file);
-					if (temp != null)
-					{
-						fingeringPanel.populateWidgets(temp);
-					}
+					fingeringPanel.loadFingeringPattern(file);
 				}
 			}
 
@@ -459,12 +466,6 @@ public class TuningPage extends AbstractWizardPage implements
 			else if (source.equals(tuningPanel))
 			{
 				Boolean dataPopulated = null;
-				dataPopulated = event
-						.isPopulated(FingeringPatternPanel.NEW_EVENT_ID);
-				if (dataPopulated != null)
-				{
-					newButton.setEnabled(dataPopulated);
-				}
 				dataPopulated = event
 						.isPopulated(FingeringPatternPanel.SAVE_EVENT_ID);
 				if (dataPopulated != null)

@@ -1,3 +1,21 @@
+/**
+ * A wizard page to construct the fingering patterns of a tuning.
+ * 
+ * Copyright (C) 2014, Edward Kort, Antoine Lefebvre, Burton Patkau.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.wwidesigner.note.wizard;
 
 import java.awt.Component;
@@ -24,7 +42,6 @@ import com.wwidesigner.gui.util.DataPopulatedListener;
 import com.wwidesigner.gui.util.DataPopulatedProvider;
 import com.wwidesigner.gui.util.MultiLineButton;
 import com.wwidesigner.gui.util.XmlFileChooser;
-import com.wwidesigner.note.FingeringPattern;
 import com.wwidesigner.note.view.FingeringPatternPanel;
 
 public class FingeringPatternPage extends AbstractWizardPage implements
@@ -101,10 +118,10 @@ public class FingeringPatternPage extends AbstractWizardPage implements
 				fingeringPanel.setName(null);
 				fingeringPanel.setDescription(null);
 				int numHoles = fingeringPanel.getNumberOfHoles();
-				fingeringPanel.resetTableData(numHoles + 1, numHoles);
+				fingeringPanel.resetTableData(1, numHoles);
 			}
 		});
-		newButton.setEnabled(false);
+		newButton.setEnabled(true);
 		panel.add(newButton);
 
 		panel.add(createLoadButton());
@@ -144,17 +161,12 @@ public class FingeringPatternPage extends AbstractWizardPage implements
 			@Override
 			public void actionPerformed(ActionEvent arg0)
 			{
-				FingeringPattern fingerings = null;
 				JFileChooser chooser = new XmlFileChooser();
 				int state = chooser.showOpenDialog(getParent());
 				if (state == JFileChooser.APPROVE_OPTION)
 				{
 					File file = chooser.getSelectedFile();
-					fingerings = fingeringPanel.loadFingeringPattern(file);
-					if (fingerings != null)
-					{
-						fingeringPanel.populateWidgets(fingerings);
-					}
+					fingeringPanel.loadFingeringPattern(file);
 				}
 			}
 
@@ -273,19 +285,10 @@ public class FingeringPatternPage extends AbstractWizardPage implements
 		{
 			Boolean dataPopulated = null;
 			dataPopulated = event
-					.isPopulated(FingeringPatternPanel.NEW_EVENT_ID);
+					.isPopulated(FingeringPatternPanel.SAVE_EVENT_ID);
 			if (dataPopulated != null)
 			{
-				newButton.setEnabled(dataPopulated);
-			}
-			else
-			{
-				dataPopulated = event
-						.isPopulated(FingeringPatternPanel.SAVE_EVENT_ID);
-				if (dataPopulated != null)
-				{
-					saveButton.setEnabled(dataPopulated);
-				}
+				saveButton.setEnabled(dataPopulated);
 			}
 		}
 	}

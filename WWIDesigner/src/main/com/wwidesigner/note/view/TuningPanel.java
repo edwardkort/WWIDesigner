@@ -1,3 +1,21 @@
+/**
+ * JPanel to display and edit tunings.
+ * 
+ * Copyright (C) 2014, Edward Kort, Antoine Lefebvre, Burton Patkau.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.wwidesigner.note.view;
 
 import java.awt.Color;
@@ -33,22 +51,38 @@ import com.wwidesigner.util.BindFactory;
 
 public class TuningPanel extends FingeringPatternPanel
 {
+	/**
+	 * Create a panel with components of a specified preferred width.
+	 * @param componentWidth - preferred width of display/edit components.
+	 */
+	public TuningPanel(int width)
+	{
+		super( width );
+	}
+
+	/**
+	 * Create a panel with components of a default preferred width.
+	 */
+	public TuningPanel()
+	{
+		super();
+	}
+
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
-	public void populateWidgets(FingeringPattern fingerings)
+	public void populateWidgets(FingeringPattern fingerings, boolean isFromFile)
 	{
 		if (fingerings != null)
 		{
-			nameWidget.setText(fingerings.getName());
-			isNamePopulated();
+			name = fingerings.getName();
+			nameWidget.setText(name);
+			description = fingerings.getComment();
+			descriptionWidget.setText(description);
+			numberOfHoles = (Integer) fingerings.getNumberOfHoles();
+			numberOfHolesWidget.setText(numberOfHoles.toString());
 
-			descriptionWidget.setText(fingerings.getComment());
-
-			numberOfHolesWidget.setText(((Integer) fingerings
-					.getNumberOfHoles()).toString());
-			isNumberOfHolesPopulated();
-
-			resetTableData(0, 0);
+			fingeringList.getModel().removeTableModelListener(this);
+			resetTableData(0, numberOfHoles);
 			DefaultTableModel model = (DefaultTableModel) fingeringList
 					.getModel();
 			fingeringList.setAutoResizeMode(JideTable.AUTO_RESIZE_FILL);
@@ -66,8 +100,14 @@ public class TuningPanel extends FingeringPatternPanel
 				row.add(fingering);
 				model.addRow(row);
 			}
+			fingeringList.getModel().addTableModelListener(this);
 
+			isNamePopulated();
 			areFingeringsPopulated();
+			if (! isFromFile)
+			{
+				fireDataStateChanged();
+			}
 		}
 	}
 
@@ -88,7 +128,7 @@ public class TuningPanel extends FingeringPatternPanel
 	// }
 
 	@Override
-	public Tuning loadFingeringPattern(File file)
+	public boolean loadFingeringPattern(File file)
 	{
 		Tuning tuning = null;
 
@@ -98,6 +138,11 @@ public class TuningPanel extends FingeringPatternPanel
 			try
 			{
 				tuning = (Tuning) bindery.unmarshalXml(file, true);
+				if (tuning != null)
+				{
+					populateWidgets(tuning, true);
+					return true;
+				}
 			}
 			catch (Exception ex)
 			{
@@ -106,12 +151,16 @@ public class TuningPanel extends FingeringPatternPanel
 			}
 		}
 
-		return tuning;
+		return false;
 	}
 
 	@Override
 	public Tuning getFingeringPattern()
 	{
+		if (! namePopulated || ! fingeringsPopulated)
+		{
+			return null;
+		}
 		Tuning fingerings = new Tuning();
 		fingerings.setName(nameWidget.getText());
 		fingerings.setComment(descriptionWidget.getText());
@@ -138,12 +187,16 @@ public class TuningPanel extends FingeringPatternPanel
 		DefaultTableModel model = new StringDoubleTableModel();
 		model.addTableModelListener(this);
 		fingeringList = new JideTable(model);
-		resetTableData(0, 0);
+		resetTableData(0, numberOfHoles);
 		fingeringList.setAutoscrolls(true);
 		JScrollPane scrollPane = new JScrollPane(fingeringList);
 		scrollPane.setBorder(new LineBorder(Color.BLACK));
-		scrollPane.setPreferredSize(new Dimension(250, 200));
+		scrollPane.setPreferredSize(new Dimension(componentWidth, 210));
+		scrollPane.setMinimumSize(new Dimension(250, 200));
 		gbc.gridy = 1;
+		gbc.weighty = 1.0;
+		gbc.gridwidth = GridBagConstraints.REMAINDER;
+		gbc.gridheight = GridBagConstraints.REMAINDER;
 		gbc.insets = new Insets(0, 15, 0, 0);
 		panel.add(scrollPane, gbc);
 
@@ -194,15 +247,15 @@ public class TuningPanel extends FingeringPatternPanel
 			String name = (String) model.getValueAt(i, 0);
 			if (name == null || name.trim().length() == 0)
 			{
+				// Skip lines with no name.
 				continue;
 			}
 			note.setName(name.trim());
 			Double freq = (Double) model.getValueAt(i, 1);
-			if (freq == null)
+			if (freq != null)
 			{
-				continue;
+				note.setFrequency(freq);
 			}
-			note.setFrequency(freq);
 			Fingering value = (Fingering) model.getValueAt(i, 2);
 			if (value != null)
 			{
@@ -222,27 +275,14 @@ public class TuningPanel extends FingeringPatternPanel
 		for (int i = 0; i < model.getRowCount(); i++)
 		{
 			String noteName = (String) model.getValueAt(i, 0);
-			// Double noteFreq = Double.parseDouble((String)model.getValueAt(i,
-			// 1));
-			Double noteFreq = null;
-			try
-			{
-				noteFreq = (Double) model.getValueAt(i, 1);
-			}
-			catch (Exception ex)
-			{
-				noteFreq = Double.parseDouble((String) model.getValueAt(i, 1));
-			}
-			Fingering value = (Fingering) model.getValueAt(i, 2);
-			if (value != null && noteName != null && noteName.length() > 0
-					&& noteFreq != null)
+			Fingering fingering = (Fingering) model.getValueAt(i, 2);
+			if ( noteName != null && noteName.trim().length() > 0
+					&& fingering != null)
 			{
 				fingeringsPopulated = true;
 				break;
 			}
 		}
-
-		fireDataStateChanged();
 	}
 
 	protected void configureDragAndDrop()

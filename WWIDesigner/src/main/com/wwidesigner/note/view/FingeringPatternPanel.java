@@ -1,3 +1,21 @@
+/**
+ * JPanel to display and edit the fingering patterns of a tuning.
+ * 
+ * Copyright (C) 2014, Edward Kort, Antoine Lefebvre, Burton Patkau.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.wwidesigner.note.view;
 
 import java.awt.Color;
@@ -5,8 +23,8 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -38,24 +56,37 @@ import com.wwidesigner.note.FingeringPattern;
 import com.wwidesigner.note.bind.NoteBindFactory;
 import com.wwidesigner.util.BindFactory;
 
-public class FingeringPatternPanel extends JPanel implements KeyListener,
+public class FingeringPatternPanel extends JPanel implements FocusListener,
 		TableModelListener
 {
 	public static final String NEW_EVENT_ID = "newData";
 	public static final String SAVE_EVENT_ID = "saveData";
+	public static final int DEFAULT_WIDTH = 220;
 
 	protected JTextField nameWidget;
 	protected JTextPane descriptionWidget;
 	protected JTextField numberOfHolesWidget;
 	protected JideTable fingeringList;
+	protected int componentWidth;
 	protected Integer numberOfHoles;
+	protected String name;
+	protected String description;
 	protected boolean namePopulated;
-	protected boolean numberOfHolesPopulated;
 	protected boolean fingeringsPopulated;
 	protected List<DataPopulatedListener> populatedListeners;
 
-	public FingeringPatternPanel()
+	/**
+	 * Create a panel with components of a specified preferred width.
+	 * @param componentWidth - preferred width of display/edit components.
+	 */
+	public FingeringPatternPanel(int componentWidth)
 	{
+		this.componentWidth = componentWidth;
+		this.numberOfHoles = 0;
+		this.name = "New";
+		this.description = "";
+		this.namePopulated = true;
+		this.fingeringsPopulated = false;
 		setLayout(new GridBagLayout());
 		setNameWidget();
 		setDescriptionWidget();
@@ -63,8 +94,16 @@ public class FingeringPatternPanel extends JPanel implements KeyListener,
 		setFingeringListWidget();
 		configureDragAndDrop();
 	}
+	
+	/**
+	 * Create a panel with components of a default preferred width.
+	 */
+	public FingeringPatternPanel()
+	{
+		this(DEFAULT_WIDTH);
+	}
 
-	public FingeringPattern loadFingeringPattern(File file)
+	public boolean loadFingeringPattern(File file)
 	{
 		FingeringPattern fingerings = null;
 
@@ -75,6 +114,11 @@ public class FingeringPatternPanel extends JPanel implements KeyListener,
 			{
 				fingerings = (FingeringPattern) bindery
 						.unmarshalXml(file, true);
+				if (fingerings != null)
+				{
+					populateWidgets(fingerings, true);
+					return true;
+				}
 			}
 			catch (Exception ex)
 			{
@@ -83,24 +127,23 @@ public class FingeringPatternPanel extends JPanel implements KeyListener,
 			}
 		}
 
-		return fingerings;
+		return false;
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public void populateWidgets(FingeringPattern fingerings)
+	public void populateWidgets(FingeringPattern fingerings, boolean isFromFile)
 	{
 		if (fingerings != null)
 		{
-			nameWidget.setText(fingerings.getName());
-			isNamePopulated();
+			name = fingerings.getName();
+			nameWidget.setText(name);
+			description = fingerings.getComment();
+			descriptionWidget.setText(description);
+			numberOfHoles = (Integer) fingerings.getNumberOfHoles();
+			numberOfHolesWidget.setText(numberOfHoles.toString());
 
-			descriptionWidget.setText(fingerings.getComment());
-
-			numberOfHolesWidget.setText(((Integer) fingerings
-					.getNumberOfHoles()).toString());
-			isNumberOfHolesPopulated();
-
-			resetTableData(0, 0);
+			fingeringList.getModel().removeTableModelListener(this);
+			resetTableData(0, numberOfHoles);
 			DefaultTableModel model = (DefaultTableModel) fingeringList
 					.getModel();
 			fingeringList.setAutoResizeMode(JideTable.AUTO_RESIZE_FILL);
@@ -115,39 +158,125 @@ public class FingeringPatternPanel extends JPanel implements KeyListener,
 				model.addRow(row);
 			}
 
+			fingeringList.getModel().addTableModelListener(this);
+			isNamePopulated();
 			areFingeringsPopulated();
+			if (! isFromFile)
+			{
+				fireDataStateChanged();
+			}
 		}
 	}
 
-	protected void isNumberOfHolesPopulated()
+	@Override
+	public void focusGained(FocusEvent event)
+	{
+	}
+
+	@Override
+	public void focusLost(FocusEvent event)
+	{
+		boolean isDataChanged = false;
+		if (event.getSource().equals(numberOfHolesWidget))
+		{
+			isDataChanged = validateNumberOfHoles();
+		}
+		else if (event.getSource().equals(nameWidget))
+		{
+			isDataChanged = isNamePopulated();
+		}
+		else if (event.getSource().equals(descriptionWidget))
+		{
+			isDataChanged = isDescriptionChanged();
+		}
+		if (isDataChanged)
+		{
+			fireDataStateChanged();
+		}
+	}
+
+	/**
+	 * Verify that there is a name in the nameWidget, and set namePopulated accordingly.
+	 * @return true if the name has changed.
+	 */
+	protected boolean isNamePopulated()
+	{
+		String newName = nameWidget.getText();
+
+		namePopulated = (newName != null && newName.trim().length() > 0);
+		if (newName != null && ! newName.equals(name))
+		{
+			name = newName;
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * Test whether the description in descriptionWidget has changed.
+	 * @return true if the description has changed.
+	 */
+	protected boolean isDescriptionChanged()
+	{
+		String newDescription = descriptionWidget.getText();
+
+		if (newDescription != null && ! newDescription.equals(description))
+		{
+			description = newDescription;
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * Validate the data in numberOfHolesWidget.
+	 * @return true if the number of holes has changed.
+	 */
+	protected boolean validateNumberOfHoles()
 	{
 		String number = numberOfHolesWidget.getText();
 
-		numberOfHolesPopulated = (number != null && number.length() > 0);
-		if (numberOfHolesPopulated)
+		if (number == null || number.trim().isEmpty())
 		{
-			Integer newNumberOfHoles = Integer.parseInt(number);
-			if (!newNumberOfHoles.equals(numberOfHoles))
-			{
-				resetTableData(0, 0);
-			}
-			numberOfHoles = newNumberOfHoles;
-		}
-		else
-		{
-			if (numberOfHoles != null)
-			{
-				resetTableData(0, 0);
-			}
-			numberOfHoles = null;
+			JOptionPane.showMessageDialog(this, "Number of holes must be a valid number.");
+			numberOfHolesWidget.setText(numberOfHoles.toString());
+			return false;
 		}
 
-		fireDataStateChanged();
+		Integer newNumberOfHoles = Integer.parseInt(number);
+		if (newNumberOfHoles < 0)
+		{
+			JOptionPane.showMessageDialog(this, "Number of holes must be non-negative.");
+			numberOfHolesWidget.setText(numberOfHoles.toString());
+			return false;
+		}
+		if (newNumberOfHoles.equals(numberOfHoles))
+		{
+			return false;
+		}
+		resetTableData(1, newNumberOfHoles);
+		numberOfHoles = newNumberOfHoles;
+		return true;
 	}
 
-	public int getNumberOfHoles()
+	/**
+	 * Test whether the fingeringList table contains valid fingerings,
+	 * and set fingeringsPopulated accordingly.
+	 */
+	protected void areFingeringsPopulated()
 	{
-		return numberOfHoles;
+		DefaultTableModel model = (DefaultTableModel) fingeringList.getModel();
+		fingeringsPopulated = false;
+
+		for (int i = 0; i < model.getRowCount(); i++)
+		{
+			Fingering value = (Fingering) model.getValueAt(i, 0);
+			if (value != null)
+			{
+				fingeringsPopulated = true;
+				break;
+			}
+		}
 	}
 
 	public void deleteSelectedFingerings()
@@ -233,6 +362,10 @@ public class FingeringPatternPanel extends JPanel implements KeyListener,
 
 	public FingeringPattern getFingeringPattern()
 	{
+		if (! namePopulated || ! fingeringsPopulated)
+		{
+			return null;
+		}
 		FingeringPattern fingerings = new FingeringPattern();
 		fingerings.setName(nameWidget.getText());
 		fingerings.setComment(descriptionWidget.getText());
@@ -256,22 +389,19 @@ public class FingeringPatternPanel extends JPanel implements KeyListener,
 		panel.add(label, gbc);
 
 		nameWidget = new JTextField();
-		nameWidget.addKeyListener(this);
-		nameWidget.setBorder(new LineBorder(Color.BLACK));
-		nameWidget.setPreferredSize(new Dimension(250, 25));
+		nameWidget.addFocusListener(this);
+		nameWidget.setPreferredSize(new Dimension(componentWidth, 20));
+		nameWidget.setMinimumSize(new Dimension(200, 20));
+		nameWidget.setMargin(new Insets(2, 4, 2, 4));
+		nameWidget.setText(name);
 		gbc.gridy = 1;
 		gbc.insets = new Insets(0, 15, 0, 0);
 		panel.add(nameWidget, gbc);
 
-		gbc.anchor = GridBagConstraints.NORTHEAST;
+		gbc.anchor = GridBagConstraints.NORTHWEST;
 		gbc.gridy = 0;
 		gbc.insets = new Insets(0, 0, 10, 10);
 		add(panel, gbc);
-	}
-
-	public void setName(String name)
-	{
-		nameWidget.setText(name);
 	}
 
 	protected void setDescriptionWidget()
@@ -287,27 +417,21 @@ public class FingeringPatternPanel extends JPanel implements KeyListener,
 		panel.add(label, gbc);
 
 		descriptionWidget = new JTextPane();
-		descriptionWidget.setBorder(new LineBorder(Color.BLACK));
-		descriptionWidget.setPreferredSize(new Dimension(250, 75));
+		descriptionWidget.addFocusListener(this);
+		descriptionWidget.setMargin(new Insets(2, 4, 2, 4));
+		descriptionWidget.setBorder(new LineBorder(Color.BLUE));
+		descriptionWidget.setPreferredSize(new Dimension(componentWidth, 65));
+		descriptionWidget.setMinimumSize(new Dimension(200, 20));
+		descriptionWidget.setText(description);
 		gbc.gridy = 1;
 		gbc.insets = new Insets(0, 15, 0, 0);
 		panel.add(descriptionWidget, gbc);
 
-		gbc.anchor = GridBagConstraints.NORTHEAST;
+		gbc.anchor = GridBagConstraints.NORTHWEST;
 		gbc.gridx = 0;
 		gbc.gridy = 1;
 		gbc.insets = new Insets(0, 0, 10, 10);
 		add(panel, gbc);
-	}
-
-	public void setDescription(String description)
-	{
-		descriptionWidget.setText(description);
-	}
-
-	public void setNumberOfHoles(Integer number)
-	{
-		numberOfHolesWidget.setText(number.toString());
 	}
 
 	protected void setNumberWidget()
@@ -323,9 +447,11 @@ public class FingeringPatternPanel extends JPanel implements KeyListener,
 		panel.add(label, gbc);
 
 		numberOfHolesWidget = new JTextField(3);
-		numberOfHolesWidget.addKeyListener(this);
+		numberOfHolesWidget.addFocusListener(this);
 		numberOfHolesWidget.setDocument(new IntegerDocument());
-		numberOfHolesWidget.setBorder(new LineBorder(Color.BLACK));
+		numberOfHolesWidget.setHorizontalAlignment(JTextField.RIGHT);
+		numberOfHolesWidget.setMargin(new Insets(2, 4, 2, 4));
+		numberOfHolesWidget.setText("0");
 		gbc.gridy = 1;
 		gbc.insets = new Insets(0, 15, 0, 0);
 		panel.add(numberOfHolesWidget, gbc);
@@ -351,11 +477,12 @@ public class FingeringPatternPanel extends JPanel implements KeyListener,
 		DefaultTableModel model = new DefaultTableModel();
 		model.addTableModelListener(this);
 		fingeringList = new JideTable(model);
-		resetTableData(0, 0);
+		resetTableData(0, numberOfHoles);
 		fingeringList.setAutoscrolls(true);
 		JScrollPane scrollPane = new JScrollPane(fingeringList);
 		scrollPane.setBorder(new LineBorder(Color.BLACK));
-		scrollPane.setPreferredSize(new Dimension(250, 200));
+		scrollPane.setPreferredSize(new Dimension(componentWidth, 200));
+		scrollPane.setMinimumSize(new Dimension(200, 200));
 		gbc.gridy = 1;
 		gbc.insets = new Insets(0, 15, 0, 0);
 		panel.add(scrollPane, gbc);
@@ -365,6 +492,41 @@ public class FingeringPatternPanel extends JPanel implements KeyListener,
 		gbc.gridy = 3;
 		gbc.insets = new Insets(0, 0, 10, 10);
 		add(panel, gbc);
+	}
+
+	public int getNumberOfHoles()
+	{
+		return numberOfHoles;
+	}
+
+	public void setName(String name)
+	{
+		nameWidget.setText(name);
+		if (isNamePopulated())
+		{
+			fireDataStateChanged();
+		}
+	}
+
+	public void setDescription(String description)
+	{
+		descriptionWidget.setText(description);
+		if (isDescriptionChanged())
+		{
+			fireDataStateChanged();
+		}
+	}
+
+	public void setNumberOfHoles(Integer number)
+	{
+		if (number != null)
+		{
+			numberOfHolesWidget.setText(number.toString());
+			if (validateNumberOfHoles())
+			{
+				fireDataStateChanged();
+			}
+		}
 	}
 
 	public void resetTableData(int numRows, int numHoles)
@@ -413,54 +575,6 @@ public class FingeringPatternPanel extends JPanel implements KeyListener,
 	public void tableChanged(TableModelEvent event)
 	{
 		areFingeringsPopulated();
-	}
-
-	protected void areFingeringsPopulated()
-	{
-		DefaultTableModel model = (DefaultTableModel) fingeringList.getModel();
-		fingeringsPopulated = false;
-
-		for (int i = 0; i < model.getRowCount(); i++)
-		{
-			Fingering value = (Fingering) model.getValueAt(i, 0);
-			if (value != null)
-			{
-				fingeringsPopulated = true;
-				break;
-			}
-		}
-
-		fireDataStateChanged();
-	}
-
-	@Override
-	public void keyPressed(KeyEvent arg0)
-	{
-	}
-
-	@Override
-	public void keyReleased(KeyEvent event)
-	{
-		if (event.getSource().equals(numberOfHolesWidget))
-		{
-			isNumberOfHolesPopulated();
-		}
-		else if (event.getSource().equals(nameWidget))
-		{
-			isNamePopulated();
-		}
-	}
-
-	@Override
-	public void keyTyped(KeyEvent event)
-	{
-	}
-
-	protected void isNamePopulated()
-	{
-		String name = nameWidget.getText();
-
-		namePopulated = (name != null && name.length() > 0);
 		fireDataStateChanged();
 	}
 
@@ -482,10 +596,7 @@ public class FingeringPatternPanel extends JPanel implements KeyListener,
 
 		List<DataPopulatedEvent> events = new ArrayList<DataPopulatedEvent>();
 		DataPopulatedEvent event = new DataPopulatedEvent(this, SAVE_EVENT_ID,
-				namePopulated && numberOfHolesPopulated && fingeringsPopulated);
-		events.add(event);
-		event = new DataPopulatedEvent(this, NEW_EVENT_ID,
-				numberOfHolesPopulated);
+				namePopulated && fingeringsPopulated);
 		events.add(event);
 		for (DataPopulatedEvent thisEvent : events)
 		{

@@ -1,3 +1,21 @@
+/**
+ * JPanel to display and edit tuning scales.
+ * 
+ * Copyright (C) 2014, Edward Kort, Antoine Lefebvre, Burton Patkau.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.wwidesigner.note.view;
 
 import java.awt.Color;
@@ -47,6 +65,7 @@ public class ScalePanel extends JPanel implements KeyListener,
 	private List<DataPopulatedListener> populatedListeners;
 
 	public static final String LOAD_PAGE_ID = "loadData";
+	public static final int DEFAULT_WIDTH = 150;
 
 	public ScalePanel()
 	{
@@ -72,7 +91,8 @@ public class ScalePanel extends JPanel implements KeyListener,
 		nameWidget = new JTextField();
 		nameWidget.addKeyListener(this);
 		nameWidget.setBorder(new LineBorder(Color.BLACK));
-		nameWidget.setPreferredSize(new Dimension(150, 25));
+		nameWidget.setPreferredSize(new Dimension(DEFAULT_WIDTH, 20));
+		nameWidget.setMinimumSize(new Dimension(100, 20));
 		gbc.gridy = 1;
 		gbc.insets = new Insets(0, 15, 0, 0);
 		panel.add(nameWidget, gbc);
@@ -102,7 +122,8 @@ public class ScalePanel extends JPanel implements KeyListener,
 
 		descriptionWidget = new JTextPane();
 		descriptionWidget.setBorder(new LineBorder(Color.BLACK));
-		descriptionWidget.setPreferredSize(new Dimension(150, 75));
+		descriptionWidget.setPreferredSize(new Dimension(DEFAULT_WIDTH, 65));
+		descriptionWidget.setMinimumSize(new Dimension(100, 20));
 		gbc.gridy = 1;
 		gbc.insets = new Insets(0, 15, 0, 0);
 		panel.add(descriptionWidget, gbc);
@@ -138,7 +159,8 @@ public class ScalePanel extends JPanel implements KeyListener,
 		noteTable.setAutoscrolls(true);
 		JScrollPane scrollPane = new JScrollPane(noteTable);
 		scrollPane.setBorder(new LineBorder(Color.BLACK));
-		scrollPane.setPreferredSize(new Dimension(150, 200));
+		scrollPane.setPreferredSize(new Dimension(DEFAULT_WIDTH, 200));
+		scrollPane.setMinimumSize(new Dimension(100, 180));
 		gbc.anchor = GridBagConstraints.NORTHEAST;
 		gbc.gridx = 0;
 		gbc.gridy = 1;

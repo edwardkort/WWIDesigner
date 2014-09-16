@@ -87,13 +87,6 @@ public class StudyView extends DataViewPane implements EventSubscriber
 		scrollPane.setPreferredSize(new Dimension(225, 100));
 		add(scrollPane);
 
-		System.out.println("NafOptimizationRunner");
-		System.out.println("Copyright (C) 2014, Edward Kort, Antoine Lefebvre, Burton Patkau.");
-		System.out.println("This program comes with ABSOLUTELY NO WARRANTY.");
-		System.out.println("This is free software, and you are welcome to redistribute it");
-		System.out.println("under the terms of the GNU General Public License, version 3 or later.");
-		System.out.println();
-
 		Preferences myPreferences = getApplication().getPreferences();
 		String modelName = myPreferences.get(OptimizationPreferences.STUDY_MODEL_OPT,
 				OptimizationPreferences.NAF_STUDY_NAME);

@@ -282,6 +282,10 @@ public class FingeringPatternPanel extends JPanel implements FocusListener,
 	public void deleteSelectedFingerings()
 	{
 		int[] selectedRows = fingeringList.getSelectedRows();
+		if (selectedRows.length == 0)
+		{
+			return;
+		}
 		Arrays.sort(selectedRows);
 
 		DefaultTableModel model = (DefaultTableModel) fingeringList.getModel();
@@ -294,6 +298,12 @@ public class FingeringPatternPanel extends JPanel implements FocusListener,
 	public void deleteUnselectedFingerings()
 	{
 		int[] selectedRows = fingeringList.getSelectedRows();
+		if (selectedRows.length == 0)
+		{
+			// If there are no selected rows, delete nothing
+			// rather than deleting everything.
+			return;
+		}
 		Arrays.sort(selectedRows);
 
 		DefaultTableModel model = (DefaultTableModel) fingeringList.getModel();
@@ -309,18 +319,31 @@ public class FingeringPatternPanel extends JPanel implements FocusListener,
 
 	public void insertFingeringAboveSelection()
 	{
+		if (numberOfHoles == null)
+		{
+			return;
+		}
+		DefaultTableModel model = (DefaultTableModel) fingeringList.getModel();
+		if (model.getRowCount() <= 0)
+		{
+			// If table is empty, we can't select anything.
+			// Insert at the top, and leave nothing selected.
+			model.insertRow(0,
+					new Fingering[] { new Fingering(numberOfHoles) });
+			return;
+		}
 		int[] selectedRows = fingeringList.getSelectedRows();
-		if (selectedRows.length == 0 || numberOfHoles == null)
+		if (selectedRows.length == 0)
 		{
 			return;
 		}
 		Arrays.sort(selectedRows);
 		int topIndex = selectedRows[0];
 
-		DefaultTableModel model = (DefaultTableModel) fingeringList.getModel();
 		model.insertRow(topIndex,
 				new Fingering[] { new Fingering(numberOfHoles) });
 
+		// Re-select the original rows.
 		ListSelectionModel selModel = fingeringList.getSelectionModel();
 		selModel.clearSelection();
 		for (int i = 0; i < selectedRows.length; i++)
@@ -332,16 +355,24 @@ public class FingeringPatternPanel extends JPanel implements FocusListener,
 
 	public void insertFingeringBelowSelection()
 	{
-		int[] selectedRows = fingeringList.getSelectedRows();
-		if (selectedRows.length == 0)
+		if (numberOfHoles == null)
 		{
 			return;
 		}
-		Arrays.sort(selectedRows);
-		int bottomIndex = selectedRows[selectedRows.length - 1];
-
 		DefaultTableModel model = (DefaultTableModel) fingeringList.getModel();
-		model.insertRow(bottomIndex + 1, new Fingering[] { new Fingering(
+		int bottomIndex = 0;		// If table is empty, insert at the top.
+		if (model.getRowCount() > 0)
+		{
+			int[] selectedRows = fingeringList.getSelectedRows();
+			if (selectedRows.length == 0)
+			{
+				return;
+			}
+			Arrays.sort(selectedRows);
+			bottomIndex = selectedRows[selectedRows.length - 1] + 1;
+		}
+
+		model.insertRow(bottomIndex, new Fingering[] { new Fingering(
 				numberOfHoles) });
 	}
 

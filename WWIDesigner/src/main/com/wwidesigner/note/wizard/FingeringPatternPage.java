@@ -98,7 +98,7 @@ public class FingeringPatternPage extends AbstractWizardPage implements
 	{
 		if (fingeringPanel != null)
 		{
-			return fingeringPanel.getFingeringPattern();
+			return fingeringPanel.getData();
 		}
 
 		return null;
@@ -166,7 +166,7 @@ public class FingeringPatternPage extends AbstractWizardPage implements
 				if (state == JFileChooser.APPROVE_OPTION)
 				{
 					File file = chooser.getSelectedFile();
-					fingeringPanel.loadFingeringPattern(file);
+					fingeringPanel.loadFromFile(file);
 				}
 			}
 

@@ -133,7 +133,7 @@ public class TuningViewPane extends DataViewPane implements DataPopulatedListene
 				if (! xmlString.isEmpty())
 				{
 					tuning = (Tuning) noteBindFactory.unmarshalXml(xmlString, true);
-					tuningPanel.populateWidgets(tuning, true);
+					tuningPanel.loadData(tuning, true);
 				}
 			}
 			catch (Exception e)
@@ -154,7 +154,7 @@ public class TuningViewPane extends DataViewPane implements DataPopulatedListene
 			StringWriter writer = new StringWriter();
 			try
 			{
-				tuning = tuningPanel.getFingeringPattern();
+				tuning = tuningPanel.getData();
 				if (tuning != null)
 				{
 					binder.marshalToXml(tuning, writer);

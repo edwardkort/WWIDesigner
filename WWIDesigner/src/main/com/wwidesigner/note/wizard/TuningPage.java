@@ -208,7 +208,7 @@ public class TuningPage extends AbstractWizardPage implements
 				if (state == JFileChooser.APPROVE_OPTION)
 				{
 					File file = chooser.getSelectedFile();
-					tuningPanel.loadFingeringPattern(file);
+					tuningPanel.loadFromFile(file);
 				}
 			}
 
@@ -391,7 +391,7 @@ public class TuningPage extends AbstractWizardPage implements
 						.getPageData(5);
 				if (fingeringPattern != null)
 				{
-					fingeringPanel.populateWidgets(new FingeringPattern(
+					fingeringPanel.loadData(new FingeringPattern(
 							fingeringPattern), false);
 				}
 			}
@@ -412,7 +412,7 @@ public class TuningPage extends AbstractWizardPage implements
 				if (state == JFileChooser.APPROVE_OPTION)
 				{
 					File file = chooser.getSelectedFile();
-					fingeringPanel.loadFingeringPattern(file);
+					fingeringPanel.loadFromFile(file);
 				}
 			}
 

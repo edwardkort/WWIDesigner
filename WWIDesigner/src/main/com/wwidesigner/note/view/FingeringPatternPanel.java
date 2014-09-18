@@ -42,7 +42,7 @@ import javax.swing.border.LineBorder;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableColumn;
 
 import com.jidesoft.grid.JideTable;
@@ -103,7 +103,12 @@ public class FingeringPatternPanel extends JPanel implements FocusListener,
 		this(DEFAULT_WIDTH);
 	}
 
-	public boolean loadFingeringPattern(File file)
+	/**
+	 * Load a fingering pattern from a fingering-pattern XML file.
+	 * @param file - contains XML for a fingering pattern
+	 * @return true if the load was successful
+	 */
+	public boolean loadFromFile(File file)
 	{
 		FingeringPattern fingerings = null;
 
@@ -116,7 +121,7 @@ public class FingeringPatternPanel extends JPanel implements FocusListener,
 						.unmarshalXml(file, true);
 				if (fingerings != null)
 				{
-					populateWidgets(fingerings, true);
+					loadData(fingerings, true);
 					return true;
 				}
 			}
@@ -131,7 +136,7 @@ public class FingeringPatternPanel extends JPanel implements FocusListener,
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public void populateWidgets(FingeringPattern fingerings, boolean isFromFile)
+	public void loadData(FingeringPattern fingerings, boolean isFromFile)
 	{
 		if (fingerings != null)
 		{
@@ -142,6 +147,7 @@ public class FingeringPatternPanel extends JPanel implements FocusListener,
 			numberOfHoles = (Integer) fingerings.getNumberOfHoles();
 			numberOfHolesWidget.setText(numberOfHoles.toString());
 
+			stopTableEditing();
 			fingeringList.getModel().removeTableModelListener(this);
 			resetTableData(0, numberOfHoles);
 			DefaultTableModel model = (DefaultTableModel) fingeringList
@@ -149,8 +155,7 @@ public class FingeringPatternPanel extends JPanel implements FocusListener,
 			fingeringList.setAutoResizeMode(JideTable.AUTO_RESIZE_FILL);
 			fingeringList.setFillsRight(true);
 			TableColumn column = fingeringList.getColumn("Fingering");
-			column.setPreferredWidth(new FingeringComponent(fingerings
-					.getNumberOfHoles()).getPreferredSize().width);
+			column.setPreferredWidth(fingeringList.getPreferredSize().width);
 			for (Fingering fingering : fingerings.getFingering())
 			{
 				Vector row = new Vector();
@@ -230,6 +235,7 @@ public class FingeringPatternPanel extends JPanel implements FocusListener,
 
 	/**
 	 * Validate the data in numberOfHolesWidget.
+	 * If the value is invalid, restore the original value in the widget.
 	 * @return true if the number of holes has changed.
 	 */
 	protected boolean validateNumberOfHoles()
@@ -279,8 +285,18 @@ public class FingeringPatternPanel extends JPanel implements FocusListener,
 		}
 	}
 
+	protected void stopTableEditing()
+	{
+		TableCellEditor editor = fingeringList.getCellEditor();
+		if (editor != null)
+		{
+			editor.stopCellEditing();
+		}
+	}
+
 	public void deleteSelectedFingerings()
 	{
+		stopTableEditing();
 		int[] selectedRows = fingeringList.getSelectedRows();
 		if (selectedRows.length == 0)
 		{
@@ -297,6 +313,7 @@ public class FingeringPatternPanel extends JPanel implements FocusListener,
 
 	public void deleteUnselectedFingerings()
 	{
+		stopTableEditing();
 		int[] selectedRows = fingeringList.getSelectedRows();
 		if (selectedRows.length == 0)
 		{
@@ -323,6 +340,7 @@ public class FingeringPatternPanel extends JPanel implements FocusListener,
 		{
 			return;
 		}
+		stopTableEditing();
 		DefaultTableModel model = (DefaultTableModel) fingeringList.getModel();
 		if (model.getRowCount() <= 0)
 		{
@@ -359,6 +377,7 @@ public class FingeringPatternPanel extends JPanel implements FocusListener,
 		{
 			return;
 		}
+		stopTableEditing();
 		DefaultTableModel model = (DefaultTableModel) fingeringList.getModel();
 		int bottomIndex = 0;		// If table is empty, insert at the top.
 		if (model.getRowCount() > 0)
@@ -378,7 +397,7 @@ public class FingeringPatternPanel extends JPanel implements FocusListener,
 
 	public void saveFingeringPattern(File file)
 	{
-		FingeringPattern fingerings = getFingeringPattern();
+		FingeringPattern fingerings = getData();
 
 		BindFactory bindery = NoteBindFactory.getInstance();
 		try
@@ -391,8 +410,9 @@ public class FingeringPatternPanel extends JPanel implements FocusListener,
 		}
 	}
 
-	public FingeringPattern getFingeringPattern()
+	public FingeringPattern getData()
 	{
+		stopTableEditing();
 		if (! namePopulated || ! fingeringsPopulated)
 		{
 			return null;
@@ -562,32 +582,35 @@ public class FingeringPatternPanel extends JPanel implements FocusListener,
 
 	public void resetTableData(int numRows, int numHoles)
 	{
+		stopTableEditing();
 		DefaultTableModel model = (DefaultTableModel) fingeringList.getModel();
 		model.setDataVector(new Fingering[0][1], new String[] { "Fingering" });
 		fingeringList.setFillsGrids(false);
-		TableCellRenderer renderer = new FingeringRenderer();
+		FingeringRenderer renderer = new FingeringRenderer(numHoles);
 		TableColumn column = fingeringList.getColumn("Fingering");
 		column.setCellRenderer(renderer);
 		column.setCellEditor(new FingeringEditor());
+		column.setPreferredWidth(renderer.getPreferredSize().width);
+		column.setMinWidth(renderer.getMinimumSize().width);
+		fingeringList.setRowHeight(renderer.getPreferredSize().height);
 		if (numRows > 0)
 		{
 			fingeringList.setAutoResizeMode(JideTable.AUTO_RESIZE_FILL);
 			fingeringList.setFillsRight(true);
-			column.setPreferredWidth(new FingeringComponent(numHoles == 0 ? 1
-					: numHoles).getPreferredSize().width);
+			column.setPreferredWidth(renderer.getPreferredSize().width);
 			for (int i = 0; i < numRows; i++)
 			{
 				model.addRow(new Fingering[] { new Fingering(numHoles) });
 			}
 		}
-		fingeringList.setRowHeight(((FingeringRenderer) renderer)
-				.getPreferredSize().height);
+		fingeringList.setRowHeight(renderer.getPreferredSize().height);
 
 		areFingeringsPopulated();
 	}
 
 	protected List<Fingering> getTableData()
 	{
+		stopTableEditing();
 		DefaultTableModel model = (DefaultTableModel) fingeringList.getModel();
 		ArrayList<Fingering> data = new ArrayList<Fingering>();
 

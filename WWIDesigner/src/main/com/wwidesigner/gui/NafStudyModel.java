@@ -32,7 +32,7 @@ import com.wwidesigner.note.Tuning;
 import com.wwidesigner.optimization.BaseObjectiveFunction;
 import com.wwidesigner.optimization.FippleFactorObjectiveFunction;
 import com.wwidesigner.optimization.HoleFromTopObjectiveFunction;
-import com.wwidesigner.optimization.HoleGroupObjectiveFunction;
+import com.wwidesigner.optimization.HoleGroupFromTopObjectiveFunction;
 import com.wwidesigner.optimization.HoleSizeObjectiveFunction;
 import com.wwidesigner.optimization.SingleTaperHoleGroupObjectiveFunction;
 import com.wwidesigner.optimization.SingleTaperNoHoleGroupingFromTopObjectiveFunction;
@@ -184,7 +184,7 @@ public class NafStudyModel extends StudyModel
 		InstrumentCalculator calculator = getCalculator();
 		calculator.setInstrument(instrument);
 		EvaluatorInterface evaluator = new CentDeviationEvaluator(calculator);
-//		EvaluatorInterface evaluator = new ReflectionEvaluator(calculator);
+		// EvaluatorInterface evaluator = new ReflectionEvaluator(calculator);
 		int numberOfHoles = instrument.getHole().size();
 
 		BaseObjectiveFunction objective = null;
@@ -294,38 +294,39 @@ public class NafStudyModel extends StudyModel
 				else if (numberOfHoles == 7)
 				{
 					holeGroups = new int[][] { { 0, 1, 2 }, { 3, 4, 5 }, { 6 } };
-					lowerBound = new double[] { 0.2, 0.0203, 0.0203, 0.0203,
-							0.0005, 0.012, 0.002, 0.002, 0.002, 0.002, 0.002,
-							0.002, 0.002 };
-					upperBound = new double[] { 0.7, 0.05, 0.05, 0.1, 0.003,
-							0.30, 0.014, 0.014, 0.014, 0.014, 0.014, 0.008,
+					lowerBound = new double[] { 0.2, minTopHoleRatio, 0.0203,
+							0.0203, 0.0203, 0.0005, 0.002, 0.002, 0.002, 0.002,
+							0.002, 0.002, 0.002 };
+					upperBound = new double[] { 0.7, 1.0, 0.05, 0.05, 0.1,
+							0.003, 0.014, 0.014, 0.014, 0.014, 0.014, 0.008,
 							0.008 };
 				}
 				else
 				{
 					holeGroups = new int[][] { { 0, 1, 2 }, { 3, 4, 5 } };
-					lowerBound = new double[] { 0.2, 0.0203, 0.0203, 0.0203,
-							0.01, 0.002, 0.003, 0.003, 0.003, 0.003, 0.003 };
-					upperBound = new double[] { 0.7, 0.038, 0.07, 0.038, 0.30,
+					lowerBound = new double[] { 0.2, minTopHoleRatio, 0.0203,
+							0.0203, 0.0203, 0.002, 0.003, 0.003, 0.003, 0.003,
+							0.003 };
+					upperBound = new double[] { 0.7, 1.0, 0.038, 0.07, 0.038,
 							0.0102, 0.0102, 0.010, 0.010, 0.010, 0.012 };
 					if (constraint == HOLE_6_1_125_SPACING_CONS_SUB_CATEGORY_ID)
 					{
-						upperBound[1] = 0.029;
-						upperBound[3] = 0.029;
+						upperBound[2] = 0.029;
+						upperBound[4] = 0.029;
 					}
 					else if (constraint == HOLE_6_1_25_SPACING_CONS_SUB_CATEGORY_ID)
 					{
-						upperBound[1] = 0.032;
-						upperBound[3] = 0.032;
+						upperBound[2] = 0.032;
+						upperBound[4] = 0.032;
 					}
 					else if (constraint == HOLE_6_40_SPACING_CONS_SUB_CATEGORY_ID)
 					{
-						upperBound[1] = 0.0356;
-						upperBound[3] = 0.0356;
+						upperBound[2] = 0.0356;
+						upperBound[4] = 0.0356;
 					}
 				}
-				objective = new HoleGroupObjectiveFunction(calculator, tuning,
-						evaluator, holeGroups);
+				objective = new HoleGroupFromTopObjectiveFunction(calculator,
+						tuning, evaluator, holeGroups);
 				break;
 			case TAPER_NO_GROUP_OPT_SUB_CATEGORY_ID:
 				// Length bounds are expressed in meters, diameter bounds as
@@ -464,16 +465,15 @@ public class NafStudyModel extends StudyModel
 	public void setPreferences(Preferences newPreferences)
 	{
 		super.setPreferences(newPreferences);
-		minTopHoleRatio = newPreferences
-				.getDouble(
-						OptimizationPreferences.MIN_TOP_HOLE_RATIO_OPT,
-						OptimizationPreferences.DEFAULT_MIN_TOP_HOLE_RATIO);
+		minTopHoleRatio = newPreferences.getDouble(
+				OptimizationPreferences.MIN_TOP_HOLE_RATIO_OPT,
+				OptimizationPreferences.DEFAULT_MIN_TOP_HOLE_RATIO);
 		System.out
 				.printf("%s is %5.3f.\n",
 						OptimizationPreferences.MIN_TOP_HOLE_RATIO_OPT,
 						minTopHoleRatio);
 	}
-	
+
 	public void setMinTopHoleRatio(double minRatio)
 	{
 		this.minTopHoleRatio = minRatio;

@@ -9,6 +9,22 @@ import com.wwidesigner.note.TuningInterface;
 
 /**
  * Optimization objective function for bore length and hole positions:
+ * 
+ * Copyright (C) 2014, Edward Kort, Antoine Lefebvre, Burton Patkau.
+ *
+ * This program is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option) any later
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * this program. If not, see <http://www.gnu.org/licenses/>.
+ * 
  * <ul>
  * <li>Position of end bore point.</li>
  * <li>Position of top hole as fraction of bore length.</li>
@@ -53,7 +69,7 @@ public class HolePositionFromTopObjectiveFunction extends
 			geometry[i + 1] = hole.getBorePosition() - priorHolePosition;
 			if (i == 0)
 			{
-				geometry[i + 1] /= geometry[0];
+				geometry[i + 1] = getTopRatio(geometry[0], geometry[1]);
 			}
 			priorHolePosition = hole.getBorePosition();
 		}
@@ -80,13 +96,50 @@ public class HolePositionFromTopObjectiveFunction extends
 			double holePosition = priorHolePosition + point[i + 1];
 			if (i == 0)
 			{
-				holePosition *= point[0];
+				holePosition = getTopPosition(point[0], holePosition);
 			}
 			hole.setBorePosition(holePosition);
 			priorHolePosition = holePosition;
 		}
 
 		calculator.getInstrument().updateComponents();
+	}
+
+	/**
+	 * Calculates to top hole position as a ratio to the bore length. Top hole
+	 * ratio is measured from the splitting edge for both numerator and
+	 * denominator.
+	 * 
+	 * @param boreLength
+	 * @param topHolePosition
+	 * @return ratio
+	 */
+	private double getTopRatio(double boreLength, double topHolePosition)
+	{
+		double realOrigin = calculator.getInstrument().getMouthpiece()
+				.getPosition();
+
+		return (topHolePosition - realOrigin) / (boreLength - realOrigin);
+	}
+
+	/**
+	 * 
+	 * @param boreLength
+	 *            Measured from arbitrary origin
+	 * @param topHoleRatio
+	 *            Ratio of top hole position to bore length, both measured from
+	 *            splitting edge
+	 * @return Top hole position, measured from arbitrary origin
+	 */
+	private double getTopPosition(double boreLength, double topHoleRatio)
+	{
+		double realOrigin = calculator.getInstrument().getMouthpiece()
+				.getPosition();
+
+		double boreLengthFromEdge = boreLength - realOrigin;
+		double topHolePosition = topHoleRatio * boreLengthFromEdge + realOrigin;
+
+		return topHolePosition;
 	}
 
 	protected void setConstraints()

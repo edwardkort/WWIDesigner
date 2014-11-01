@@ -35,6 +35,7 @@ public class HoleGroupPositionObjectiveFunction extends BaseObjectiveFunction
 	public static final ConstraintType CONSTR_TYPE = ConstraintType.DIMENSIONAL;
 
 	protected int[][] holeGroups;
+	protected int numberOfHoles;
 	protected int numberOfHoleSpaces;
 	// For each hole, the geometry dimension that identifies spacing after this
 	// hole.
@@ -54,7 +55,7 @@ public class HoleGroupPositionObjectiveFunction extends BaseObjectiveFunction
 
 	public void setHoleGroups(int[][] groups) throws Exception
 	{
-		int numberOfHoles = getNumberOfHoles();
+		numberOfHoles = getNumberOfHoles();
 
 		if (numberOfHoles > 0)
 		{
@@ -135,7 +136,7 @@ public class HoleGroupPositionObjectiveFunction extends BaseObjectiveFunction
 		nrDimensions = 1 + numberOfHoleSpaces;
 	}
 
-	private int getNumberOfHoles()
+	protected int getNumberOfHoles()
 	{
 		numberOfHoleSpaces = 0;
 		int numberOfHoles = calculator.getInstrument().getHole().size();
@@ -151,7 +152,7 @@ public class HoleGroupPositionObjectiveFunction extends BaseObjectiveFunction
 		return numberOfHoles;
 	}
 
-	private void computeDimensionByHole(int numberOfHoles)
+	protected void computeDimensionByHole(int numberOfHoles)
 	{
 		dimensionByHole = new int[numberOfHoles];
 		groupSize = new double[numberOfHoles];
@@ -217,7 +218,7 @@ public class HoleGroupPositionObjectiveFunction extends BaseObjectiveFunction
 		constraints.setObjectiveDisplayName("Grouped hole-spacing optimizer");
 	}
 
-	private String getHoleNameFromGroup(int groupIdx, boolean firstHole,
+	protected String getHoleNameFromGroup(int groupIdx, boolean firstHole,
 			PositionInterface[] sortedHoles)
 	{
 		String name;
@@ -239,7 +240,7 @@ public class HoleGroupPositionObjectiveFunction extends BaseObjectiveFunction
 		return name;
 	}
 
-	private String getGroupName(int groupIdx, PositionInterface[] sortedHoles)
+	protected String getGroupName(int groupIdx, PositionInterface[] sortedHoles)
 	{
 		String name = "";
 
@@ -272,7 +273,7 @@ public class HoleGroupPositionObjectiveFunction extends BaseObjectiveFunction
 	/**
 	 * @return The position of the farthest bore point.
 	 */
-	private double getEndOfBore()
+	protected double getEndOfBore()
 	{
 		List<BorePoint> boreList = calculator.getInstrument().getBorePoint();
 		double endPosition = boreList.get(0).getBorePosition();
@@ -317,6 +318,27 @@ public class HoleGroupPositionObjectiveFunction extends BaseObjectiveFunction
 	@Override
 	public void setGeometryPoint(double[] point)
 	{
+		setBore(point);
+		
+		PositionInterface[] sortedHoles = Instrument.sortList(calculator
+				.getInstrument().getHole());
+
+		// Geometry dimensions are distances between holes.
+		// Final dimension is distance between last hole and end of bore.
+		// Position the holes from bottom to top.
+		double priorHolePosition = getEndOfBore();
+
+		for (int i = sortedHoles.length - 1; i >= 0; --i)
+		{
+			Hole hole = (Hole) sortedHoles[i];
+			hole.setBorePosition(priorHolePosition - point[dimensionByHole[i]]);
+			priorHolePosition = hole.getBorePosition();
+		}
+		calculator.getInstrument().updateComponents();
+	}
+
+	protected void setBore(double[] point)
+	{
 		if (point.length != nrDimensions)
 		{
 			throw new DimensionMismatchException(point.length, nrDimensions);
@@ -343,22 +365,6 @@ public class HoleGroupPositionObjectiveFunction extends BaseObjectiveFunction
 				boreList, point[0]);
 		endPoint.setBorePosition(point[0]);
 		endPoint.setBoreDiameter(endDiameter);
-
-		PositionInterface[] sortedHoles = Instrument.sortList(calculator
-				.getInstrument().getHole());
-
-		// Geometry dimensions are distances between holes.
-		// Final dimension is distance between last hole and end of bore.
-		// Position the holes from bottom to top.
-		double priorHolePosition = getEndOfBore();
-
-		for (int i = sortedHoles.length - 1; i >= 0; --i)
-		{
-			Hole hole = (Hole) sortedHoles[i];
-			hole.setBorePosition(priorHolePosition - point[dimensionByHole[i]]);
-			priorHolePosition = hole.getBorePosition();
-		}
-		calculator.getInstrument().updateComponents();
 	}
 
 }

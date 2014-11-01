@@ -178,8 +178,8 @@ public class HoleGroupSpacingOptimizerTest extends AbstractOptimizationTest
 	{
 		HoleGroupSpacingOptimizerTest test = new HoleGroupSpacingOptimizerTest();
 		test.testNoGroupingGordon();
-		test.testNoGroupingNAF();
 		test.test2GroupingGordon();
+		test.testNoGroupingNAF();
 		test.test2GroupingNAF();
 	}
 }

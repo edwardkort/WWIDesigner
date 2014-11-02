@@ -1,17 +1,12 @@
 package com.wwidesigner.optimization;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 import static org.junit.Assert.assertNotEquals;
-
-import java.util.List;
+import static org.junit.Assert.fail;
 
 import org.junit.Test;
 
-import com.wwidesigner.geometry.BorePoint;
-import com.wwidesigner.geometry.Hole;
 import com.wwidesigner.geometry.Instrument;
-import com.wwidesigner.geometry.PositionInterface;
 import com.wwidesigner.modelling.CentDeviationEvaluator;
 import com.wwidesigner.modelling.NAFCalculator;
 import com.wwidesigner.optimization.gui.ConstraintsDialog;
@@ -453,29 +448,6 @@ public class HoleGroupSpacingFromTopTest extends AbstractOptimizationTest
 		{
 			System.out.print(e.getMessage());
 		}
-	}
-
-	private double getTopHolePosition(Instrument instrument)
-	{
-		PositionInterface[] sortedHoles = Instrument.sortList(instrument
-				.getHole());
-		Hole topHole = (Hole) sortedHoles[0];
-		double holePosition = topHole.getBorePosition();
-
-		return holePosition;
-	}
-
-	/**
-	 * @param optimizedInstrument
-	 */
-	private double getBoreLength(Instrument instrument)
-	{
-		List<BorePoint> borePoints = instrument.getBorePoint();
-		PositionInterface[] sortedPoints = Instrument.sortList(borePoints);
-		PositionInterface lastPoint = sortedPoints[sortedPoints.length - 1];
-		double boreLength = lastPoint.getBorePosition();
-
-		return boreLength;
 	}
 
 	public static void main(String[] args)

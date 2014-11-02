@@ -34,7 +34,7 @@ import com.wwidesigner.optimization.FippleFactorObjectiveFunction;
 import com.wwidesigner.optimization.HoleFromTopObjectiveFunction;
 import com.wwidesigner.optimization.HoleGroupFromTopObjectiveFunction;
 import com.wwidesigner.optimization.HoleSizeObjectiveFunction;
-import com.wwidesigner.optimization.SingleTaperHoleGroupObjectiveFunction;
+import com.wwidesigner.optimization.SingleTaperHoleGroupFromTopObjectiveFunction;
 import com.wwidesigner.optimization.SingleTaperNoHoleGroupingFromTopObjectiveFunction;
 import com.wwidesigner.optimization.multistart.GridRangeProcessor;
 import com.wwidesigner.util.Constants.TemperatureType;
@@ -400,39 +400,39 @@ public class NafStudyModel extends StudyModel
 				else if (numberOfHoles == 7)
 				{
 					holeGroups = new int[][] { { 0, 1, 2 }, { 3, 4, 5 }, { 6 } };
-					lowerBound = new double[] { 0.2, 0.0203, 0.0203, 0.0203,
-							0.0005, 0.012, 0.002, 0.002, 0.002, 0.002, 0.002,
-							0.002, 0.002, 0.8, 0.2, 0.0 };
-					upperBound = new double[] { 0.7, 0.05, 0.05, 0.1, 0.003,
-							0.30, 0.014, 0.014, 0.014, 0.014, 0.014, 0.008,
+					lowerBound = new double[] { 0.2, minTopHoleRatio, 0.0203,
+							0.0203, 0.0203, 0.0005, 0.002, 0.002, 0.002, 0.002,
+							0.002, 0.002, 0.002, 0.8, 0.2, 0.0 };
+					upperBound = new double[] { 0.7, 1.0, 0.05, 0.05, 0.1,
+							0.003, 0.014, 0.014, 0.014, 0.014, 0.014, 0.008,
 							0.008, 1.2, 1.0, 1.0 };
 				}
 				else
 				{
 					holeGroups = new int[][] { { 0, 1, 2 }, { 3, 4, 5 } };
-					lowerBound = new double[] { 0.2, 0.0203, 0.0203, 0.0203,
-							0.01, 0.002, 0.003, 0.003, 0.003, 0.003, 0.003,
-							0.8, 0.2, 0.0 };
-					upperBound = new double[] { 0.7, 0.038, 0.07, 0.038, 0.30,
+					lowerBound = new double[] { 0.2, minTopHoleRatio, 0.0203,
+							0.0203, 0.0203, 0.002, 0.003, 0.003, 0.003, 0.003,
+							0.003, 0.8, 0.2, 0.0 };
+					upperBound = new double[] { 0.7, 1.0, 0.038, 0.07, 0.038,
 							0.0102, 0.0102, 0.010, 0.010, 0.010, 0.012, 1.2,
 							1.0, 1.0 };
 					if (constraint == HOLE_6_1_125_SPACING_CONS_SUB_CATEGORY_ID)
 					{
-						upperBound[1] = 0.029;
-						upperBound[3] = 0.029;
+						upperBound[2] = 0.029;
+						upperBound[4] = 0.029;
 					}
 					else if (constraint == HOLE_6_1_25_SPACING_CONS_SUB_CATEGORY_ID)
 					{
-						upperBound[1] = 0.032;
-						upperBound[3] = 0.032;
+						upperBound[2] = 0.032;
+						upperBound[4] = 0.032;
 					}
 					else if (constraint == HOLE_6_40_SPACING_CONS_SUB_CATEGORY_ID)
 					{
-						upperBound[1] = 0.0356;
-						upperBound[3] = 0.0356;
+						upperBound[2] = 0.0356;
+						upperBound[4] = 0.0356;
 					}
 				}
-				objective = new SingleTaperHoleGroupObjectiveFunction(
+				objective = new SingleTaperHoleGroupFromTopObjectiveFunction(
 						calculator, tuning, evaluator, holeGroups);
 				break;
 		}

@@ -6,7 +6,12 @@ package com.wwidesigner.optimization;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.OutputStreamWriter;
+import java.util.List;
+
+import com.wwidesigner.geometry.BorePoint;
+import com.wwidesigner.geometry.Hole;
 import com.wwidesigner.geometry.Instrument;
+import com.wwidesigner.geometry.PositionInterface;
 import com.wwidesigner.geometry.bind.GeometryBindFactory;
 import com.wwidesigner.modelling.EvaluatorInterface;
 import com.wwidesigner.modelling.InstrumentCalculator;
@@ -175,6 +180,26 @@ public class AbstractOptimizationTest
 		File inputFile = new File(inputPath);
 
 		return inputFile;
+	}
+
+	protected static double getTopHolePosition(Instrument instrument)
+	{
+		PositionInterface[] sortedHoles = Instrument.sortList(instrument
+				.getHole());
+		Hole topHole = (Hole) sortedHoles[0];
+		double holePosition = topHole.getBorePosition();
+
+		return holePosition;
+	}
+
+	protected static double getBoreLength(Instrument instrument)
+	{
+		List<BorePoint> borePoints = instrument.getBorePoint();
+		PositionInterface[] sortedPoints = Instrument.sortList(borePoints);
+		PositionInterface lastPoint = sortedPoints[sortedPoints.length - 1];
+		double boreLength = lastPoint.getBorePosition();
+
+		return boreLength;
 	}
 
 }

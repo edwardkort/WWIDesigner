@@ -181,14 +181,19 @@ public class HoleGroupPositionFromTopObjectiveFunction extends
 		constraints.addConstraint(new Constraint(CONSTR_CAT, "Bore length",
 				CONSTR_TYPE));
 
-		String constraintName = "Ratio, from splitting edge, of top-hole position to bore length";
-		constraints.addConstraint(new Constraint(CONSTR_CAT, constraintName,
-				Constraint.ConstraintType.DIMENSIONLESS));
-
+		String constraintName = "";
 		PositionInterface[] sortedHoles = Instrument.sortList(calculator
 				.getInstrument().getHole());
 		for (int groupIdx = 0; groupIdx < holeGroups.length; groupIdx++)
 		{
+			if (groupIdx == 0)
+			{
+				constraintName = "Ratio, from splitting edge, of top-hole position to bore length";
+				constraints
+						.addConstraint(new Constraint(CONSTR_CAT,
+								constraintName,
+								Constraint.ConstraintType.DIMENSIONLESS));
+			}
 			boolean isGroup = holeGroups[groupIdx].length > 1;
 			String firstGroupName = getGroupName(groupIdx, sortedHoles);
 			if (isGroup)

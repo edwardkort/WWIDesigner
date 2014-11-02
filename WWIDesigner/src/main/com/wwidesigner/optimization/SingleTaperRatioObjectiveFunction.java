@@ -45,9 +45,10 @@ public class SingleTaperRatioObjectiveFunction extends BaseObjectiveFunction
 		constraints.addConstraint(new Constraint(CONSTR_CAT,
 				"Bore diameter ratio (top/bottom)", CONSTR_TYPE));
 		constraints.addConstraint(new Constraint(CONSTR_CAT,
-				"Taper length ratio (to bore length)", CONSTR_TYPE));
+				"Taper length ratio to bore length", CONSTR_TYPE));
 		constraints.addConstraint(new Constraint(CONSTR_CAT,
-				"Taper start ratio (from top/untapered length)", CONSTR_TYPE));
+				"Untapered top length ratio to total untapered length",
+				CONSTR_TYPE));
 		constraints.setNumberOfHoles(calculator.getInstrument().getHole()
 				.size());
 		constraints

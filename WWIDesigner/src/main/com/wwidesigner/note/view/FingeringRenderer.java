@@ -52,7 +52,7 @@ public class FingeringRenderer extends JPanel implements TableCellRenderer
 	protected static final float NORMAL_STROKE_WIDTH = 1.0f;
 	protected static final float BOLD_STROKE_WIDTH = 3.0f;
 	protected static final Color NORMAL_COLOR = Color.BLACK;
-	protected static final Color EDIT_COLOR = Color.RED;
+	protected static final Color EDIT_COLOR = Color.BLUE;
 
 	protected JRadioButton[] mHoles = {};
 	protected JPanel mButtonPanel = new JPanel();

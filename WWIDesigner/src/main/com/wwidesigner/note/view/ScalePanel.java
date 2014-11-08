@@ -48,7 +48,7 @@ import com.wwidesigner.gui.util.DataPopulatedEvent;
 import com.wwidesigner.gui.util.DataPopulatedListener;
 import com.wwidesigner.gui.util.DoubleCellRenderer;
 import com.wwidesigner.gui.util.NoOpTransferHandler;
-import com.wwidesigner.gui.util.StringDoubleTableModel;
+import com.wwidesigner.gui.util.NumericTableModel;
 import com.wwidesigner.gui.util.TableSourceRowTransferHandler;
 import com.wwidesigner.note.Scale;
 import com.wwidesigner.note.bind.NoteBindFactory;
@@ -151,7 +151,7 @@ public class ScalePanel extends JPanel implements KeyListener,
 		gbc.gridy = 0;
 		panel.add(label, gbc);
 
-		DefaultTableModel model = new StringDoubleTableModel();
+		DefaultTableModel model = new NumericTableModel();
 		model.addTableModelListener(this);
 		noteTable = new JTable(model);
 		setTableCellSelectionEnabled(true);

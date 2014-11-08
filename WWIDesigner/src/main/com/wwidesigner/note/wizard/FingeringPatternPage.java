@@ -117,8 +117,7 @@ public class FingeringPatternPage extends AbstractWizardPage implements
 			{
 				fingeringPanel.setName(null);
 				fingeringPanel.setDescription(null);
-				int numHoles = fingeringPanel.getNumberOfHoles();
-				fingeringPanel.resetTableData(1, numHoles);
+				fingeringPanel.resetTableData(1);
 			}
 		});
 		newButton.setEnabled(true);

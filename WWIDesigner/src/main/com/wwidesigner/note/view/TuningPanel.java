@@ -25,22 +25,18 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Vector;
-
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.ListSelectionModel;
 import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 
 import com.jidesoft.grid.JideTable;
 import com.wwidesigner.gui.util.NoOpTransferHandler;
-import com.wwidesigner.gui.util.StringDoubleTableModel;
+import com.wwidesigner.gui.util.NumericTableModel;
 import com.wwidesigner.note.Fingering;
 import com.wwidesigner.note.FingeringPattern;
 import com.wwidesigner.note.Note;
@@ -52,11 +48,30 @@ public class TuningPanel extends FingeringPatternPanel
 {
 	/**
 	 * Create a panel with components of a specified preferred width.
+	 * Optionally include columns for min and max frequency.
+	 * @param componentWidth - preferred width of display/edit components.
+	 */
+	public TuningPanel(int width, boolean withMinMax)
+	{
+		super( width );
+		if (withMinMax)
+		{
+			this.numberOfColumns = 5;
+		}
+		else
+		{
+			this.numberOfColumns = 3;
+		}
+	}
+
+	/**
+	 * Create a panel with components of a specified preferred width.
 	 * @param componentWidth - preferred width of display/edit components.
 	 */
 	public TuningPanel(int width)
 	{
 		super( width );
+		this.numberOfColumns = 3;
 	}
 
 	/**
@@ -65,64 +80,56 @@ public class TuningPanel extends FingeringPatternPanel
 	public TuningPanel()
 	{
 		super();
+		this.numberOfColumns = 3;
 	}
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
-	public void loadData(FingeringPattern fingerings, boolean isFromFile)
+	protected String[] columnNames()
 	{
-		if (fingerings != null)
+		if (numberOfColumns == 5)
 		{
-			name = fingerings.getName();
-			nameWidget.setText(name);
-			description = fingerings.getComment();
-			descriptionWidget.setText(description);
-			numberOfHoles = (Integer) fingerings.getNumberOfHoles();
-			numberOfHolesWidget.setText(numberOfHoles.toString());
+			return (new String[] { "Symbol", "Frequency",
+					"Min Freq", "Max Freq", "Fingering" });
+		}
+		return (new String[] { "Symbol", "Frequency", "Fingering" });
+	}
 
-			stopTableEditing();
-			fingeringList.getModel().removeTableModelListener(this);
-			resetTableData(0, numberOfHoles);
-			DefaultTableModel model = (DefaultTableModel) fingeringList
-					.getModel();
-			fingeringList.setAutoResizeMode(JideTable.AUTO_RESIZE_FILL);
-			fingeringList.setFillsRight(true);
-			fingeringList.setCellSelectionEnabled(true);
-			for (Fingering fingering : fingerings.getFingering())
-			{
-				Vector row = new Vector();
-				Note note = fingering.getNote();
-				row.add(note.getName());
-				row.add(note.getFrequency());
-				row.add(fingering);
-				model.addRow(row);
-			}
-			fingeringList.getModel().addTableModelListener(this);
+	@Override
+	protected Object[] emptyRow()
+	{
+		if (numberOfColumns == 5)
+		{
+			return (new Object[] {null, null, null, null, new Fingering(numberOfHoles) });
+		}
+		return (new Object[] {null, null, new Fingering(numberOfHoles) });
+	}
 
-			isNamePopulated();
-			areFingeringsPopulated();
-			if (! isFromFile)
+	@Override
+	protected Object[] rowData(Fingering fingering)
+	{
+		Object[] newRow;
+		if (numberOfColumns == 5)
+		{
+			newRow = new Object[] {null, null, null, null, fingering};
+		}
+		else
+		{
+			newRow = new Object[] {null, null, fingering};
+		}
+
+		if (fingering.getNote() != null)
+		{
+			newRow[0] = fingering.getNote().getName();
+			newRow[1] = fingering.getNote().getFrequency();
+			if (numberOfColumns == 5)
 			{
-				fireDataStateChanged();
+				newRow[2] = fingering.getNote().getFrequencyMin();
+				newRow[3] = fingering.getNote().getFrequencyMax();
 			}
 		}
+		
+		return newRow;
 	}
-
-	// @Override
-	// public void saveFingeringPattern(File file)
-	// {
-	// Tuning tuning = (Tuning) getFingeringPattern();
-	//
-	// BindFactory bindery = NoteBindFactory.getInstance();
-	// try
-	// {
-	// bindery.marshalToXml(tuning, file);
-	// }
-	// catch (Exception ex)
-	// {
-	// JOptionPane.showMessageDialog(getParent(), "Save failed: " + ex);
-	// }
-	// }
 
 	@Override
 	public boolean loadFromFile(File file)
@@ -151,9 +158,45 @@ public class TuningPanel extends FingeringPatternPanel
 		return false;
 	}
 
+	
+	/* (non-Javadoc)
+	 * @see com.wwidesigner.note.view.FingeringPatternPanel#loadData(com.wwidesigner.note.FingeringPattern, boolean)
+	 */
+	@Override
+	public void loadData(FingeringPattern fingerings, boolean isFromFile)
+	{
+		if (hasMinMax(fingerings))
+		{
+			// If the tuning has min or max frequency data, display it.
+			numberOfColumns = 5;
+		}
+		super.loadData(fingerings, isFromFile);
+	}
+
+	/**
+	 * Test whether a tuning has min/max frequency data.
+	 */
+	static protected boolean hasMinMax(FingeringPattern fingerings)
+	{
+		for (Fingering fingering : fingerings.getFingering())
+		{
+			Note note = fingering.getNote();
+			if (note != null)
+			{
+				if (note.getFrequencyMin() != null
+					|| note.getFrequencyMax() != null)
+				{
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
 	@Override
 	public Tuning getData()
 	{
+		stopTableEditing();
 		if (! namePopulated || ! fingeringsPopulated)
 		{
 			return null;
@@ -181,10 +224,10 @@ public class TuningPanel extends FingeringPatternPanel
 		gbc.gridy = 0;
 		panel.add(label, gbc);
 
-		DefaultTableModel model = new StringDoubleTableModel();
+		DefaultTableModel model = new NumericTableModel(String.class,Fingering.class);
 		model.addTableModelListener(this);
 		fingeringList = new JideTable(model);
-		resetTableData(0, numberOfHoles);
+		resetTableData(0);
 		fingeringList.setAutoscrolls(true);
 		JScrollPane scrollPane = new JScrollPane(fingeringList);
 		scrollPane.setBorder(new LineBorder(Color.BLACK));
@@ -205,35 +248,6 @@ public class TuningPanel extends FingeringPatternPanel
 	}
 
 	@Override
-	public void resetTableData(int numRows, int numHoles)
-	{
-		stopTableEditing();
-		DefaultTableModel model = (DefaultTableModel) fingeringList.getModel();
-		model.setDataVector(new Object[0][3], new String[] { "Symbol",
-				"Frequency", "Fingering" });
-		fingeringList.setFillsGrids(false);
-		FingeringRenderer renderer = new FingeringRenderer(numHoles);
-		TableColumn column = fingeringList.getColumn("Fingering");
-		column.setCellRenderer(renderer);
-		column.setCellEditor(new FingeringEditor());
-		column.setPreferredWidth(renderer.getPreferredSize().width);
-		column.setMinWidth(renderer.getMinimumSize().width);
-		fingeringList.setRowHeight(renderer.getPreferredSize().height);
-		if (numRows > 0)
-		{
-			fingeringList.setAutoResizeMode(JideTable.AUTO_RESIZE_FILL);
-			fingeringList.setFillsRight(true);
-			column.setPreferredWidth(renderer.getPreferredSize().width);
-			for (int i = 0; i < numRows; i++)
-			{
-				model.addRow(new Object[] { null, null, new Fingering(numHoles) });
-			}
-		}
-
-		areFingeringsPopulated();
-	}
-
-	@Override
 	protected List<Fingering> getTableData()
 	{
 		stopTableEditing();
@@ -251,11 +265,15 @@ public class TuningPanel extends FingeringPatternPanel
 			}
 			note.setName(name.trim());
 			Double freq = (Double) model.getValueAt(i, 1);
-			if (freq != null)
+			note.setFrequency(freq);
+			if (numberOfColumns == 5)
 			{
-				note.setFrequency(freq);
+				freq = (Double) model.getValueAt(i, 2);
+				note.setFrequencyMin(freq);
+				freq = (Double) model.getValueAt(i, 3);
+				note.setFrequencyMax(freq);
 			}
-			Fingering value = (Fingering) model.getValueAt(i, 2);
+			Fingering value = (Fingering) model.getValueAt(i, numberOfColumns - 1);
 			if (value != null)
 			{
 				value.setNote(note);
@@ -274,7 +292,7 @@ public class TuningPanel extends FingeringPatternPanel
 		for (int i = 0; i < model.getRowCount(); i++)
 		{
 			String noteName = (String) model.getValueAt(i, 0);
-			Fingering fingering = (Fingering) model.getValueAt(i, 2);
+			Fingering fingering = (Fingering) model.getValueAt(i, numberOfColumns - 1);
 			if ( noteName != null && noteName.trim().length() > 0
 					&& fingering != null)
 			{
@@ -292,69 +310,6 @@ public class TuningPanel extends FingeringPatternPanel
 		numberOfHolesWidget.setTransferHandler(new NoOpTransferHandler());
 	}
 
-	@Override
-	public void insertFingeringAboveSelection()
-	{
-		if (numberOfHoles == null)
-		{
-			return;
-		}
-		stopTableEditing();
-		DefaultTableModel model = (DefaultTableModel) fingeringList.getModel();
-		if (model.getRowCount() <= 0)
-		{
-			// If table is empty, we can't select anything.
-			// Insert at the top, and leave nothing selected.
-			model.insertRow(0, new Object[] { null, null,
-					new Fingering(numberOfHoles) });
-			return;
-		}
-		int[] selectedRows = fingeringList.getSelectedRows();
-		if (selectedRows.length == 0)
-		{
-			return;
-		}
-		Arrays.sort(selectedRows);
-		int topIndex = selectedRows[0];
-
-		model.insertRow(topIndex, new Object[] { null, null,
-				new Fingering(numberOfHoles) });
-
-		// Re-select the original rows.
-		ListSelectionModel selModel = fingeringList.getSelectionModel();
-		selModel.clearSelection();
-		for (int i = 0; i < selectedRows.length; i++)
-		{
-			int newSelectedRow = selectedRows[i] + 1;
-			selModel.addSelectionInterval(newSelectedRow, newSelectedRow);
-		}
-	}
-
-	@Override
-	public void insertFingeringBelowSelection()
-	{
-		if (numberOfHoles == null)
-		{
-			return;
-		}
-		stopTableEditing();
-		DefaultTableModel model = (DefaultTableModel) fingeringList.getModel();
-		int bottomIndex = 0;		// If table is empty, insert at the top.
-		if (model.getRowCount() > 0)
-		{
-			int[] selectedRows = fingeringList.getSelectedRows();
-			if (selectedRows.length == 0)
-			{
-				return;
-			}
-			Arrays.sort(selectedRows);
-			bottomIndex = selectedRows[selectedRows.length - 1] + 1;
-		}
-
-		model.insertRow(bottomIndex, new Object[] { null, null,
-				new Fingering(numberOfHoles) });
-	}
-
 	public void resetFingeringColumn(int numberOfHoles)
 	{
 		stopTableEditing();
@@ -368,7 +323,7 @@ public class TuningPanel extends FingeringPatternPanel
 		int numRows = model.getRowCount();
 		for (int row = 0; row < numRows; row++)
 		{
-			model.setValueAt(new Fingering(numberOfHoles), row, 2);
+			model.setValueAt(new Fingering(numberOfHoles), row, numberOfColumns - 1);
 		}
 	}
 

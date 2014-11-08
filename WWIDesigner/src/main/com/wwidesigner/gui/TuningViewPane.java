@@ -56,7 +56,7 @@ public class TuningViewPane extends DataViewPane implements DataPopulatedListene
 		setLayout(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
 
-		tuningPanel = new TuningPanel( 320 );
+		tuningPanel = new TuningPanel( 480 );
 		tuningPanel.addDataPopulatedListener(this);
 		gbc.gridx = 0;
 		gbc.weightx = 1.0;

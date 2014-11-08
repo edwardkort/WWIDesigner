@@ -179,8 +179,7 @@ public class TuningPage extends AbstractWizardPage implements
 			{
 				tuningPanel.setName(null);
 				tuningPanel.setDescription(null);
-				int numHoles = tuningPanel.getNumberOfHoles();
-				tuningPanel.resetTableData(numHoles + 1, numHoles);
+				tuningPanel.resetTableData(1);
 			}
 		});
 		newButton.setEnabled(true);

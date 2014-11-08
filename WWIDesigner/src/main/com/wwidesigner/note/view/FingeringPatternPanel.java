@@ -29,8 +29,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Vector;
-
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -68,7 +66,8 @@ public class FingeringPatternPanel extends JPanel implements FocusListener,
 	protected JTextField numberOfHolesWidget;
 	protected JideTable fingeringList;
 	protected int componentWidth;
-	protected Integer numberOfHoles;
+	protected int numberOfHoles;
+	protected int numberOfColumns;
 	protected String name;
 	protected String description;
 	protected boolean namePopulated;
@@ -83,6 +82,7 @@ public class FingeringPatternPanel extends JPanel implements FocusListener,
 	{
 		this.componentWidth = componentWidth;
 		this.numberOfHoles = 0;
+		this.numberOfColumns = 1;
 		this.name = "New";
 		this.description = "";
 		this.namePopulated = true;
@@ -135,7 +135,24 @@ public class FingeringPatternPanel extends JPanel implements FocusListener,
 		return false;
 	}
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
+	protected String[] columnNames()
+	{
+		return (new String[] { "Fingering" });
+	}
+
+	/**
+	 * Return an empty row suitable for the fingering table. 
+	 */
+	protected Object[] emptyRow()
+	{
+		return (new Fingering[] { new Fingering(numberOfHoles) });
+	}
+
+	protected Object[] rowData(Fingering fingering)
+	{
+		return (new Fingering[] { fingering });
+	}
+
 	public void loadData(FingeringPattern fingerings, boolean isFromFile)
 	{
 		if (fingerings != null)
@@ -145,22 +162,16 @@ public class FingeringPatternPanel extends JPanel implements FocusListener,
 			description = fingerings.getComment();
 			descriptionWidget.setText(description);
 			numberOfHoles = (Integer) fingerings.getNumberOfHoles();
-			numberOfHolesWidget.setText(numberOfHoles.toString());
+			numberOfHolesWidget.setText(Integer.toString(numberOfHoles));
 
 			stopTableEditing();
 			fingeringList.getModel().removeTableModelListener(this);
-			resetTableData(0, numberOfHoles);
+			resetTableData(0);
 			DefaultTableModel model = (DefaultTableModel) fingeringList
 					.getModel();
-			fingeringList.setAutoResizeMode(JideTable.AUTO_RESIZE_FILL);
-			fingeringList.setFillsRight(true);
-			TableColumn column = fingeringList.getColumn("Fingering");
-			column.setPreferredWidth(fingeringList.getPreferredSize().width);
 			for (Fingering fingering : fingerings.getFingering())
 			{
-				Vector row = new Vector();
-				row.add(fingering);
-				model.addRow(row);
+				model.addRow( rowData(fingering) );
 			}
 
 			fingeringList.getModel().addTableModelListener(this);
@@ -245,7 +256,7 @@ public class FingeringPatternPanel extends JPanel implements FocusListener,
 		if (number == null || number.trim().isEmpty())
 		{
 			JOptionPane.showMessageDialog(this, "Number of holes must be a valid number.");
-			numberOfHolesWidget.setText(numberOfHoles.toString());
+			numberOfHolesWidget.setText(Integer.toString(numberOfHoles));
 			return false;
 		}
 
@@ -253,15 +264,15 @@ public class FingeringPatternPanel extends JPanel implements FocusListener,
 		if (newNumberOfHoles < 0)
 		{
 			JOptionPane.showMessageDialog(this, "Number of holes must be non-negative.");
-			numberOfHolesWidget.setText(numberOfHoles.toString());
+			numberOfHolesWidget.setText(Integer.toString(numberOfHoles));
 			return false;
 		}
 		if (newNumberOfHoles.equals(numberOfHoles))
 		{
 			return false;
 		}
-		resetTableData(1, newNumberOfHoles);
 		numberOfHoles = newNumberOfHoles;
+		resetTableData(1);
 		return true;
 	}
 
@@ -336,18 +347,13 @@ public class FingeringPatternPanel extends JPanel implements FocusListener,
 
 	public void insertFingeringAboveSelection()
 	{
-		if (numberOfHoles == null)
-		{
-			return;
-		}
 		stopTableEditing();
 		DefaultTableModel model = (DefaultTableModel) fingeringList.getModel();
 		if (model.getRowCount() <= 0)
 		{
 			// If table is empty, we can't select anything.
 			// Insert at the top, and leave nothing selected.
-			model.insertRow(0,
-					new Fingering[] { new Fingering(numberOfHoles) });
+			model.insertRow(0, emptyRow() );
 			return;
 		}
 		int[] selectedRows = fingeringList.getSelectedRows();
@@ -358,8 +364,7 @@ public class FingeringPatternPanel extends JPanel implements FocusListener,
 		Arrays.sort(selectedRows);
 		int topIndex = selectedRows[0];
 
-		model.insertRow(topIndex,
-				new Fingering[] { new Fingering(numberOfHoles) });
+		model.insertRow(topIndex, emptyRow());
 
 		// Re-select the original rows.
 		ListSelectionModel selModel = fingeringList.getSelectionModel();
@@ -373,10 +378,6 @@ public class FingeringPatternPanel extends JPanel implements FocusListener,
 
 	public void insertFingeringBelowSelection()
 	{
-		if (numberOfHoles == null)
-		{
-			return;
-		}
 		stopTableEditing();
 		DefaultTableModel model = (DefaultTableModel) fingeringList.getModel();
 		int bottomIndex = 0;		// If table is empty, insert at the top.
@@ -391,8 +392,7 @@ public class FingeringPatternPanel extends JPanel implements FocusListener,
 			bottomIndex = selectedRows[selectedRows.length - 1] + 1;
 		}
 
-		model.insertRow(bottomIndex, new Fingering[] { new Fingering(
-				numberOfHoles) });
+		model.insertRow(bottomIndex, emptyRow());
 	}
 
 	public void saveFingeringPattern(File file)
@@ -528,7 +528,7 @@ public class FingeringPatternPanel extends JPanel implements FocusListener,
 		DefaultTableModel model = new DefaultTableModel();
 		model.addTableModelListener(this);
 		fingeringList = new JideTable(model);
-		resetTableData(0, numberOfHoles);
+		resetTableData(0);
 		fingeringList.setAutoscrolls(true);
 		JScrollPane scrollPane = new JScrollPane(fingeringList);
 		scrollPane.setBorder(new LineBorder(Color.BLACK));
@@ -580,30 +580,29 @@ public class FingeringPatternPanel extends JPanel implements FocusListener,
 		}
 	}
 
-	public void resetTableData(int numRows, int numHoles)
+	public void resetTableData(int numRows)
 	{
 		stopTableEditing();
 		DefaultTableModel model = (DefaultTableModel) fingeringList.getModel();
-		model.setDataVector(new Fingering[0][1], new String[] { "Fingering" });
+		model.setDataVector(new Object[0][numberOfColumns], columnNames());
 		fingeringList.setFillsGrids(false);
-		FingeringRenderer renderer = new FingeringRenderer(numHoles);
+		FingeringRenderer renderer = new FingeringRenderer(numberOfHoles);
 		TableColumn column = fingeringList.getColumn("Fingering");
 		column.setCellRenderer(renderer);
 		column.setCellEditor(new FingeringEditor());
 		column.setPreferredWidth(renderer.getPreferredSize().width);
 		column.setMinWidth(renderer.getMinimumSize().width);
 		fingeringList.setRowHeight(renderer.getPreferredSize().height);
+		fingeringList.setAutoResizeMode(JideTable.AUTO_RESIZE_FILL);
+		fingeringList.setFillsRight(true);
+		fingeringList.setCellSelectionEnabled(true);
 		if (numRows > 0)
 		{
-			fingeringList.setAutoResizeMode(JideTable.AUTO_RESIZE_FILL);
-			fingeringList.setFillsRight(true);
-			column.setPreferredWidth(renderer.getPreferredSize().width);
 			for (int i = 0; i < numRows; i++)
 			{
-				model.addRow(new Fingering[] { new Fingering(numHoles) });
+				model.addRow(emptyRow());
 			}
 		}
-		fingeringList.setRowHeight(renderer.getPreferredSize().height);
 
 		areFingeringsPopulated();
 	}

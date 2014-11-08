@@ -19,7 +19,7 @@ import javax.swing.table.DefaultTableModel;
 import com.wwidesigner.gui.util.DataPopulatedEvent;
 import com.wwidesigner.gui.util.DataPopulatedListener;
 import com.wwidesigner.gui.util.DoubleCellRenderer;
-import com.wwidesigner.gui.util.StringDoubleTableModel;
+import com.wwidesigner.gui.util.NumericTableModel;
 import com.wwidesigner.gui.util.TableTransferHandler;
 
 public class ScaleIntervalPanel extends JPanel implements TableModelListener
@@ -40,7 +40,7 @@ public class ScaleIntervalPanel extends JPanel implements TableModelListener
 		JPanel panel = new JPanel();
 		panel.setLayout(new GridBagLayout());
 
-		DefaultTableModel model = new StringDoubleTableModel();
+		DefaultTableModel model = new NumericTableModel();
 		model.addTableModelListener(this);
 		intervalTable = new JTable(model);
 		intervalTable.setCellSelectionEnabled(true);

@@ -121,7 +121,7 @@ public class FingeringPatternPanel extends JPanel implements FocusListener,
 						.unmarshalXml(file, true);
 				if (fingerings != null)
 				{
-					loadData(fingerings, true);
+					loadData(fingerings, false);
 					return true;
 				}
 			}
@@ -153,7 +153,12 @@ public class FingeringPatternPanel extends JPanel implements FocusListener,
 		return (new Fingering[] { fingering });
 	}
 
-	public void loadData(FingeringPattern fingerings, boolean isFromFile)
+	/**
+	 * Load a fingering pattern into this panel.
+	 * @param fingerings - fingering pattern to load.
+	 * @param suppressChangeEvent - if true, don't fire the DataPopulated event.
+	 */
+	public void loadData(FingeringPattern fingerings, boolean suppressChangeEvent)
 	{
 		if (fingerings != null)
 		{
@@ -177,7 +182,7 @@ public class FingeringPatternPanel extends JPanel implements FocusListener,
 			fingeringList.getModel().addTableModelListener(this);
 			isNamePopulated();
 			areFingeringsPopulated();
-			if (! isFromFile)
+			if (! suppressChangeEvent)
 			{
 				fireDataStateChanged();
 			}

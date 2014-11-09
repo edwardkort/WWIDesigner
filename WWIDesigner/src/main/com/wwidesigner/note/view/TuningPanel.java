@@ -163,14 +163,14 @@ public class TuningPanel extends FingeringPatternPanel
 	 * @see com.wwidesigner.note.view.FingeringPatternPanel#loadData(com.wwidesigner.note.FingeringPattern, boolean)
 	 */
 	@Override
-	public void loadData(FingeringPattern fingerings, boolean isFromFile)
+	public void loadData(FingeringPattern fingerings, boolean suppressChangeEvent)
 	{
 		if (hasMinMax(fingerings))
 		{
 			// If the tuning has min or max frequency data, display it.
 			numberOfColumns = 5;
 		}
-		super.loadData(fingerings, isFromFile);
+		super.loadData(fingerings, suppressChangeEvent);
 	}
 
 	/**

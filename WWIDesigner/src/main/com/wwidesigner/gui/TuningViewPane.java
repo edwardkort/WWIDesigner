@@ -176,10 +176,10 @@ public class TuningViewPane extends DataViewPane implements DataPopulatedListene
 		{
 			Boolean dataPopulated = event
 						.isPopulated(FingeringPatternPanel.SAVE_EVENT_ID);
-			if (dataPopulated != null && dataPopulated == true)
+			if (dataPopulated != null)
 			{
-				// Data has changed, and is valid.
-				makeDirty(true);
+				// Data has changed.  Enable saving if data is valid.
+				makeDirty(dataPopulated);
 			}
 		}
 	}

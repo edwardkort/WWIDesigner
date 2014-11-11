@@ -83,7 +83,7 @@ public class FingeringPatternPanel extends JPanel implements FocusListener,
 		this.componentWidth = componentWidth;
 		this.numberOfHoles = 0;
 		this.numberOfColumns = 1;
-		this.name = "New";
+		this.name = "";
 		this.description = "";
 		this.namePopulated = true;
 		this.fingeringsPopulated = false;

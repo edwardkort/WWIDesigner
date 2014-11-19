@@ -20,6 +20,12 @@ public class BorePoint implements BorePointInterface
 	{
 	}
 
+	public BorePoint(double position, double diameter)
+	{
+		this.borePosition = position;
+		this.boreDiameter = diameter;
+	}
+
 	/**
 	 * @return the borePosition
 	 */

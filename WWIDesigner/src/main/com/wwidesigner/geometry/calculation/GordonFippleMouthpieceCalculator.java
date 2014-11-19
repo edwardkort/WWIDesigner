@@ -140,8 +140,15 @@ public class GordonFippleMouthpieceCalculator extends MouthpieceCalculator
 		}
 
 		double ratio = Math.pow(DEFAULT_WINDWAY_HEIGHT / windwayHeight, 1. / 3);
-		double scaledFippleFactor = mouthpiece.getFipple().getFippleFactor()
-				* ratio;
+		double scaledFippleFactor;
+		if (mouthpiece.getFipple().getFippleFactor() == null)
+		{
+			scaledFippleFactor = ratio;
+		}
+		else
+		{
+			scaledFippleFactor = mouthpiece.getFipple().getFippleFactor() * ratio;
+		}
 
 		return scaledFippleFactor;
 	}

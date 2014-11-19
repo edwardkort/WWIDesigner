@@ -310,10 +310,6 @@ public class Mouthpiece implements ComponentInterface, MouthpieceInterface,
 		 */
 		public Double getFippleFactor()
 		{
-			if (fippleFactor == null)
-			{
-				return 1.0;
-			}
 			return fippleFactor;
 		}
 

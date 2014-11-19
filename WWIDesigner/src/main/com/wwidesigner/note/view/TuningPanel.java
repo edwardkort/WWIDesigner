@@ -225,7 +225,6 @@ public class TuningPanel extends FingeringPatternPanel
 		panel.add(label, gbc);
 
 		DefaultTableModel model = new NumericTableModel(String.class,Fingering.class);
-		model.addTableModelListener(this);
 		fingeringList = new JideTable(model);
 		resetTableData(0);
 		fingeringList.setAutoscrolls(true);
@@ -245,6 +244,7 @@ public class TuningPanel extends FingeringPatternPanel
 		gbc.gridy = 3;
 		gbc.insets = new Insets(0, 0, 10, 10);
 		add(panel, gbc);
+		model.addTableModelListener(this);
 	}
 
 	@Override

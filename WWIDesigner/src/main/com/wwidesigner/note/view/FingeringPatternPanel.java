@@ -85,7 +85,7 @@ public class FingeringPatternPanel extends JPanel implements FocusListener,
 		this.numberOfColumns = 1;
 		this.name = "";
 		this.description = "";
-		this.namePopulated = true;
+		this.namePopulated = false;
 		this.fingeringsPopulated = false;
 		setLayout(new GridBagLayout());
 		setNameWidget();
@@ -531,7 +531,6 @@ public class FingeringPatternPanel extends JPanel implements FocusListener,
 		panel.add(label, gbc);
 
 		DefaultTableModel model = new DefaultTableModel();
-		model.addTableModelListener(this);
 		fingeringList = new JideTable(model);
 		resetTableData(0);
 		fingeringList.setAutoscrolls(true);
@@ -548,6 +547,7 @@ public class FingeringPatternPanel extends JPanel implements FocusListener,
 		gbc.gridy = 3;
 		gbc.insets = new Insets(0, 0, 10, 10);
 		add(panel, gbc);
+		model.addTableModelListener(this);
 	}
 
 	public int getNumberOfHoles()

@@ -29,8 +29,8 @@ import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
+import com.jidesoft.app.framework.BasicDataModel;
 import com.jidesoft.app.framework.DataModel;
-import com.jidesoft.app.framework.file.FileDataModel;
 import com.jidesoft.app.framework.gui.DataViewPane;
 import com.wwidesigner.gui.util.DataPopulatedEvent;
 import com.wwidesigner.gui.util.DataPopulatedListener;
@@ -117,19 +117,13 @@ public class TuningViewPane extends DataViewPane implements DataPopulatedListene
 	@Override
 	public void updateView(DataModel dataModel)
 	{
-		if ( dataModel instanceof FileDataModel )
+		if ( dataModel instanceof BasicDataModel )
 		{
-			FileDataModel model = (FileDataModel) dataModel;
+			BasicDataModel model = (BasicDataModel) dataModel;
 			BindFactory noteBindFactory = NoteBindFactory.getInstance();
 			try
 			{
-				if (model.getApplication() != null)
-				{
-					// If the file is a data view in an active application,
-					// update the data in model with the latest from the application's data view.
-					model.getApplication().getDataView(model).updateModel(model);
-				}
-				String xmlString = (String) model.getData();
+				String xmlString = model.getData().toString();
 				if (! xmlString.isEmpty())
 				{
 					tuning = (Tuning) noteBindFactory.unmarshalXml(xmlString, true);
@@ -147,9 +141,9 @@ public class TuningViewPane extends DataViewPane implements DataPopulatedListene
 	@Override
 	public void updateModel(DataModel dataModel)
 	{
-		if ( dataModel instanceof FileDataModel )
+		if ( dataModel instanceof BasicDataModel )
 		{
-			FileDataModel model = (FileDataModel) dataModel;
+			BasicDataModel model = (BasicDataModel) dataModel;
 			BindFactory binder = NoteBindFactory.getInstance();
 			StringWriter writer = new StringWriter();
 			try

@@ -29,7 +29,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.io.File;
-import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -267,6 +266,12 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 			}
 		}
 	}
+	
+	static protected boolean isPopulated(JTextComponent field)
+	{
+		String text = field.getText();
+		return (text != null && text.trim().length() > 0);
+	}
 
 	/**
 	 * Test whether there is a name in the name field,
@@ -274,8 +279,7 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 	 */
 	protected void isNamePopulated()
 	{
-		String newName = nameField.getText();
-		nameIsPopulated = (newName != null && newName.trim().length() > 0);
+		nameIsPopulated = isPopulated(nameField);
 	}
 	
 	/**
@@ -285,30 +289,34 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 	protected void isMouthpiecePopulated()
 	{
 		mouthpieceIsPopulated = false;
-		if (mouthpiecePosition.getValue() == null)
+		if (! isPopulated(mouthpiecePosition))
 		{
 			// Not populated.
 			return;
 		}
 		if (fippleButton.isSelected())
 		{
-			if (windowLength.getValue() != null
-				&& ((Double) windowLength.getValue()) > 0.0
-				&& windowWidth.getValue() != null
-				&& ((Double) windowWidth.getValue()) > 0.0)
+			if (! isPopulated(windowLength)
+				|| ! isPopulated(windowWidth))
 			{
-				mouthpieceIsPopulated = true;
+				return;
 			}
 		}
 		else if (embouchureHoleButton.isSelected())
 		{
-			if (outerDiameter.isEditValid()
-				&& innerDiameter.isEditValid()
-				&& embHoleHeight.isEditValid())
+			if (! isPopulated(outerDiameter)
+				|| ! isPopulated(innerDiameter)
+				|| ! isPopulated(embHoleHeight))
 			{
-				mouthpieceIsPopulated = true;
+				return;
 			}
 		}
+		else
+		{
+			// Should not occur.
+			return;
+		}
+		mouthpieceIsPopulated = true;
 	}
 	
 	/**
@@ -317,7 +325,7 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 	 */
 	protected void isTerminationPopulated()
 	{
-		terminationIsPopulated = (terminationFlange.getValue() != null);
+		terminationIsPopulated = isPopulated(terminationFlange);
 	}
 
 	/**
@@ -465,7 +473,8 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 		stopTableEditing(boreList);
 		if (! nameIsPopulated)
 		{
-			System.out.println("Name field is required.");
+			JOptionPane.showMessageDialog(this, "Name field is required.");
+			nameField.requestFocusInWindow();
 			return null;
 		}
 		Instrument instrument = new Instrument();
@@ -514,7 +523,8 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 		value = (Double) mouthpiecePosition.getValue();
 		if (value == null)
 		{
-			System.out.println("Mouthpiece position is required.");
+			JOptionPane.showMessageDialog(this, "Mouthpiece position is required.");
+			mouthpiecePosition.requestFocusInWindow();
 			return null;
 		}
 		mouthpiece.setPosition(value);
@@ -524,42 +534,48 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 			value = (Double) windowLength.getValue();
 			if (value == null || value <= 0.0)
 			{
-				System.out.println("Window length must be positive.");
+				JOptionPane.showMessageDialog(this, "Window length must be positive.");
+				windowLength.requestFocusInWindow();
 				return null;
 			}
 			fipple.setWindowLength(value);
 			value = (Double) windowWidth.getValue();
 			if (value == null || value <= 0.0)
 			{
-				System.out.println("Window width must be positive.");
+				JOptionPane.showMessageDialog(this, "Window width must be positive.");
+				windowWidth.requestFocusInWindow();
 				return null;
 			}
 			fipple.setWindowWidth(value);
 			value = (Double) windowHeight.getValue();
 			if (value != null && value <= 0.0)
 			{
-				System.out.println("Window height, if specified, must be positive.");
+				JOptionPane.showMessageDialog(this, "Window height, if specified, must be positive.");
+				windowHeight.requestFocusInWindow();
 				return null;
 			}
 			fipple.setWindowHeight(value);
 			value = (Double) windwayLength.getValue();
 			if (value != null && value <= 0.0)
 			{
-				System.out.println("Windway length, if specified, must be positive.");
+				JOptionPane.showMessageDialog(this, "Windway length, if specified, must be positive.");
+				windwayLength.requestFocusInWindow();
 				return null;
 			}
 			fipple.setWindwayLength(value);
 			value = (Double) windwayHeight.getValue();
 			if (value != null && value <= 0.0)
 			{
-				System.out.println("Windway height, if specified, must be positive.");
+				JOptionPane.showMessageDialog(this, "Windway height, if specified, must be positive.");
+				windwayHeight.requestFocusInWindow();
 				return null;
 			}
 			fipple.setWindwayHeight(value);
 			value = (Double) fippleFactor.getValue();
 			if (value != null && value <= 0.0)
 			{
-				System.out.println("Fipple factor, if specified, must be positive.");
+				JOptionPane.showMessageDialog(this, "Fipple factor, if specified, must be positive.");
+				fippleFactor.requestFocusInWindow();
 				return null;
 			}
 			fipple.setFippleFactor(value);
@@ -572,21 +588,24 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 			value = (Double) outerDiameter.getValue();
 			if (value == null || value <= 0.0)
 			{
-				System.out.println("Outer diameter must be positive.");
+				JOptionPane.showMessageDialog(this, "Outer diameter must be positive.");
+				outerDiameter.requestFocusInWindow();
 				return null;
 			}
 			hole.setOuterDiameter(value);
 			value = (Double) innerDiameter.getValue();
 			if (value == null || value <= 0.0)
 			{
-				System.out.println("Inner diameter must be positive.");
+				JOptionPane.showMessageDialog(this, "Inner diameter must be positive.");
+				innerDiameter.requestFocusInWindow();
 				return null;
 			}
 			hole.setInnerDiameter(value);
 			value = (Double) embHoleHeight.getValue();
 			if (value == null || value <= 0.0)
 			{
-				System.out.println("Embouchure hole height must be positive.");
+				JOptionPane.showMessageDialog(this, "Embouchure hole height must be positive.");
+				embHoleHeight.requestFocusInWindow();
 				return null;
 			}
 			hole.setHeight(value);
@@ -601,7 +620,8 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 		value = (Double) beta.getValue();
 		if (value != null && (value <= 0.0 || value >= 1.0))
 		{
-			System.out.println("Beta, if specified, must be positive and less than 1.0.");
+			JOptionPane.showMessageDialog(this, "Beta, if specified, must be positive and less than 1.0.");
+			beta.requestFocusInWindow();
 			return null;
 		}
 		mouthpiece.setBeta(value);
@@ -615,7 +635,8 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 		value = (Double) terminationFlange.getValue();
 		if (value == null || value <= 0.0)
 		{
-			System.out.println("Termination flange diameter must be positive.");
+			JOptionPane.showMessageDialog(this, "Termination flange diameter must be positive.");
+			terminationFlange.requestFocusInWindow();
 			return null;
 		}
 		termination.setFlangeDiameter(value);
@@ -869,9 +890,7 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 		JLabel label = new JLabel("Termination Flange Diameter: ");
 		panel.add(label);
 
-		NumberFormat floatFormat = NumberFormat.getNumberInstance();
-        floatFormat.setMinimumFractionDigits(1);
-        terminationFlange = new JFormattedTextField(floatFormat);
+        terminationFlange = new JFormattedTextField(new DoubleFormatter());
         terminationFlange.setColumns(5);
 		terminationFlange.addFocusListener(this);
 		panel.add(terminationFlange);
@@ -1098,7 +1117,7 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 					new String[] { "Position", "Diameter", "Height" });
 		}
 		table.setFillsGrids(false);
-		table.setAutoResizeMode(JideTable.AUTO_RESIZE_FILL);
+		table.setAutoResizeMode(JideTable.AUTO_RESIZE_ALL_COLUMNS);
 		table.setFillsRight(true);
 		table.setCellSelectionEnabled(true);
 		if (numRows > 0)
@@ -1123,17 +1142,26 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 			Double height   = (Double) model.getValueAt(i, 2);
 			if (position == null)
 			{
-				System.out.println("Missing hole position.");
+				JOptionPane.showMessageDialog(this, "Missing hole position.");
+				holeList.requestFocusInWindow();
+				holeList.editCellAt(i, 0);
+				holeList.getEditorComponent().requestFocusInWindow();
 				return null;
 			}
 			if (diameter == null || diameter <= 0.0)
 			{
-				System.out.println("All hole diameters must be positive.");
+				JOptionPane.showMessageDialog(this, "All hole diameters must be positive.");
+				holeList.requestFocusInWindow();
+				holeList.editCellAt(i, 1);
+				holeList.getEditorComponent().requestFocusInWindow();
 				return null;
 			}
 			if (height == null || height <= 0.0)
 			{
-				System.out.println("All hole heights must be positive.");
+				JOptionPane.showMessageDialog(this, "All hole heights must be positive.");
+				holeList.requestFocusInWindow();
+				holeList.editCellAt(i, 2);
+				holeList.getEditorComponent().requestFocusInWindow();
 				return null;
 			}
 			data.add(new Hole(position, diameter, height));
@@ -1148,7 +1176,8 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 		ArrayList<BorePoint> data = new ArrayList<BorePoint>();
 		if (model.getRowCount() < 2)
 		{
-			System.out.println("Must specify at least two bore points.");
+			JOptionPane.showMessageDialog(this, "Must specify at least two bore points.");
+			boreList.requestFocusInWindow();
 			return null;
 		}
 
@@ -1158,12 +1187,18 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 			Double diameter = (Double) model.getValueAt(i, 1);
 			if (position == null)
 			{
-				System.out.println("Missing bore point position.");
+				JOptionPane.showMessageDialog(this, "Missing bore point position.");
+				boreList.editCellAt(i, 0);
+				boreList.requestFocusInWindow();
+				boreList.getEditorComponent().requestFocusInWindow();
 				return null;
 			}
 			if (diameter == null || diameter <= 0.0)
 			{
-				System.out.println("All bore diameters must be positive.");
+				JOptionPane.showMessageDialog(this, "All bore diameters must be positive.");
+				boreList.requestFocusInWindow();
+				boreList.editCellAt(i, 1);
+				boreList.getEditorComponent().requestFocusInWindow();
 				return null;
 			}
 			data.add(new BorePoint(position, diameter));

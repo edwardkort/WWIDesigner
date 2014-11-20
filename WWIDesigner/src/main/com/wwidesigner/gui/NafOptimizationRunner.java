@@ -132,7 +132,7 @@ public class NafOptimizationRunner extends FileBasedApplication implements
 		PreferencesPane preferencesDialog = new OptimizationPreferences();
 		PreferencesDialogRequest.installPreferences(this, preferencesDialog);
 
-		addFileMapping(new TextFileFormat("xml", "XML"), CodeEditorView.class);
+		addFileMapping(new TextFileFormat("xml", "XML"), XmlToggleView.class);
 		addFileMapping(new TextFileFormat("t-xml", "Tuning"), TuningViewPane.class);
 		addDockedViews();
 		addEvents();

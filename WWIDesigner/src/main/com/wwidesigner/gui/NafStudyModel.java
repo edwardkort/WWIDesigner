@@ -20,6 +20,8 @@ package com.wwidesigner.gui;
 
 import java.util.prefs.Preferences;
 
+import com.jidesoft.app.framework.file.FileDataModel;
+import com.jidesoft.app.framework.gui.DataViewPane;
 import com.wwidesigner.geometry.Instrument;
 import com.wwidesigner.modelling.CentDeviationEvaluator;
 import com.wwidesigner.modelling.EvaluatorInterface;
@@ -100,7 +102,7 @@ public class NafStudyModel extends StudyModel
 		optimizers.addSub(TAPER_NO_GROUP_OPT_SUB_CATEGORY_ID, null);
 		optimizers.addSub(TAPER_GROUP_OPT_SUB_CATEGORY_ID, null);
 		categories.add(optimizers);
-		Category constraints = new Category(CONSTRAINT_CATEGORY_ID);
+		Category constraints = new Category(CONSTRAINTS_CATEGORY_ID);
 		constraints.addSub(HOLE_0_CONS_SUB_CATEGORY_ID, null);
 		constraints.addSub(HOLE_6_1_125_SPACING_CONS_SUB_CATEGORY_ID, null);
 		constraints.addSub(HOLE_6_1_25_SPACING_CONS_SUB_CATEGORY_ID, null);
@@ -132,7 +134,7 @@ public class NafStudyModel extends StudyModel
 		Category category = getCategory(OPTIMIZER_CATEGORY_ID);
 		String optimizerSelected = category.getSelectedSub();
 
-		category = getCategory(CONSTRAINT_CATEGORY_ID);
+		category = getCategory(CONSTRAINTS_CATEGORY_ID);
 		String constraintsSelected = category.getSelectedSub();
 
 		return optimizerSelected != null && constraintsSelected != null
@@ -176,7 +178,7 @@ public class NafStudyModel extends StudyModel
 	{
 		Category optimizerCategory = getCategory(OPTIMIZER_CATEGORY_ID);
 		String optimizer = optimizerCategory.getSelectedSub();
-		Category constraintCategory = getCategory(CONSTRAINT_CATEGORY_ID);
+		Category constraintCategory = getCategory(CONSTRAINTS_CATEGORY_ID);
 		String constraint = constraintCategory.getSelectedSub();
 
 		Instrument instrument = getInstrument();
@@ -477,5 +479,32 @@ public class NafStudyModel extends StudyModel
 	public void setMinTopHoleRatio(double minRatio)
 	{
 		this.minTopHoleRatio = minRatio;
+	}
+
+	@Override
+	public ContainedXmlView getDefaultXmlView(FileDataModel dataModel,
+			DataViewPane parent)
+	{
+		String data = (String) dataModel.getData().toString();
+		String categoryName = getCategoryName(data);
+		ContainedXmlView view;
+
+		switch (categoryName)
+		{
+			case INSTRUMENT_CATEGORY_ID:
+				view = new ContainedXmlTextView(parent);
+				break;
+			case TUNING_CATEGORY_ID:
+				view = new ContainedXmlTextView(parent);
+				break;
+			case CONSTRAINTS_CATEGORY_ID:
+				view = new ContainedXmlTextView(parent);
+				break;
+			default:
+				view = new ContainedXmlTextView(parent);
+				break;
+		}
+
+		return view;
 	}
 }

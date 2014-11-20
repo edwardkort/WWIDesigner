@@ -21,6 +21,8 @@ package com.wwidesigner.gui;
 import java.util.Arrays;
 import java.util.prefs.Preferences;
 
+import com.jidesoft.app.framework.file.FileDataModel;
+import com.jidesoft.app.framework.gui.DataViewPane;
 import com.wwidesigner.geometry.Instrument;
 import com.wwidesigner.modelling.BellNoteEvaluator;
 import com.wwidesigner.modelling.CentDeviationEvaluator;
@@ -276,4 +278,30 @@ public class WhistleStudyModel extends StudyModel
 		return objective;
 	}
 
+	@Override
+	public ContainedXmlView getDefaultXmlView(FileDataModel dataModel,
+			DataViewPane parent)
+	{
+		String data = (String) dataModel.getData().toString();
+		String categoryName = getCategoryName(data);
+		ContainedXmlView view;
+
+		switch (categoryName)
+		{
+			case INSTRUMENT_CATEGORY_ID:
+				view = new ContainedXmlTextView(parent);
+				break;
+			case TUNING_CATEGORY_ID:
+				view = new ContainedXmlTextView(parent);
+				break;
+			case CONSTRAINTS_CATEGORY_ID:
+				view = new ContainedXmlTextView(parent);
+				break;
+			default:
+				view = new ContainedXmlTextView(parent);
+				break;
+		}
+
+		return view;
+	}
 }

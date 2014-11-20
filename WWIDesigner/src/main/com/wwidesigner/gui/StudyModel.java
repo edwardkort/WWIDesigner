@@ -29,6 +29,7 @@ import java.util.TreeMap;
 import java.util.prefs.Preferences;
 
 import com.jidesoft.app.framework.file.FileDataModel;
+import com.jidesoft.app.framework.gui.DataViewPane;
 import com.wwidesigner.geometry.Instrument;
 import com.wwidesigner.geometry.bind.GeometryBindFactory;
 import com.wwidesigner.modelling.InstrumentCalculator;
@@ -38,37 +39,32 @@ import com.wwidesigner.note.Tuning;
 import com.wwidesigner.note.bind.NoteBindFactory;
 import com.wwidesigner.optimization.BaseObjectiveFunction;
 import com.wwidesigner.optimization.ObjectiveFunctionOptimizer;
+import com.wwidesigner.optimization.bind.OptimizationBindFactory;
 import com.wwidesigner.util.BindFactory;
 import com.wwidesigner.util.PhysicalParameters;
 
 /**
  * Abstract class to encapsulate processes for analyzing and optimizing
- * instrument models.  
+ * instrument models.
+ * 
  * @author kort
  * 
  */
-public abstract class StudyModel
+public abstract class StudyModel implements CategoryType
 {
-	public static final String INSTRUMENT_CATEGORY_ID = "Instrument";
-	public static final String TUNING_CATEGORY_ID = "Tuning";
-	public static final String CALCULATOR_CATEGORY_ID = "Instrument calculator";
-	public static final String MULTI_START_CATEGORY_ID = "Multi-start optimization";
-	public static final String OPTIMIZER_CATEGORY_ID = "Optimizer";
-	public static final String CONSTRAINT_CATEGORY_ID = "Constraint set";
-
 	// Preferences.
 	protected BaseObjectiveFunction.OptimizerType preferredOptimizerType;
 
 	// Statistics saved from the most recent call to optimizeInstrument
-	
-	protected double initialNorm;	// Initial value of objective function.
-	protected double finalNorm;		// Final value of objective function.
+
+	protected double initialNorm; // Initial value of objective function.
+	protected double finalNorm; // Final value of objective function.
 
 	/**
-	 * Tree of selectable categories that the study model supports. 
+	 * Tree of selectable categories that the study model supports.
 	 */
 	protected List<Category> categories;
-	
+
 	/**
 	 * Physical parameters to use for this study model.
 	 */
@@ -101,7 +97,8 @@ public abstract class StudyModel
 	}
 
 	/**
-	 * @param Name of category to retrieve.
+	 * @param Name
+	 *            of category to retrieve.
 	 * @return The named category, or null if named category not found.
 	 */
 	protected Category getCategory(String name)
@@ -121,9 +118,11 @@ public abstract class StudyModel
 	}
 
 	/**
-	 * @param categoryName - Name of category to select.
-	 * @param subcategoryName - Name of subcategory to select in the named category.
-	 * Post: getSelectedSub(categoryName) returns subCategoryName. 
+	 * @param categoryName
+	 *            - Name of category to select.
+	 * @param subcategoryName
+	 *            - Name of subcategory to select in the named category. Post:
+	 *            getSelectedSub(categoryName) returns subCategoryName.
 	 */
 	public void setCategorySelection(String categoryName, String subcategoryName)
 	{
@@ -137,7 +136,8 @@ public abstract class StudyModel
 	}
 
 	/**
-	 * @param categoryName - Name of category to look up.
+	 * @param categoryName
+	 *            - Name of category to look up.
 	 * @return Set of names of subcategories of the named category.
 	 */
 	public Set<String> getSubcategories(String categoryName)
@@ -153,8 +153,10 @@ public abstract class StudyModel
 	}
 
 	/**
-	 * @param categoryName - Name of category to look up.
-	 * @return Subcategory name supplied to setCategorySelection(categoryName, subcategoryName).
+	 * @param categoryName
+	 *            - Name of category to look up.
+	 * @return Subcategory name supplied to setCategorySelection(categoryName,
+	 *         subcategoryName).
 	 */
 	public String getSelectedSub(String categoryName)
 	{
@@ -169,9 +171,9 @@ public abstract class StudyModel
 	}
 
 	/**
-	 * Class to encapsulate a main branch of the study model selection tree.
-	 * The derived study model defines a set of main branches, typically
-	 * a static set.
+	 * Class to encapsulate a main branch of the study model selection tree. The
+	 * derived study model defines a set of main branches, typically a static
+	 * set.
 	 */
 	protected static class Category
 	{
@@ -270,11 +272,12 @@ public abstract class StudyModel
 	}
 
 	/**
-	 * @param xmlString - XML defining an Instrument or a Tuning.
-	 * @return Name of category that the definition of xmlString fits,
-	 * 		   either INSTRUMENT_CATEGORY_ID or TUNING_CATEGORY_ID.
+	 * @param xmlString
+	 *            - XML defining an Instrument or a Tuning.
+	 * @return Name of category that the definition of xmlString fits, either
+	 *         INSTRUMENT_CATEGORY_ID or TUNING_CATEGORY_ID.
 	 */
-	protected static String getCategoryName(String xmlString)
+	public static String getCategoryName(String xmlString)
 	{
 		// Check for an Instrument
 		BindFactory bindFactory = GeometryBindFactory.getInstance();
@@ -297,19 +300,32 @@ public abstract class StudyModel
 			return TUNING_CATEGORY_ID;
 		}
 
+		// Check for a Constraints
+		bindFactory = OptimizationBindFactory.getInstance();
+		if (bindFactory.isValidXml(xmlString, "Constraints", true)) // TODO Make
+		// constants in
+		// binding
+		// framework
+		{
+			return CONSTRAINTS_CATEGORY_ID;
+		}
+
 		return null;
 	}
 
 	/**
-	 * Add an Instrument or Tuning to the category tree, from a JIDE FileDataModel.
-	 * Post: If dataModel is valid XML, it is added to INSTRUMENT_CATEGORY_ID,
-	 *       or TUNING_CATEGORY_ID, as appropriate, and addDataModel returns true.
-	 * @param dataModel - FileDataModel containing instrument or tuning XML.
+	 * Add an Instrument or Tuning to the category tree, from a JIDE
+	 * FileDataModel. Post: If dataModel is valid XML, it is added to
+	 * INSTRUMENT_CATEGORY_ID, or TUNING_CATEGORY_ID, as appropriate, and
+	 * addDataModel returns true.
+	 * 
+	 * @param dataModel
+	 *            - FileDataModel containing instrument or tuning XML.
 	 * @return true iff the dataModel contained valid instrument or tuning XML.
 	 */
 	public boolean addDataModel(FileDataModel dataModel)
 	{
-		String data = (String) dataModel.getData();
+		String data = (String) dataModel.getData().toString();
 		String categoryName = getCategoryName(data);
 		if (categoryName == null)
 		{
@@ -320,15 +336,16 @@ public abstract class StudyModel
 		category.setSelectedSub(dataModel.getName());
 		return true;
 	}
-	
+
 	/**
-	 * Remove an Instrument or Tuning from the category tree,
-	 * given a JIDE FileDataModel.
-	 * Pre:  Assumes that the type of XML, Instrument or Tuning,
-	 *       has not changed since the call to addDataModel.
-	 * Post: The specified dataModel is no longer in INSTRUMENT_CATEGORY_ID,
-	 *       or TUNING_CATEGORY_ID, as appropriate.
-	 * @param dataModel - FileDataModel containing instrument or tuning XML.
+	 * Remove an Instrument or Tuning from the category tree, given a JIDE
+	 * FileDataModel. Pre: Assumes that the type of XML, Instrument or Tuning,
+	 * has not changed since the call to addDataModel. Post: The specified
+	 * dataModel is no longer in INSTRUMENT_CATEGORY_ID, or TUNING_CATEGORY_ID,
+	 * as appropriate.
+	 * 
+	 * @param dataModel
+	 *            - FileDataModel containing instrument or tuning XML.
 	 * @return true.
 	 */
 	public boolean removeDataModel(FileDataModel dataModel)
@@ -338,7 +355,7 @@ public abstract class StudyModel
 		Category category;
 		if (categoryName == null)
 		{
-			// Invalid XML.  Remove from both categories.
+			// Invalid XML. Remove from both categories.
 			category = getCategory(INSTRUMENT_CATEGORY_ID);
 			category.removeSub(dataModel.getName());
 			category = getCategory(TUNING_CATEGORY_ID);
@@ -351,15 +368,16 @@ public abstract class StudyModel
 	}
 
 	/**
-	 * Add an Instrument or Tuning to the category tree, from a JIDE FileDataModel,
-	 * replacing any existing instance.
-	 * Pre:  Assumes that the type of XML, Instrument or Tuning,
-	 *       has not changed since the call to addDataModel (if any).
-	 * Post: The prior instance of dataModel is removed from INSTRUMENT_CATEGORY_ID,
-	 *       or TUNING_CATEGORY_ID, as appropriate 
-	 * 		 If dataModel is valid XML, it is added to INSTRUMENT_CATEGORY_ID,
-	 *       or TUNING_CATEGORY_ID, as appropriate, and addDataModel returns true.
-	 * @param dataModel - FileDataModel containing instrument or tuning XML.
+	 * Add an Instrument or Tuning to the category tree, from a JIDE
+	 * FileDataModel, replacing any existing instance. Pre: Assumes that the
+	 * type of XML, Instrument or Tuning, has not changed since the call to
+	 * addDataModel (if any). Post: The prior instance of dataModel is removed
+	 * from INSTRUMENT_CATEGORY_ID, or TUNING_CATEGORY_ID, as appropriate If
+	 * dataModel is valid XML, it is added to INSTRUMENT_CATEGORY_ID, or
+	 * TUNING_CATEGORY_ID, as appropriate, and addDataModel returns true.
+	 * 
+	 * @param dataModel
+	 *            - FileDataModel containing instrument or tuning XML.
 	 * @return true if the dataModel contained valid instrument or tuning XML.
 	 */
 	public boolean replaceDataModel(FileDataModel dataModel)
@@ -376,10 +394,10 @@ public abstract class StudyModel
 		category.setSelectedSub(dataModel.getName());
 		return true;
 	}
-	
+
 	/**
 	 * @return true if category selections are sufficient for calls to
-	 * calculateTuning() and graphTuning().
+	 *         calculateTuning() and graphTuning().
 	 */
 	public boolean canTune()
 	{
@@ -394,11 +412,11 @@ public abstract class StudyModel
 
 	/**
 	 * @return true if category selections are sufficient for calls to
-	 * optimizeInstrument().
+	 *         optimizeInstrument().
 	 */
 	public boolean canOptimize()
 	{
-		if ( ! canTune() )
+		if (!canTune())
 		{
 			return false;
 		}
@@ -425,7 +443,7 @@ public abstract class StudyModel
 		tuner.showTuning(title + ": " + instrumentName + "/" + tuningName,
 				false);
 	}
-	
+
 	public void graphTuning(String title) throws Exception
 	{
 		InstrumentTuner tuner = getInstrumentTuner();
@@ -446,22 +464,26 @@ public abstract class StudyModel
 
 	/**
 	 * Optimize the currently-selected objective function
-	 * @return XML string defining the optimized instrument, if optimization succeeds,
-	 * or {@code null} if optimization fails.
+	 * 
+	 * @return XML string defining the optimized instrument, if optimization
+	 *         succeeds, or {@code null} if optimization fails.
 	 */
 	public String optimizeInstrument() throws Exception
 	{
 		BaseObjectiveFunction objective = getObjectiveFunction();
-		BaseObjectiveFunction.OptimizerType optimizerType = objective.getOptimizerType();
-		if ( preferredOptimizerType != null 
-				&& ! optimizerType.equals(BaseObjectiveFunction.OptimizerType.BrentOptimizer))
+		BaseObjectiveFunction.OptimizerType optimizerType = objective
+				.getOptimizerType();
+		if (preferredOptimizerType != null
+				&& !optimizerType
+						.equals(BaseObjectiveFunction.OptimizerType.BrentOptimizer))
 		{
 			optimizerType = preferredOptimizerType;
 		}
-		
+
 		initialNorm = 1.0;
 		finalNorm = 1.0;
-		if ( ObjectiveFunctionOptimizer.optimizeObjectiveFunction(objective, optimizerType) )
+		if (ObjectiveFunctionOptimizer.optimizeObjectiveFunction(objective,
+				optimizerType))
 		{
 			Instrument instrument = objective.getInstrument();
 			// Convert back to the input unit-of-measure values
@@ -473,8 +495,9 @@ public abstract class StudyModel
 		}
 		return null;
 	} // optimizeInstrument
-	
-	public void compareInstrument(String newName, Instrument newInstrument) throws Exception
+
+	public void compareInstrument(String newName, Instrument newInstrument)
+			throws Exception
 	{
 		Category category = getCategory(INSTRUMENT_CATEGORY_ID);
 		FileDataModel model = (FileDataModel) category.getSelectedSubValue();
@@ -484,7 +507,8 @@ public abstract class StudyModel
 			System.out.print("\nError: Current editor tab, ");
 			System.out.print(newName);
 			System.out.println(" is the same as the selected instrument.");
-			System.out.println("Select the edit tab for a different instrument.");
+			System.out
+					.println("Select the edit tab for a different instrument.");
 			return;
 		}
 		Instrument oldInstrument = getInstrument();
@@ -520,7 +544,8 @@ public abstract class StudyModel
 		if (model.getApplication() != null)
 		{
 			// If the file is a data view in an active application,
-			// update the data in model with the latest from the application's data view.
+			// update the data in model with the latest from the application's
+			// data view.
 			model.getApplication().getDataView(model).updateModel(model);
 		}
 		xmlString = (String) model.getData();
@@ -532,7 +557,8 @@ public abstract class StudyModel
 	{
 		BindFactory geometryBindFactory = GeometryBindFactory.getInstance();
 		String xmlString = getSelectedXmlString(INSTRUMENT_CATEGORY_ID);
-		Instrument instrument = (Instrument) geometryBindFactory.unmarshalXml(xmlString, true);
+		Instrument instrument = (Instrument) geometryBindFactory.unmarshalXml(
+				xmlString, true);
 		instrument.updateComponents();
 		return instrument;
 	}
@@ -542,7 +568,8 @@ public abstract class StudyModel
 		try
 		{
 			BindFactory geometryBindFactory = GeometryBindFactory.getInstance();
-			Instrument instrument = (Instrument) geometryBindFactory.unmarshalXml(xmlString, true);
+			Instrument instrument = (Instrument) geometryBindFactory
+					.unmarshalXml(xmlString, true);
 			instrument.updateComponents();
 			return instrument;
 		}
@@ -561,7 +588,8 @@ public abstract class StudyModel
 		return tuning;
 	}
 
-	public static Instrument getInstrumentFromFile(String fileName) throws Exception
+	public static Instrument getInstrumentFromFile(String fileName)
+			throws Exception
 	{
 		BindFactory geometryBindFactory = GeometryBindFactory.getInstance();
 		String inputPath = BindFactory.getPathFromName(fileName);
@@ -592,45 +620,61 @@ public abstract class StudyModel
 	{
 		this.params = params;
 	}
-	
+
 	/**
 	 * Set study model preferences from application preferences.
+	 * 
 	 * @param newPreferences
 	 */
 	public void setPreferences(Preferences newPreferences)
 	{
-		double currentTemperature = newPreferences.getDouble(OptimizationPreferences.TEMPERATURE_OPT, 
+		double currentTemperature = newPreferences.getDouble(
+				OptimizationPreferences.TEMPERATURE_OPT,
 				OptimizationPreferences.DEFAULT_TEMPERATURE);
-		double currentPressure = newPreferences.getDouble(OptimizationPreferences.PRESSURE_OPT, OptimizationPreferences.DEFAULT_PRESSURE);
-		int currentHumidity = newPreferences.getInt(OptimizationPreferences.HUMIDITY_OPT, OptimizationPreferences.DEFAULT_HUMIDITY);
-		int currentCO2 = newPreferences.getInt(OptimizationPreferences.CO2_FRACTION_OPT, OptimizationPreferences.DEFAULT_CO2_FRACTION);
+		double currentPressure = newPreferences.getDouble(
+				OptimizationPreferences.PRESSURE_OPT,
+				OptimizationPreferences.DEFAULT_PRESSURE);
+		int currentHumidity = newPreferences.getInt(
+				OptimizationPreferences.HUMIDITY_OPT,
+				OptimizationPreferences.DEFAULT_HUMIDITY);
+		int currentCO2 = newPreferences.getInt(
+				OptimizationPreferences.CO2_FRACTION_OPT,
+				OptimizationPreferences.DEFAULT_CO2_FRACTION);
 		double xCO2 = currentCO2 * 1.0e-6;
-		getParams().setProperties(currentTemperature, currentPressure, currentHumidity, xCO2);
+		getParams().setProperties(currentTemperature, currentPressure,
+				currentHumidity, xCO2);
 		getParams().printProperties();
 
 		String optimizerPreference = newPreferences.get(
-				OptimizationPreferences.OPTIMIZER_TYPE_OPT, OptimizationPreferences.OPT_DEFAULT_NAME);
-		if ( optimizerPreference.contentEquals(OptimizationPreferences.OPT_DEFAULT_NAME) )
+				OptimizationPreferences.OPTIMIZER_TYPE_OPT,
+				OptimizationPreferences.OPT_DEFAULT_NAME);
+		if (optimizerPreference
+				.contentEquals(OptimizationPreferences.OPT_DEFAULT_NAME))
 		{
 			preferredOptimizerType = null;
 		}
-		else if ( optimizerPreference.contentEquals(OptimizationPreferences.OPT_BOBYQA_NAME) )
+		else if (optimizerPreference
+				.contentEquals(OptimizationPreferences.OPT_BOBYQA_NAME))
 		{
 			preferredOptimizerType = BaseObjectiveFunction.OptimizerType.BOBYQAOptimizer;
 		}
-		else if ( optimizerPreference.contentEquals(OptimizationPreferences.OPT_CMAES_NAME) )
+		else if (optimizerPreference
+				.contentEquals(OptimizationPreferences.OPT_CMAES_NAME))
 		{
 			preferredOptimizerType = BaseObjectiveFunction.OptimizerType.CMAESOptimizer;
 		}
-		else if ( optimizerPreference.contentEquals(OptimizationPreferences.OPT_MULTISTART_NAME) )
+		else if (optimizerPreference
+				.contentEquals(OptimizationPreferences.OPT_MULTISTART_NAME))
 		{
 			preferredOptimizerType = BaseObjectiveFunction.OptimizerType.MultiStartOptimizer;
 		}
-		else if ( optimizerPreference.contentEquals(OptimizationPreferences.OPT_SIMPLEX_NAME) )
+		else if (optimizerPreference
+				.contentEquals(OptimizationPreferences.OPT_SIMPLEX_NAME))
 		{
 			preferredOptimizerType = BaseObjectiveFunction.OptimizerType.SimplexOptimizer;
 		}
-		else if ( optimizerPreference.contentEquals(OptimizationPreferences.OPT_POWELL_NAME) )
+		else if (optimizerPreference
+				.contentEquals(OptimizationPreferences.OPT_POWELL_NAME))
 		{
 			preferredOptimizerType = BaseObjectiveFunction.OptimizerType.PowellOptimizer;
 		}
@@ -639,9 +683,9 @@ public abstract class StudyModel
 			preferredOptimizerType = null;
 		}
 	}
-	
+
 	// Methods to return statistics from an optimization.
-	
+
 	public double getInitialNorm()
 	{
 		return initialNorm;
@@ -651,10 +695,10 @@ public abstract class StudyModel
 	{
 		return finalNorm;
 	}
-	
+
 	public double getResidualErrorRatio()
 	{
-		return finalNorm/initialNorm;
+		return finalNorm / initialNorm;
 	}
 
 	// Methods to create objects that will perform this study,
@@ -662,22 +706,35 @@ public abstract class StudyModel
 
 	/**
 	 * Create the selected calculator, and set its physical parameters.
+	 * 
 	 * @return created calculator.
 	 */
 	protected abstract InstrumentCalculator getCalculator();
 
 	/**
 	 * Create the instrument tuner appropriate for this study.
+	 * 
 	 * @return created tuner.
 	 */
 	protected abstract InstrumentTuner getInstrumentTuner();
 
 	/**
-	 * Create the objective function to use for the selected optimization.
-	 * set the physical parameters,
-	 * and set any constraints that the user has selected.
+	 * Create the objective function to use for the selected optimization. set
+	 * the physical parameters, and set any constraints that the user has
+	 * selected.
+	 * 
 	 * @return
-	 * @throws Exception 
+	 * @throws Exception
 	 */
-	protected abstract BaseObjectiveFunction getObjectiveFunction() throws Exception;
+	protected abstract BaseObjectiveFunction getObjectiveFunction()
+			throws Exception;
+
+	/**
+	 * Create the default view for and XML dataModel for each type represented
+	 * in the XML.
+	 * 
+	 * @param dataModel
+	 * @return created ContainedXmlView
+	 */
+	public abstract ContainedXmlView getDefaultXmlView(FileDataModel dataModel, DataViewPane parent);
 }

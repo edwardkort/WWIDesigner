@@ -25,7 +25,7 @@ public class NafStudyOptimizationTest extends PerturbedInstrumentOptimization
 		myStudy.setMinTopHoleRatio(0.4);
 		myStudy.setCategorySelection(NafStudyModel.OPTIMIZER_CATEGORY_ID,
 				NafStudyModel.GROUP_OPT_SUB_CATEGORY_ID);
-		myStudy.setCategorySelection(NafStudyModel.CONSTRAINT_CATEGORY_ID,
+		myStudy.setCategorySelection(NafStudyModel.CONSTRAINTS_CATEGORY_ID,
 				NafStudyModel.HOLE_6_1_25_SPACING_CONS_SUB_CATEGORY_ID);
 
 		setStudyModel(myStudy);

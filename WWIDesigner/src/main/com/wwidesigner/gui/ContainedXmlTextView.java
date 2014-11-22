@@ -22,22 +22,22 @@ public class ContainedXmlTextView extends ContainedXmlView
 		LanguageSpecManager.getInstance().getLanguageSpec("XML")
 				.configureCodeEditor(codeEditor);
 
-		setDataDirty(true);
+		setDataDirty();
 	}
 
 	@Override
-	protected void setDataDirty(boolean isDirty)
+	protected void setDataDirty()
 	{
 		docListener = new DocumentListener()
 		{
 			public void insertUpdate(DocumentEvent e)
 			{
-				parent.makeDirty(isDirty);
+				parent.makeDirty(true);
 			}
 
 			public void removeUpdate(DocumentEvent e)
 			{
-				parent.makeDirty(isDirty);
+				parent.makeDirty(true);
 			}
 
 			public void changedUpdate(DocumentEvent e)

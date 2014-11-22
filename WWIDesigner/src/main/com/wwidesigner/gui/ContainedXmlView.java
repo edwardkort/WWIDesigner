@@ -26,7 +26,7 @@ public abstract class ContainedXmlView
 	/**
 	 * Contains the logic to make the parent.makeDirty(true) call.
 	 */
-	protected abstract void setDataDirty(boolean isDirty);
+	protected abstract void setDataDirty();
 
 	/**
 	 * Returns the viewable Component in the view. This may either be the view

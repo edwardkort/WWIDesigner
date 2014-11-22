@@ -41,7 +41,7 @@ public class ConstraintsEditorView extends ContainedXmlView
 	}
 
 	@Override
-	protected void setDataDirty(boolean isDirty)
+	protected void setDataDirty()
 	{
 		// TODO Auto-generated method stub
 		

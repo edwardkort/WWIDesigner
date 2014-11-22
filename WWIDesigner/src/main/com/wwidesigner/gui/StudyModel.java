@@ -28,6 +28,7 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.prefs.Preferences;
 
+import com.jidesoft.app.framework.BasicDataModel;
 import com.jidesoft.app.framework.file.FileDataModel;
 import com.jidesoft.app.framework.gui.DataViewPane;
 import com.wwidesigner.geometry.Instrument;
@@ -736,5 +737,5 @@ public abstract class StudyModel implements CategoryType
 	 * @param dataModel
 	 * @return created ContainedXmlView
 	 */
-	public abstract ContainedXmlView getDefaultXmlView(FileDataModel dataModel, DataViewPane parent);
+	public abstract ContainedXmlView getDefaultXmlView(BasicDataModel dataModel, DataViewPane parent);
 }

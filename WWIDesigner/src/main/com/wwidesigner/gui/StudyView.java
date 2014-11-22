@@ -34,6 +34,7 @@ import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
 import com.jidesoft.app.framework.DataModel;
+import com.jidesoft.app.framework.DataView;
 import com.jidesoft.app.framework.event.EventSubscriber;
 import com.jidesoft.app.framework.event.SubscriberEvent;
 import com.jidesoft.app.framework.file.FileDataModel;
@@ -260,10 +261,10 @@ public class StudyView extends DataViewPane implements EventSubscriber
 			DataModel data = app.getFocusedModel();
 			if (data != null)
 			{
-				CodeEditorView view = (CodeEditorView) app.getDataView(data);
-				if (view != null)
+				DataView view = app.getDataView(data);
+				if (view != null && view instanceof XmlToggleView)
 				{
-					String xmlInstrument2 = view.getText();
+					String xmlInstrument2 = ((XmlToggleView) view).getText();
 					Instrument  instrument2 = StudyModel.getInstrument(xmlInstrument2);
 					if (instrument2 == null)
 					{

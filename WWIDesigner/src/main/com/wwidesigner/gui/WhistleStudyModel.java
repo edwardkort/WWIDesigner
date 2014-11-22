@@ -21,7 +21,7 @@ package com.wwidesigner.gui;
 import java.util.Arrays;
 import java.util.prefs.Preferences;
 
-import com.jidesoft.app.framework.file.FileDataModel;
+import com.jidesoft.app.framework.BasicDataModel;
 import com.jidesoft.app.framework.gui.DataViewPane;
 import com.wwidesigner.geometry.Instrument;
 import com.wwidesigner.modelling.BellNoteEvaluator;
@@ -279,7 +279,7 @@ public class WhistleStudyModel extends StudyModel
 	}
 
 	@Override
-	public ContainedXmlView getDefaultXmlView(FileDataModel dataModel,
+	public ContainedXmlView getDefaultXmlView(BasicDataModel dataModel,
 			DataViewPane parent)
 	{
 		String data = (String) dataModel.getData().toString();
@@ -289,10 +289,10 @@ public class WhistleStudyModel extends StudyModel
 		switch (categoryName)
 		{
 			case INSTRUMENT_CATEGORY_ID:
-				view = new ContainedXmlTextView(parent);
+				view = new ContainedInstrumentView(parent);
 				break;
 			case TUNING_CATEGORY_ID:
-				view = new ContainedXmlTextView(parent);
+				view = new ContainedTuningView(parent);
 				break;
 			case CONSTRAINTS_CATEGORY_ID:
 				view = new ContainedXmlTextView(parent);

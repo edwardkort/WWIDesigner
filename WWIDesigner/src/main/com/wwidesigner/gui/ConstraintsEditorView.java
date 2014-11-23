@@ -1,7 +1,6 @@
 package com.wwidesigner.gui;
 
 import java.awt.Component;
-import java.io.StringWriter;
 import java.util.prefs.Preferences;
 
 import javax.swing.JScrollPane;

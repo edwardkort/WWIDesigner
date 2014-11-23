@@ -111,7 +111,7 @@ public class ConstraintsPanel extends JPanel implements DataChangedProvider
 		gbc.gridy = ++gridy;
 		add(label, gbc);
 		// Require a non-blank name field
-		JTextField constraintsNameField = new JTextField(50);
+		final JTextField constraintsNameField = new JTextField(50);
 		constraintsNameField.setText(constraints.getConstraintsName());
 		constraintsNameField.addActionListener(new ActionListener()
 		{

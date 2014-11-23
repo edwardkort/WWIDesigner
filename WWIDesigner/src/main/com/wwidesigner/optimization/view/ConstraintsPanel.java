@@ -1,11 +1,16 @@
 package com.wwidesigner.optimization.view;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -14,24 +19,47 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 import javax.swing.table.AbstractTableModel;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableModel;
 
+import com.wwidesigner.gui.util.DataChangedEvent;
+import com.wwidesigner.gui.util.DataChangedListener;
+import com.wwidesigner.gui.util.DataChangedProvider;
 import com.wwidesigner.optimization.Constraint;
 import com.wwidesigner.optimization.Constraints;
 
-public class ConstraintsPanel extends JPanel
+public class ConstraintsPanel extends JPanel implements DataChangedProvider
 {
 	private Constraints constraints;
-	private JTextField constraintsNameField;
 	private GridBagConstraints gbc = new GridBagConstraints();
 	private int gridy = 0;
+	private int decimalPrecision = 5;
+	private List<DataChangedListener> dataChangedListeners;
 
 	public ConstraintsPanel(Constraints constraints)
+	{
+		setConstraintValues(constraints);
+	}
+
+	public ConstraintsPanel()
+	{
+
+	}
+
+	public void setConstraintValues(Constraints constraints)
 	{
 		this.constraints = constraints;
 		setLayout(new GridBagLayout());
 		setMetadataValues();
 		setConstraintsValues();
+	}
+
+	public Constraints getConstraintValues()
+	{
+		return constraints;
 	}
 
 	private void setConstraintsValues()
@@ -49,6 +77,7 @@ public class ConstraintsPanel extends JPanel
 					.getConstraints(category);
 			JTable table = new JTable(
 					new ConstraintTableModel(constraintValues));
+			configureTable(table);
 			JScrollPane scrollPane = new JScrollPane(table);
 			scrollPane.setPreferredSize(new Dimension(900, 150));
 			panel.add(scrollPane, BorderLayout.CENTER);
@@ -58,6 +87,9 @@ public class ConstraintsPanel extends JPanel
 		}
 	}
 
+	/**
+	 * Only the Constraints name is editable, and it cannot be blank.
+	 */
 	private void setMetadataValues()
 	{
 		gbc.anchor = GridBagConstraints.NORTHWEST;
@@ -78,8 +110,34 @@ public class ConstraintsPanel extends JPanel
 		gbc.gridx = 0;
 		gbc.gridy = ++gridy;
 		add(label, gbc);
-		constraintsNameField = new JTextField(50);
+		// Require a non-blank name field
+		JTextField constraintsNameField = new JTextField(50);
 		constraintsNameField.setText(constraints.getConstraintsName());
+		constraintsNameField.addActionListener(new ActionListener()
+		{
+
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				String text = constraintsNameField.getText();
+				text = text == null ? "" : text.trim();
+				String originalText = constraints.getConstraintsName();
+				if (text.length() > 0)
+				{
+					if (!text.equals(originalText))
+					{
+						constraints.setConstraintsName(text);
+						constraintsNameField.setText(text);
+						fireDataChangedEvent();
+					}
+				}
+				else
+				{
+					constraintsNameField.setText(originalText);
+				}
+			}
+
+		});
 		gbc.gridx = 1;
 		add(constraintsNameField, gbc);
 
@@ -95,6 +153,35 @@ public class ConstraintsPanel extends JPanel
 		add(label, gbc);
 	}
 
+	private void configureTable(JTable table)
+	{
+		TableModel tableModel = table.getModel();
+
+		// Set column widths
+		TableColumn nameCol = table.getColumn(tableModel.getColumnName(0));
+		nameCol.setPreferredWidth(425);
+		TableColumn typeCol = table.getColumn(tableModel.getColumnName(1));
+		typeCol.setPreferredWidth(125);
+		TableColumn lbCol = table.getColumn(tableModel.getColumnName(2));
+		lbCol.setPreferredWidth(175);
+		TableColumn ubCol = table.getColumn(tableModel.getColumnName(3));
+		ubCol.setPreferredWidth(175);
+
+		// Set number format
+		lbCol.setCellRenderer(new NumberFormatCellRenderer());
+		ubCol.setCellRenderer(new NumberFormatCellRenderer());
+		
+		// Set single cell selection
+		table.setColumnSelectionAllowed(false);
+		table.setRowSelectionAllowed(false);
+		table.setCellSelectionEnabled(true);
+	}
+
+	/**
+	 * TableModel in which the underlying data is List of Constraint values.
+	 * 
+	 * Only the upper and lower bounds are editable.
+	 */
 	class ConstraintTableModel extends AbstractTableModel
 	{
 		List<Constraint> constraintValues;
@@ -105,9 +192,33 @@ public class ConstraintsPanel extends JPanel
 		}
 
 		@Override
-		public int getColumnCount()
+		public void setValueAt(Object value, int row, int col)
 		{
-			return 4;
+			Constraint constraint = constraintValues.get(row);
+			if (col == 2)
+			{
+				Double originalValue = constraint.getLowerBound();
+				constraint.setLowerBound((Double) value);
+				Double alteredValue = constraint.convertBound(true, true);
+				constraint.setLowerBound(alteredValue);
+				if (!originalValue.equals(alteredValue))
+				{
+					fireDataChangedEvent();
+				}
+			}
+			else if (col == 3)
+			{
+				Double originalValue = constraint.getUpperBound();
+				constraint.setUpperBound((Double) value);
+				Double alteredValue = constraint.convertBound(false, true);
+				constraint.setUpperBound(alteredValue);
+				if (!originalValue.equals(alteredValue))
+				{
+					fireDataChangedEvent();
+				}
+			}
+
+			fireTableCellUpdated(row, col);
 		}
 
 		@Override
@@ -191,5 +302,47 @@ public class ConstraintsPanel extends JPanel
 
 		}
 
+		@Override
+		public int getColumnCount()
+		{
+			return 4;
+		}
+
+	}
+
+	class NumberFormatCellRenderer extends DefaultTableCellRenderer
+	{
+		public Component getTableCellRendererComponent(JTable table,
+				Object value, boolean isSelected, boolean hasFocus, int row,
+				int col)
+		{
+			JLabel label = (JLabel) super.getTableCellRendererComponent(table,
+					value, isSelected, hasFocus, row, col);
+			label.setHorizontalAlignment(SwingConstants.RIGHT);
+			NumberFormat format = NumberFormat.getNumberInstance();
+			format.setMinimumFractionDigits(decimalPrecision);
+			label.setText(value == null ? "" : format.format(value));
+
+			return label;
+		}
+	}
+
+	public void addDataChangedListener(DataChangedListener listener)
+	{
+		if (dataChangedListeners == null)
+		{
+			dataChangedListeners = new ArrayList<DataChangedListener>();
+		}
+
+		dataChangedListeners.add(listener);
+	}
+
+	private void fireDataChangedEvent()
+	{
+		DataChangedEvent event = new DataChangedEvent(this);
+		for (DataChangedListener listener : dataChangedListeners)
+		{
+			listener.dataChanged(event);
+		}
 	}
 }

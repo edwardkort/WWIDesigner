@@ -21,7 +21,6 @@ public class ContainedXmlTextView extends ContainedXmlView
 		codeEditor = new CodeEditor();
 		LanguageSpecManager.getInstance().getLanguageSpec("XML")
 				.configureCodeEditor(codeEditor);
-
 		setDataDirty();
 	}
 

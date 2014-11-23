@@ -498,7 +498,8 @@ public class NafStudyModel extends StudyModel
 				view = new ContainedXmlTextView(parent);
 				break;
 			case CONSTRAINTS_CATEGORY_ID:
-				view = new ContainedXmlTextView(parent);
+//				view = new ContainedXmlTextView(parent);
+				view = new ConstraintsEditorView(parent);
 				break;
 			default:
 				view = new ContainedXmlTextView(parent);

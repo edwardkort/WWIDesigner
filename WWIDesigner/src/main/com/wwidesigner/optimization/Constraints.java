@@ -188,6 +188,11 @@ public class Constraints
 		}
 	}
 
+	public void setDimensionType(LengthType dimensionType)
+	{
+		this.dimensionType = dimensionType;
+	}
+
 	public LengthType getDimensionType()
 	{
 		return dimensionType;
@@ -240,6 +245,19 @@ public class Constraints
 		validateBounds(upperBounds);
 		this.upperBounds = upperBounds;
 		updateBounds(false);
+	}
+
+	/**
+	 * Used to set the transient parent value of each contained Constraint when
+	 * the Constraints were constructed from an XML file.
+	 */
+	public void setConstraintParent()
+	{
+		// List<Constraint> constraintList = getConstraint();
+		for (Constraint thisConstraint : constraint)
+		{
+			thisConstraint.setParent(this);
+		}
 	}
 
 }

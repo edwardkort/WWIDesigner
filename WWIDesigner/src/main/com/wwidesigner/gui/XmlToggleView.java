@@ -4,6 +4,7 @@ import java.awt.Dimension;
 
 import com.jidesoft.app.framework.BasicDataModel;
 import com.jidesoft.app.framework.DataModel;
+import com.jidesoft.app.framework.file.FileDataModel;
 import com.jidesoft.app.framework.gui.DataViewPane;
 
 /**
@@ -49,9 +50,9 @@ public class XmlToggleView extends DataViewPane
 	@Override
 	public void updateView(DataModel dataModel)
 	{
-		if (dataModel instanceof BasicDataModel)
+		if (dataModel instanceof FileDataModel)
 		{
-			BasicDataModel model = (BasicDataModel) dataModel;
+			FileDataModel model = (FileDataModel) dataModel;
 			currentView = studyModel.getDefaultXmlView(model, this);
 			String xmlData = model.getData().toString();
 			currentView.setText(xmlData);

@@ -42,13 +42,10 @@ public class ConstraintsEditorView extends ContainedXmlView
 	public String getText()
 	{
 		Constraints constraints = constraintsPanel.getConstraintValues();
-		BindFactory bindFactory = OptimizationBindFactory.getInstance();
 		String xmlText = null;
 		try
 		{
-			StringWriter writer = new StringWriter();
-			bindFactory.marshalToXml(constraints, writer);
-			xmlText = writer.toString();
+			xmlText = StudyModel.marshal(constraints);
 		}
 		catch (Exception e)
 		{

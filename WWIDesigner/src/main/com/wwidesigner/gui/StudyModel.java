@@ -39,6 +39,7 @@ import com.wwidesigner.modelling.InstrumentTuner;
 import com.wwidesigner.note.Tuning;
 import com.wwidesigner.note.bind.NoteBindFactory;
 import com.wwidesigner.optimization.BaseObjectiveFunction;
+import com.wwidesigner.optimization.Constraints;
 import com.wwidesigner.optimization.ObjectiveFunctionOptimizer;
 import com.wwidesigner.optimization.bind.OptimizationBindFactory;
 import com.wwidesigner.util.BindFactory;
@@ -536,6 +537,15 @@ public abstract class StudyModel implements CategoryType
 		return writer.toString();
 	}
 
+	public static String marshal(Constraints constraints) throws Exception
+	{
+		BindFactory bindFactory = OptimizationBindFactory.getInstance();
+		StringWriter writer = new StringWriter();
+		bindFactory.marshalToXml(constraints, writer);
+		
+		return writer.toString();
+	}
+
 	protected String getSelectedXmlString(String categoryName) throws Exception
 	{
 		String xmlString = null;
@@ -737,5 +747,6 @@ public abstract class StudyModel implements CategoryType
 	 * @param dataModel
 	 * @return created ContainedXmlView
 	 */
-	public abstract ContainedXmlView getDefaultXmlView(BasicDataModel dataModel, DataViewPane parent);
+	public abstract ContainedXmlView getDefaultXmlView(
+			BasicDataModel dataModel, DataViewPane parent);
 }

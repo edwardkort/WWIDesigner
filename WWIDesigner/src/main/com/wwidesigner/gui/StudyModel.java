@@ -20,6 +20,7 @@ package com.wwidesigner.gui;
 
 import java.io.File;
 import java.io.StringWriter;
+import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -28,6 +29,7 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.prefs.Preferences;
 
+import com.jidesoft.app.framework.BasicDataModel;
 import com.jidesoft.app.framework.file.FileDataModel;
 import com.jidesoft.app.framework.gui.DataViewPane;
 import com.wwidesigner.geometry.Instrument;
@@ -541,7 +543,7 @@ public abstract class StudyModel implements CategoryType
 		BindFactory bindFactory = OptimizationBindFactory.getInstance();
 		StringWriter writer = new StringWriter();
 		bindFactory.marshalToXml(constraints, writer);
-		
+
 		return writer.toString();
 	}
 
@@ -711,6 +713,132 @@ public abstract class StudyModel implements CategoryType
 		return finalNorm / initialNorm;
 	}
 
+	/**
+	 * Create the default view for and XML dataModel for each type represented
+	 * in the XML.
+	 * 
+	 * @param dataModel
+	 * @return created ContainedXmlView
+	 */
+	public ContainedXmlView getDefaultXmlView(FileDataModel dataModel,
+			DataViewPane parent)
+	{
+		String xmlData = (String) dataModel.getData().toString();
+		String categoryName = getCategoryName(xmlData);
+
+		Class<? extends ContainedXmlView> defaultViewClass = getDefaultViewClass(categoryName);
+		ContainedXmlView defaultView = null;
+		try
+		{
+			Constructor<? extends ContainedXmlView> constr = defaultViewClass
+					.getConstructor(new Class[] { DataViewPane.class });
+			defaultView = (ContainedXmlView) constr
+					.newInstance(new Object[] { parent });
+		}
+		catch (Exception e)
+		{
+			System.err.println(e.getMessage());
+		}
+
+		return defaultView;
+	}
+
+	/**
+	 * Creates the next ContainedXmlView instance for a model that has multiple
+	 * views configured in getToggleViewClasses. The GUI logic only allows this
+	 * call to be made if there is a multiple of such views.
+	 * 
+	 * @param dataModel
+	 *            Used to derive the data type, a CATEGORY_ID
+	 * @param containedXmlView
+	 *            Used to determine the next view
+	 * @param parent
+	 *            Needed in the constructor of the new view instance
+	 * @return The new ContainedXmlView instance. May return the input
+	 *         ContainedXmlView if there is a programming error.
+	 */
+	public ContainedXmlView getNextXmlView(BasicDataModel dataModel,
+			ContainedXmlView containedXmlView, DataViewPane parent)
+	{
+		Class<? extends ContainedXmlView> currentViewClass = containedXmlView
+				.getClass();
+		ContainedXmlView nextView = null;
+
+		String xmlData = (String) dataModel.getData().toString();
+		String categoryName = getCategoryName(xmlData);
+
+		Map<String, Class<ContainedXmlView>[]> toggleLists = getToggleViewClasses();
+		Class<ContainedXmlView>[] toggleViews = toggleLists.get(categoryName);
+
+		Class<ContainedXmlView> nextViewClass = null;
+		int numberOfToggles = toggleViews == null ? 0 : toggleViews.length;
+		if (numberOfToggles > 1)
+		{
+			for (int i = 0; i < numberOfToggles; i++)
+			{
+				Class<ContainedXmlView> toggleView = toggleViews[i];
+				if (toggleView.equals(currentViewClass))
+				{
+					if (i == (numberOfToggles - 1))
+					{
+						nextViewClass = toggleViews[0];
+					}
+					else
+					{
+						nextViewClass = toggleViews[i + 1];
+					}
+					break;
+				}
+			}
+			// This should only happen if you change study models with open data
+			// views
+			if (nextViewClass == null)
+			{
+				nextViewClass = toggleViews[0];
+			}
+			try
+			{
+				Constructor<ContainedXmlView> constr = nextViewClass
+						.getConstructor(new Class[] { DataViewPane.class });
+				nextView = (ContainedXmlView) constr
+						.newInstance(new Object[] { parent });
+			}
+			catch (Exception e)
+			{
+				System.err.println(e.getMessage());
+			}
+		}
+
+		// Return the original view on error
+		nextView = nextView == null ? containedXmlView : nextView;
+		return nextView;
+	}
+
+	/**
+	 * Returns the number of alternative ContainedXmlViews configured for a
+	 * specific data type, a CATEGORY_ID, in the XML.
+	 * 
+	 * @param dataModel
+	 *            Used to determine the data type
+	 * @return The number of alternative views, 0 if there are none configured
+	 */
+	public int getNumberOfToggleViews(BasicDataModel dataModel)
+	{
+		String xmlData = (String) dataModel.getData().toString();
+		String categoryName = getCategoryName(xmlData);
+
+		Map<String, Class<ContainedXmlView>[]> toggleLists = getToggleViewClasses();
+		Class<ContainedXmlView>[] toggleViews = toggleLists.get(categoryName);
+
+		int numberOfViews = 0;
+		if (toggleViews != null)
+		{
+			numberOfViews = toggleViews.length;
+		}
+
+		return numberOfViews;
+	}
+
 	// Methods to create objects that will perform this study,
 	// according to components that the user has selected.
 
@@ -740,12 +868,23 @@ public abstract class StudyModel implements CategoryType
 			throws Exception;
 
 	/**
-	 * Create the default view for and XML dataModel for each type represented
-	 * in the XML.
+	 * Configures the array of allowed ContainedXmlView classes for each data
+	 * type, a CATEGORY_ID, in the XML.
 	 * 
-	 * @param dataModel
-	 * @return created ContainedXmlView
+	 * @return A Map in which the keys a the data types, and the values are
+	 *         arrays of ContainedXmlView classes.
 	 */
-	public abstract ContainedXmlView getDefaultXmlView(
-			FileDataModel dataModel, DataViewPane parent);
+	protected abstract Map<String, Class<ContainedXmlView>[]> getToggleViewClasses();
+
+	/**
+	 * Configures the default ContainedXmlView to be used for each supported
+	 * data type, a CATEGORY_ID, in the XML.
+	 * 
+	 * @param categoryName
+	 * @return The Class of the default view. The base StudyModel uses
+	 *         reflection to create the instance.
+	 */
+	protected abstract Class<? extends ContainedXmlView> getDefaultViewClass(
+			String categoryName);
+
 }

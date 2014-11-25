@@ -73,6 +73,19 @@ public class XmlToggleView extends DataViewPane
 		}
 	}
 
+	public void toggleView()
+	{
+		BasicDataModel dataModel = (BasicDataModel) getApplication()
+				.getDataModel(this);
+		ContainedXmlView nextView = studyModel.getNextXmlView(dataModel,
+				currentView, this);
+		nextView.setText(currentView.getText());
+		removeAll();
+		add(nextView.getViewComponent());
+		currentView = nextView;
+		updateUI();
+	}
+
 	public String getText()
 	{
 		return currentView.getText();

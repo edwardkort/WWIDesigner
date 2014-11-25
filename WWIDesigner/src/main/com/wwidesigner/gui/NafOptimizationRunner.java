@@ -14,6 +14,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JTextPane;
 
 import com.jidesoft.app.framework.ApplicationVetoException;
+import com.jidesoft.app.framework.BasicDataModel;
 import com.jidesoft.app.framework.DataModel;
 import com.jidesoft.app.framework.DataModelAdapter;
 import com.jidesoft.app.framework.DataModelEvent;
@@ -50,24 +51,23 @@ import com.jidesoft.docking.DockContext;
 import com.wwidesigner.note.wizard.TuningWizardDialog;
 
 /**
- *  Main program to present a study view to the user,
- *  and allow them to interact with instrument study models
- *  to analyze and optimize instruments.
- *  
- *  Copyright (C) 2014, Edward Kort, Antoine Lefebvre, Burton Patkau.
+ * Main program to present a study view to the user, and allow them to interact
+ * with instrument study models to analyze and optimize instruments.
+ * 
+ * Copyright (C) 2014, Edward Kort, Antoine Lefebvre, Burton Patkau.
  *
- *  This program is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation, either version 3 of the License, or
- *  (at your option) any later version.
+ * This program is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option) any later
+ * version.
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with
+ * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 public class NafOptimizationRunner extends FileBasedApplication implements
 		EventSubscriber
@@ -90,9 +90,9 @@ public class NafOptimizationRunner extends FileBasedApplication implements
 	static final String CLEAR_CONSOLE_ACTION_ID = "Clear Console";
 	static final String WARN_ON_DIRTY_CLOSE_ACTION_ID = "Warn on dirty close";
 	static final String RENAME_WINDOW_ACTION_ID = "Rename window";
-	
-	static final String LICENSE_TEXT
-		= "NAF Optimization Runner\n\n"
+	static final String TOGGLE_VIEW_ACTION_ID = "Toggle data view";
+
+	static final String LICENSE_TEXT = "NAF Optimization Runner\n\n"
 			+ "Copyright (C) 2014, Edward Kort, Antoine Lefebvre, Burton Patkau.\n\n"
 			+ "This program comes with ABSOLUTELY NO WARRANTY.\n"
 			+ "This is free software, and you are welcome to redistribute it\n"
@@ -133,12 +133,13 @@ public class NafOptimizationRunner extends FileBasedApplication implements
 		PreferencesDialogRequest.installPreferences(this, preferencesDialog);
 
 		addFileMapping(new TextFileFormat("xml", "XML"), XmlToggleView.class);
-		addFileMapping(new TextFileFormat("t-xml", "Tuning"), TuningViewPane.class);
+		addFileMapping(new TextFileFormat("t-xml", "Tuning"),
+				TuningViewPane.class);
 		addDockedViews();
 		addEvents();
 		addWindowMenuToggles();
 		addToolMenu();
-		
+
 		customizeAboutBox();
 
 		// The stock JDAF UndoAction and RedoAction are focused on the state of
@@ -194,13 +195,25 @@ public class NafOptimizationRunner extends FileBasedApplication implements
 			public void dataViewActivated(DataViewEvent event)
 			{
 				DataView view = event.getDataView();
-				if (view instanceof CodeEditorView)
+				if (view instanceof XmlToggleView)
 				{
 					DataModel model = getDataModel(view);
 					String name = model.getName();
-					Action action = getActionMap()
-							.get(RENAME_WINDOW_ACTION_ID);
+					Action action = getActionMap().get(RENAME_WINDOW_ACTION_ID);
 					if (name.length() > 0 && name.startsWith("Untitled"))
+					{
+						action.setEnabled(true);
+					}
+					else
+					{
+						action.setEnabled(false);
+					}
+
+					StudyModel studyModel = getStudyView().getStudyModel();
+					int numberOfToggles = studyModel
+							.getNumberOfToggleViews((BasicDataModel) model);
+					action = getActionMap().get(TOGGLE_VIEW_ACTION_ID);
+					if (numberOfToggles > 1)
 					{
 						action.setEnabled(true);
 					}
@@ -363,7 +376,7 @@ public class NafOptimizationRunner extends FileBasedApplication implements
 		action.setEnabled(false);
 		getActionMap().put(COMPARE_INSTRUMENT_ACTION_ID, action);
 
-	action = new GUIApplicationAction(CLEAR_CONSOLE_ACTION_ID)
+		action = new GUIApplicationAction(CLEAR_CONSOLE_ACTION_ID)
 		{
 			/**
 			 * 
@@ -425,6 +438,20 @@ public class NafOptimizationRunner extends FileBasedApplication implements
 		action.setEnabled(false);
 		getActionMap().put(RENAME_WINDOW_ACTION_ID, action);
 
+		action = new GUIApplicationAction(TOGGLE_VIEW_ACTION_ID)
+		{
+			public void actionPerformedDetached(ActionEvent event)
+			{
+				DataView view = getApplication().getFocusedView();
+				if (view instanceof XmlToggleView)
+				{
+					((XmlToggleView) view).toggleView();
+				}
+			}
+		};
+		action.setEnabled(false);
+		getActionMap().put(TOGGLE_VIEW_ACTION_ID, action);
+
 		addMenuBarCustomizer(new MenuBarCustomizer()
 		{
 			public JMenu[] createApplicationMenus(
@@ -432,17 +459,23 @@ public class NafOptimizationRunner extends FileBasedApplication implements
 			{
 				JMenu menu = menuBarUI.defaultMenu("Tool Menu", "Tool");
 				JMenuItem menuItem;
-				menuItem = menu.add(menuBarUI.getAction(CALCULATE_TUNING_ACTION_ID));
+				menuItem = menu.add(menuBarUI
+						.getAction(CALCULATE_TUNING_ACTION_ID));
 				menuItem.setMnemonic('C');
-				menuItem = menu.add(menuBarUI.getAction(GRAPH_TUNING_ACTION_ID));
+				menuItem = menu
+						.add(menuBarUI.getAction(GRAPH_TUNING_ACTION_ID));
 				menuItem.setMnemonic('G');
-				menuItem = menu.add(menuBarUI.getAction(OPTIMIZE_INSTRUMENT_ACTION_ID));
+				menuItem = menu.add(menuBarUI
+						.getAction(OPTIMIZE_INSTRUMENT_ACTION_ID));
 				menuItem.setMnemonic('O');
-				menuItem = menu.add(menuBarUI.getAction(SKETCH_INSTRUMENT_ACTION_ID));
+				menuItem = menu.add(menuBarUI
+						.getAction(SKETCH_INSTRUMENT_ACTION_ID));
 				menuItem.setMnemonic('S');
-				menuItem = menu.add(menuBarUI.getAction(CREATE_TUNING_FILE_ACTION_ID));
+				menuItem = menu.add(menuBarUI
+						.getAction(CREATE_TUNING_FILE_ACTION_ID));
 				menuItem.setMnemonic('T');
-				menuItem = menu.add(menuBarUI.getAction(COMPARE_INSTRUMENT_ACTION_ID));
+				menuItem = menu.add(menuBarUI
+						.getAction(COMPARE_INSTRUMENT_ACTION_ID));
 				menuItem.setMnemonic('m');
 				menu.setMnemonic('T');
 				return new JMenu[] { menu };
@@ -464,13 +497,16 @@ public class NafOptimizationRunner extends FileBasedApplication implements
 					action = menuBarsUI.getAction(RENAME_WINDOW_ACTION_ID);
 					menuItem = group.addMenuItem(action);
 					menuItem.setMnemonic('R');
+					action = menuBarsUI.getAction(TOGGLE_VIEW_ACTION_ID);
+					menuItem = group.addMenuItem(action);
+					menuItem.setMnemonic('T');
 					JCheckBoxMenuItem cbItem = new JCheckBoxMenuItem(
 							menuBarsUI.getAction(WARN_ON_DIRTY_CLOSE_ACTION_ID));
 					cbItem.setSelected(isWarnOnDirtyClose);
 					cbItem.setMnemonic('W');
 					group.addMenuItem(cbItem);
 					group.insertSeparator(3);
-					group.insertSeparator(5);
+					group.insertSeparator(6);
 				}
 			}
 		});
@@ -537,7 +573,7 @@ public class NafOptimizationRunner extends FileBasedApplication implements
 		JTextPane aboutText = new JTextPane();
 		aboutText.setText(LICENSE_TEXT);
 		aboutText.setEditable(false);
-		
+
 		StandardDialogRequest.setQueuedDialogRequestComponent(this,
 				ApplicationDialogsUI.ABOUT_DIALOG_REQUEST_KEY, aboutText);
 

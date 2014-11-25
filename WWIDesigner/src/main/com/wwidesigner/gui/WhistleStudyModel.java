@@ -19,10 +19,10 @@
 package com.wwidesigner.gui;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.prefs.Preferences;
 
-import com.jidesoft.app.framework.file.FileDataModel;
-import com.jidesoft.app.framework.gui.DataViewPane;
 import com.wwidesigner.geometry.Instrument;
 import com.wwidesigner.modelling.BellNoteEvaluator;
 import com.wwidesigner.modelling.CentDeviationEvaluator;
@@ -30,8 +30,8 @@ import com.wwidesigner.modelling.EvaluatorInterface;
 import com.wwidesigner.modelling.FmaxEvaluator;
 import com.wwidesigner.modelling.FminEvaluator;
 import com.wwidesigner.modelling.InstrumentCalculator;
-import com.wwidesigner.modelling.LinearVInstrumentTuner;
 import com.wwidesigner.modelling.InstrumentTuner;
+import com.wwidesigner.modelling.LinearVInstrumentTuner;
 import com.wwidesigner.modelling.WhistleCalculator;
 import com.wwidesigner.note.Tuning;
 import com.wwidesigner.optimization.BaseObjectiveFunction;
@@ -49,6 +49,7 @@ import com.wwidesigner.util.PhysicalParameters;
 
 /**
  * Class to encapsulate methods for analyzing and optimizing whistle models.
+ * 
  * @author Burton Patkau
  * 
  */
@@ -64,8 +65,12 @@ public class WhistleStudyModel extends StudyModel
 	public static final String HOLE_TAPER_OPT_SUB_CATEGORY_ID = "8. Hole and Taper Optimizer";
 	public static final String ROUGH_CUT_OPT_SUB_CATEGORY_ID = "9. Rough-Cut Optimizer";
 
-	public static final double MIN_HOLE_DIAMETER = 0.0040;	// Minimum hole diameter, in meters.
-	public static final double MAX_HOLE_DIAMETER = 0.0091;	// Maximum hole diameter, in meters.
+	public static final double MIN_HOLE_DIAMETER = 0.0040; // Minimum hole
+															// diameter, in
+															// meters.
+	public static final double MAX_HOLE_DIAMETER = 0.0091; // Maximum hole
+															// diameter, in
+															// meters.
 
 	protected int blowingLevel;
 
@@ -106,7 +111,7 @@ public class WhistleStudyModel extends StudyModel
 				OptimizationPreferences.BLOWING_LEVEL_OPT, 5));
 		super.setPreferences(newPreferences);
 	}
-	
+
 	public void setBlowingLevel(int blowingLevel)
 	{
 		this.blowingLevel = blowingLevel;
@@ -169,7 +174,8 @@ public class WhistleStudyModel extends StudyModel
 				upperBound = new double[] { 0.700 };
 				break;
 			case HOLESIZE_OPT_SUB_CATEGORY_ID:
-				evaluator = new CentDeviationEvaluator(calculator, getInstrumentTuner());
+				evaluator = new CentDeviationEvaluator(calculator,
+						getInstrumentTuner());
 				objective = new HoleSizeObjectiveFunction(calculator, tuning,
 						evaluator);
 				// Bounds are diameters, expressed in meters.
@@ -180,7 +186,8 @@ public class WhistleStudyModel extends StudyModel
 				break;
 			case HOLESPACE_OPT_SUB_CATEGORY_ID:
 			case ROUGH_CUT_OPT_SUB_CATEGORY_ID:
-				evaluator = new CentDeviationEvaluator(calculator, getInstrumentTuner());
+				evaluator = new CentDeviationEvaluator(calculator,
+						getInstrumentTuner());
 				objective = new HolePositionObjectiveFunction(calculator,
 						tuning, evaluator);
 				// Bounds are hole separations, expressed in meters.
@@ -196,7 +203,7 @@ public class WhistleStudyModel extends StudyModel
 					// Allow extra space between hands.
 					upperBound[tuning.getNumberOfHoles() - 3] = 0.100;
 				}
-				
+
 				// For a rough-cut optimization, use multi-start optimization.
 
 				if (optimizer == ROUGH_CUT_OPT_SUB_CATEGORY_ID)
@@ -205,23 +212,28 @@ public class WhistleStudyModel extends StudyModel
 					GridRangeProcessor rangeProcessor = new GridRangeProcessor(
 							lowerBound, upperBound, null, nrOfStarts);
 					objective.setRangeProcessor(rangeProcessor);
-					objective.setMaxEvaluations(nrOfStarts * objective.getMaxEvaluations());
+					objective.setMaxEvaluations(nrOfStarts
+							* objective.getMaxEvaluations());
 				}
 				break;
 			case HOLE_OPT_SUB_CATEGORY_ID:
 			default:
-				evaluator = new CentDeviationEvaluator(calculator, getInstrumentTuner());
+				evaluator = new CentDeviationEvaluator(calculator,
+						getInstrumentTuner());
 				objective = new HoleObjectiveFunction(calculator, tuning,
 						evaluator);
 				// Separation and diameter bounds, expressed in meters.
 				lowerBound = new double[2 * tuning.getNumberOfHoles() + 1];
 				upperBound = new double[2 * tuning.getNumberOfHoles() + 1];
-				Arrays.fill(lowerBound, MIN_HOLE_DIAMETER);		// Minimum hole diameter.
-				Arrays.fill(upperBound, MAX_HOLE_DIAMETER);		// Maximum hole diameter.
+				Arrays.fill(lowerBound, MIN_HOLE_DIAMETER); // Minimum hole
+															// diameter.
+				Arrays.fill(upperBound, MAX_HOLE_DIAMETER); // Maximum hole
+															// diameter.
 				// Bounds on hole spacing.
 				lowerBound[0] = 0.200;
 				upperBound[0] = 0.700;
-				for (int gapNr = 1; gapNr < tuning.getNumberOfHoles(); ++gapNr ) {
+				for (int gapNr = 1; gapNr < tuning.getNumberOfHoles(); ++gapNr)
+				{
 					lowerBound[gapNr] = 0.012;
 					upperBound[gapNr] = 0.040;
 				}
@@ -234,27 +246,33 @@ public class WhistleStudyModel extends StudyModel
 				}
 				break;
 			case TAPER_OPT_SUB_CATEGORY_ID:
-				evaluator = new CentDeviationEvaluator(calculator, getInstrumentTuner());
+				evaluator = new CentDeviationEvaluator(calculator,
+						getInstrumentTuner());
 				objective = new BasicTaperObjectiveFunction(calculator, tuning,
 						evaluator);
-				// Dimensions are expressed as ratios: head length, foot diameter.
+				// Dimensions are expressed as ratios: head length, foot
+				// diameter.
 				lowerBound = new double[] { 0.01, 0.3 };
-				upperBound = new double[] { 0.5,  2.0 };
+				upperBound = new double[] { 0.5, 2.0 };
 				break;
 			case HOLE_TAPER_OPT_SUB_CATEGORY_ID:
-				evaluator = new CentDeviationEvaluator(calculator, getInstrumentTuner());
-				objective = new HoleAndTaperObjectiveFunction(calculator, tuning,
-						evaluator);
+				evaluator = new CentDeviationEvaluator(calculator,
+						getInstrumentTuner());
+				objective = new HoleAndTaperObjectiveFunction(calculator,
+						tuning, evaluator);
 				// Separation bounds and diameter bounds, expressed in meters,
 				// and two taper ratios.
 				lowerBound = new double[2 * tuning.getNumberOfHoles() + 3];
 				upperBound = new double[2 * tuning.getNumberOfHoles() + 3];
-				Arrays.fill(lowerBound, MIN_HOLE_DIAMETER);		// Minimum hole diameter.
-				Arrays.fill(upperBound, MAX_HOLE_DIAMETER);		// Maximum hole diameter.
+				Arrays.fill(lowerBound, MIN_HOLE_DIAMETER); // Minimum hole
+															// diameter.
+				Arrays.fill(upperBound, MAX_HOLE_DIAMETER); // Maximum hole
+															// diameter.
 				// Bounds on hole spacing.
 				lowerBound[0] = 0.200;
 				upperBound[0] = 0.700;
-				for (int gapNr = 1; gapNr < tuning.getNumberOfHoles(); ++gapNr ) {
+				for (int gapNr = 1; gapNr < tuning.getNumberOfHoles(); ++gapNr)
+				{
 					lowerBound[gapNr] = 0.012;
 					upperBound[gapNr] = 0.040;
 				}
@@ -266,10 +284,10 @@ public class WhistleStudyModel extends StudyModel
 					upperBound[tuning.getNumberOfHoles() - 3] = 0.100;
 				}
 				// Bounds on taper.
-				lowerBound[lowerBound.length-2] = 0.01;
-				lowerBound[lowerBound.length-1] = 0.3;
-				upperBound[upperBound.length-2] = 0.5;
-				upperBound[upperBound.length-1] = 2.0;
+				lowerBound[lowerBound.length - 2] = 0.01;
+				lowerBound[lowerBound.length - 1] = 0.3;
+				upperBound[upperBound.length - 2] = 0.5;
+				upperBound[upperBound.length - 1] = 2.0;
 				break;
 		}
 
@@ -279,29 +297,37 @@ public class WhistleStudyModel extends StudyModel
 	}
 
 	@Override
-	public ContainedXmlView getDefaultXmlView(FileDataModel dataModel,
-			DataViewPane parent)
+	protected Class<? extends ContainedXmlView> getDefaultViewClass(
+			String categoryName)
 	{
-		String data = (String) dataModel.getData().toString();
-		String categoryName = getCategoryName(data);
-		ContainedXmlView view;
+		Map<String, Class<? extends ContainedXmlView>> defaultMap = new HashMap<String, Class<? extends ContainedXmlView>>();
 
-		switch (categoryName)
-		{
-			case INSTRUMENT_CATEGORY_ID:
-				view = new ContainedInstrumentView(parent);
-				break;
-			case TUNING_CATEGORY_ID:
-				view = new ContainedTuningView(parent);
-				break;
-			case CONSTRAINTS_CATEGORY_ID:
-				view = new ContainedXmlTextView(parent);
-				break;
-			default:
-				view = new ContainedXmlTextView(parent);
-				break;
-		}
+		defaultMap.put(INSTRUMENT_CATEGORY_ID, ContainedInstrumentView.class);
+		defaultMap.put(TUNING_CATEGORY_ID, ContainedTuningView.class);
+		defaultMap.put(CONSTRAINTS_CATEGORY_ID, ConstraintsEditorView.class);
 
-		return view;
+		Class<? extends ContainedXmlView> defaultClass = defaultMap
+				.get(categoryName);
+		defaultClass = defaultClass == null ? ContainedXmlTextView.class
+				: defaultClass;
+
+		return defaultClass;
 	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	protected Map<String, Class<ContainedXmlView>[]> getToggleViewClasses()
+	{
+		Map<String, Class<ContainedXmlView>[]> toggleLists = new HashMap<String, Class<ContainedXmlView>[]>();
+
+		toggleLists.put(INSTRUMENT_CATEGORY_ID, new Class[] {
+				ContainedXmlTextView.class, ContainedInstrumentView.class });
+		toggleLists.put(TUNING_CATEGORY_ID, new Class[] {
+				ContainedXmlTextView.class, ContainedTuningView.class });
+		toggleLists.put(CONSTRAINTS_CATEGORY_ID, new Class[] {
+				ContainedXmlTextView.class, ConstraintsEditorView.class });
+
+		return toggleLists;
+	}
+
 }

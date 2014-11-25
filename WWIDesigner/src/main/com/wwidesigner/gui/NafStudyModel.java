@@ -18,10 +18,10 @@
  */
 package com.wwidesigner.gui;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.prefs.Preferences;
 
-import com.jidesoft.app.framework.file.FileDataModel;
-import com.jidesoft.app.framework.gui.DataViewPane;
 import com.wwidesigner.geometry.Instrument;
 import com.wwidesigner.modelling.CentDeviationEvaluator;
 import com.wwidesigner.modelling.EvaluatorInterface;
@@ -482,30 +482,29 @@ public class NafStudyModel extends StudyModel
 	}
 
 	@Override
-	public ContainedXmlView getDefaultXmlView(FileDataModel dataModel,
-			DataViewPane parent)
+	protected Class<? extends ContainedXmlView> getDefaultViewClass(String categoryName)
 	{
-		String data = (String) dataModel.getData().toString();
-		String categoryName = getCategoryName(data);
-		ContainedXmlView view;
+		Map<String, Class<? extends ContainedXmlView>> defaultMap = new HashMap<String, Class<? extends ContainedXmlView>>();
+		
+		defaultMap.put(INSTRUMENT_CATEGORY_ID, ContainedXmlTextView.class);
+		defaultMap.put(TUNING_CATEGORY_ID, ContainedXmlTextView.class);
+		defaultMap.put(CONSTRAINTS_CATEGORY_ID, ConstraintsEditorView.class);
+		
+		Class<? extends ContainedXmlView> defaultClass = defaultMap.get(categoryName);
+		defaultClass = defaultClass == null ? ContainedXmlTextView.class : defaultClass;
+		
+		return defaultClass;
+	}
 
-		switch (categoryName)
-		{
-			case INSTRUMENT_CATEGORY_ID:
-				view = new ContainedXmlTextView(parent);
-				break;
-			case TUNING_CATEGORY_ID:
-				view = new ContainedXmlTextView(parent);
-				break;
-			case CONSTRAINTS_CATEGORY_ID:
-//				view = new ContainedXmlTextView(parent);
-				view = new ConstraintsEditorView(parent);
-				break;
-			default:
-				view = new ContainedXmlTextView(parent);
-				break;
-		}
+	@Override
+	@SuppressWarnings("unchecked")
+	protected Map<String, Class<ContainedXmlView>[]> getToggleViewClasses()
+	{
+		Map<String, Class<ContainedXmlView>[]> toggleLists = new HashMap<String, Class<ContainedXmlView>[]>();
 
-		return view;
+		toggleLists.put(CONSTRAINTS_CATEGORY_ID, new Class[] {
+				ContainedXmlTextView.class, ConstraintsEditorView.class });
+
+		return toggleLists;
 	}
 }

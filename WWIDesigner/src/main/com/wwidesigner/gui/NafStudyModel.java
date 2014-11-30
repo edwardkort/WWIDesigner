@@ -32,6 +32,7 @@ import com.wwidesigner.modelling.NAFCalculator;
 import com.wwidesigner.modelling.SimpleInstrumentTuner;
 import com.wwidesigner.note.Tuning;
 import com.wwidesigner.optimization.BaseObjectiveFunction;
+import com.wwidesigner.optimization.Constraints;
 import com.wwidesigner.optimization.FippleFactorObjectiveFunction;
 import com.wwidesigner.optimization.HoleFromTopObjectiveFunction;
 import com.wwidesigner.optimization.HoleGroupFromTopObjectiveFunction;
@@ -53,7 +54,7 @@ public class NafStudyModel extends StudyModel
 
 	public static final String FIPPLE_OPT_SUB_CATEGORY_ID = "Fipple-factor Optimizer";
 	public static final String HOLESIZE_OPT_SUB_CATEGORY_ID = "Hole-size Optimizer";
-	public static final String NO_GROUP_OPT_SUB_CATEGORY_ID = "No-grouping Hole Optimizer";
+	public static final String NO_GROUP_OPT_SUB_CATEGORY_ID = "No-hole-grouping Optimizer";
 	public static final String GROUP_OPT_SUB_CATEGORY_ID = "Hole-grouping Optimizer";
 	public static final String TAPER_GROUP_OPT_SUB_CATEGORY_ID = "Taper, hole-grouping Optimizer";
 	public static final String TAPER_NO_GROUP_OPT_SUB_CATEGORY_ID = "Taper, no-hole-grouping Optimizer";
@@ -441,6 +442,10 @@ public class NafStudyModel extends StudyModel
 
 		objective.setLowerBounds(lowerBound);
 		objective.setUpperBounds(upperBound);
+		
+		Constraints constraints = objective.getConstraints();
+		constraints.setConstraintsName(constraint);
+		System.out.println(StudyModel.marshal(constraints));
 
 		Category multiStartCategory = getCategory(MULTI_START_CATEGORY_ID);
 		String multiStartSelected = multiStartCategory.getSelectedSub();

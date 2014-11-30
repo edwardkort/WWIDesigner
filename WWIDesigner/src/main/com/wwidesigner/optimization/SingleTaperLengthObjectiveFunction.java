@@ -28,6 +28,8 @@ public class SingleTaperLengthObjectiveFunction extends MergedObjectiveFunction
 		sumDimensions();
 		maxEvaluations = 20000 + (getNrDimensions() - 1) * 5000;
 		constraints.setObjectiveDisplayName("Single taper length optimizer");
+		constraints.setObjectiveFunctionName(this.getClass().getSimpleName());
+		constraints.setConstraintsName("Default");
 	}
 
 }

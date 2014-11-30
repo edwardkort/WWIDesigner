@@ -36,6 +36,8 @@ public class HoleAndTaperObjectiveFunction extends MergedObjectiveFunction
 		maxEvaluations = 20000;
 		sumDimensions();
 		constraints.setObjectiveDisplayName("Hole position and size optimizer");
+		constraints.setObjectiveFunctionName(this.getClass().getSimpleName());
+		constraints.setConstraintsName("Default");
 	}
 
 }

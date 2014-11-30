@@ -29,6 +29,8 @@ public class HoleGroupObjectiveFunction extends MergedObjectiveFunction
 		maxEvaluations = 20000 + (getNrDimensions() - 1) * 5000;
 		constraints
 				.setObjectiveDisplayName("Grouped hole-position and hole size optimizer");
+		constraints.setObjectiveFunctionName(this.getClass().getSimpleName());
+		constraints.setConstraintsName("Default");
 	}
 
 }

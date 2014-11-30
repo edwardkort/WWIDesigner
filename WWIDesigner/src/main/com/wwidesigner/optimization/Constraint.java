@@ -113,6 +113,21 @@ public class Constraint
 
 	public double convertBound(boolean isLowerBound, boolean toMetres)
 	{
+		// Set upper and lower bounds if they have not been set
+		Double bound = isLowerBound ? getLowerBound() : getUpperBound();
+		if (bound == null)
+		{
+			bound = 0.;
+			if (isLowerBound)
+			{
+				setLowerBound(bound);
+			}
+			else
+			{
+				setUpperBound(bound);
+			}
+		}
+
 		double multiplier;
 		LengthType dimensionType = parent.getDimensionType();
 		if (getType() == ConstraintType.DIMENSIONAL)
@@ -125,7 +140,6 @@ public class Constraint
 			multiplier = 1.;
 		}
 
-		double bound = isLowerBound ? getLowerBound() : getUpperBound();
 		return bound * multiplier;
 	}
 

@@ -32,6 +32,8 @@ public class HoleFromTopObjectiveFunction extends MergedObjectiveFunction
 		sumDimensions();
 		maxEvaluations = 20000 + (getNrDimensions() - 1) * 5000;
 		constraints.setObjectiveDisplayName("Hole position and size optimizer");
+		constraints.setObjectiveFunctionName(this.getClass().getSimpleName());
+		constraints.setConstraintsName("Default");
 	}
 
 }

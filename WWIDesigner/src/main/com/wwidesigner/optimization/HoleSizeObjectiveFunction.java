@@ -34,6 +34,9 @@ public class HoleSizeObjectiveFunction extends BaseObjectiveFunction
 		}
 		maxEvaluations = 20000 + (getNrDimensions() - 1) * 5000;
 		setConstraints();
+		constraints.setObjectiveDisplayName("Hole size optimizer");
+		constraints.setObjectiveFunctionName(this.getClass().getSimpleName());
+		constraints.setConstraintsName("Default");
 	}
 
 	@Override

@@ -13,9 +13,9 @@ import com.wwidesigner.note.TuningInterface;
 import com.wwidesigner.optimization.Constraint.ConstraintType;
 
 /**
- * Optimization objective function for an instrument's fipple factor.
- * If the Tuning has more than one note, only the one with the
- * lowest frequency is used to determine the fipple factor.
+ * Optimization objective function for an instrument's fipple factor. If the
+ * Tuning has more than one note, only the one with the lowest frequency is used
+ * to determine the fipple factor.
  * 
  * @author Burton Patkau
  * 
@@ -32,6 +32,10 @@ public class FippleFactorObjectiveFunction extends BaseObjectiveFunction
 		nrDimensions = 1;
 		optimizerType = OptimizerType.BrentOptimizer; // UnivariateOptimizer
 		setConstraints();
+		constraints
+				.setObjectiveDisplayName("Fipple factor optimizer");
+		constraints.setObjectiveFunctionName(this.getClass().getSimpleName());
+		constraints.setConstraintsName("Default");
 	}
 
 	@Override
@@ -91,7 +95,7 @@ public class FippleFactorObjectiveFunction extends BaseObjectiveFunction
 				}
 			}
 		}
-		
+
 		reducedTuning.addFingering(lowestFingering);
 
 		return reducedTuning;

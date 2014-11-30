@@ -33,6 +33,8 @@ public class SingleTaperNoHoleGroupingObjectiveFunction extends
 		maxEvaluations = 20000 + (getNrDimensions() - 1) * 5000;
 		constraints
 				.setObjectiveDisplayName("Single taper, no-hole-grouping optimizer");
+		constraints.setObjectiveFunctionName(this.getClass().getSimpleName());
+		constraints.setConstraintsName("Default");
 	}
 
 }

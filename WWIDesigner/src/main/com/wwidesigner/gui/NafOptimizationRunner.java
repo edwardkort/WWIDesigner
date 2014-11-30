@@ -4,8 +4,11 @@ import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
+import java.net.URL;
 
+import javax.swing.AbstractButton;
 import javax.swing.Action;
+import javax.swing.ImageIcon;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JDialog;
 import javax.swing.JMenu;
@@ -31,6 +34,7 @@ import com.jidesoft.app.framework.file.TextFileFormat;
 import com.jidesoft.app.framework.gui.ActionKeys;
 import com.jidesoft.app.framework.gui.ApplicationDialogsUI;
 import com.jidesoft.app.framework.gui.ApplicationMenuBarsUI;
+import com.jidesoft.app.framework.gui.ApplicationToolBarsUI;
 import com.jidesoft.app.framework.gui.ApplicationWindowsUI;
 import com.jidesoft.app.framework.gui.DataViewAdapter;
 import com.jidesoft.app.framework.gui.DataViewEvent;
@@ -41,6 +45,7 @@ import com.jidesoft.app.framework.gui.MenuGroup;
 import com.jidesoft.app.framework.gui.PreferencesDialogRequest;
 import com.jidesoft.app.framework.gui.PreferencesPane;
 import com.jidesoft.app.framework.gui.StandardDialogRequest;
+import com.jidesoft.app.framework.gui.ToolBarCustomizer;
 import com.jidesoft.app.framework.gui.actions.ComponentAction;
 import com.jidesoft.app.framework.gui.feature.AutoInstallActionsFeature;
 import com.jidesoft.app.framework.gui.filebased.FileBasedApplication;
@@ -230,6 +235,9 @@ public class NafOptimizationRunner extends FileBasedApplication implements
 
 	protected void addToolMenu()
 	{
+		Action action;
+		String message;
+		URL imageUrl;
 		// The complexity in this method is due to the poor way that JDAF
 		// threads Actions and Activities.
 		// Anything simpler just didn't work right!
@@ -246,11 +254,11 @@ public class NafOptimizationRunner extends FileBasedApplication implements
 				}
 			}
 		};
-		String message = "Calculating instrument tuning.\nThis may take several seconds.";
+		message = "Calculating instrument tuning.\nThis may take several seconds.";
 		activity.addProgressListener(new BlockingProgressListener(
 				getApplicationUIManager().getWindowsUI(),
 				CALCULATE_TUNING_ACTION_ID, message));
-		Action action = new ActivityAction(activity)
+		action = new ActivityAction(activity)
 		{
 			/**
 			 * 
@@ -263,8 +271,14 @@ public class NafOptimizationRunner extends FileBasedApplication implements
 				getApplication().getActivityManager().run(activity);
 			}
 		};
-		getActionMap().put(CALCULATE_TUNING_ACTION_ID, action);
+		action.putValue(Action.SHORT_DESCRIPTION, "Calculate instrument tuning table");
+		imageUrl = NafOptimizationRunner.class.getResource("images/calculate.png");
+		if (imageUrl != null)
+		{
+			action.putValue(Action.SMALL_ICON, new ImageIcon(imageUrl));
+		}
 		action.setEnabled(false);
+		getActionMap().put(CALCULATE_TUNING_ACTION_ID, action);
 
 		final Activity graphActivity = new Activity(GRAPH_TUNING_ACTION_ID)
 		{
@@ -296,8 +310,14 @@ public class NafOptimizationRunner extends FileBasedApplication implements
 				getApplication().getActivityManager().run(graphActivity);
 			}
 		};
-		getActionMap().put(GRAPH_TUNING_ACTION_ID, action);
+		action.putValue(Action.SHORT_DESCRIPTION, "Draw graph of instrument tuning");
+		imageUrl = NafOptimizationRunner.class.getResource("images/graph.png");
+		if (imageUrl != null)
+		{
+			action.putValue(Action.SMALL_ICON, new ImageIcon(imageUrl));
+		}
 		action.setEnabled(false);
+		getActionMap().put(GRAPH_TUNING_ACTION_ID, action);
 
 		final Activity optActivity = new Activity(OPTIMIZE_INSTRUMENT_ACTION_ID)
 		{
@@ -329,8 +349,14 @@ public class NafOptimizationRunner extends FileBasedApplication implements
 				getApplication().getActivityManager().run(optActivity);
 			}
 		};
-		getActionMap().put(OPTIMIZE_INSTRUMENT_ACTION_ID, action);
+		action.putValue(Action.SHORT_DESCRIPTION, "Optimize instrument");
+		imageUrl = NafOptimizationRunner.class.getResource("images/optimize.png");
+		if (imageUrl != null)
+		{
+			action.putValue(Action.SMALL_ICON, new ImageIcon(imageUrl));
+		}
 		action.setEnabled(false);
+		getActionMap().put(OPTIMIZE_INSTRUMENT_ACTION_ID, action);
 
 		action = new GUIApplicationAction(SKETCH_INSTRUMENT_ACTION_ID)
 		{
@@ -344,6 +370,12 @@ public class NafOptimizationRunner extends FileBasedApplication implements
 				}
 			}
 		};
+		action.putValue(Action.SHORT_DESCRIPTION, "Draw a sketch of an instrument");
+		imageUrl = NafOptimizationRunner.class.getResource("images/sketch.png");
+		if (imageUrl != null)
+		{
+			action.putValue(Action.SMALL_ICON, new ImageIcon(imageUrl));
+		}
 		action.setEnabled(false);
 		getActionMap().put(SKETCH_INSTRUMENT_ACTION_ID, action);
 
@@ -359,6 +391,12 @@ public class NafOptimizationRunner extends FileBasedApplication implements
 				wizard.setVisible(true);
 			}
 		};
+		action.putValue(Action.SHORT_DESCRIPTION, "Create a tuning file from notes and fingerings");
+		imageUrl = NafOptimizationRunner.class.getResource("images/tuning.png");
+		if (imageUrl != null)
+		{
+			action.putValue(Action.SMALL_ICON, new ImageIcon(imageUrl));
+		}
 		getActionMap().put(CREATE_TUNING_FILE_ACTION_ID, action);
 
 		action = new GUIApplicationAction(COMPARE_INSTRUMENT_ACTION_ID)
@@ -373,6 +411,12 @@ public class NafOptimizationRunner extends FileBasedApplication implements
 				}
 			}
 		};
+		action.putValue(Action.SHORT_DESCRIPTION, "Compare instrument selected in study to the current editor tab");
+		imageUrl = NafOptimizationRunner.class.getResource("images/compare.png");
+		if (imageUrl != null)
+		{
+			action.putValue(Action.SMALL_ICON, new ImageIcon(imageUrl));
+		}
 		action.setEnabled(false);
 		getActionMap().put(COMPARE_INSTRUMENT_ACTION_ID, action);
 
@@ -449,6 +493,12 @@ public class NafOptimizationRunner extends FileBasedApplication implements
 				}
 			}
 		};
+		action.putValue(Action.SHORT_DESCRIPTION, "Toggle data view of current editor tab");
+		imageUrl = NafOptimizationRunner.class.getResource("images/view.png");
+		if (imageUrl != null)
+		{
+			action.putValue(Action.SMALL_ICON, new ImageIcon(imageUrl));
+		}
 		action.setEnabled(false);
 		getActionMap().put(TOGGLE_VIEW_ACTION_ID, action);
 
@@ -509,6 +559,43 @@ public class NafOptimizationRunner extends FileBasedApplication implements
 					group.insertSeparator(6);
 				}
 			}
+		});
+		
+		addToolBarCustomizer(new ToolBarCustomizer()
+		{
+
+			@Override
+			public void createApplicationToolBar(String toolbarName, Container toolbar,
+					ApplicationToolBarsUI toolbarsUI)
+			{
+				if (toolbarName.equals("Tools"))
+				{
+					AbstractButton button;
+					button = toolbarsUI.addToolBarButton(toolbar, CALCULATE_TUNING_ACTION_ID);
+					button = toolbarsUI.addToolBarButton(toolbar, GRAPH_TUNING_ACTION_ID);
+					button = toolbarsUI.addToolBarButton(toolbar, OPTIMIZE_INSTRUMENT_ACTION_ID);
+					button = toolbarsUI.addToolBarButton(toolbar, SKETCH_INSTRUMENT_ACTION_ID);
+					button = toolbarsUI.addToolBarButton(toolbar, COMPARE_INSTRUMENT_ACTION_ID);
+					toolbarsUI.addToolBarSeparator(toolbar);
+					button = toolbarsUI.addToolBarButton(toolbar, CREATE_TUNING_FILE_ACTION_ID);
+					toolbarsUI.addToolBarSeparator(toolbar);
+					button = toolbarsUI.addToolBarButton(toolbar, TOGGLE_VIEW_ACTION_ID);
+					button.setText("Vu");
+				}
+			}
+
+			@Override
+			public void customizeStandardToolBar(String toolbarName, Container toolbar,
+					ApplicationToolBarsUI toolbarsUI)
+			{
+			}
+
+			@Override
+			public String[] getToolbarNames()
+			{
+				return new String[] {"Tools"};
+			}
+			
 		});
 	}
 

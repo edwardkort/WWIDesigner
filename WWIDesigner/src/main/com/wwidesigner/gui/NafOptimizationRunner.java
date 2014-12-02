@@ -38,6 +38,8 @@ import com.jidesoft.app.framework.gui.ApplicationToolBarsUI;
 import com.jidesoft.app.framework.gui.ApplicationWindowsUI;
 import com.jidesoft.app.framework.gui.DataViewAdapter;
 import com.jidesoft.app.framework.gui.DataViewEvent;
+import com.jidesoft.app.framework.gui.FileDialogRequest;
+import com.jidesoft.app.framework.gui.FileDialogRequestHandler;
 import com.jidesoft.app.framework.gui.GUIApplicationAction;
 import com.jidesoft.app.framework.gui.MenuBarCustomizer;
 import com.jidesoft.app.framework.gui.MenuConstants;
@@ -53,6 +55,7 @@ import com.jidesoft.app.framework.gui.framed.DockableConfiguration;
 import com.jidesoft.app.framework.gui.framed.DockingApplicationFeature;
 import com.jidesoft.app.framework.gui.framed.ToggleFrameAction;
 import com.jidesoft.docking.DockContext;
+import com.wwidesigner.gui.util.FileOpenDialogPreviewPane;
 import com.wwidesigner.note.wizard.TuningWizardDialog;
 
 /**
@@ -132,6 +135,13 @@ public class NafOptimizationRunner extends FileBasedApplication implements
 				.getPreferredMaximumWindowSize());
 
 		getApplicationUIManager().setUseJideDocumentPane(true);
+
+		// Add preview panel to Open file dialog
+		((FileDialogRequestHandler) getApplicationUIManager().getDialogsUI()
+				.getDialogHandler(FileDialogRequest.class))
+				.setUseAWTFileDialogs(false);
+		getApplicationUIManager().getDialogsUI().addDialogListener(
+				new FileOpenDialogPreviewPane());
 
 		// Add my UI customizations
 		PreferencesPane preferencesDialog = new OptimizationPreferences();
@@ -271,8 +281,10 @@ public class NafOptimizationRunner extends FileBasedApplication implements
 				getApplication().getActivityManager().run(activity);
 			}
 		};
-		action.putValue(Action.SHORT_DESCRIPTION, "Calculate instrument tuning table");
-		imageUrl = NafOptimizationRunner.class.getResource("images/calculate.png");
+		action.putValue(Action.SHORT_DESCRIPTION,
+				"Calculate instrument tuning table");
+		imageUrl = NafOptimizationRunner.class
+				.getResource("images/calculate.png");
 		if (imageUrl != null)
 		{
 			action.putValue(Action.SMALL_ICON, new ImageIcon(imageUrl));
@@ -310,7 +322,8 @@ public class NafOptimizationRunner extends FileBasedApplication implements
 				getApplication().getActivityManager().run(graphActivity);
 			}
 		};
-		action.putValue(Action.SHORT_DESCRIPTION, "Draw graph of instrument tuning");
+		action.putValue(Action.SHORT_DESCRIPTION,
+				"Draw graph of instrument tuning");
 		imageUrl = NafOptimizationRunner.class.getResource("images/graph.png");
 		if (imageUrl != null)
 		{
@@ -350,7 +363,8 @@ public class NafOptimizationRunner extends FileBasedApplication implements
 			}
 		};
 		action.putValue(Action.SHORT_DESCRIPTION, "Optimize instrument");
-		imageUrl = NafOptimizationRunner.class.getResource("images/optimize.png");
+		imageUrl = NafOptimizationRunner.class
+				.getResource("images/optimize.png");
 		if (imageUrl != null)
 		{
 			action.putValue(Action.SMALL_ICON, new ImageIcon(imageUrl));
@@ -370,7 +384,8 @@ public class NafOptimizationRunner extends FileBasedApplication implements
 				}
 			}
 		};
-		action.putValue(Action.SHORT_DESCRIPTION, "Draw a sketch of an instrument");
+		action.putValue(Action.SHORT_DESCRIPTION,
+				"Draw a sketch of an instrument");
 		imageUrl = NafOptimizationRunner.class.getResource("images/sketch.png");
 		if (imageUrl != null)
 		{
@@ -391,7 +406,8 @@ public class NafOptimizationRunner extends FileBasedApplication implements
 				wizard.setVisible(true);
 			}
 		};
-		action.putValue(Action.SHORT_DESCRIPTION, "Create a tuning file from notes and fingerings");
+		action.putValue(Action.SHORT_DESCRIPTION,
+				"Create a tuning file from notes and fingerings");
 		imageUrl = NafOptimizationRunner.class.getResource("images/tuning.png");
 		if (imageUrl != null)
 		{
@@ -411,8 +427,10 @@ public class NafOptimizationRunner extends FileBasedApplication implements
 				}
 			}
 		};
-		action.putValue(Action.SHORT_DESCRIPTION, "Compare instrument selected in study to the current editor tab");
-		imageUrl = NafOptimizationRunner.class.getResource("images/compare.png");
+		action.putValue(Action.SHORT_DESCRIPTION,
+				"Compare instrument selected in study to the current editor tab");
+		imageUrl = NafOptimizationRunner.class
+				.getResource("images/compare.png");
 		if (imageUrl != null)
 		{
 			action.putValue(Action.SMALL_ICON, new ImageIcon(imageUrl));
@@ -493,7 +511,8 @@ public class NafOptimizationRunner extends FileBasedApplication implements
 				}
 			}
 		};
-		action.putValue(Action.SHORT_DESCRIPTION, "Toggle data view of current editor tab");
+		action.putValue(Action.SHORT_DESCRIPTION,
+				"Toggle data view of current editor tab");
 		imageUrl = NafOptimizationRunner.class.getResource("images/view.png");
 		if (imageUrl != null)
 		{
@@ -560,42 +579,49 @@ public class NafOptimizationRunner extends FileBasedApplication implements
 				}
 			}
 		});
-		
+
 		addToolBarCustomizer(new ToolBarCustomizer()
 		{
 
 			@Override
-			public void createApplicationToolBar(String toolbarName, Container toolbar,
-					ApplicationToolBarsUI toolbarsUI)
+			public void createApplicationToolBar(String toolbarName,
+					Container toolbar, ApplicationToolBarsUI toolbarsUI)
 			{
 				if (toolbarName.equals("Tools"))
 				{
 					AbstractButton button;
-					button = toolbarsUI.addToolBarButton(toolbar, CALCULATE_TUNING_ACTION_ID);
-					button = toolbarsUI.addToolBarButton(toolbar, GRAPH_TUNING_ACTION_ID);
-					button = toolbarsUI.addToolBarButton(toolbar, OPTIMIZE_INSTRUMENT_ACTION_ID);
-					button = toolbarsUI.addToolBarButton(toolbar, SKETCH_INSTRUMENT_ACTION_ID);
-					button = toolbarsUI.addToolBarButton(toolbar, COMPARE_INSTRUMENT_ACTION_ID);
+					button = toolbarsUI.addToolBarButton(toolbar,
+							CALCULATE_TUNING_ACTION_ID);
+					button = toolbarsUI.addToolBarButton(toolbar,
+							GRAPH_TUNING_ACTION_ID);
+					button = toolbarsUI.addToolBarButton(toolbar,
+							OPTIMIZE_INSTRUMENT_ACTION_ID);
+					button = toolbarsUI.addToolBarButton(toolbar,
+							SKETCH_INSTRUMENT_ACTION_ID);
+					button = toolbarsUI.addToolBarButton(toolbar,
+							COMPARE_INSTRUMENT_ACTION_ID);
 					toolbarsUI.addToolBarSeparator(toolbar);
-					button = toolbarsUI.addToolBarButton(toolbar, CREATE_TUNING_FILE_ACTION_ID);
+					button = toolbarsUI.addToolBarButton(toolbar,
+							CREATE_TUNING_FILE_ACTION_ID);
 					toolbarsUI.addToolBarSeparator(toolbar);
-					button = toolbarsUI.addToolBarButton(toolbar, TOGGLE_VIEW_ACTION_ID);
+					button = toolbarsUI.addToolBarButton(toolbar,
+							TOGGLE_VIEW_ACTION_ID);
 					button.setText("Vu");
 				}
 			}
 
 			@Override
-			public void customizeStandardToolBar(String toolbarName, Container toolbar,
-					ApplicationToolBarsUI toolbarsUI)
+			public void customizeStandardToolBar(String toolbarName,
+					Container toolbar, ApplicationToolBarsUI toolbarsUI)
 			{
 			}
 
 			@Override
 			public String[] getToolbarNames()
 			{
-				return new String[] {"Tools"};
+				return new String[] { "Tools" };
 			}
-			
+
 		});
 	}
 

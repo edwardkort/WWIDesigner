@@ -613,6 +613,21 @@ public abstract class StudyModel implements CategoryType
 		return instrument;
 	}
 
+	public static Tuning getTuning(String xmlString)
+	{
+		try
+		{
+			BindFactory noteBindFactory = NoteBindFactory.getInstance();
+			Tuning tuning = (Tuning) noteBindFactory.unmarshalXml(xmlString,
+					true);
+			return tuning;
+		}
+		catch (Exception e)
+		{
+			return null;
+		}
+	}
+
 	public static Tuning getTuningFromFile(String fileName) throws Exception
 	{
 		BindFactory noteBindFactory = NoteBindFactory.getInstance();
@@ -621,6 +636,23 @@ public abstract class StudyModel implements CategoryType
 		Tuning tuning = (Tuning) noteBindFactory.unmarshalXml(inputFile, true);
 
 		return tuning;
+	}
+
+	public static Constraints getConstraints(String xmlString)
+	{
+		try
+		{
+			BindFactory constraintsBindFactory = OptimizationBindFactory
+					.getInstance();
+			Constraints constraints = (Constraints) constraintsBindFactory
+					.unmarshalXml(xmlString, true);
+			constraints.setConstraintParent();
+			return constraints;
+		}
+		catch (Exception e)
+		{
+			return null;
+		}
 	}
 
 	public PhysicalParameters getParams()

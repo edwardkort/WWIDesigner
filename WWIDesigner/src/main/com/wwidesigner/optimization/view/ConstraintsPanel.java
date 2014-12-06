@@ -1,14 +1,13 @@
 package com.wwidesigner.optimization.view;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,10 +19,13 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
+import javax.swing.text.Document;
 
 import com.wwidesigner.gui.util.DataChangedEvent;
 import com.wwidesigner.gui.util.DataChangedListener;
@@ -113,31 +115,54 @@ public class ConstraintsPanel extends JPanel implements DataChangedProvider
 		// Require a non-blank name field
 		final JTextField constraintsNameField = new JTextField(50);
 		constraintsNameField.setText(constraints.getConstraintsName());
-		constraintsNameField.addActionListener(new ActionListener()
-		{
-
-			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				String text = constraintsNameField.getText();
-				text = text == null ? "" : text.trim();
-				String originalText = constraints.getConstraintsName();
-				if (text.length() > 0)
+		constraintsNameField.getDocument().addDocumentListener(
+				new DocumentListener()
 				{
-					if (!text.equals(originalText))
+
+					@Override
+					public void insertUpdate(DocumentEvent e)
 					{
-						constraints.setConstraintsName(text);
-						constraintsNameField.setText(text);
-						fireDataChangedEvent();
+						processDocumentChange(e);
 					}
-				}
-				else
-				{
-					constraintsNameField.setText(originalText);
-				}
-			}
 
-		});
+					@Override
+					public void removeUpdate(DocumentEvent e)
+					{
+						processDocumentChange(e);
+					}
+
+					@Override
+					public void changedUpdate(DocumentEvent e)
+					{
+						processDocumentChange(e);
+					}
+
+					private void processDocumentChange(DocumentEvent docEvent)
+					{
+						Document doc = docEvent.getDocument();
+						int docLength = doc.getLength();
+						String text = new String();
+						try
+						{
+							text = doc.getText(0, docLength);
+						}
+						catch (Exception ex)
+						{
+						}
+
+						constraints.setConstraintsName(text);
+						if (docLength == 0)
+						{
+							constraintsNameField.setBackground(Color.PINK);
+						}
+						else
+						{
+							constraintsNameField.setBackground(Color.WHITE);
+						}
+					}
+
+				});
+
 		gbc.gridx = 1;
 		add(constraintsNameField, gbc);
 
@@ -170,7 +195,7 @@ public class ConstraintsPanel extends JPanel implements DataChangedProvider
 		// Set number format
 		lbCol.setCellRenderer(new NumberFormatCellRenderer());
 		ubCol.setCellRenderer(new NumberFormatCellRenderer());
-		
+
 		// Set single cell selection
 		table.setColumnSelectionAllowed(false);
 		table.setRowSelectionAllowed(false);

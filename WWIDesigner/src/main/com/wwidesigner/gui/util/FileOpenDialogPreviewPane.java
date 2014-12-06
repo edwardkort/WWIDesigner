@@ -2,6 +2,7 @@ package com.wwidesigner.gui.util;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.BufferedReader;
@@ -14,8 +15,11 @@ import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
+import javax.swing.JTextPane;
 import javax.swing.SwingConstants;
+import javax.swing.text.MutableAttributeSet;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.html.HTMLEditorKit;
 
 import com.jidesoft.app.framework.gui.DialogAdapter;
 import com.jidesoft.app.framework.gui.DialogEvent;
@@ -79,12 +83,14 @@ public class FileOpenDialogPreviewPane extends DialogAdapter
 
 	class XmlPreview extends JPanel
 	{
-		private JTextArea textArea = new JTextArea();
+		private JTextPane textArea = new JTextPane();
 		private JScrollPane scrollPane = new JScrollPane(textArea);
 
 		public XmlPreview()
 		{
 			textArea.setEditable(false);
+			textArea.setEditorKit(new HTMLEditorKit());
+			textArea.setFont(Font.getFont("Helvetica-12"));
 			setBorder(BorderFactory.createEtchedBorder());
 			setLayout(new BorderLayout());
 			add(scrollPane, BorderLayout.CENTER);
@@ -102,47 +108,51 @@ public class FileOpenDialogPreviewPane extends DialogAdapter
 					case StudyModel.INSTRUMENT_CATEGORY_ID:
 						Instrument instrument = StudyModel
 								.getInstrument(fileContents);
-						sb.append("XML type:\n");
-						sb.append("    " + category);
-						sb.append("\nName:\n");
-						sb.append("    " + instrument.getName());
-						sb.append("\nDescription:\n");
-						sb.append("    " + instrument.getDescription());
-						sb.append("\nNumber of holes:\n");
-						sb.append("    " + instrument.getHole().size());
+						sb.append("<b>XML type:</b><br/>");
+						sb.append(category);
+						sb.append("<br/><b>Name:</b><br/>");
+						sb.append(instrument.getName());
+						sb.append("<br/><b>Description:</b><br/>");
+						sb.append(instrument.getDescription());
+						sb.append("<br/><b>Number of holes:</b><br/>");
+						sb.append(instrument.getHole().size());
 						break;
 					case StudyModel.TUNING_CATEGORY_ID:
 						Tuning tuning = StudyModel.getTuning(fileContents);
-						sb.append("XML type:\n");
-						sb.append("    " + category);
-						sb.append("\nName:\n");
-						sb.append("    " + tuning.getName());
-						sb.append("\nDescription:\n");
-						sb.append("    " + tuning.getComment());
-						sb.append("\nNumber of holes:\n");
-						sb.append("    " + tuning.getNumberOfHoles());
+						sb.append("<b>XML type:</b><br/>");
+						sb.append(category);
+						sb.append("<br/><b>Name:</b><br/>");
+						sb.append(tuning.getName());
+						sb.append("<br/><b>Description:</b><br/>");
+						sb.append(tuning.getComment());
+						sb.append("<br/><b>Number of holes:</b><br/>");
+						sb.append(tuning.getNumberOfHoles());
 						break;
 					case StudyModel.CONSTRAINTS_CATEGORY_ID:
 						Constraints constraints = StudyModel
 								.getConstraints(fileContents);
-						sb.append("XML type:\n");
-						sb.append("    " + category);
-						sb.append("\nName:\n");
-						sb.append("    " + constraints.getConstraintsName());
-						sb.append("\nOptimizer:\n");
-						sb.append("    "
-								+ constraints.getObjectiveDisplayName());
-						sb.append("\nNumber of constraints:\n");
-						sb.append("    "
-								+ constraints.getTotalNumberOfConstraints());
-						sb.append("\nNumber of holes:\n");
-						sb.append("    " + constraints.getNumberOfHoles());
+						sb.append("<b>XML type:</b><br/>");
+						sb.append(category);
+						sb.append("<br/><b>Name:</b><br/>");
+						sb.append(constraints.getConstraintsName());
+						sb.append("<br/><b>Optimizer:</b><br/>");
+						sb.append(constraints.getObjectiveDisplayName());
+						sb.append("<br/><b>Number of constraints:</b><br/>");
+						sb.append(constraints.getTotalNumberOfConstraints());
+						sb.append("<br/><b>Number of holes:</b><br/>");
+						sb.append(constraints.getNumberOfHoles());
 						break;
 					default:
-						sb.append("XML type:\n");
-						sb.append("    Unknown");
+						sb.append("<b>XML type:</b><br/>");
+						sb.append("Unknown");
 				}
 				textArea.setText(sb.toString());
+				MutableAttributeSet attrs = textArea.getInputAttributes();
+				StyleConstants.setFontFamily(attrs, "SanSerif");
+				StyleConstants.setFontSize(attrs, 12);
+				textArea.getStyledDocument().setCharacterAttributes(0,
+						sb.length() + 1, attrs, false);
+
 			}
 		}
 

@@ -2,7 +2,6 @@ package com.wwidesigner.gui.util;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.BufferedReader;
@@ -90,7 +89,6 @@ public class FileOpenDialogPreviewPane extends DialogAdapter
 		{
 			textArea.setEditable(false);
 			textArea.setEditorKit(new HTMLEditorKit());
-			textArea.setFont(Font.getFont("Helvetica-12"));
 			setBorder(BorderFactory.createEtchedBorder());
 			setLayout(new BorderLayout());
 			add(scrollPane, BorderLayout.CENTER);
@@ -153,6 +151,10 @@ public class FileOpenDialogPreviewPane extends DialogAdapter
 				textArea.getStyledDocument().setCharacterAttributes(0,
 						sb.length() + 1, attrs, false);
 
+			}
+			else
+			{
+				textArea.setText(null);
 			}
 		}
 

@@ -151,6 +151,8 @@ public class ConstraintsPanel extends JPanel implements DataChangedProvider
 						}
 
 						constraints.setConstraintsName(text);
+						fireDataChangedEvent();
+						
 						if (docLength == 0)
 						{
 							constraintsNameField.setBackground(Color.PINK);

@@ -18,20 +18,21 @@ import com.wwidesigner.note.TuningInterface;
  */
 public class HoleFromTopObjectiveFunction extends MergedObjectiveFunction
 {
+	public static final String DISPLAY_NAME = "Hole position and size optimizer";
 
 	public HoleFromTopObjectiveFunction(InstrumentCalculator calculator,
 			TuningInterface tuning, EvaluatorInterface evaluator)
 	{
 		super(calculator, tuning, evaluator);
 		this.components = new BaseObjectiveFunction[2];
-		this.components[0] = new HolePositionFromTopObjectiveFunction(calculator,
-				tuning, evaluator);
+		this.components[0] = new HolePositionFromTopObjectiveFunction(
+				calculator, tuning, evaluator);
 		this.components[1] = new HoleSizeObjectiveFunction(calculator, tuning,
 				evaluator);
 		optimizerType = OptimizerType.BOBYQAOptimizer; // MultivariateOptimizer
 		sumDimensions();
 		maxEvaluations = 20000 + (getNrDimensions() - 1) * 5000;
-		constraints.setObjectiveDisplayName("Hole position and size optimizer");
+		constraints.setObjectiveDisplayName(DISPLAY_NAME);
 		constraints.setObjectiveFunctionName(this.getClass().getSimpleName());
 		constraints.setConstraintsName("Default");
 	}

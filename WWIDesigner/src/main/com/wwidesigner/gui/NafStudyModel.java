@@ -52,12 +52,12 @@ public class NafStudyModel extends StudyModel
 	public static final String GORDON_CALC_SUB_CATEGORY_ID = "Gordon calculator";
 	public static final String NAF_CALC_SUB_CATEGORY_ID = "NAF calculator";
 
-	public static final String FIPPLE_OPT_SUB_CATEGORY_ID = "Fipple-factor Optimizer";
-	public static final String HOLESIZE_OPT_SUB_CATEGORY_ID = "Hole-size Optimizer";
-	public static final String NO_GROUP_OPT_SUB_CATEGORY_ID = "No-hole-grouping Optimizer";
-	public static final String GROUP_OPT_SUB_CATEGORY_ID = "Hole-grouping Optimizer";
-	public static final String TAPER_GROUP_OPT_SUB_CATEGORY_ID = "Taper, hole-grouping Optimizer";
-	public static final String TAPER_NO_GROUP_OPT_SUB_CATEGORY_ID = "Taper, no-hole-grouping Optimizer";
+	public static final String FIPPLE_OPT_SUB_CATEGORY_ID = FippleFactorObjectiveFunction.DISPLAY_NAME;
+	public static final String HOLESIZE_OPT_SUB_CATEGORY_ID = HoleSizeObjectiveFunction.DISPLAY_NAME;
+	public static final String NO_GROUP_OPT_SUB_CATEGORY_ID = HoleFromTopObjectiveFunction.DISPLAY_NAME;
+	public static final String GROUP_OPT_SUB_CATEGORY_ID = HoleGroupFromTopObjectiveFunction.DISPLAY_NAME;
+	public static final String TAPER_GROUP_OPT_SUB_CATEGORY_ID = SingleTaperHoleGroupFromTopObjectiveFunction.DISPLAY_NAME;
+	public static final String TAPER_NO_GROUP_OPT_SUB_CATEGORY_ID = SingleTaperNoHoleGroupingFromTopObjectiveFunction.DISPLAY_NAME;
 
 	public static final String HOLE_0_CONS_SUB_CATEGORY_ID = "0 holes";
 	public static final String HOLE_6_1_125_SPACING_CONS_SUB_CATEGORY_ID = "6 holes, 1-1/8\" max spacing";
@@ -442,7 +442,7 @@ public class NafStudyModel extends StudyModel
 
 		objective.setLowerBounds(lowerBound);
 		objective.setUpperBounds(upperBound);
-		
+
 		Constraints constraints = objective.getConstraints();
 		constraints.setConstraintsName(constraint);
 		System.out.println(StudyModel.marshal(constraints));
@@ -487,17 +487,20 @@ public class NafStudyModel extends StudyModel
 	}
 
 	@Override
-	protected Class<? extends ContainedXmlView> getDefaultViewClass(String categoryName)
+	protected Class<? extends ContainedXmlView> getDefaultViewClass(
+			String categoryName)
 	{
 		Map<String, Class<? extends ContainedXmlView>> defaultMap = new HashMap<String, Class<? extends ContainedXmlView>>();
-		
+
 		defaultMap.put(INSTRUMENT_CATEGORY_ID, ContainedXmlTextView.class);
 		defaultMap.put(TUNING_CATEGORY_ID, ContainedXmlTextView.class);
 		defaultMap.put(CONSTRAINTS_CATEGORY_ID, ConstraintsEditorView.class);
-		
-		Class<? extends ContainedXmlView> defaultClass = defaultMap.get(categoryName);
-		defaultClass = defaultClass == null ? ContainedXmlTextView.class : defaultClass;
-		
+
+		Class<? extends ContainedXmlView> defaultClass = defaultMap
+				.get(categoryName);
+		defaultClass = defaultClass == null ? ContainedXmlTextView.class
+				: defaultClass;
+
 		return defaultClass;
 	}
 

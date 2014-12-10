@@ -8,8 +8,8 @@ import com.wwidesigner.note.TuningInterface;
  * Optimization objective function for hole positions and diameters:
  * <ul>
  * <li>Position of end of bore,</li>
- * <li>For each hole, spacing to next hole, ending with spacing
- * from last hole to end of bore.</li>
+ * <li>For each hole, spacing to next hole, ending with spacing from last hole
+ * to end of bore.</li>
  * <li>For each hole, hole diameter.</li>
  * </ul>
  * 
@@ -18,6 +18,7 @@ import com.wwidesigner.note.TuningInterface;
  */
 public class HoleObjectiveFunction extends MergedObjectiveFunction
 {
+	public static final String DISPLAY_NAME = "Hole position and size optimizer";
 
 	public HoleObjectiveFunction(InstrumentCalculator calculator,
 			TuningInterface tuning, EvaluatorInterface evaluator)
@@ -31,7 +32,7 @@ public class HoleObjectiveFunction extends MergedObjectiveFunction
 		optimizerType = OptimizerType.BOBYQAOptimizer; // MultivariateOptimizer
 		sumDimensions();
 		maxEvaluations = 20000 + (getNrDimensions() - 1) * 5000;
-		constraints.setObjectiveDisplayName("Hole position and size optimizer");
+		constraints.setObjectiveDisplayName(DISPLAY_NAME);
 		constraints.setObjectiveFunctionName(this.getClass().getSimpleName());
 		constraints.setConstraintsName("Default");
 	}

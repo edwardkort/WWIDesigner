@@ -13,6 +13,7 @@ import com.wwidesigner.note.TuningInterface;
  */
 public class HoleGroupObjectiveFunction extends MergedObjectiveFunction
 {
+	public static final String DISPLAY_NAME = "Grouped hole-position and hole size optimizer";
 
 	public HoleGroupObjectiveFunction(InstrumentCalculator calculator,
 			TuningInterface tuning, EvaluatorInterface evaluator,
@@ -27,8 +28,7 @@ public class HoleGroupObjectiveFunction extends MergedObjectiveFunction
 		optimizerType = OptimizerType.BOBYQAOptimizer; // MultivariateOptimizer
 		sumDimensions();
 		maxEvaluations = 20000 + (getNrDimensions() - 1) * 5000;
-		constraints
-				.setObjectiveDisplayName("Grouped hole-position and hole size optimizer");
+		constraints.setObjectiveDisplayName(DISPLAY_NAME);
 		constraints.setObjectiveFunctionName(this.getClass().getSimpleName());
 		constraints.setConstraintsName("Default");
 	}

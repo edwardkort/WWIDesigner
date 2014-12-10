@@ -5,14 +5,15 @@ import com.wwidesigner.modelling.InstrumentCalculator;
 import com.wwidesigner.note.TuningInterface;
 
 /**
- * Optimization objective function for a
- * simple one-section taper The foot diameter remains invariant.
+ * Optimization objective function for a simple one-section taper The foot
+ * diameter remains invariant.
  * 
  * @author Edward Kort, Burton Patkau
  * 
  */
 public class SingleTaperLengthObjectiveFunction extends MergedObjectiveFunction
 {
+	public static final String DISPLAY_NAME = "Single taper length optimizer";
 
 	public SingleTaperLengthObjectiveFunction(InstrumentCalculator calculator,
 			TuningInterface tuning, EvaluatorInterface evaluator)
@@ -27,7 +28,7 @@ public class SingleTaperLengthObjectiveFunction extends MergedObjectiveFunction
 		optimizerType = OptimizerType.BOBYQAOptimizer; // MultivariateOptimizer
 		sumDimensions();
 		maxEvaluations = 20000 + (getNrDimensions() - 1) * 5000;
-		constraints.setObjectiveDisplayName("Single taper length optimizer");
+		constraints.setObjectiveDisplayName(DISPLAY_NAME);
 		constraints.setObjectiveFunctionName(this.getClass().getSimpleName());
 		constraints.setConstraintsName("Default");
 	}

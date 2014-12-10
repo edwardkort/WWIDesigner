@@ -15,6 +15,7 @@ import com.wwidesigner.note.TuningInterface;
 public class SingleTaperHoleGroupObjectiveFunction extends
 		MergedObjectiveFunction
 {
+	public static final String DISPLAY_NAME = "Single taper, grouped-hole optimizer";
 
 	public SingleTaperHoleGroupObjectiveFunction(
 			InstrumentCalculator calculator, TuningInterface tuning,
@@ -31,8 +32,7 @@ public class SingleTaperHoleGroupObjectiveFunction extends
 		optimizerType = OptimizerType.BOBYQAOptimizer; // MultivariateOptimizer
 		sumDimensions();
 		maxEvaluations = 20000 + (getNrDimensions() - 1) * 5000;
-		constraints
-				.setObjectiveDisplayName("Single taper, grouped-hole optimizer");
+		constraints.setObjectiveDisplayName(DISPLAY_NAME);
 		constraints.setObjectiveFunctionName(this.getClass().getSimpleName());
 		constraints.setConstraintsName("Default");
 	}

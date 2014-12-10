@@ -21,6 +21,7 @@ import com.wwidesigner.note.TuningInterface;
  */
 public class HoleAndTaperObjectiveFunction extends MergedObjectiveFunction
 {
+	public static final String DISPLAY_NAME = "Hole position and size optimizer";
 
 	public HoleAndTaperObjectiveFunction(InstrumentCalculator calculator,
 			TuningInterface tuning, EvaluatorInterface evaluator)
@@ -35,7 +36,7 @@ public class HoleAndTaperObjectiveFunction extends MergedObjectiveFunction
 		optimizerType = OptimizerType.BOBYQAOptimizer; // MultivariateOptimizer
 		maxEvaluations = 20000;
 		sumDimensions();
-		constraints.setObjectiveDisplayName("Hole position and size optimizer");
+		constraints.setObjectiveDisplayName(DISPLAY_NAME);
 		constraints.setObjectiveFunctionName(this.getClass().getSimpleName());
 		constraints.setConstraintsName("Default");
 	}

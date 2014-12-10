@@ -49,9 +49,9 @@ public abstract class BaseObjectiveFunction implements MultivariateFunction,
 	// supports.
 	protected int nrDimensions; // Number of geometry values.
 								// Constant for each derived class.
-	protected double[] lowerBounds; 		// Lower bound for each geometry value.
-	protected double[] upperBounds; 		// Upper bound for each geometry value.
-	protected Constraints constraints; 		// Description of bounds.
+	protected double[] lowerBounds; // Lower bound for each geometry value.
+	protected double[] upperBounds; // Upper bound for each geometry value.
+	protected Constraints constraints; // Description of bounds.
 
 	// Recommended optimization method.
 	public enum OptimizerType
@@ -60,12 +60,12 @@ public abstract class BaseObjectiveFunction implements MultivariateFunction,
 	}
 
 	protected OptimizerType optimizerType;
-	protected int maxEvaluations;		// Limit on number of error norm calculations.
+	protected int maxEvaluations; // Limit on number of error norm calculations.
 	protected AbstractRangeProcessor rangeProcessor;
 
 	// Statistics for the results of an optimization.
-	protected int tuningsDone; 		// Number of tuning error calculations.
-	protected int evaluationsDone; 	// Number of calculations of error norm.
+	protected int tuningsDone; // Number of tuning error calculations.
+	protected int evaluationsDone; // Number of calculations of error norm.
 
 	/**
 	 * The constructor sets what is to be optimized.
@@ -94,8 +94,8 @@ public abstract class BaseObjectiveFunction implements MultivariateFunction,
 	 * The multivariate objective function to be optimized, a sum of squares of
 	 * the error value specific to the derived class.
 	 * 
-	 * @param point - geometry values to test.
-	 *              point.length == nrDimensions.
+	 * @param point
+	 *            - geometry values to test. point.length == nrDimensions.
 	 * @return value of objective function at the specified point.
 	 * 
 	 * @see org.apache.commons.math3.analysis.MultivariateFunction#value(double*
@@ -116,7 +116,8 @@ public abstract class BaseObjectiveFunction implements MultivariateFunction,
 	 * 
 	 * Requires nrDimensions == 1.
 	 * 
-	 * @param point - geometry value to test.
+	 * @param point
+	 *            - geometry value to test.
 	 * @return value of objective function at the specified point.
 	 * 
 	 * @see org.apache.commons.math3.analysis.UnivariateFunction#value(double)
@@ -132,8 +133,8 @@ public abstract class BaseObjectiveFunction implements MultivariateFunction,
 	/**
 	 * Calculate errors at each fingering target.
 	 * 
-	 * @param point - geometry values to test.
-	 *              point.length == nrDimensions.
+	 * @param point
+	 *            - geometry values to test. point.length == nrDimensions.
 	 * @return array of error values, one for each fingering target.
 	 * @throws DimensionMismatchException.
 	 */
@@ -165,11 +166,11 @@ public abstract class BaseObjectiveFunction implements MultivariateFunction,
 	}
 
 	/**
-	 * Retrieve physical geometry values from the instrument. Specific values depend on
-	 * the derived class.
+	 * Retrieve physical geometry values from the instrument. Specific values
+	 * depend on the derived class.
 	 * 
-	 * @return point representing current physical geometry values.
-	 * 		   point.length == nrDimensions.
+	 * @return point representing current physical geometry values. point.length
+	 *         == nrDimensions.
 	 */
 	public abstract double[] getGeometryPoint();
 
@@ -177,8 +178,9 @@ public abstract class BaseObjectiveFunction implements MultivariateFunction,
 	 * Set physical geometry values for an instrument. Specific values depend on
 	 * the derived class.
 	 * 
-	 * @param point - physical geometry values to set. 
-	 *            point.length == nrDimensions.
+	 * @param point
+	 *            - physical geometry values to set. point.length ==
+	 *            nrDimensions.
 	 * @throws DimensionMismatchException.
 	 */
 	public abstract void setGeometryPoint(double[] point);
@@ -187,9 +189,8 @@ public abstract class BaseObjectiveFunction implements MultivariateFunction,
 	 * Retrieve geometry values from the instrument, ensuring the values lie
 	 * within the current bounds. Specific values depend on the derived class.
 	 * 
-	 * @return point representing current geometry values.
-	 * 				 lowerBounds[i] <= point[i] <= upperBounds[i].
-	 * 				 point.length == nrDimensions.
+	 * @return point representing current geometry values. lowerBounds[i] <=
+	 *         point[i] <= upperBounds[i]. point.length == nrDimensions.
 	 */
 	public double[] getInitialPoint()
 	{
@@ -235,48 +236,48 @@ public abstract class BaseObjectiveFunction implements MultivariateFunction,
 		// Not required for other optimizers.
 		return 1;
 	}
-	
+
 	/**
 	 * From the bounds, propose a useful standard deviation for each dimension,
 	 * should the optimizer type require it (CMAES).
 	 */
 	public double[] getStdDev()
 	{
-		double [] sigma = new double[nrDimensions];
-		for ( int i = 0; i < nrDimensions; i++ )
+		double[] sigma = new double[nrDimensions];
+		for (int i = 0; i < nrDimensions; i++)
 		{
-			if ( upperBounds[i] <= lowerBounds[i] )
+			if (upperBounds[i] <= lowerBounds[i])
 			{
 				sigma[i] = 0.0;
 			}
 			else
 			{
-				sigma[i] = 0.2 * ( upperBounds[i] - lowerBounds[i] );
+				sigma[i] = 0.2 * (upperBounds[i] - lowerBounds[i]);
 			}
 		}
 		return sigma;
 	}
-	
+
 	/**
-	 * From the bounds and the initial value, determine the maximum feasible value
-	 * for the initial trust region radius.
+	 * From the bounds and the initial value, determine the maximum feasible
+	 * value for the initial trust region radius.
 	 */
 	public double getInitialTrustRegionRadius()
 	{
 		double initial[] = getInitialPoint();
-		return getInitialTrustRegionRadius( initial );
+		return getInitialTrustRegionRadius(initial);
 	}
-	
+
 	/**
-	 * From the bounds and the initial value, determine the maximum feasible value
-	 * for the initial trust region radius.
+	 * From the bounds and the initial value, determine the maximum feasible
+	 * value for the initial trust region radius.
 	 */
 	public double getInitialTrustRegionRadius(double[] initial)
 	{
 		double minRadius = 1.0;
 		double minDimensionRadius;
 
-		for (int i = 0; i < nrDimensions; ++ i)
+		for (int i = 0; i < nrDimensions; ++i)
 		{
 			// For each dimension, the radius should not be more than
 			// the distance from the initial point to either bound,
@@ -300,15 +301,15 @@ public abstract class BaseObjectiveFunction implements MultivariateFunction,
 	}
 
 	/**
-	 * From the bounds and the initial value, generate suggested side lengths
-	 * in each direction for a simplex.
+	 * From the bounds and the initial value, generate suggested side lengths in
+	 * each direction for a simplex.
 	 */
 	public double[] getSimplexStepSize()
 	{
-		double [] stepSize = new double[nrDimensions];
+		double[] stepSize = new double[nrDimensions];
 		double initial[] = getInitialPoint();
 
-		for (int i = 0; i < nrDimensions; ++ i)
+		for (int i = 0; i < nrDimensions; ++i)
 		{
 			// For each dimension, the step size will be part-way
 			// to the more distant bound.
@@ -358,12 +359,12 @@ public abstract class BaseObjectiveFunction implements MultivariateFunction,
 		this.upperBounds = upperBounds.clone();
 		constraints.setUpperBounds(this.upperBounds);
 	}
-	
+
 	public int getNrDimensions()
 	{
 		return nrDimensions;
 	}
-	
+
 	public int getNrNotes()
 	{
 		return fingeringTargets.size();
@@ -386,7 +387,7 @@ public abstract class BaseObjectiveFunction implements MultivariateFunction,
 	{
 		if (isMultiStart())
 		{
-			return OptimizerType.MultiStartOptimizer; 
+			return OptimizerType.MultiStartOptimizer;
 		}
 		return optimizerType;
 	}

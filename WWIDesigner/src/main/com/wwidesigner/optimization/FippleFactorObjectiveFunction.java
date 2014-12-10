@@ -24,6 +24,7 @@ public class FippleFactorObjectiveFunction extends BaseObjectiveFunction
 {
 	public static final String CONSTR_CAT = "Mouthpiece fipple";
 	public static final ConstraintType CONSTR_TYPE = ConstraintType.DIMENSIONLESS;
+	public static final String DISPLAY_NAME = "Fipple factor optimizer";
 
 	public FippleFactorObjectiveFunction(InstrumentCalculator calculator,
 			TuningInterface tuning, EvaluatorInterface evaluator)
@@ -32,8 +33,7 @@ public class FippleFactorObjectiveFunction extends BaseObjectiveFunction
 		nrDimensions = 1;
 		optimizerType = OptimizerType.BrentOptimizer; // UnivariateOptimizer
 		setConstraints();
-		constraints
-				.setObjectiveDisplayName("Fipple factor optimizer");
+		constraints.setObjectiveDisplayName(DISPLAY_NAME);
 		constraints.setObjectiveFunctionName(this.getClass().getSimpleName());
 		constraints.setConstraintsName("Default");
 	}

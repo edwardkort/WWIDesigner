@@ -15,6 +15,7 @@ import com.wwidesigner.note.TuningInterface;
 public class SingleTaperNoHoleGroupingFromTopObjectiveFunction extends
 		MergedObjectiveFunction
 {
+	public static final String DISPLAY_NAME = "Single taper, no-hole-grouping optimizer";
 
 	public SingleTaperNoHoleGroupingFromTopObjectiveFunction(
 			InstrumentCalculator calculator, TuningInterface tuning,
@@ -22,8 +23,8 @@ public class SingleTaperNoHoleGroupingFromTopObjectiveFunction extends
 	{
 		super(calculator, tuning, evaluator);
 		this.components = new BaseObjectiveFunction[3];
-		this.components[0] = new HolePositionFromTopObjectiveFunction(calculator,
-				tuning, evaluator);
+		this.components[0] = new HolePositionFromTopObjectiveFunction(
+				calculator, tuning, evaluator);
 		this.components[1] = new HoleSizeObjectiveFunction(calculator, tuning,
 				evaluator);
 		this.components[2] = new SingleTaperRatioObjectiveFunction(calculator,
@@ -31,8 +32,7 @@ public class SingleTaperNoHoleGroupingFromTopObjectiveFunction extends
 		optimizerType = OptimizerType.BOBYQAOptimizer; // MultivariateOptimizer
 		sumDimensions();
 		maxEvaluations = 20000 + (getNrDimensions() - 1) * 5000;
-		constraints
-				.setObjectiveDisplayName("Single taper, no-hole-grouping optimizer");
+		constraints.setObjectiveDisplayName(DISPLAY_NAME);
 		constraints.setObjectiveFunctionName(this.getClass().getSimpleName());
 		constraints.setConstraintsName("Default");
 	}

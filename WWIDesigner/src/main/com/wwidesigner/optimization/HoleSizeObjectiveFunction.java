@@ -20,6 +20,7 @@ public class HoleSizeObjectiveFunction extends BaseObjectiveFunction
 {
 	public static final String CONSTR_CAT = "Hole size";
 	public static final ConstraintType CONSTR_TYPE = ConstraintType.DIMENSIONAL;
+	public static final String DISPLAY_NAME = "Hole size optimizer";
 
 	public HoleSizeObjectiveFunction(InstrumentCalculator calculator,
 			TuningInterface tuning, EvaluatorInterface evaluator)
@@ -34,7 +35,7 @@ public class HoleSizeObjectiveFunction extends BaseObjectiveFunction
 		}
 		maxEvaluations = 20000 + (getNrDimensions() - 1) * 5000;
 		setConstraints();
-		constraints.setObjectiveDisplayName("Hole size optimizer");
+		constraints.setObjectiveDisplayName(DISPLAY_NAME);
 		constraints.setObjectiveFunctionName(this.getClass().getSimpleName());
 		constraints.setConstraintsName("Default");
 	}

@@ -34,6 +34,7 @@ import com.jidesoft.app.framework.file.FileDataModel;
 import com.jidesoft.app.framework.gui.DataViewPane;
 import com.wwidesigner.geometry.Instrument;
 import com.wwidesigner.geometry.bind.GeometryBindFactory;
+import com.wwidesigner.gui.util.HoleNumberMismatchException;
 import com.wwidesigner.modelling.InstrumentCalculator;
 import com.wwidesigner.modelling.InstrumentComparisonTable;
 import com.wwidesigner.modelling.InstrumentTuner;
@@ -402,7 +403,7 @@ public abstract class StudyModel implements CategoryType
 	 * @return true if category selections are sufficient for calls to
 	 *         calculateTuning() and graphTuning().
 	 */
-	public boolean canTune()
+	public boolean canTune() throws Exception
 	{
 		Category tuningCategory = getCategory(TUNING_CATEGORY_ID);
 		String tuningSelected = tuningCategory.getSelectedSub();
@@ -410,14 +411,42 @@ public abstract class StudyModel implements CategoryType
 		Category instrumentCategory = getCategory(INSTRUMENT_CATEGORY_ID);
 		String instrumentSelected = instrumentCategory.getSelectedSub();
 
-		return tuningSelected != null && instrumentSelected != null;
+		boolean tuningReady = tuningSelected != null
+				&& instrumentSelected != null;
+		if (tuningReady)
+		{
+			tuningReady = validateHoleCount();
+		}
+
+		return tuningReady;
+	}
+
+	protected boolean validateHoleCount() throws Exception
+	{
+		boolean isValid = false;
+		Tuning tuning = getTuning();
+		int numTuningHoles = tuning.getNumberOfHoles();
+		Instrument instrument = getInstrument();
+		int numInstrumentHoles = instrument.getHole().size();
+		if (numTuningHoles == numInstrumentHoles)
+		{
+			isValid = true;
+		}
+		else
+		{
+			throw new HoleNumberMismatchException("Tuning file has "
+					+ numTuningHoles + " holes, Instrument has "
+					+ numInstrumentHoles + " holes.");
+		}
+
+		return isValid;
 	}
 
 	/**
 	 * @return true if category selections are sufficient for calls to
 	 *         optimizeInstrument().
 	 */
-	public boolean canOptimize()
+	public boolean canOptimize() throws Exception
 	{
 		if (!canTune())
 		{

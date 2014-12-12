@@ -114,32 +114,31 @@ public class NafStudyModel extends StudyModel
 	}
 
 	@Override
-	public boolean canTune()
+	public boolean canTune() throws Exception
 	{
-		Category tuningCategory = getCategory(TUNING_CATEGORY_ID);
-		String tuningSelected = tuningCategory.getSelectedSub();
+		boolean tuningReady = super.canTune();
+		if (tuningReady)
+		{
+			Category calculatorCategory = getCategory(CALCULATOR_CATEGORY_ID);
+			String calculatorSelected = calculatorCategory.getSelectedSub();
+			tuningReady = calculatorSelected != null;
+		}
 
-		Category instrumentCategory = getCategory(INSTRUMENT_CATEGORY_ID);
-		String instrumentSelected = instrumentCategory.getSelectedSub();
-
-		Category calculatorCategory = getCategory(CALCULATOR_CATEGORY_ID);
-		String calculatorSelected = calculatorCategory.getSelectedSub();
-
-		return tuningSelected != null && instrumentSelected != null
-				&& calculatorSelected != null;
+		return tuningReady;
 	}
 
 	@Override
-	public boolean canOptimize()
+	public boolean canOptimize() throws Exception
 	{
-		Category category = getCategory(OPTIMIZER_CATEGORY_ID);
-		String optimizerSelected = category.getSelectedSub();
+		boolean optimizeReady = super.canOptimize();
+		if (optimizeReady)
+		{
+			Category category = getCategory(CONSTRAINTS_CATEGORY_ID);
+			String constraintsSelected = category.getSelectedSub();
+			optimizeReady = constraintsSelected != null;
+		}
 
-		category = getCategory(CONSTRAINTS_CATEGORY_ID);
-		String constraintsSelected = category.getSelectedSub();
-
-		return optimizerSelected != null && constraintsSelected != null
-				&& canTune();
+		return optimizeReady;
 	}
 
 	@Override

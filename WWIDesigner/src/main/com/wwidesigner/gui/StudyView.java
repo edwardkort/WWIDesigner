@@ -38,10 +38,13 @@ import com.jidesoft.app.framework.DataView;
 import com.jidesoft.app.framework.event.EventSubscriber;
 import com.jidesoft.app.framework.event.SubscriberEvent;
 import com.jidesoft.app.framework.file.FileDataModel;
+import com.jidesoft.app.framework.gui.ApplicationDialogsUI;
 import com.jidesoft.app.framework.gui.DataViewPane;
+import com.jidesoft.app.framework.gui.MessageDialogRequest;
 import com.jidesoft.app.framework.gui.filebased.FileBasedApplication;
 import com.jidesoft.tree.TreeUtils;
 import com.wwidesigner.geometry.Instrument;
+import com.wwidesigner.gui.util.HoleNumberMismatchException;
 import com.wwidesigner.modelling.SketchInstrument;
 
 /**
@@ -89,7 +92,8 @@ public class StudyView extends DataViewPane implements EventSubscriber
 		add(scrollPane);
 
 		Preferences myPreferences = getApplication().getPreferences();
-		String modelName = myPreferences.get(OptimizationPreferences.STUDY_MODEL_OPT,
+		String modelName = myPreferences.get(
+				OptimizationPreferences.STUDY_MODEL_OPT,
 				OptimizationPreferences.NAF_STUDY_NAME);
 		setStudyModel(modelName);
 		study.setPreferences(myPreferences);
@@ -110,7 +114,7 @@ public class StudyView extends DataViewPane implements EventSubscriber
 
 		DefaultMutableTreeNode root = new DefaultMutableTreeNode();
 		List<TreePath> selectionPaths = new ArrayList<TreePath>();
-		
+
 		// Add all static categories and selection options to the tree.
 
 		for (String category : study.getCategoryNames())
@@ -136,7 +140,7 @@ public class StudyView extends DataViewPane implements EventSubscriber
 				}
 			}
 		}
-		
+
 		TreeModel model = new DefaultTreeModel(root);
 		tree.setModel(model);
 		TreeUtils.expandAll(tree);
@@ -146,13 +150,34 @@ public class StudyView extends DataViewPane implements EventSubscriber
 
 	protected void updateActions()
 	{
-		boolean canDo = study.canTune();
-		getApplication().getEventManager().publish(
-				NafOptimizationRunner.TUNING_ACTIVE_EVENT_ID, canDo);
+		boolean canDoTuning = false;
+		boolean canDoOptimization = false;
+		try
+		{
+			canDoTuning = study.canTune();
+			if (canDoTuning)
+			{
+				canDoOptimization = study.canOptimize();
+			}
+		}
+		catch (HoleNumberMismatchException ex)
+		{
+			MessageDialogRequest.showMessageDialog(getApplication(),
+					ex.getMessage(), "Hole Numbers Do Not Match",
+					MessageDialogRequest.ERROR_STYLE);
+		}
+		catch (Exception e)
+		{
+			MessageDialogRequest.showMessageDialog(getApplication(),
+					e.getMessage(), "Input File Error",
+					MessageDialogRequest.ERROR_STYLE);
+		}
 
-		canDo = study.canOptimize();
 		getApplication().getEventManager().publish(
-				NafOptimizationRunner.OPTIMIZATION_ACTIVE_EVENT_ID, canDo);
+				NafOptimizationRunner.OPTIMIZATION_ACTIVE_EVENT_ID,
+				canDoOptimization);
+		getApplication().getEventManager().publish(
+				NafOptimizationRunner.TUNING_ACTIVE_EVENT_ID, canDoTuning);
 	}
 
 	@Override
@@ -166,12 +191,14 @@ public class StudyView extends DataViewPane implements EventSubscriber
 			switch (eventId)
 			{
 				case NafOptimizationRunner.FILE_OPENED_EVENT_ID:
-					if (! study.addDataModel(source))
+					if (!study.addDataModel(source))
 					{
 						System.out.print("\nError: Data in editor tab, ");
 						System.out.print(source.getName());
-						System.out.println(", is not valid Instrument or Tuning XML.");
-						System.out.println("Fix and close the file, then re-open it.");
+						System.out
+								.println(", is not valid Instrument or Tuning XML.");
+						System.out
+								.println("Fix and close the file, then re-open it.");
 					}
 					break;
 				case NafOptimizationRunner.FILE_CLOSED_EVENT_ID:
@@ -179,12 +206,14 @@ public class StudyView extends DataViewPane implements EventSubscriber
 					break;
 				case NafOptimizationRunner.FILE_SAVED_EVENT_ID:
 				case NafOptimizationRunner.WINDOW_RENAMED_EVENT_ID:
-					if (! study.replaceDataModel(source))
+					if (!study.replaceDataModel(source))
 					{
 						System.out.print("\nError: Data in editor tab, ");
 						System.out.print(source.getName());
-						System.out.println(", is not valid Instrument or Tuning XML.");
-						System.out.println("Fix and close the file, then re-open it.");
+						System.out
+								.println(", is not valid Instrument or Tuning XML.");
+						System.out
+								.println("Fix and close the file, then re-open it.");
 					}
 					break;
 			}
@@ -223,7 +252,7 @@ public class StudyView extends DataViewPane implements EventSubscriber
 		try
 		{
 			String xmlInstrument = study.optimizeInstrument();
-			if (xmlInstrument != null && ! xmlInstrument.isEmpty())
+			if (xmlInstrument != null && !xmlInstrument.isEmpty())
 			{
 				FileBasedApplication app = (FileBasedApplication) getApplication();
 				FileDataModel data = (FileDataModel) app.newData("xml");
@@ -265,16 +294,18 @@ public class StudyView extends DataViewPane implements EventSubscriber
 				if (view != null && view instanceof XmlToggleView)
 				{
 					String xmlInstrument2 = ((XmlToggleView) view).getText();
-					Instrument  instrument2 = StudyModel.getInstrument(xmlInstrument2);
+					Instrument instrument2 = StudyModel
+							.getInstrument(xmlInstrument2);
 					if (instrument2 == null)
 					{
 						System.out.print("\nError: Current editor tab, ");
 						System.out.print(data.getName());
 						System.out.println(", is not a valid instrument.");
-						System.out.println("Select the edit tab for a valid instrument.");
+						System.out
+								.println("Select the edit tab for a valid instrument.");
 						return;
 					}
-					study.compareInstrument(data.getName(), instrument2 );
+					study.compareInstrument(data.getName(), instrument2);
 				}
 			}
 		}
@@ -298,15 +329,16 @@ public class StudyView extends DataViewPane implements EventSubscriber
 		this.study = study;
 
 		DataModel[] models = getApplication().getDataModels();
-		for ( DataModel model : models )
+		for (DataModel model : models)
 		{
 			if (model instanceof FileDataModel)
 			{
-				if (! study.addDataModel((FileDataModel) model))
+				if (!study.addDataModel((FileDataModel) model))
 				{
 					System.out.print("\nError: Data in editor tab, ");
 					System.out.print(model.getName());
-					System.out.println(", is not valid Instrument or Tuning XML.");
+					System.out
+							.println(", is not valid Instrument or Tuning XML.");
 				}
 			}
 		}
@@ -318,18 +350,20 @@ public class StudyView extends DataViewPane implements EventSubscriber
 	 */
 	public void setStudyModel(String studyClassName)
 	{
-		if (studyClassName.contentEquals(OptimizationPreferences.NAF_STUDY_NAME))
+		if (studyClassName
+				.contentEquals(OptimizationPreferences.NAF_STUDY_NAME))
 		{
-			setStudyModel( new NafStudyModel() );
+			setStudyModel(new NafStudyModel());
 		}
-		else if (studyClassName.contentEquals(OptimizationPreferences.WHISTLE_STUDY_NAME))
+		else if (studyClassName
+				.contentEquals(OptimizationPreferences.WHISTLE_STUDY_NAME))
 		{
-			setStudyModel( new WhistleStudyModel() );
+			setStudyModel(new WhistleStudyModel());
 		}
 		else
 		{
 			// Default study model.
-			setStudyModel( new WhistleStudyModel() );
+			setStudyModel(new WhistleStudyModel());
 		}
 	}
 

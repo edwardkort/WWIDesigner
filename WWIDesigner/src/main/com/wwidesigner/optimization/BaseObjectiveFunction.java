@@ -40,6 +40,12 @@ import com.wwidesigner.optimization.multistart.AbstractRangeProcessor;
 public abstract class BaseObjectiveFunction implements MultivariateFunction,
 		UnivariateFunction
 {
+	// The Intent denotes the use of the ObjectiveFunction based on it Constraints
+	// content.
+	public static final int OPTIMIZATION_INTENT = 0;
+	public static final int BLANK_CONSTRAINTS_INTENT = 1;
+	public static final int DEFAULT_CONSTRAINTS_INTENT = 2;
+
 	// Information about what is to be optimized.
 	protected InstrumentCalculator calculator;
 	protected List<Fingering> fingeringTargets;

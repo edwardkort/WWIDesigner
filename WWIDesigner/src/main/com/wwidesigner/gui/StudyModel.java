@@ -23,8 +23,10 @@ import java.io.StringWriter;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.prefs.Preferences;
@@ -34,6 +36,7 @@ import com.jidesoft.app.framework.file.FileDataModel;
 import com.jidesoft.app.framework.gui.DataViewPane;
 import com.wwidesigner.geometry.Instrument;
 import com.wwidesigner.geometry.bind.GeometryBindFactory;
+import com.wwidesigner.gui.util.DataOpenException;
 import com.wwidesigner.gui.util.HoleNumberMismatchException;
 import com.wwidesigner.modelling.InstrumentCalculator;
 import com.wwidesigner.modelling.InstrumentComparisonTable;
@@ -122,6 +125,30 @@ public abstract class StudyModel implements CategoryType
 	}
 
 	/**
+	 * Find the index in the Categories list of a named category.
+	 * 
+	 * @param name
+	 *            The category name to be found
+	 * @return The index of the found category, null otherwise.
+	 */
+	protected Integer getCategoryIndex(String name)
+	{
+		Integer index = null;
+		int intIndex = 0;
+		for (Category thisCategory : categories)
+		{
+			if (thisCategory.toString().equals(name))
+			{
+				index = intIndex;
+				break;
+			}
+			intIndex++;
+		}
+
+		return index;
+	}
+
+	/**
 	 * @param categoryName
 	 *            - Name of category to select.
 	 * @param subcategoryName
@@ -175,6 +202,52 @@ public abstract class StudyModel implements CategoryType
 	}
 
 	/**
+	 * Determines whether a subcategory is found under a category, either by
+	 * subcategory name or value.
+	 * 
+	 * @param categoryId
+	 *            The category ID to be searched.
+	 * @param subCategory
+	 *            Either the name or value of the subcategory
+	 * @param useName
+	 *            If true, use the subcategory name, otherwise the value.
+	 * @return True if the subcategory is found.
+	 */
+	protected boolean isValidSubCategory(String categoryId, Object subCategory,
+			boolean useName)
+	{
+		Category category = getCategory(categoryId);
+		if (category == null)
+		{
+			return false;
+		}
+
+		return isSubFound(category, subCategory, useName);
+	}
+
+	protected boolean isSubFound(Category category, Object subCategory,
+			boolean useName)
+	{
+		Map<String, Object> subs = category.getSubs();
+		for (String key : subs.keySet())
+		{
+			if (useName)
+			{
+				if (key.equals(subCategory))
+				{
+					return true;
+				}
+			}
+			else if (subs.get(key).equals(subCategory))
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
 	 * Class to encapsulate a main branch of the study model selection tree. The
 	 * derived study model defines a set of main branches, typically a static
 	 * set.
@@ -213,6 +286,31 @@ public abstract class StudyModel implements CategoryType
 			subs.remove(name);
 		}
 
+		public void removeSubByValue(Object value)
+		{
+			if (value == null)
+			{
+				return;
+			}
+
+			if (value.equals(getSelectedSubValue()))
+			{
+				selectedSub = null;
+			}
+
+			Iterator<Entry<String, Object>> iterator = subs.entrySet()
+					.iterator();
+			while (iterator.hasNext())
+			{
+				Entry<String, Object> entry = iterator.next();
+				if (value.equals(entry.getValue()))
+				{
+					iterator.remove();
+					break;
+				}
+			}
+		}
+
 		public Map<String, Object> getSubs()
 		{
 			if (subs == null)
@@ -234,7 +332,7 @@ public abstract class StudyModel implements CategoryType
 
 		public Object getSelectedSubValue()
 		{
-			if (subs == null)
+			if (subs == null || selectedSub == null)
 			{
 				return null;
 			}
@@ -318,6 +416,60 @@ public abstract class StudyModel implements CategoryType
 	}
 
 	/**
+	 * Determines the number of holes in the selected instrument. If that is
+	 * null, determines the number of holes in the selected tuning.
+	 * 
+	 * @return The number of holes found, null otherwise.
+	 */
+	protected Integer getNumberOfHolesFromInstrumentOrTuning()
+	{
+		Integer numHoles = getNumberOfHolesFromInstrument();
+		if (numHoles != null)
+		{
+			return numHoles;
+		}
+		try
+		{
+			return getHoleCountFromSelected(TUNING_CATEGORY_ID);
+		}
+		catch (Exception e)
+		{
+			return null;
+		}
+	}
+
+	protected Integer getNumberOfHolesFromInstrument()
+	{
+		try
+		{
+			Integer numHoles = getHoleCountFromSelected(INSTRUMENT_CATEGORY_ID);
+			if (numHoles != null)
+			{
+				return numHoles;
+			}
+		}
+		catch (Exception e)
+		{
+		}
+
+		return null;
+	}
+
+	/**
+	 * Replaces a Category in the categories list.
+	 * 
+	 * @param categoryId
+	 *            Category ID
+	 * @param replacementCategory
+	 */
+	protected void replaceCategory(String categoryId,
+			Category replacementCategory)
+	{
+		int categoryIndex = getCategoryIndex(CONSTRAINTS_CATEGORY_ID);
+		categories.set(categoryIndex, replacementCategory);
+	}
+
+	/**
 	 * Add an Instrument or Tuning to the category tree, from a JIDE
 	 * FileDataModel. Post: If dataModel is valid XML, it is added to
 	 * INSTRUMENT_CATEGORY_ID, or TUNING_CATEGORY_ID, as appropriate, and
@@ -327,18 +479,30 @@ public abstract class StudyModel implements CategoryType
 	 *            - FileDataModel containing instrument or tuning XML.
 	 * @return true iff the dataModel contained valid instrument or tuning XML.
 	 */
-	public boolean addDataModel(FileDataModel dataModel)
+	public boolean addDataModel(FileDataModel dataModel) throws Exception
 	{
 		String data = (String) dataModel.getData().toString();
-		String categoryName = getCategoryName(data);
-		if (categoryName == null)
+		if (data == null || data.length() == 0)
 		{
 			return false;
 		}
-		Category category = getCategory(categoryName);
-		category.addSub(dataModel.getName(), dataModel);
-		category.setSelectedSub(dataModel.getName());
-		return true;
+		String categoryName = getCategoryName(data);
+		if (categoryName == null)
+		{
+			throw new DataOpenException("Data is not a supported type",
+					DataOpenException.DATE_TYPE_NOT_SUPPORTED);
+		}
+		if (categoryName.equals(INSTRUMENT_CATEGORY_ID)
+				|| categoryName.equals(TUNING_CATEGORY_ID))
+		{
+			Category category = getCategory(categoryName);
+			category.addSub(dataModel.getName(), dataModel);
+			category.setSelectedSub(dataModel.getName());
+			validHoleCount();
+			return true;
+		}
+
+		return false;
 	}
 
 	/**
@@ -361,13 +525,13 @@ public abstract class StudyModel implements CategoryType
 		{
 			// Invalid XML. Remove from both categories.
 			category = getCategory(INSTRUMENT_CATEGORY_ID);
-			category.removeSub(dataModel.getName());
+			category.removeSubByValue(dataModel);
 			category = getCategory(TUNING_CATEGORY_ID);
-			category.removeSub(dataModel.getName());
+			category.removeSubByValue(dataModel);
 			return true;
 		}
 		category = getCategory(categoryName);
-		category.removeSub(dataModel.getName());
+		category.removeSubByValue(dataModel);
 		return true;
 	}
 
@@ -385,13 +549,16 @@ public abstract class StudyModel implements CategoryType
 	 * @return true if the dataModel contained valid instrument or tuning XML.
 	 */
 	public boolean replaceDataModel(FileDataModel dataModel)
+			throws DataOpenException
 	{
 		String data = (String) dataModel.getData();
 		String categoryName = getCategoryName(data);
 		if (categoryName == null)
 		{
 			removeDataModel(dataModel);
-			return false;
+			throw new DataOpenException(
+					"Data does not represent a supported type.",
+					DataOpenException.DATE_TYPE_NOT_SUPPORTED);
 		}
 		Category category = getCategory(categoryName);
 		category.replaceSub(dataModel.getName(), dataModel);
@@ -405,41 +572,82 @@ public abstract class StudyModel implements CategoryType
 	 */
 	public boolean canTune() throws Exception
 	{
-		Category tuningCategory = getCategory(TUNING_CATEGORY_ID);
-		String tuningSelected = tuningCategory.getSelectedSub();
-
-		Category instrumentCategory = getCategory(INSTRUMENT_CATEGORY_ID);
-		String instrumentSelected = instrumentCategory.getSelectedSub();
-
-		boolean tuningReady = tuningSelected != null
-				&& instrumentSelected != null;
-		if (tuningReady)
+		boolean canTune = false;
+		try
 		{
-			tuningReady = validateHoleCount();
+			canTune = validHoleCount();
+		}
+		catch (HoleNumberMismatchException e)
+		{
 		}
 
-		return tuningReady;
+		return canTune;
 	}
 
-	protected boolean validateHoleCount() throws Exception
+	protected boolean validHoleCount() throws Exception
 	{
-		boolean isValid = false;
-		Tuning tuning = getTuning();
-		int numTuningHoles = tuning.getNumberOfHoles();
-		Instrument instrument = getInstrument();
-		int numInstrumentHoles = instrument.getHole().size();
-		if (numTuningHoles == numInstrumentHoles)
+		Integer tuningHoleCount = getHoleCountFromSelected(TUNING_CATEGORY_ID);
+		Integer instrumentHoleCount = getHoleCountFromSelected(INSTRUMENT_CATEGORY_ID);
+		if (tuningHoleCount == null || instrumentHoleCount == null)
 		{
-			isValid = true;
+			return false;
 		}
-		else
+		if (tuningHoleCount == instrumentHoleCount)
 		{
-			throw new HoleNumberMismatchException("Tuning file has "
-					+ numTuningHoles + " holes, Instrument has "
-					+ numInstrumentHoles + " holes.");
+			return true;
+		}
+		throw new HoleNumberMismatchException("Tuning file has "
+				+ tuningHoleCount + " holes, Instrument has "
+				+ instrumentHoleCount + " holes.");
+	}
+
+	/**
+	 * Gets the hole count from the selected data of the specified data type.
+	 * 
+	 * @param categoryId
+	 *            One of CONSTRAINTS_CATEGORY_ID, INSTRUMENT_CATEGORY_ID, or
+	 *            TUNING_CATEGORY_ID
+	 * @return The hole count, null if the specified data type does not have a
+	 *         selected value
+	 * @throws Exception
+	 *             On data parse error
+	 */
+	protected Integer getHoleCountFromSelected(String categoryId)
+			throws Exception
+	{
+		Integer holeCount = null;
+		if (TUNING_CATEGORY_ID.equals(categoryId))
+		{
+			Category tuningCategory = getCategory(TUNING_CATEGORY_ID);
+			String tuningSelected = tuningCategory.getSelectedSub();
+			if (tuningSelected != null)
+			{
+				Tuning tuning = getTuning();
+				holeCount = tuning.getNumberOfHoles();
+			}
+		}
+		else if (INSTRUMENT_CATEGORY_ID.equals(categoryId))
+		{
+			Category instrumentCategory = getCategory(INSTRUMENT_CATEGORY_ID);
+			String instrumentSelected = instrumentCategory.getSelectedSub();
+			if (instrumentSelected != null)
+			{
+				Instrument instrument = getInstrument();
+				holeCount = instrument.getHole().size();
+			}
+		}
+		else if (CONSTRAINTS_CATEGORY_ID.equals(categoryId))
+		{
+			Category constraintsCategory = getCategory(CONSTRAINTS_CATEGORY_ID);
+			String constraintsSelected = constraintsCategory.getSelectedSub();
+			if (constraintsSelected != null)
+			{
+				Constraints constraints = getConstraints();
+				holeCount = constraints.getNumberOfHoles();
+			}
 		}
 
-		return isValid;
+		return holeCount;
 	}
 
 	/**
@@ -456,6 +664,47 @@ public abstract class StudyModel implements CategoryType
 		String optimizerSelected = category.getSelectedSub();
 
 		return optimizerSelected != null;
+	}
+
+	/**
+	 * A stub to update/change the Constraints Category upon selection changes
+	 * in the other Category selections. Should be overridden in subclasses that
+	 * need this functionality.
+	 */
+	public void updateConstraints()
+	{
+	}
+
+	/**
+	 * A stub to build up the current path to Constraints. Should be overridden
+	 * in subclasses that need this functionality.
+	 * 
+	 * @param rootDirectoryPath
+	 *            Root of all the constraints. May be blank, but not null.
+	 * @return The File representing the leaf directory. May be null if not
+	 *         overridden.
+	 */
+	public File getConstraintsLeafDirectory(String rootDirectoryPath)
+	{
+		return null;
+	}
+
+	public File getConstraintsLeafDirectory(String rootDirectoryPath,
+			Constraints constraints)
+	{
+		return null;
+	}
+
+	/**
+	 * A stub to set the Constraint menu items active. Overwrite in subclasses.
+	 * 
+	 * @param constraintsDirectory
+	 *            The root of the constraints directory tree.
+	 * @return
+	 */
+	public boolean isOptimizerFullySpecified(String constraintsDirectory)
+	{
+		return false;
 	}
 
 	public void calculateTuning(String title) throws Exception
@@ -494,6 +743,26 @@ public abstract class StudyModel implements CategoryType
 				false);
 	}
 
+	public String getDefaultConstraints() throws Exception
+	{
+		BaseObjectiveFunction objective = getObjectiveFunction(BaseObjectiveFunction.DEFAULT_CONSTRAINTS_INTENT);
+		Constraints constraints = objective.getConstraints();
+		constraints.setConstraintsName("Default");
+		String xmlConstraints = marshal(constraints);
+
+		return xmlConstraints;
+	}
+
+	public String getBlankConstraints() throws Exception
+	{
+		BaseObjectiveFunction objective = getObjectiveFunction(BaseObjectiveFunction.BLANK_CONSTRAINTS_INTENT);
+		Constraints constraints = objective.getConstraints();
+		constraints.setConstraintsName("Blank");
+		String xmlConstraints = marshal(constraints);
+
+		return xmlConstraints;
+	}
+
 	/**
 	 * Optimize the currently-selected objective function
 	 * 
@@ -502,7 +771,7 @@ public abstract class StudyModel implements CategoryType
 	 */
 	public String optimizeInstrument() throws Exception
 	{
-		BaseObjectiveFunction objective = getObjectiveFunction();
+		BaseObjectiveFunction objective = getObjectiveFunction(BaseObjectiveFunction.OPTIMIZATION_INTENT);
 		BaseObjectiveFunction.OptimizerType optimizerType = objective
 				.getOptimizerType();
 		if (preferredOptimizerType != null
@@ -627,6 +896,18 @@ public abstract class StudyModel implements CategoryType
 		Tuning tuning = (Tuning) noteBindFactory.unmarshalXml(xmlString, true);
 
 		return tuning;
+	}
+
+	protected Constraints getConstraints() throws Exception
+	{
+		BindFactory constraintsBindFactory = OptimizationBindFactory
+				.getInstance();
+		String xmlString = getSelectedXmlString(CONSTRAINTS_CATEGORY_ID);
+		Constraints constraints = (Constraints) constraintsBindFactory
+				.unmarshalXml(xmlString, true);
+		constraints.setConstraintParent();
+
+		return constraints;
 	}
 
 	public static Instrument getInstrumentFromFile(String fileName)
@@ -918,15 +1199,19 @@ public abstract class StudyModel implements CategoryType
 	protected abstract InstrumentTuner getInstrumentTuner();
 
 	/**
-	 * Create the objective function to use for the selected optimization. set
-	 * the physical parameters, and set any constraints that the user has
-	 * selected.
+	 * Create the objective function to use for either the selected
+	 * optimization, to generate a blank Constraints, or to generate a default
+	 * Constraints. Set the physical parameters, and set any constraints that
+	 * the user has selected as appropriate for the objectiveFunctionIntent.
 	 * 
+	 * @param objectiveFunctionIntent
+	 *            Indicates the Constraints content the objectiveFunction will
+	 *            create.
 	 * @return
 	 * @throws Exception
 	 */
-	protected abstract BaseObjectiveFunction getObjectiveFunction()
-			throws Exception;
+	protected abstract BaseObjectiveFunction getObjectiveFunction(
+			int objectiveFunctionIntent) throws Exception;
 
 	/**
 	 * Configures the array of allowed ContainedXmlView classes for each data

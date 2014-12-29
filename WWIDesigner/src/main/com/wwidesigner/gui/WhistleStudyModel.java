@@ -135,7 +135,7 @@ public class WhistleStudyModel extends StudyModel
 	}
 
 	@Override
-	protected BaseObjectiveFunction getObjectiveFunction() throws Exception
+	protected BaseObjectiveFunction getObjectiveFunction(int objectiveFunctionIntent) throws Exception
 	{
 		Category optimizerCategory = getCategory(OPTIMIZER_CATEGORY_ID);
 		String optimizer = optimizerCategory.getSelectedSub();

@@ -112,7 +112,7 @@ public class PerturbedInstrumentOptimization
 
 	}
 
-	public void replaceInstrument(String instrumentName, String xmlString)
+	public void replaceInstrument(String instrumentName, String xmlString) throws Exception
 	{
 		FileDataModel fileData = new FileDataModel();
 		fileData.setData(xmlString);
@@ -126,6 +126,7 @@ public class PerturbedInstrumentOptimization
 	 * @param description - Explanatory text for this test.
 	 * @throws Exception
 	 */
+	@Deprecated
 	public void testOptimization(String description, double tolerance) throws Exception
 	{
 		// Optimize the perturbed instrument.

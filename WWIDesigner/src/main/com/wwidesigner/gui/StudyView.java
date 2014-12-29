@@ -21,6 +21,7 @@ package com.wwidesigner.gui;
 import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.prefs.Preferences;
@@ -38,14 +39,15 @@ import com.jidesoft.app.framework.DataView;
 import com.jidesoft.app.framework.event.EventSubscriber;
 import com.jidesoft.app.framework.event.SubscriberEvent;
 import com.jidesoft.app.framework.file.FileDataModel;
-import com.jidesoft.app.framework.gui.ApplicationDialogsUI;
 import com.jidesoft.app.framework.gui.DataViewPane;
 import com.jidesoft.app.framework.gui.MessageDialogRequest;
 import com.jidesoft.app.framework.gui.filebased.FileBasedApplication;
 import com.jidesoft.tree.TreeUtils;
 import com.wwidesigner.geometry.Instrument;
+import com.wwidesigner.gui.util.DataOpenException;
 import com.wwidesigner.gui.util.HoleNumberMismatchException;
 import com.wwidesigner.modelling.SketchInstrument;
+import com.wwidesigner.optimization.Constraints;
 
 /**
  * @author kort
@@ -79,9 +81,22 @@ public class StudyView extends DataViewPane implements EventSubscriber
 								.getLastPathComponent();
 						DefaultMutableTreeNode parentNode = (DefaultMutableTreeNode) node
 								.getParent();
-						study.setCategorySelection(
-								(String) parentNode.getUserObject(),
+						String category = (String) parentNode.getUserObject();
+						study.setCategorySelection(category,
 								(String) node.getUserObject());
+						if (StudyModel.INSTRUMENT_CATEGORY_ID.equals(category)
+								|| StudyModel.TUNING_CATEGORY_ID
+										.equals(category))
+						{
+							try
+							{
+								study.validHoleCount();
+							}
+							catch (Exception ex)
+							{
+								showException(ex);
+							}
+						}
 					}
 					updateView();
 				}
@@ -110,13 +125,14 @@ public class StudyView extends DataViewPane implements EventSubscriber
 
 	protected void updateView()
 	{
-		// Build the selection tree.
+		// Reset the Constaints category as needed.
+		study.updateConstraints();
 
+		// Build the selection tree.
 		DefaultMutableTreeNode root = new DefaultMutableTreeNode();
 		List<TreePath> selectionPaths = new ArrayList<TreePath>();
 
 		// Add all static categories and selection options to the tree.
-
 		for (String category : study.getCategoryNames())
 		{
 			DefaultMutableTreeNode node = new DefaultMutableTreeNode(category);
@@ -160,12 +176,6 @@ public class StudyView extends DataViewPane implements EventSubscriber
 				canDoOptimization = study.canOptimize();
 			}
 		}
-		catch (HoleNumberMismatchException ex)
-		{
-			MessageDialogRequest.showMessageDialog(getApplication(),
-					ex.getMessage(), "Hole Numbers Do Not Match",
-					MessageDialogRequest.ERROR_STYLE);
-		}
 		catch (Exception e)
 		{
 			MessageDialogRequest.showMessageDialog(getApplication(),
@@ -178,6 +188,11 @@ public class StudyView extends DataViewPane implements EventSubscriber
 				canDoOptimization);
 		getApplication().getEventManager().publish(
 				NafOptimizationRunner.TUNING_ACTIVE_EVENT_ID, canDoTuning);
+		String constraintsDirectory = ((NafOptimizationRunner) getApplication())
+				.getConstraintsRootDirectoryPath();
+		getApplication().getEventManager().publish(
+				NafOptimizationRunner.CONSTRAINTS_ACTIVE_EVENT_ID,
+				study.isOptimizerFullySpecified(constraintsDirectory));
 	}
 
 	@Override
@@ -191,14 +206,13 @@ public class StudyView extends DataViewPane implements EventSubscriber
 			switch (eventId)
 			{
 				case NafOptimizationRunner.FILE_OPENED_EVENT_ID:
-					if (!study.addDataModel(source))
+					try
 					{
-						System.out.print("\nError: Data in editor tab, ");
-						System.out.print(source.getName());
-						System.out
-								.println(", is not valid Instrument or Tuning XML.");
-						System.out
-								.println("Fix and close the file, then re-open it.");
+						study.addDataModel(source);
+					}
+					catch (Exception ex)
+					{
+						showException(ex);
 					}
 					break;
 				case NafOptimizationRunner.FILE_CLOSED_EVENT_ID:
@@ -206,14 +220,13 @@ public class StudyView extends DataViewPane implements EventSubscriber
 					break;
 				case NafOptimizationRunner.FILE_SAVED_EVENT_ID:
 				case NafOptimizationRunner.WINDOW_RENAMED_EVENT_ID:
-					if (!study.replaceDataModel(source))
+					try
 					{
-						System.out.print("\nError: Data in editor tab, ");
-						System.out.print(source.getName());
-						System.out
-								.println(", is not valid Instrument or Tuning XML.");
-						System.out
-								.println("Fix and close the file, then re-open it.");
+						study.replaceDataModel(source);
+					}
+					catch (DataOpenException ex)
+					{
+						showException(ex);
 					}
 					break;
 			}
@@ -247,24 +260,60 @@ public class StudyView extends DataViewPane implements EventSubscriber
 		}
 	}
 
-	public void optimizeInstrument()
+	public void getDefaultConstraints()
 	{
 		try
 		{
-			String xmlInstrument = study.optimizeInstrument();
-			if (xmlInstrument != null && !xmlInstrument.isEmpty())
-			{
-				FileBasedApplication app = (FileBasedApplication) getApplication();
-				FileDataModel data = (FileDataModel) app.newData("xml");
-				data.setData(xmlInstrument);
-				study.addDataModel(data);
-				updateView();
-			}
+			String xmlConstraints = study.getDefaultConstraints();
+			addNewDataModel(xmlConstraints);
 		}
 		catch (Exception e)
 		{
 			System.out.println("Exception: " + e.getMessage());
 			e.printStackTrace();
+		}
+	}
+
+	public void getBlankConstraints()
+	{
+		try
+		{
+			String xmlConstraints = study.getBlankConstraints();
+			addNewDataModel(xmlConstraints);
+		}
+		catch (Exception e)
+		{
+			System.out.println("Exception: " + e.getMessage());
+			e.printStackTrace();
+		}
+	}
+
+	public void optimizeInstrument()
+	{
+		try
+		{
+			String xmlInstrument = study.optimizeInstrument();
+			addNewDataModel(xmlInstrument);
+		}
+		catch (Exception e)
+		{
+			System.out.println("Exception: " + e.getMessage());
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * 
+	 */
+	private void addNewDataModel(String xmlData) throws Exception
+	{
+		if (xmlData != null && !xmlData.isEmpty())
+		{
+			FileBasedApplication app = (FileBasedApplication) getApplication();
+			FileDataModel data = (FileDataModel) app.newData("xml");
+			data.setData(xmlData);
+			study.addDataModel(data);
+			updateView();
 		}
 	}
 
@@ -333,12 +382,13 @@ public class StudyView extends DataViewPane implements EventSubscriber
 		{
 			if (model instanceof FileDataModel)
 			{
-				if (!study.addDataModel((FileDataModel) model))
+				try
 				{
-					System.out.print("\nError: Data in editor tab, ");
-					System.out.print(model.getName());
-					System.out
-							.println(", is not valid Instrument or Tuning XML.");
+					study.addDataModel((FileDataModel) model);
+				}
+				catch (Exception ex)
+				{
+					showException(ex);
 				}
 			}
 		}
@@ -367,4 +417,39 @@ public class StudyView extends DataViewPane implements EventSubscriber
 		}
 	}
 
+	protected void showException(Exception exception)
+	{
+		String exceptionType;
+		int messageType;
+		if (exception instanceof DataOpenException)
+		{
+			DataOpenException doException = (DataOpenException) exception;
+			exceptionType = doException.getType();
+			messageType = doException.isWarning() ? MessageDialogRequest.WARNING_STYLE
+					: MessageDialogRequest.ERROR_STYLE;
+		}
+		else if (exception instanceof HoleNumberMismatchException)
+		{
+			exceptionType = "Hole number mismatch";
+			messageType = MessageDialogRequest.WARNING_STYLE;
+		}
+		else
+		{
+			exceptionType = "Data content is invalid";
+			messageType = MessageDialogRequest.ERROR_STYLE;
+		}
+
+		MessageDialogRequest.showMessageDialog(getApplication(),
+				exception.getMessage(), exceptionType, messageType);
+	}
+
+	public File getConstraintsLeafDirectory(String rootDirectoryPath)
+	{
+		return study.getConstraintsLeafDirectory(rootDirectoryPath);
+	}
+
+	public File getConstraintsLeafDirectory(String rootDirectoryPath, Constraints constraints)
+	{
+		return study.getConstraintsLeafDirectory(rootDirectoryPath, constraints);
+	}
 }

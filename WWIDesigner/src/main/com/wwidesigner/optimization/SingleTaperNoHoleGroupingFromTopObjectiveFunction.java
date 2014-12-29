@@ -16,6 +16,7 @@ public class SingleTaperNoHoleGroupingFromTopObjectiveFunction extends
 		MergedObjectiveFunction
 {
 	public static final String DISPLAY_NAME = "Single taper, no-hole-grouping optimizer";
+	public static final String NAME = SingleTaperNoHoleGroupingFromTopObjectiveFunction.class.getSimpleName();
 
 	public SingleTaperNoHoleGroupingFromTopObjectiveFunction(
 			InstrumentCalculator calculator, TuningInterface tuning,
@@ -33,7 +34,7 @@ public class SingleTaperNoHoleGroupingFromTopObjectiveFunction extends
 		sumDimensions();
 		maxEvaluations = 20000 + (getNrDimensions() - 1) * 5000;
 		constraints.setObjectiveDisplayName(DISPLAY_NAME);
-		constraints.setObjectiveFunctionName(this.getClass().getSimpleName());
+		constraints.setObjectiveFunctionName(NAME);
 		constraints.setConstraintsName("Default");
 	}
 

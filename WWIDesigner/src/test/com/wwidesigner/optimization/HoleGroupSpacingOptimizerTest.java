@@ -133,7 +133,7 @@ public class HoleGroupSpacingOptimizerTest extends AbstractOptimizationTest
 			PositionInterface[] sortedPoints = Instrument.sortList(borePoints);
 			PositionInterface lastPoint = sortedPoints[sortedPoints.length - 1];
 			assertEquals("Bore length incorrect with Gordon Calculator", 13.92,
-					lastPoint.getBorePosition(), 0.1);
+					lastPoint.getBorePosition(), 0.2);
 
 		}
 		catch (Exception e)

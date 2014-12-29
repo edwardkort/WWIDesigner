@@ -19,6 +19,7 @@ import com.wwidesigner.note.TuningInterface;
 public class HoleFromTopObjectiveFunction extends MergedObjectiveFunction
 {
 	public static final String DISPLAY_NAME = "Hole position and size optimizer";
+	public static final String NAME = HoleFromTopObjectiveFunction.class.getSimpleName();
 
 	public HoleFromTopObjectiveFunction(InstrumentCalculator calculator,
 			TuningInterface tuning, EvaluatorInterface evaluator)
@@ -33,7 +34,7 @@ public class HoleFromTopObjectiveFunction extends MergedObjectiveFunction
 		sumDimensions();
 		maxEvaluations = 20000 + (getNrDimensions() - 1) * 5000;
 		constraints.setObjectiveDisplayName(DISPLAY_NAME);
-		constraints.setObjectiveFunctionName(this.getClass().getSimpleName());
+		constraints.setObjectiveFunctionName(NAME);
 		constraints.setConstraintsName("Default");
 	}
 

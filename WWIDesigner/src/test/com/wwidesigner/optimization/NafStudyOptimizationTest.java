@@ -6,6 +6,8 @@ import org.junit.Test;
 
 import com.wwidesigner.gui.NafStudyModel;
 
+@Deprecated
+// NafStudyModel no longer serves constraint sets by default.
 public class NafStudyOptimizationTest extends PerturbedInstrumentOptimization
 {
 	protected String instrumentFile = "com/wwidesigner/optimization/example/Optimized-D-NAF.xml";
@@ -22,7 +24,6 @@ public class NafStudyOptimizationTest extends PerturbedInstrumentOptimization
 
 		NafStudyModel myStudy = new NafStudyModel();
 		myStudy.getParams().setProperties(22.2, 101.0, 45, 0.000400);
-		myStudy.setMinTopHoleRatio(0.4);
 		myStudy.setCategorySelection(NafStudyModel.OPTIMIZER_CATEGORY_ID,
 				NafStudyModel.GROUP_OPT_SUB_CATEGORY_ID);
 		myStudy.setCategorySelection(NafStudyModel.CONSTRAINTS_CATEGORY_ID,

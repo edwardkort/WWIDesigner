@@ -18,11 +18,13 @@
  */
 package com.wwidesigner.gui;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.prefs.Preferences;
 
+import com.jidesoft.app.framework.file.FileDataModel;
 import com.wwidesigner.geometry.Instrument;
+import com.wwidesigner.gui.util.DataOpenException;
 import com.wwidesigner.modelling.CentDeviationEvaluator;
 import com.wwidesigner.modelling.EvaluatorInterface;
 import com.wwidesigner.modelling.GordonCalculator;
@@ -71,8 +73,11 @@ public class NafStudyModel extends StudyModel
 	public static final String VARY_ALL_MULTI_START_SUB_CATEGORY_ID = "Vary all dimensions";
 
 	protected int numberOfStarts = 30;
-	// TODO Remove this variable when Constraints are exposed.
-	protected double minTopHoleRatio;
+
+	// Key is a concatenation of the ObjectiveFunction and the number of holes.
+	// Values is a Category containing the list of Constraints (as XML) for the
+	// key.
+	protected Map<String, Category> constraintsByOptimizer = new HashMap<String, Category>();
 
 	public NafStudyModel()
 	{
@@ -96,20 +101,26 @@ public class NafStudyModel extends StudyModel
 		multiStart.setSelectedSub(NO_MULTI_START_SUB_CATEGORY_ID);
 		categories.add(multiStart);
 		Category optimizers = new Category(OPTIMIZER_CATEGORY_ID);
-		optimizers.addSub(FIPPLE_OPT_SUB_CATEGORY_ID, null);
-		optimizers.addSub(NO_GROUP_OPT_SUB_CATEGORY_ID, null);
-		optimizers.addSub(HOLESIZE_OPT_SUB_CATEGORY_ID, null);
-		optimizers.addSub(GROUP_OPT_SUB_CATEGORY_ID, null);
-		optimizers.addSub(TAPER_NO_GROUP_OPT_SUB_CATEGORY_ID, null);
-		optimizers.addSub(TAPER_GROUP_OPT_SUB_CATEGORY_ID, null);
+		optimizers.addSub(FIPPLE_OPT_SUB_CATEGORY_ID,
+				FippleFactorObjectiveFunction.NAME);
+		optimizers.addSub(NO_GROUP_OPT_SUB_CATEGORY_ID,
+				HoleFromTopObjectiveFunction.NAME);
+		optimizers.addSub(HOLESIZE_OPT_SUB_CATEGORY_ID,
+				HoleSizeObjectiveFunction.NAME);
+		optimizers.addSub(GROUP_OPT_SUB_CATEGORY_ID,
+				HoleGroupFromTopObjectiveFunction.NAME);
+		optimizers.addSub(TAPER_NO_GROUP_OPT_SUB_CATEGORY_ID,
+				SingleTaperNoHoleGroupingFromTopObjectiveFunction.NAME);
+		optimizers.addSub(TAPER_GROUP_OPT_SUB_CATEGORY_ID,
+				SingleTaperHoleGroupFromTopObjectiveFunction.NAME);
 		categories.add(optimizers);
 		Category constraints = new Category(CONSTRAINTS_CATEGORY_ID);
-		constraints.addSub(HOLE_0_CONS_SUB_CATEGORY_ID, null);
-		constraints.addSub(HOLE_6_1_125_SPACING_CONS_SUB_CATEGORY_ID, null);
-		constraints.addSub(HOLE_6_1_25_SPACING_CONS_SUB_CATEGORY_ID, null);
-		constraints.addSub(HOLE_6_40_SPACING_CONS_SUB_CATEGORY_ID, null);
-		constraints.addSub(HOLE_6_1_5_SPACING_CONS_SUB_CATEGORY_ID, null);
-		constraints.addSub(HOLE_7_CONS_SUB_CATEGORY_ID, null);
+		// constraints.addSub(HOLE_0_CONS_SUB_CATEGORY_ID, null);
+		// constraints.addSub(HOLE_6_1_125_SPACING_CONS_SUB_CATEGORY_ID, null);
+		// constraints.addSub(HOLE_6_1_25_SPACING_CONS_SUB_CATEGORY_ID, null);
+		// constraints.addSub(HOLE_6_40_SPACING_CONS_SUB_CATEGORY_ID, null);
+		// constraints.addSub(HOLE_6_1_5_SPACING_CONS_SUB_CATEGORY_ID, null);
+		// constraints.addSub(HOLE_7_CONS_SUB_CATEGORY_ID, null);
 		categories.add(constraints);
 	}
 
@@ -139,6 +150,174 @@ public class NafStudyModel extends StudyModel
 		}
 
 		return optimizeReady;
+	}
+
+	@Override
+	public boolean isOptimizerFullySpecified(String constraintsDirectory)
+	{
+		boolean isSpecified;
+		if (constraintsDirectory == null
+				|| constraintsDirectory.trim().length() == 0)
+		{
+			return false;
+		}
+		Integer dataNumberOfHoles = getNumberOfHolesFromInstrument();
+		String optimizerSelected = getSelectedSub(OPTIMIZER_CATEGORY_ID);
+		// Constraints set is fully specified.
+		isSpecified = dataNumberOfHoles != null && optimizerSelected != null;
+
+		return isSpecified;
+	}
+
+	/**
+	 * Update/change the Constraints Category upon selection changes in the
+	 * other Category selections.
+	 */
+	@Override
+	public void updateConstraints()
+	{
+		super.updateConstraints();
+
+		Integer dataNumberOfHoles = getNumberOfHolesFromInstrument();
+		String optimizerSelected = getSelectedSub(OPTIMIZER_CATEGORY_ID);
+
+		// Constraints set is fully specified. Retrieve it.
+		if (dataNumberOfHoles != null && optimizerSelected != null)
+		{
+			resetConstraints(optimizerSelected, dataNumberOfHoles);
+		}
+		// If the optimizer matches the constraints set, leave it. Otherwise,
+		// put in a dummy blank one: there is not enough information to select
+		// the correct one.
+		else if (optimizerSelected != null)
+		{
+			if (!constraintsAndOptimizerCompatible(
+					getCategory(CONSTRAINTS_CATEGORY_ID), optimizerSelected,
+					true))
+			{
+				replaceCategory(CONSTRAINTS_CATEGORY_ID, new Category(
+						CONSTRAINTS_CATEGORY_ID));
+			}
+		}
+		// If the number of holes match the constraints set, leave it.
+		// Otherwise, put in a dummy one.
+		else if (dataNumberOfHoles != null)
+		{
+			if (!constraintsAndHoleNumberCompatible(
+					getCategory(CONSTRAINTS_CATEGORY_ID), dataNumberOfHoles))
+			{
+				replaceCategory(CONSTRAINTS_CATEGORY_ID, new Category(
+						CONSTRAINTS_CATEGORY_ID));
+			}
+		}
+		// If there is neither hole number nor optimizer information, leave
+		// whatever Constraints category is already displayed.
+	}
+
+	protected boolean constraintsAndHoleNumberCompatible(
+			Category constraintsCategory, int numberOfHoles)
+	{
+		// If the category is empty, it is compatible
+		Map<String, Object> subs = constraintsCategory.getSubs();
+		if (subs == null || subs.isEmpty())
+		{
+			return true;
+		}
+		// Check the first sub for number of holes
+		FileDataModel dataModel = (FileDataModel) subs.values().iterator()
+				.next();
+		Constraints constraints = getConstraints((String) dataModel.getData());
+
+		return numberOfHoles == constraints.getNumberOfHoles();
+	}
+
+	protected boolean constraintsAndOptimizerCompatible(
+			Category constraintsCategory, String optimizerName,
+			boolean isDisplayName)
+	{
+		// If the category is empty, it is compatible
+		Map<String, Object> subs = constraintsCategory.getSubs();
+		if (subs == null || subs.isEmpty())
+		{
+			return true;
+		}
+		// Check the first sub for associated optimizer
+		FileDataModel dataModel = (FileDataModel) subs.values().iterator()
+				.next();
+		Constraints constraints = getConstraints((String) dataModel.getData());
+		String constraintsOptimizerName = isDisplayName ? constraints
+				.getObjectiveDisplayName() : constraints
+				.getObjectiveFunctionName();
+
+		return constraintsOptimizerName.equals(optimizerName);
+	}
+
+	protected void resetConstraints(String optimizerSelected,
+			Integer dataNumberOfHoles)
+	{
+		String mappedKey = makeMappedConstraintsKey(optimizerSelected, true,
+				dataNumberOfHoles);
+		Category category = getMappedCategory(mappedKey);
+		replaceCategory(CONSTRAINTS_CATEGORY_ID, category);
+	}
+
+	private String makeMappedConstraintsKey(String optimizerName,
+			boolean isDisplayName, int numberOfHoles)
+	{
+		String optimizerClassName;
+		if (isDisplayName)
+		{
+			optimizerClassName = (String) getCategory(OPTIMIZER_CATEGORY_ID)
+					.getSelectedSubValue();
+		}
+		else
+		{
+			optimizerClassName = optimizerName;
+		}
+
+		return optimizerClassName + "_" + numberOfHoles;
+	}
+
+	@Override
+	public File getConstraintsLeafDirectory(String rootDirectoryPath)
+	{
+		String studyModelName = getClass().getSimpleName();
+		String objectiveFunctionName = (String) getCategory(
+				OPTIMIZER_CATEGORY_ID).getSelectedSubValue();
+		int numberOfHoles = getNumberOfHolesFromInstrument();
+		File leaf = makeConstraintsDirectoryPath(rootDirectoryPath,
+				studyModelName, objectiveFunctionName, numberOfHoles);
+
+		return leaf;
+	}
+
+	@Override
+	public File getConstraintsLeafDirectory(String rootDirectoryPath,
+			Constraints constraints)
+	{
+		String studyModelName = getClass().getSimpleName();
+		String objectiveFunctionName = constraints.getObjectiveFunctionName();
+		int numberOfHoles = constraints.getNumberOfHoles();
+		File leaf = makeConstraintsDirectoryPath(rootDirectoryPath,
+				studyModelName, objectiveFunctionName, numberOfHoles);
+
+		return leaf;
+	}
+
+	protected File makeConstraintsDirectoryPath(String rootPath,
+			String studyModelName, String objectiveFunctionName,
+			int numberOfHoles)
+	{
+		String path = rootPath + File.separator + studyModelName
+				+ File.separator + objectiveFunctionName + File.separator
+				+ numberOfHoles;
+		File leaf = new File(path);
+		if (!leaf.exists())
+		{
+			leaf.mkdirs();
+		}
+
+		return leaf;
 	}
 
 	@Override
@@ -173,16 +352,22 @@ public class NafStudyModel extends StudyModel
 		return tuner;
 	}
 
-	@Override
-	protected BaseObjectiveFunction getObjectiveFunction() throws Exception
+	protected BaseObjectiveFunction getObjectiveFunction(
+			int objectiveFunctionIntent) throws Exception
 	{
 		Category optimizerCategory = getCategory(OPTIMIZER_CATEGORY_ID);
 		String optimizer = optimizerCategory.getSelectedSub();
-		Category constraintCategory = getCategory(CONSTRAINTS_CATEGORY_ID);
-		String constraint = constraintCategory.getSelectedSub();
 
 		Instrument instrument = getInstrument();
-		Tuning tuning = getTuning();
+		Tuning tuning;
+		if (objectiveFunctionIntent == BaseObjectiveFunction.OPTIMIZATION_INTENT)
+		{
+			tuning = getTuning();
+		}
+		else
+		{
+			tuning = new Tuning();
+		}
 		InstrumentCalculator calculator = getCalculator();
 		calculator.setInstrument(instrument);
 		EvaluatorInterface evaluator = new CentDeviationEvaluator(calculator);
@@ -199,90 +384,71 @@ public class NafStudyModel extends StudyModel
 			case FIPPLE_OPT_SUB_CATEGORY_ID:
 				objective = new FippleFactorObjectiveFunction(calculator,
 						tuning, evaluator);
-				lowerBound = new double[] { 0.2 };
-				upperBound = new double[] { 1.5 };
+				if (objectiveFunctionIntent == BaseObjectiveFunction.DEFAULT_CONSTRAINTS_INTENT)
+				{
+					lowerBound = new double[] { 0.2 };
+					upperBound = new double[] { 1.5 };
+				}
 				break;
 			case HOLESIZE_OPT_SUB_CATEGORY_ID:
 				objective = new HoleSizeObjectiveFunction(calculator, tuning,
 						evaluator);
-				// Bounds are hole diameters expressed in meters.
-				if (numberOfHoles == 0)
+				if (objectiveFunctionIntent == BaseObjectiveFunction.DEFAULT_CONSTRAINTS_INTENT)
 				{
-					lowerBound = new double[0];
-					upperBound = new double[0];
-				}
-				else if (numberOfHoles == 7)
-				{
-					lowerBound = new double[] { 0.002, 0.002, 0.002, 0.002,
-							0.002, 0.002, 0.002 };
-					upperBound = new double[] { 0.014, 0.014, 0.014, 0.014,
-							0.014, 0.008, 0.008 };
-				}
-				else
-				// Assume 6 holes.
-				{
-					lowerBound = new double[] { 0.002, 0.003, 0.003, 0.003,
-							0.003, 0.003 };
-					upperBound = new double[] { 0.0102, 0.0102, 0.010, 0.010,
-							0.010, 0.012 };
+					// Bounds are hole diameters expressed in meters.
+					if (numberOfHoles == 0)
+					{
+						lowerBound = new double[0];
+						upperBound = new double[0];
+					}
+					else if (numberOfHoles == 7)
+					{
+						lowerBound = new double[] { 0.002, 0.002, 0.002, 0.002,
+								0.002, 0.002, 0.002 };
+						upperBound = new double[] { 0.014, 0.014, 0.014, 0.014,
+								0.014, 0.008, 0.008 };
+					}
+					else if (numberOfHoles == 6)
+					// Assume 6 holes.
+					{
+						lowerBound = new double[] { 0.002, 0.003, 0.003, 0.003,
+								0.003, 0.003 };
+						upperBound = new double[] { 0.0102, 0.0102, 0.010,
+								0.010, 0.010, 0.012 };
+					}
 				}
 				break;
 			case NO_GROUP_OPT_SUB_CATEGORY_ID:
-				// Length bounds are expressed in meters, diameter bounds as
-				// ratios.
-				if (numberOfHoles == 0)
-				{
-					lowerBound = new double[] { 0.2 };
-					upperBound = new double[] { 0.7 };
-				}
-				else if (numberOfHoles == 7)
-				{
-					lowerBound = new double[] { 0.2, minTopHoleRatio, 0.0203,
-							0.0203, 0.0203, 0.0203, 0.0203, 0.0005, 0.012,
-							0.002, 0.002, 0.002, 0.002, 0.002, 0.002, 0.002 };
-					upperBound = new double[] { 0.7, 0.50, 0.05, 0.05, 0.1,
-							0.05, 0.05, 0.003, 0.014, 0.014, 0.014, 0.014,
-							0.014, 0.008, 0.008 };
-				}
-				else if (constraint == HOLE_6_1_125_SPACING_CONS_SUB_CATEGORY_ID)
-				{
-					lowerBound = new double[] { 0.2, minTopHoleRatio, 0.0203,
-							0.0203, 0.0203, 0.0203, 0.0203, 0.002, 0.003,
-							0.003, 0.003, 0.003, 0.003 };
-					upperBound = new double[] { 0.7, 0.50, 0.029, 0.029, 0.07,
-							0.029, 0.029, 0.0102, 0.0102, 0.010, 0.010, 0.010,
-							0.012 };
-				}
-				else if (constraint == HOLE_6_1_25_SPACING_CONS_SUB_CATEGORY_ID)
-				{
-					lowerBound = new double[] { 0.2, minTopHoleRatio, 0.0203,
-							0.0203, 0.0203, 0.0203, 0.0203, 0.002, 0.003,
-							0.003, 0.003, 0.003, 0.003 };
-					upperBound = new double[] { 0.7, 0.50, 0.032, 0.032, 0.07,
-							0.032, 0.032, 0.0102, 0.0102, 0.010, 0.010, 0.010,
-							0.012 };
-				}
-				else if (constraint == HOLE_6_40_SPACING_CONS_SUB_CATEGORY_ID)
-				{
-					lowerBound = new double[] { 0.2, minTopHoleRatio, 0.0203,
-							0.0203, 0.0203, 0.0203, 0.0203, 0.002, 0.003,
-							0.003, 0.003, 0.003, 0.003 };
-					upperBound = new double[] { 0.7, 0.50, 0.0356, 0.0356,
-							0.07, 0.0356, 0.0336, 0.0102, 0.0102, 0.010, 0.010,
-							0.010, 0.012 };
-				}
-				else
-				// 6 holes, 1.5 inch spacing.
-				{
-					lowerBound = new double[] { 0.2, minTopHoleRatio, 0.0203,
-							0.0203, 0.0203, 0.0203, 0.0203, 0.002, 0.003,
-							0.003, 0.003, 0.003, 0.003 };
-					upperBound = new double[] { 0.7, 0.50, 0.038, 0.038, 0.07,
-							0.038, 0.038, 0.0102, 0.0102, 0.010, 0.010, 0.010,
-							0.012 };
-				}
 				objective = new HoleFromTopObjectiveFunction(calculator,
 						tuning, evaluator);
+				if (objectiveFunctionIntent == BaseObjectiveFunction.DEFAULT_CONSTRAINTS_INTENT)
+				{
+					// Length bounds are expressed in meters, diameter bounds as
+					// ratios.
+					if (numberOfHoles == 0)
+					{
+						lowerBound = new double[] { 0.2 };
+						upperBound = new double[] { 0.7 };
+					}
+					else if (numberOfHoles == 7)
+					{
+						lowerBound = new double[] { 0.2, 0.25, 0.0203, 0.0203,
+								0.0203, 0.0203, 0.0203, 0.0005, 0.012, 0.002,
+								0.002, 0.002, 0.002, 0.002, 0.002, 0.002 };
+						upperBound = new double[] { 0.7, 0.50, 0.05, 0.05, 0.1,
+								0.05, 0.05, 0.003, 0.014, 0.014, 0.014, 0.014,
+								0.014, 0.008, 0.008 };
+					}
+					else if (numberOfHoles == 6)
+					{
+						lowerBound = new double[] { 0.2, 0.25, 0.0203, 0.0203,
+								0.0203, 0.0203, 0.0203, 0.002, 0.003, 0.003,
+								0.003, 0.003, 0.003 };
+						upperBound = new double[] { 0.7, 0.50, 0.032, 0.032,
+								0.07, 0.032, 0.032, 0.0102, 0.0102, 0.010,
+								0.010, 0.010, 0.012 };
+					}
+				}
 				break;
 			case GROUP_OPT_SUB_CATEGORY_ID:
 				// Length bounds are expressed in meters, diameter bounds as
@@ -290,104 +456,74 @@ public class NafStudyModel extends StudyModel
 				if (numberOfHoles == 0)
 				{
 					holeGroups = new int[][] { {} };
-					lowerBound = new double[] { 0.2 };
-					upperBound = new double[] { 0.7 };
+					if (objectiveFunctionIntent == BaseObjectiveFunction.DEFAULT_CONSTRAINTS_INTENT)
+					{
+						lowerBound = new double[] { 0.2 };
+						upperBound = new double[] { 0.7 };
+					}
 				}
 				else if (numberOfHoles == 7)
 				{
 					holeGroups = new int[][] { { 0, 1, 2 }, { 3, 4, 5 }, { 6 } };
-					lowerBound = new double[] { 0.2, minTopHoleRatio, 0.0203,
-							0.0203, 0.0203, 0.0005, 0.002, 0.002, 0.002, 0.002,
-							0.002, 0.002, 0.002 };
-					upperBound = new double[] { 0.7, 1.0, 0.05, 0.05, 0.1,
-							0.003, 0.014, 0.014, 0.014, 0.014, 0.014, 0.008,
-							0.008 };
+					if (objectiveFunctionIntent == BaseObjectiveFunction.DEFAULT_CONSTRAINTS_INTENT)
+					{
+						lowerBound = new double[] { 0.2, 0.25, 0.0203, 0.0203,
+								0.0203, 0.0005, 0.002, 0.002, 0.002, 0.002,
+								0.002, 0.002, 0.002 };
+						upperBound = new double[] { 0.7, 1.0, 0.05, 0.05, 0.1,
+								0.003, 0.014, 0.014, 0.014, 0.014, 0.014,
+								0.008, 0.008 };
+					}
 				}
-				else
+				else if (numberOfHoles == 6)
 				{
 					holeGroups = new int[][] { { 0, 1, 2 }, { 3, 4, 5 } };
-					lowerBound = new double[] { 0.2, minTopHoleRatio, 0.0203,
-							0.0203, 0.0203, 0.002, 0.003, 0.003, 0.003, 0.003,
-							0.003 };
-					upperBound = new double[] { 0.7, 1.0, 0.038, 0.07, 0.038,
-							0.0102, 0.0102, 0.010, 0.010, 0.010, 0.012 };
-					if (constraint == HOLE_6_1_125_SPACING_CONS_SUB_CATEGORY_ID)
+					if (objectiveFunctionIntent == BaseObjectiveFunction.DEFAULT_CONSTRAINTS_INTENT)
 					{
-						upperBound[2] = 0.029;
-						upperBound[4] = 0.029;
-					}
-					else if (constraint == HOLE_6_1_25_SPACING_CONS_SUB_CATEGORY_ID)
-					{
-						upperBound[2] = 0.032;
-						upperBound[4] = 0.032;
-					}
-					else if (constraint == HOLE_6_40_SPACING_CONS_SUB_CATEGORY_ID)
-					{
-						upperBound[2] = 0.0356;
-						upperBound[4] = 0.0356;
+						lowerBound = new double[] { 0.2, 0.25, 0.0203, 0.0203,
+								0.0203, 0.002, 0.003, 0.003, 0.003, 0.003,
+								0.003 };
+						upperBound = new double[] { 0.7, 1.0, 0.032, 0.07,
+								0.032, 0.0102, 0.0102, 0.010, 0.010, 0.010,
+								0.012 };
 					}
 				}
 				objective = new HoleGroupFromTopObjectiveFunction(calculator,
 						tuning, evaluator, holeGroups);
 				break;
 			case TAPER_NO_GROUP_OPT_SUB_CATEGORY_ID:
-				// Length bounds are expressed in meters, diameter bounds as
-				// ratios,
-				// taper bounds as ratios.
-				if (numberOfHoles == 0)
-				{
-					lowerBound = new double[] { 0.2, 0.8, 0.2, 0.0 };
-					upperBound = new double[] { 0.7, 1.2, 1.0, 1.0 };
-				}
-				else if (numberOfHoles == 7)
-				{
-					lowerBound = new double[] { 0.2, minTopHoleRatio, 0.0203,
-							0.0203, 0.0203, 0.0203, 0.0203, 0.0005, 0.012,
-							0.002, 0.002, 0.002, 0.002, 0.002, 0.002, 0.002,
-							0.8, 0.2, 0.0 };
-					upperBound = new double[] { 0.7, 0.50, 0.05, 0.05, 0.1,
-							0.05, 0.05, 0.003, 0.014, 0.014, 0.014, 0.014,
-							0.014, 0.008, 0.008, 1.2, 1.0, 1.0 };
-				}
-				else if (constraint == HOLE_6_1_125_SPACING_CONS_SUB_CATEGORY_ID)
-				{
-					lowerBound = new double[] { 0.2, minTopHoleRatio, 0.0203,
-							0.0203, 0.0203, 0.0203, 0.0203, 0.002, 0.003,
-							0.003, 0.003, 0.003, 0.003, 0.8, 0.2, 0.0 };
-					upperBound = new double[] { 0.7, 0.50, 0.029, 0.029, 0.07,
-							0.029, 0.029, 0.0102, 0.0102, 0.010, 0.010, 0.010,
-							0.012, 1.2, 1.0, 1.0 };
-				}
-				else if (constraint == HOLE_6_1_25_SPACING_CONS_SUB_CATEGORY_ID)
-				{
-					lowerBound = new double[] { 0.2, minTopHoleRatio, 0.0203,
-							0.0203, 0.0203, 0.0203, 0.0203, 0.002, 0.003,
-							0.003, 0.003, 0.003, 0.003, 0.8, 0.2, 0.0 };
-					upperBound = new double[] { 0.7, 0.50, 0.032, 0.032, 0.07,
-							0.032, 0.032, 0.0102, 0.0102, 0.010, 0.010, 0.010,
-							0.012, 1.15, 1.0, 1.0 };
-				}
-				else if (constraint == HOLE_6_40_SPACING_CONS_SUB_CATEGORY_ID)
-				{
-					lowerBound = new double[] { 0.2, minTopHoleRatio, 0.0203,
-							0.0203, 0.0203, 0.0203, 0.0203, 0.002, 0.003,
-							0.003, 0.003, 0.003, 0.003, 0.8, 0.2, 0.0 };
-					upperBound = new double[] { 0.7, 0.50, 0.0356, 0.0356,
-							0.07, 0.0356, 0.0336, 0.0102, 0.0102, 0.010, 0.010,
-							0.010, 0.012, 1.15, 1.0, 1.0 };
-				}
-				else
-				// 6 holes, 1.5 inch spacing.
-				{
-					lowerBound = new double[] { 0.2, minTopHoleRatio, 0.0203,
-							0.0203, 0.0203, 0.0203, 0.0203, 0.002, 0.003,
-							0.003, 0.003, 0.003, 0.003, 0.8, 0.2, 0.0 };
-					upperBound = new double[] { 0.7, 0.50, 0.038, 0.038, 0.07,
-							0.038, 0.038, 0.0102, 0.0102, 0.010, 0.010, 0.010,
-							0.012, 1.2, 1.0, 1.0 };
-				}
 				objective = new SingleTaperNoHoleGroupingFromTopObjectiveFunction(
 						calculator, tuning, evaluator);
+				if (objectiveFunctionIntent == BaseObjectiveFunction.DEFAULT_CONSTRAINTS_INTENT)
+				{
+					// Length bounds are expressed in meters, diameter bounds as
+					// ratios,
+					// taper bounds as ratios.
+					if (numberOfHoles == 0)
+					{
+						lowerBound = new double[] { 0.2, 0.8, 0.2, 0.0 };
+						upperBound = new double[] { 0.7, 1.2, 1.0, 1.0 };
+					}
+					else if (numberOfHoles == 7)
+					{
+						lowerBound = new double[] { 0.2, 0.25, 0.0203, 0.0203,
+								0.0203, 0.0203, 0.0203, 0.0005, 0.012, 0.002,
+								0.002, 0.002, 0.002, 0.002, 0.002, 0.002, 0.8,
+								0.2, 0.0 };
+						upperBound = new double[] { 0.7, 0.50, 0.05, 0.05, 0.1,
+								0.05, 0.05, 0.003, 0.014, 0.014, 0.014, 0.014,
+								0.014, 0.008, 0.008, 1.2, 1.0, 1.0 };
+					}
+					else if (numberOfHoles == 6)
+					{
+						lowerBound = new double[] { 0.2, 0.25, 0.0203, 0.0203,
+								0.0203, 0.0203, 0.0203, 0.002, 0.003, 0.003,
+								0.003, 0.003, 0.003, 0.8, 0.2, 0.0 };
+						upperBound = new double[] { 0.7, 0.50, 0.032, 0.032,
+								0.07, 0.032, 0.032, 0.0102, 0.0102, 0.010,
+								0.010, 0.010, 0.012, 1.15, 1.0, 1.0 };
+					}
+				}
 				break;
 			case TAPER_GROUP_OPT_SUB_CATEGORY_ID:
 				// Length bounds are expressed in meters, diameter bounds as
@@ -396,42 +532,36 @@ public class NafStudyModel extends StudyModel
 				if (numberOfHoles == 0)
 				{
 					holeGroups = new int[][] { {} };
-					lowerBound = new double[] { 0.2, 0.8, 0.2, 0.0 };
-					upperBound = new double[] { 0.7, 1.2, 1.0, 1.0 };
+					if (objectiveFunctionIntent == BaseObjectiveFunction.DEFAULT_CONSTRAINTS_INTENT)
+					{
+						lowerBound = new double[] { 0.2, 0.8, 0.2, 0.0 };
+						upperBound = new double[] { 0.7, 1.2, 1.0, 1.0 };
+					}
 				}
 				else if (numberOfHoles == 7)
 				{
 					holeGroups = new int[][] { { 0, 1, 2 }, { 3, 4, 5 }, { 6 } };
-					lowerBound = new double[] { 0.2, minTopHoleRatio, 0.0203,
-							0.0203, 0.0203, 0.0005, 0.002, 0.002, 0.002, 0.002,
-							0.002, 0.002, 0.002, 0.8, 0.2, 0.0 };
-					upperBound = new double[] { 0.7, 1.0, 0.05, 0.05, 0.1,
-							0.003, 0.014, 0.014, 0.014, 0.014, 0.014, 0.008,
-							0.008, 1.2, 1.0, 1.0 };
+					if (objectiveFunctionIntent == BaseObjectiveFunction.DEFAULT_CONSTRAINTS_INTENT)
+					{
+						lowerBound = new double[] { 0.2, 0.25, 0.0203, 0.0203,
+								0.0203, 0.0005, 0.002, 0.002, 0.002, 0.002,
+								0.002, 0.002, 0.002, 0.8, 0.2, 0.0 };
+						upperBound = new double[] { 0.7, 1.0, 0.05, 0.05, 0.1,
+								0.003, 0.014, 0.014, 0.014, 0.014, 0.014,
+								0.008, 0.008, 1.2, 1.0, 1.0 };
+					}
 				}
-				else
+				else if (numberOfHoles == 6)
 				{
 					holeGroups = new int[][] { { 0, 1, 2 }, { 3, 4, 5 } };
-					lowerBound = new double[] { 0.2, minTopHoleRatio, 0.0203,
-							0.0203, 0.0203, 0.002, 0.003, 0.003, 0.003, 0.003,
-							0.003, 0.8, 0.2, 0.0 };
-					upperBound = new double[] { 0.7, 1.0, 0.038, 0.07, 0.038,
-							0.0102, 0.0102, 0.010, 0.010, 0.010, 0.012, 1.2,
-							1.0, 1.0 };
-					if (constraint == HOLE_6_1_125_SPACING_CONS_SUB_CATEGORY_ID)
+					if (objectiveFunctionIntent == BaseObjectiveFunction.DEFAULT_CONSTRAINTS_INTENT)
 					{
-						upperBound[2] = 0.029;
-						upperBound[4] = 0.029;
-					}
-					else if (constraint == HOLE_6_1_25_SPACING_CONS_SUB_CATEGORY_ID)
-					{
-						upperBound[2] = 0.032;
-						upperBound[4] = 0.032;
-					}
-					else if (constraint == HOLE_6_40_SPACING_CONS_SUB_CATEGORY_ID)
-					{
-						upperBound[2] = 0.0356;
-						upperBound[4] = 0.0356;
+						lowerBound = new double[] { 0.2, 0.25, 0.0203, 0.0203,
+								0.0203, 0.002, 0.003, 0.003, 0.003, 0.003,
+								0.003, 0.8, 0.2, 0.0 };
+						upperBound = new double[] { 0.7, 1.0, 0.032, 0.07,
+								0.032, 0.0102, 0.0102, 0.010, 0.010, 0.010,
+								0.012, 1.2, 1.0, 1.0 };
 					}
 				}
 				objective = new SingleTaperHoleGroupFromTopObjectiveFunction(
@@ -439,51 +569,36 @@ public class NafStudyModel extends StudyModel
 				break;
 		}
 
-		objective.setLowerBounds(lowerBound);
-		objective.setUpperBounds(upperBound);
-
-		Constraints constraints = objective.getConstraints();
-		constraints.setConstraintsName(constraint);
-		System.out.println(StudyModel.marshal(constraints));
-
-		Category multiStartCategory = getCategory(MULTI_START_CATEGORY_ID);
-		String multiStartSelected = multiStartCategory.getSelectedSub();
-		if (multiStartSelected == VARY_FIRST_MULTI_START_SUB_CATEGORY_ID)
+		if (objectiveFunctionIntent == BaseObjectiveFunction.DEFAULT_CONSTRAINTS_INTENT)
 		{
-			GridRangeProcessor rangeProcessor = new GridRangeProcessor(
-					lowerBound, upperBound, new int[] { 0 }, 30);
-			objective.setRangeProcessor(rangeProcessor);
-			objective.setMaxEvaluations(30 * objective.getMaxEvaluations());
+			objective.setLowerBounds(lowerBound);
+			objective.setUpperBounds(upperBound);
 		}
-		else if (multiStartSelected == VARY_ALL_MULTI_START_SUB_CATEGORY_ID)
+		else if (objectiveFunctionIntent == BaseObjectiveFunction.OPTIMIZATION_INTENT)
 		{
-			GridRangeProcessor rangeProcessor = new GridRangeProcessor(
-					lowerBound, upperBound, null, 30);
-			objective.setRangeProcessor(rangeProcessor);
-			objective.setMaxEvaluations(30 * objective.getMaxEvaluations());
+			Constraints constraints = getConstraints();
+			objective.setLowerBounds(constraints.getLowerBounds());
+			objective.setUpperBounds(constraints.getUpperBounds());
+			Category multiStartCategory = getCategory(MULTI_START_CATEGORY_ID);
+			String multiStartSelected = multiStartCategory.getSelectedSub();
+			if (multiStartSelected == VARY_FIRST_MULTI_START_SUB_CATEGORY_ID)
+			{
+				GridRangeProcessor rangeProcessor = new GridRangeProcessor(
+						lowerBound, upperBound, new int[] { 0 }, 30);
+				objective.setRangeProcessor(rangeProcessor);
+				objective.setMaxEvaluations(30 * objective.getMaxEvaluations());
+			}
+			else if (multiStartSelected == VARY_ALL_MULTI_START_SUB_CATEGORY_ID)
+			{
+				GridRangeProcessor rangeProcessor = new GridRangeProcessor(
+						lowerBound, upperBound, null, 30);
+				objective.setRangeProcessor(rangeProcessor);
+				objective.setMaxEvaluations(30 * objective.getMaxEvaluations());
+			}
 		}
 
 		return objective;
 	} // getObjectiveFunction
-
-	// TODO Remove this method, which sets minTopHoleRatio, when Constraints are
-	// exposed.
-	public void setPreferences(Preferences newPreferences)
-	{
-		super.setPreferences(newPreferences);
-		minTopHoleRatio = newPreferences.getDouble(
-				OptimizationPreferences.MIN_TOP_HOLE_RATIO_OPT,
-				OptimizationPreferences.DEFAULT_MIN_TOP_HOLE_RATIO);
-		System.out
-				.printf("%s is %5.3f.\n",
-						OptimizationPreferences.MIN_TOP_HOLE_RATIO_OPT,
-						minTopHoleRatio);
-	}
-
-	public void setMinTopHoleRatio(double minRatio)
-	{
-		this.minTopHoleRatio = minRatio;
-	}
 
 	@Override
 	protected Class<? extends ContainedXmlView> getDefaultViewClass(
@@ -492,6 +607,8 @@ public class NafStudyModel extends StudyModel
 		Map<String, Class<? extends ContainedXmlView>> defaultMap = new HashMap<String, Class<? extends ContainedXmlView>>();
 
 		defaultMap.put(INSTRUMENT_CATEGORY_ID, ContainedXmlTextView.class);
+		// defaultMap.put(INSTRUMENT_CATEGORY_ID,
+		// ContainedInstrumentView.class);
 		defaultMap.put(TUNING_CATEGORY_ID, ContainedXmlTextView.class);
 		defaultMap.put(CONSTRAINTS_CATEGORY_ID, ConstraintsEditorView.class);
 
@@ -514,4 +631,112 @@ public class NafStudyModel extends StudyModel
 
 		return toggleLists;
 	}
+
+	@Override
+	public boolean addDataModel(FileDataModel dataModel) throws Exception
+	{
+		// Process Instrument and Tuning
+		if (super.addDataModel(dataModel))
+		{
+			return true;
+		}
+
+		// Process Constraints. May move to super.
+		String data = (String) dataModel.getData().toString();
+		if (data == null || data.length() == 0)
+		{
+			return false;
+		}
+		Constraints constraints = getConstraints(data);
+		if (constraints == null)
+		{
+			throw new DataOpenException("Data are not valid constraints",
+					DataOpenException.INVALID_CONSTRAINTS);
+		}
+
+		// Check that constraints is for a represented optimizer
+		String objFuncDisplayName = constraints.getObjectiveDisplayName();
+		if (!isValidSubCategory(OPTIMIZER_CATEGORY_ID, objFuncDisplayName, true))
+		{
+			throw new DataOpenException("Required optimizer, "
+					+ objFuncDisplayName + ", is not supported",
+					DataOpenException.OPTIMIZER_NOT_SUPPORTED);
+		}
+
+		// Make constraintsByOptimizer key
+		int numberOfHoles = constraints.getNumberOfHoles();
+		String mapKey = makeMappedConstraintsKey(
+				constraints.getObjectiveFunctionName(), false, numberOfHoles);
+
+		Category mappedCategory = getMappedCategory(mapKey);
+
+		String constraintsName = dataModel.getName();
+		mappedCategory.addSub(constraintsName, dataModel);
+		mappedCategory.setSelectedSub(constraintsName);
+
+		Integer dataNumberOfHoles = getNumberOfHolesFromInstrument();
+		// If there is no selected Instrument, or it has the
+		// same number of holes as the contraints, show the constraints in the
+		// studyView and select the optimizer that matches the constraints.
+		if (dataNumberOfHoles == null || dataNumberOfHoles == numberOfHoles)
+		{
+			replaceCategory(CONSTRAINTS_CATEGORY_ID, mappedCategory);
+			setCategorySelection(OPTIMIZER_CATEGORY_ID, objFuncDisplayName);
+			return true;
+		}
+
+		// If the holes don't match, display a warning and reset nothing.
+		throw new DataOpenException(
+				"Number of holes in constraints set does not match the other data.",
+				DataOpenException.CONSTRAINTS_NOT_SHOWN);
+	}
+
+	/**
+	 * Returns a mapped Constraints Category
+	 * 
+	 * @param mapKey
+	 *            The key to this Category
+	 * @return The found Category, or a new empty one
+	 */
+	protected Category getMappedCategory(String mapKey)
+	{
+		// Add constraints to category in map, making category if necessary
+		Category mappedCategory = constraintsByOptimizer.get(mapKey);
+		if (mappedCategory == null)
+		{
+			mappedCategory = new Category(CONSTRAINTS_CATEGORY_ID);
+			constraintsByOptimizer.put(mapKey, mappedCategory);
+		}
+		return mappedCategory;
+	}
+
+	@Override
+	public boolean removeDataModel(FileDataModel dataModel)
+	{
+		super.removeDataModel(dataModel);
+
+		// Remove cached subCategories by dataModel, not name
+		for (Category category : constraintsByOptimizer.values())
+		{
+			category.removeSubByValue(dataModel);
+		}
+
+		return true;
+	}
+
+	@Override
+	public boolean replaceDataModel(FileDataModel dataModel)
+			throws DataOpenException
+	{
+		super.replaceDataModel(dataModel);
+
+		// Replace in all the cached Categories
+		for (Category category : constraintsByOptimizer.values())
+		{
+			category.replaceSub(dataModel.getName(), dataModel);
+			category.setSelectedSub(dataModel.getName());
+		}
+		return true;
+	}
+
 }

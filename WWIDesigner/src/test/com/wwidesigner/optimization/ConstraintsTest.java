@@ -224,7 +224,7 @@ public class ConstraintsTest extends AbstractOptimizationTest
 							.getConstraint(category, 0).getDisplayName());
 			assertEquals(
 					"Last bore taper constraint incorrect",
-					"Taper start ratio (from top/untapered length)",
+					"Untapered top length ratio to total untapered length",
 					constraints.getConstraint(category,
 							constraints.getNumberOfConstraints(category) - 1)
 							.getDisplayName());

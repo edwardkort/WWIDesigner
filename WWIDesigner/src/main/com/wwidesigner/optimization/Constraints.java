@@ -151,7 +151,49 @@ public class Constraints
 
 	public double[] getLowerBounds()
 	{
+		if (lowerBounds == null)
+		{
+			extractBounds(true);
+		}
+
 		return lowerBounds;
+	}
+
+	private void extractBounds(boolean isLowerBounds)
+	{
+		double[] bounds = new double[getTotalNumberOfConstraints()];
+		Set<String> categories = getCategories();
+		int idx = 0;
+		for (String category : categories)
+		{
+			List<Constraint> constraints = getConstraints(category);
+			for (Constraint constraint : constraints)
+			{
+				Double value;
+				if (isLowerBounds)
+				{
+					value = constraint.getLowerBound();
+				}
+				else
+				{
+					value = constraint.getUpperBound();
+				}
+				if (value == null)
+				{
+					value = 0.;
+				}
+				bounds[idx++] = value;
+			}
+		}
+
+		if (isLowerBounds)
+		{
+			lowerBounds = bounds;
+		}
+		else
+		{
+			upperBounds = bounds;
+		}
 	}
 
 	public void setLowerBounds(double[] lowerBounds)
@@ -237,6 +279,11 @@ public class Constraints
 
 	public double[] getUpperBounds()
 	{
+		if (upperBounds == null)
+		{
+			extractBounds(false);
+		}
+
 		return upperBounds;
 	}
 

@@ -31,6 +31,7 @@ public class SingleTaperHoleGroupFromTopObjectiveFunction extends
 		MergedObjectiveFunction
 {
 	public static final String DISPLAY_NAME = "Single taper, grouped-hole optimizer";
+	public static final String NAME = SingleTaperHoleGroupFromTopObjectiveFunction.class.getSimpleName();
 
 	public SingleTaperHoleGroupFromTopObjectiveFunction(
 			InstrumentCalculator calculator, TuningInterface tuning,
@@ -48,7 +49,7 @@ public class SingleTaperHoleGroupFromTopObjectiveFunction extends
 		sumDimensions();
 		maxEvaluations = 20000 + (getNrDimensions() - 1) * 5000;
 		constraints.setObjectiveDisplayName(DISPLAY_NAME);
-		constraints.setObjectiveFunctionName(this.getClass().getSimpleName());
+		constraints.setObjectiveFunctionName(NAME);
 		constraints.setConstraintsName("Default");
 	}
 

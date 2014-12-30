@@ -339,14 +339,25 @@ public abstract class StudyModel implements CategoryType
 			return subs.get(selectedSub);
 		}
 
-		public void replaceSub(String newName, FileDataModel source)
+		/**
+		 * Replaces a subcategory entry because of a name change: save as or
+		 * rename
+		 * 
+		 * @param newName
+		 *            New subcategory name
+		 * @param source
+		 *            DataModel value of the subcategory
+		 * @return True if a successful replacement was performed, false
+		 *         otherwise
+		 */
+		public boolean replaceSub(String newName, FileDataModel source)
 		{
 			// Find sub by matching dataModel reference
 			String oldName = null;
 			boolean isSelected = false;
 			if (subs == null)
 			{
-				subs = new TreeMap<String, Object>();
+				return false;
 			}
 			for (Map.Entry<String, Object> entry : subs.entrySet())
 			{
@@ -365,11 +376,17 @@ public abstract class StudyModel implements CategoryType
 				}
 				removeSub(oldName);
 			}
+			else
+			{
+				return false;
+			}
 			addSub(newName, source);
 			if (isSelected)
 			{
 				setSelectedSub(newName);
 			}
+
+			return true;
 		}
 	}
 
@@ -561,9 +578,13 @@ public abstract class StudyModel implements CategoryType
 					DataOpenException.DATE_TYPE_NOT_SUPPORTED);
 		}
 		Category category = getCategory(categoryName);
-		category.replaceSub(dataModel.getName(), dataModel);
-		category.setSelectedSub(dataModel.getName());
-		return true;
+		if (category.replaceSub(dataModel.getName(), dataModel))
+		{
+			category.setSelectedSub(dataModel.getName());
+			return true;
+		}
+
+		return false;
 	}
 
 	/**

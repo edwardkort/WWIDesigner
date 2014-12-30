@@ -825,21 +825,21 @@ public class NafOptimizationRunner extends FileBasedApplication implements
 			@Override
 			public void dataModelOpened(DataModelEvent dataModelEvent)
 			{
-				NafOptimizationRunner.this.getEventManager().publish(
+				getEventManager().publish(
 						FILE_OPENED_EVENT_ID, dataModelEvent.getDataModel());
 			}
 
 			@Override
 			public void dataModelClosed(DataModelEvent dataModelEvent)
 			{
-				NafOptimizationRunner.this.getEventManager().publish(
+				getEventManager().publish(
 						FILE_CLOSED_EVENT_ID, dataModelEvent.getDataModel());
 			}
 
 			@Override
 			public void dataModelSaved(DataModelEvent dataModelEvent)
 			{
-				NafOptimizationRunner.this.getEventManager().publish(
+				getEventManager().publish(
 						FILE_SAVED_EVENT_ID, dataModelEvent.getDataModel());
 			}
 

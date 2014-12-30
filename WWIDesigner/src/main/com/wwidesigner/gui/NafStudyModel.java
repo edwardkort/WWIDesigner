@@ -501,7 +501,7 @@ public class NafStudyModel extends StudyModel
 					// taper bounds as ratios.
 					if (numberOfHoles == 0)
 					{
-						lowerBound = new double[] { 0.2, 0.8, 0.2, 0.0 };
+						lowerBound = new double[] { 0.2, 0.8, 0.0, 0.0 };
 						upperBound = new double[] { 0.7, 1.2, 1.0, 1.0 };
 					}
 					else if (numberOfHoles == 7)
@@ -509,7 +509,7 @@ public class NafStudyModel extends StudyModel
 						lowerBound = new double[] { 0.2, 0.25, 0.0203, 0.0203,
 								0.0203, 0.0203, 0.0203, 0.0005, 0.012, 0.002,
 								0.002, 0.002, 0.002, 0.002, 0.002, 0.002, 0.8,
-								0.2, 0.0 };
+								0.0, 0.0 };
 						upperBound = new double[] { 0.7, 0.50, 0.05, 0.05, 0.1,
 								0.05, 0.05, 0.003, 0.014, 0.014, 0.014, 0.014,
 								0.014, 0.008, 0.008, 1.2, 1.0, 1.0 };
@@ -518,7 +518,7 @@ public class NafStudyModel extends StudyModel
 					{
 						lowerBound = new double[] { 0.2, 0.25, 0.0203, 0.0203,
 								0.0203, 0.0203, 0.0203, 0.002, 0.003, 0.003,
-								0.003, 0.003, 0.003, 0.8, 0.2, 0.0 };
+								0.003, 0.003, 0.003, 0.8, 0.0, 0.0 };
 						upperBound = new double[] { 0.7, 0.50, 0.032, 0.032,
 								0.07, 0.032, 0.032, 0.0102, 0.0102, 0.010,
 								0.010, 0.010, 0.012, 1.15, 1.0, 1.0 };
@@ -534,7 +534,7 @@ public class NafStudyModel extends StudyModel
 					holeGroups = new int[][] { {} };
 					if (objectiveFunctionIntent == BaseObjectiveFunction.DEFAULT_CONSTRAINTS_INTENT)
 					{
-						lowerBound = new double[] { 0.2, 0.8, 0.2, 0.0 };
+						lowerBound = new double[] { 0.2, 0.8, 0.0, 0.0 };
 						upperBound = new double[] { 0.7, 1.2, 1.0, 1.0 };
 					}
 				}
@@ -545,7 +545,7 @@ public class NafStudyModel extends StudyModel
 					{
 						lowerBound = new double[] { 0.2, 0.25, 0.0203, 0.0203,
 								0.0203, 0.0005, 0.002, 0.002, 0.002, 0.002,
-								0.002, 0.002, 0.002, 0.8, 0.2, 0.0 };
+								0.002, 0.002, 0.002, 0.8, 0.0, 0.0 };
 						upperBound = new double[] { 0.7, 1.0, 0.05, 0.05, 0.1,
 								0.003, 0.014, 0.014, 0.014, 0.014, 0.014,
 								0.008, 0.008, 1.2, 1.0, 1.0 };
@@ -558,7 +558,7 @@ public class NafStudyModel extends StudyModel
 					{
 						lowerBound = new double[] { 0.2, 0.25, 0.0203, 0.0203,
 								0.0203, 0.002, 0.003, 0.003, 0.003, 0.003,
-								0.003, 0.8, 0.2, 0.0 };
+								0.003, 0.8, 0.0, 0.0 };
 						upperBound = new double[] { 0.7, 1.0, 0.032, 0.07,
 								0.032, 0.0102, 0.0102, 0.010, 0.010, 0.010,
 								0.012, 1.2, 1.0, 1.0 };
@@ -728,15 +728,21 @@ public class NafStudyModel extends StudyModel
 	public boolean replaceDataModel(FileDataModel dataModel)
 			throws DataOpenException
 	{
-		super.replaceDataModel(dataModel);
+		if (super.replaceDataModel(dataModel))
+		{
+			return true;
+		}
 
 		// Replace in all the cached Categories
 		for (Category category : constraintsByOptimizer.values())
 		{
-			category.replaceSub(dataModel.getName(), dataModel);
-			category.setSelectedSub(dataModel.getName());
+			if (category.replaceSub(dataModel.getName(), dataModel))
+			{
+				category.setSelectedSub(dataModel.getName());
+				return true;
+			}
 		}
-		return true;
+		return false;
 	}
 
 }

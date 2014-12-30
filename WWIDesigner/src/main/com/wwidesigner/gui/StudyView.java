@@ -312,6 +312,7 @@ public class StudyView extends DataViewPane implements EventSubscriber
 			FileBasedApplication app = (FileBasedApplication) getApplication();
 			FileDataModel data = (FileDataModel) app.newData("xml");
 			data.setData(xmlData);
+			data.setDirty(true);
 			study.addDataModel(data);
 			updateView();
 		}

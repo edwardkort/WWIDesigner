@@ -40,6 +40,8 @@ public class ConstraintsPanel extends JPanel implements DataChangedProvider
 	private int gridy = 0;
 	private int decimalPrecision = 5;
 	private List<DataChangedListener> dataChangedListeners;
+	private Dimension panelDimension = new Dimension(780, 150);
+	private int[] columnWidth = new int[] { 500, 110, 85, 85 };
 
 	public ConstraintsPanel(Constraints constraints)
 	{
@@ -64,6 +66,20 @@ public class ConstraintsPanel extends JPanel implements DataChangedProvider
 		return constraints;
 	}
 
+	public void setPanelDimension(int width, int height)
+	{
+		panelDimension.setSize(width, height);
+	}
+
+	public void setColumnWidths(int[] widths)
+	{
+		int numColumns = Math.min(widths.length, columnWidth.length);
+		for (int i = 0; i < numColumns; i++)
+		{
+			columnWidth[i] = widths[i];
+		}
+	}
+
 	private void setConstraintsValues()
 	{
 		Set<String> categories = constraints.getCategories();
@@ -81,7 +97,7 @@ public class ConstraintsPanel extends JPanel implements DataChangedProvider
 					new ConstraintTableModel(constraintValues));
 			configureTable(table);
 			JScrollPane scrollPane = new JScrollPane(table);
-			scrollPane.setPreferredSize(new Dimension(900, 150));
+			scrollPane.setPreferredSize(panelDimension);
 			panel.add(scrollPane, BorderLayout.CENTER);
 			gbc.gridy = ++gridy;
 			gbc.gridwidth = 2;
@@ -152,7 +168,7 @@ public class ConstraintsPanel extends JPanel implements DataChangedProvider
 
 						constraints.setConstraintsName(text);
 						fireDataChangedEvent();
-						
+
 						if (docLength == 0)
 						{
 							constraintsNameField.setBackground(Color.PINK);
@@ -186,13 +202,13 @@ public class ConstraintsPanel extends JPanel implements DataChangedProvider
 
 		// Set column widths
 		TableColumn nameCol = table.getColumn(tableModel.getColumnName(0));
-		nameCol.setPreferredWidth(425);
+		nameCol.setPreferredWidth(columnWidth[0]);
 		TableColumn typeCol = table.getColumn(tableModel.getColumnName(1));
-		typeCol.setPreferredWidth(125);
+		typeCol.setPreferredWidth(columnWidth[1]);
 		TableColumn lbCol = table.getColumn(tableModel.getColumnName(2));
-		lbCol.setPreferredWidth(175);
+		lbCol.setPreferredWidth(columnWidth[2]);
 		TableColumn ubCol = table.getColumn(tableModel.getColumnName(3));
-		ubCol.setPreferredWidth(175);
+		ubCol.setPreferredWidth(columnWidth[3]);
 
 		// Set number format
 		lbCol.setCellRenderer(new NumberFormatCellRenderer());

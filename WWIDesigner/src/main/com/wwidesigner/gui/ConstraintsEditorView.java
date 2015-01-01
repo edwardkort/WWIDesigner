@@ -16,7 +16,7 @@ import com.wwidesigner.util.Constants.LengthType;
 
 public class ConstraintsEditorView extends ContainedXmlView
 {
-	private ConstraintsPanel constraintsPanel;
+	protected ConstraintsPanel constraintsPanel;
 	private JScrollPane scrollPane;
 
 	public ConstraintsEditorView(DataViewPane parent)

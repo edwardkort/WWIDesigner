@@ -18,8 +18,9 @@ import com.wwidesigner.optimization.Constraint.ConstraintType;
  */
 public class LengthObjectiveFunction extends BaseObjectiveFunction
 {
-	public static final String CONSTR_CAT = "Hole position";
+	public static final String CONSTR_CAT = "Bore length";
 	public static final ConstraintType CONSTR_TYPE = ConstraintType.DIMENSIONAL;
+	public static final String DISPLAY_NAME = "Length optimizer";
 
 	public LengthObjectiveFunction(InstrumentCalculator calculator,
 			TuningInterface tuning, EvaluatorInterface evaluator)
@@ -36,7 +37,9 @@ public class LengthObjectiveFunction extends BaseObjectiveFunction
 				CONSTR_TYPE));
 		constraints.setNumberOfHoles(calculator.getInstrument().getHole()
 				.size());
-		constraints.setObjectiveDisplayName("Bore length optimizer");
+		constraints.setObjectiveDisplayName(DISPLAY_NAME);
+		constraints.setObjectiveFunctionName(this.getClass().getSimpleName());
+		constraints.setConstraintsName("Default");
 	}
 
 	@Override

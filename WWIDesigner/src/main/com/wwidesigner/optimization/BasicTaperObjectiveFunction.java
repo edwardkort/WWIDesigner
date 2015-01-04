@@ -27,6 +27,7 @@ public class BasicTaperObjectiveFunction extends BaseObjectiveFunction
 {
 	public static final String CONSTR_CAT = "Simple taper";
 	public static final ConstraintType CONSTR_TYPE = ConstraintType.DIMENSIONLESS;
+	public static final String DISPLAY_NAME = "Basic Taper optimizer";
 
 	public BasicTaperObjectiveFunction(InstrumentCalculator calculator,
 			TuningInterface tuning, EvaluatorInterface evaluator)
@@ -45,8 +46,9 @@ public class BasicTaperObjectiveFunction extends BaseObjectiveFunction
 				"Foot diameter ratio (foot/middle)", CONSTR_TYPE));
 		constraints.setNumberOfHoles(calculator.getInstrument().getHole()
 				.size());
-		constraints
-				.setObjectiveDisplayName("Basic taper (dimensionless) optimizer");
+		constraints.setObjectiveDisplayName(DISPLAY_NAME);
+		constraints.setObjectiveFunctionName(this.getClass().getSimpleName());
+		constraints.setConstraintsName("Default");
 	}
 
 	@Override

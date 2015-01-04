@@ -186,6 +186,8 @@ public class HolePositionObjectiveFunction extends BaseObjectiveFunction
 		constraints.setNumberOfHoles(calculator.getInstrument().getHole()
 				.size());
 		constraints.setObjectiveDisplayName("Hole position optimizer");
+		constraints.setObjectiveFunctionName(this.getClass().getSimpleName());
+		constraints.setConstraintsName("Default");
 	}
 
 }

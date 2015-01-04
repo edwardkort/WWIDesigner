@@ -18,12 +18,15 @@
  */
 package com.wwidesigner.gui;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.prefs.Preferences;
 
+import com.jidesoft.app.framework.file.FileDataModel;
 import com.wwidesigner.geometry.Instrument;
+import com.wwidesigner.gui.util.DataOpenException;
 import com.wwidesigner.modelling.BellNoteEvaluator;
 import com.wwidesigner.modelling.CentDeviationEvaluator;
 import com.wwidesigner.modelling.EvaluatorInterface;
@@ -37,14 +40,17 @@ import com.wwidesigner.note.Tuning;
 import com.wwidesigner.optimization.BaseObjectiveFunction;
 import com.wwidesigner.optimization.BasicTaperObjectiveFunction;
 import com.wwidesigner.optimization.BetaObjectiveFunction;
+import com.wwidesigner.optimization.Constraints;
 import com.wwidesigner.optimization.HoleAndTaperObjectiveFunction;
 import com.wwidesigner.optimization.HoleObjectiveFunction;
 import com.wwidesigner.optimization.HolePositionObjectiveFunction;
 import com.wwidesigner.optimization.HoleSizeObjectiveFunction;
 import com.wwidesigner.optimization.LengthObjectiveFunction;
 import com.wwidesigner.optimization.WindowHeightObjectiveFunction;
+import com.wwidesigner.optimization.bind.OptimizationBindFactory;
 import com.wwidesigner.optimization.multistart.GridRangeProcessor;
 import com.wwidesigner.util.Constants.TemperatureType;
+import com.wwidesigner.util.BindFactory;
 import com.wwidesigner.util.PhysicalParameters;
 
 /**
@@ -55,6 +61,7 @@ import com.wwidesigner.util.PhysicalParameters;
  */
 public class WhistleStudyModel extends StudyModel
 {
+	// Named constants for the standard set of optimizers.
 	public static final String WINDOW_OPT_SUB_CATEGORY_ID = "1. Window Height Calibrator";
 	public static final String BETA_OPT_SUB_CATEGORY_ID = "2. Beta Calibrator";
 	public static final String LENGTH_OPT_SUB_CATEGORY_ID = "3. Length Optimizer";
@@ -65,14 +72,15 @@ public class WhistleStudyModel extends StudyModel
 	public static final String HOLE_TAPER_OPT_SUB_CATEGORY_ID = "8. Hole and Taper Optimizer";
 	public static final String ROUGH_CUT_OPT_SUB_CATEGORY_ID = "9. Rough-Cut Optimizer";
 
-	public static final double MIN_HOLE_DIAMETER = 0.0040; // Minimum hole
-															// diameter, in
-															// meters.
-	public static final double MAX_HOLE_DIAMETER = 0.0091; // Maximum hole
-															// diameter, in
-															// meters.
+	// Default minimum hole diameter, in meters.
+	public static final double MIN_HOLE_DIAMETER = 0.0040;
+	// Default maximum hole diameter, in meters.
+	public static final double MAX_HOLE_DIAMETER = 0.0091;
 
 	protected int blowingLevel;
+
+	// Map names in the optimizer category to objective function class names.
+	protected Map<String, String> objectiveFunctionNames = new HashMap<String, String>();
 
 	public WhistleStudyModel()
 	{
@@ -84,16 +92,37 @@ public class WhistleStudyModel extends StudyModel
 	protected void setLocalCategories()
 	{
 		setParams(new PhysicalParameters(27, TemperatureType.C, 98.4, 100, 0.04));
+		
+		// Add the standard set of optimizers to the Optimizer category,
+		// and assign an associated objective function name to each one.
 		Category optimizers = new Category(OPTIMIZER_CATEGORY_ID);
 		optimizers.addSub(WINDOW_OPT_SUB_CATEGORY_ID, null);
+		objectiveFunctionNames.put(WINDOW_OPT_SUB_CATEGORY_ID,
+				WindowHeightObjectiveFunction.class.getSimpleName());
 		optimizers.addSub(BETA_OPT_SUB_CATEGORY_ID, null);
+		objectiveFunctionNames.put(BETA_OPT_SUB_CATEGORY_ID,
+				BetaObjectiveFunction.class.getSimpleName());
 		optimizers.addSub(LENGTH_OPT_SUB_CATEGORY_ID, null);
+		objectiveFunctionNames.put(LENGTH_OPT_SUB_CATEGORY_ID,
+				LengthObjectiveFunction.class.getSimpleName());
 		optimizers.addSub(HOLESIZE_OPT_SUB_CATEGORY_ID, null);
+		objectiveFunctionNames.put(HOLESIZE_OPT_SUB_CATEGORY_ID,
+				HoleSizeObjectiveFunction.class.getSimpleName());
 		optimizers.addSub(HOLESPACE_OPT_SUB_CATEGORY_ID, null);
+		objectiveFunctionNames.put(HOLESPACE_OPT_SUB_CATEGORY_ID,
+				HolePositionObjectiveFunction.class.getSimpleName());
 		optimizers.addSub(HOLE_OPT_SUB_CATEGORY_ID, null);
+		objectiveFunctionNames.put(HOLE_OPT_SUB_CATEGORY_ID,
+				HoleObjectiveFunction.class.getSimpleName());
 		optimizers.addSub(TAPER_OPT_SUB_CATEGORY_ID, null);
+		objectiveFunctionNames.put(TAPER_OPT_SUB_CATEGORY_ID,
+				BasicTaperObjectiveFunction.class.getSimpleName());
 		optimizers.addSub(HOLE_TAPER_OPT_SUB_CATEGORY_ID, null);
+		objectiveFunctionNames.put(HOLE_TAPER_OPT_SUB_CATEGORY_ID,
+				HoleAndTaperObjectiveFunction.class.getSimpleName());
 		optimizers.addSub(ROUGH_CUT_OPT_SUB_CATEGORY_ID, null);
+		objectiveFunctionNames.put(ROUGH_CUT_OPT_SUB_CATEGORY_ID,
+				HoleObjectiveFunction.class.getSimpleName());
 		categories.add(optimizers);
 	}
 
@@ -135,80 +164,112 @@ public class WhistleStudyModel extends StudyModel
 	}
 
 	@Override
+	protected Constraints getConstraints() throws Exception
+	{
+		Category category = getCategory(OPTIMIZER_CATEGORY_ID);
+		Object selected = category.getSelectedSubValue();
+		if (selected != null)
+		{
+			BindFactory constraintsBindFactory = OptimizationBindFactory
+					.getInstance();
+			String xmlString = getSelectedXmlString(OPTIMIZER_CATEGORY_ID);
+			Constraints constraints = (Constraints) constraintsBindFactory
+					.unmarshalXml(xmlString, true);
+			constraints.setConstraintParent();
+			return constraints;
+		}
+
+		return null;
+	}
+
+	@Override
 	protected BaseObjectiveFunction getObjectiveFunction(int objectiveFunctionIntent) throws Exception
 	{
-		Category optimizerCategory = getCategory(OPTIMIZER_CATEGORY_ID);
-		String optimizer = optimizerCategory.getSelectedSub();
 		Instrument instrument = getInstrument();
 		Tuning tuning = getTuning();
+		if (tuning == null && objectiveFunctionIntent != BaseObjectiveFunction.OPTIMIZATION_INTENT)
+		{
+			// Tuning is not required for creating constraints.
+			tuning = new Tuning();
+		}
 		WhistleCalculator calculator = new WhistleCalculator();
-		EvaluatorInterface evaluator;
 		calculator.setInstrument(instrument);
 		calculator.setPhysicalParameters(params);
 
+		Category optimizerCategory = getCategory(OPTIMIZER_CATEGORY_ID);
+		String optimizer = optimizerCategory.getSelectedSub();
+		String objectiveFunctionClass = objectiveFunctionNames.get(optimizer);
+		int numberOfHoles = instrument.getHole().size();
+
+		EvaluatorInterface evaluator;
 		BaseObjectiveFunction objective = null;
 		double[] lowerBound = null;
 		double[] upperBound = null;
 
-		switch (optimizer)
+		// From the objective function class, create the objective function,
+		// evaluator, and default bounds.  The default bounds may be discarded below.
+		switch (objectiveFunctionClass)
 		{
-			case WINDOW_OPT_SUB_CATEGORY_ID:
+			case "WindowHeightObjectiveFunction":
 				evaluator = new FmaxEvaluator(calculator, getInstrumentTuner());
 				objective = new WindowHeightObjectiveFunction(calculator,
 						tuning, evaluator);
 				lowerBound = new double[] { 0.000 };
 				upperBound = new double[] { 0.010 };
 				break;
-			case BETA_OPT_SUB_CATEGORY_ID:
+
+			case "BetaObjectiveFunction":
 				evaluator = new FminEvaluator(calculator, getInstrumentTuner());
 				objective = new BetaObjectiveFunction(calculator, tuning,
 						evaluator);
 				lowerBound = new double[] { 0.2 };
 				upperBound = new double[] { 0.5 };
 				break;
-			case LENGTH_OPT_SUB_CATEGORY_ID:
+
+			case "LengthObjectiveFunction":
 				evaluator = new BellNoteEvaluator(calculator);
 				objective = new LengthObjectiveFunction(calculator, tuning,
 						evaluator);
 				lowerBound = new double[] { 0.200 };
 				upperBound = new double[] { 0.700 };
 				break;
-			case HOLESIZE_OPT_SUB_CATEGORY_ID:
+
+			case "HoleSizeObjectiveFunction":
 				evaluator = new CentDeviationEvaluator(calculator,
 						getInstrumentTuner());
 				objective = new HoleSizeObjectiveFunction(calculator, tuning,
 						evaluator);
 				// Bounds are diameters, expressed in meters.
-				lowerBound = new double[tuning.getNumberOfHoles()];
-				upperBound = new double[tuning.getNumberOfHoles()];
+				lowerBound = new double[numberOfHoles];
+				upperBound = new double[numberOfHoles];
 				Arrays.fill(lowerBound, MIN_HOLE_DIAMETER);
 				Arrays.fill(upperBound, MAX_HOLE_DIAMETER);
 				break;
-			case HOLESPACE_OPT_SUB_CATEGORY_ID:
-			case ROUGH_CUT_OPT_SUB_CATEGORY_ID:
+
+			case "HolePositionObjectiveFunction":
 				evaluator = new CentDeviationEvaluator(calculator,
 						getInstrumentTuner());
 				objective = new HolePositionObjectiveFunction(calculator,
 						tuning, evaluator);
 				// Bounds are hole separations, expressed in meters.
-				lowerBound = new double[tuning.getNumberOfHoles() + 1];
-				upperBound = new double[tuning.getNumberOfHoles() + 1];
+				lowerBound = new double[numberOfHoles + 1];
+				upperBound = new double[numberOfHoles + 1];
 				Arrays.fill(lowerBound, 0.012);
 				lowerBound[0] = 0.200;
 				Arrays.fill(upperBound, 0.040);
 				upperBound[0] = 0.700;
-				upperBound[tuning.getNumberOfHoles()] = 0.200;
-				if (tuning.getNumberOfHoles() >= 5)
+				upperBound[numberOfHoles] = 0.200;
+				if (numberOfHoles >= 5)
 				{
 					// Allow extra space between hands.
-					upperBound[tuning.getNumberOfHoles() - 3] = 0.100;
+					upperBound[numberOfHoles - 3] = 0.100;
 				}
 
 				// For a rough-cut optimization, use multi-start optimization.
 
 				if (optimizer == ROUGH_CUT_OPT_SUB_CATEGORY_ID)
 				{
-					int nrOfStarts = 4 * tuning.getNumberOfHoles();
+					int nrOfStarts = 4 * numberOfHoles;
 					GridRangeProcessor rangeProcessor = new GridRangeProcessor(
 							lowerBound, upperBound, null, nrOfStarts);
 					objective.setRangeProcessor(rangeProcessor);
@@ -216,36 +277,36 @@ public class WhistleStudyModel extends StudyModel
 							* objective.getMaxEvaluations());
 				}
 				break;
-			case HOLE_OPT_SUB_CATEGORY_ID:
+
+			case "HoleObjectiveFunction":
 			default:
 				evaluator = new CentDeviationEvaluator(calculator,
 						getInstrumentTuner());
 				objective = new HoleObjectiveFunction(calculator, tuning,
 						evaluator);
 				// Separation and diameter bounds, expressed in meters.
-				lowerBound = new double[2 * tuning.getNumberOfHoles() + 1];
-				upperBound = new double[2 * tuning.getNumberOfHoles() + 1];
-				Arrays.fill(lowerBound, MIN_HOLE_DIAMETER); // Minimum hole
-															// diameter.
-				Arrays.fill(upperBound, MAX_HOLE_DIAMETER); // Maximum hole
-															// diameter.
+				lowerBound = new double[2 * numberOfHoles + 1];
+				upperBound = new double[2 * numberOfHoles + 1];
+				Arrays.fill(lowerBound, MIN_HOLE_DIAMETER);
+				Arrays.fill(upperBound, MAX_HOLE_DIAMETER);
 				// Bounds on hole spacing.
 				lowerBound[0] = 0.200;
 				upperBound[0] = 0.700;
-				for (int gapNr = 1; gapNr < tuning.getNumberOfHoles(); ++gapNr)
+				for (int gapNr = 1; gapNr < numberOfHoles; ++gapNr)
 				{
 					lowerBound[gapNr] = 0.012;
 					upperBound[gapNr] = 0.040;
 				}
-				lowerBound[tuning.getNumberOfHoles()] = 0.012;
-				upperBound[tuning.getNumberOfHoles()] = 0.200;
-				if (tuning.getNumberOfHoles() >= 5)
+				lowerBound[numberOfHoles] = 0.012;
+				upperBound[numberOfHoles] = 0.200;
+				if (numberOfHoles >= 5)
 				{
 					// Allow extra space between hands.
-					upperBound[tuning.getNumberOfHoles() - 3] = 0.100;
+					upperBound[numberOfHoles - 3] = 0.100;
 				}
 				break;
-			case TAPER_OPT_SUB_CATEGORY_ID:
+
+			case "BasicTaperObjectiveFunction":
 				evaluator = new CentDeviationEvaluator(calculator,
 						getInstrumentTuner());
 				objective = new BasicTaperObjectiveFunction(calculator, tuning,
@@ -255,33 +316,32 @@ public class WhistleStudyModel extends StudyModel
 				lowerBound = new double[] { 0.01, 0.3 };
 				upperBound = new double[] { 0.5, 2.0 };
 				break;
-			case HOLE_TAPER_OPT_SUB_CATEGORY_ID:
+
+			case "HoleAndTaperObjectiveFunction":
 				evaluator = new CentDeviationEvaluator(calculator,
 						getInstrumentTuner());
 				objective = new HoleAndTaperObjectiveFunction(calculator,
 						tuning, evaluator);
 				// Separation bounds and diameter bounds, expressed in meters,
 				// and two taper ratios.
-				lowerBound = new double[2 * tuning.getNumberOfHoles() + 3];
-				upperBound = new double[2 * tuning.getNumberOfHoles() + 3];
-				Arrays.fill(lowerBound, MIN_HOLE_DIAMETER); // Minimum hole
-															// diameter.
-				Arrays.fill(upperBound, MAX_HOLE_DIAMETER); // Maximum hole
-															// diameter.
+				lowerBound = new double[2 * numberOfHoles + 3];
+				upperBound = new double[2 * numberOfHoles + 3];
+				Arrays.fill(lowerBound, MIN_HOLE_DIAMETER);
+				Arrays.fill(upperBound, MAX_HOLE_DIAMETER);
 				// Bounds on hole spacing.
 				lowerBound[0] = 0.200;
 				upperBound[0] = 0.700;
-				for (int gapNr = 1; gapNr < tuning.getNumberOfHoles(); ++gapNr)
+				for (int gapNr = 1; gapNr < numberOfHoles; ++gapNr)
 				{
 					lowerBound[gapNr] = 0.012;
 					upperBound[gapNr] = 0.040;
 				}
-				lowerBound[tuning.getNumberOfHoles()] = 0.012;
-				upperBound[tuning.getNumberOfHoles()] = 0.200;
-				if (tuning.getNumberOfHoles() >= 5)
+				lowerBound[numberOfHoles] = 0.012;
+				upperBound[numberOfHoles] = 0.200;
+				if (numberOfHoles >= 5)
 				{
 					// Allow extra space between hands.
-					upperBound[tuning.getNumberOfHoles() - 3] = 0.100;
+					upperBound[numberOfHoles - 3] = 0.100;
 				}
 				// Bounds on taper.
 				lowerBound[lowerBound.length - 2] = 0.01;
@@ -291,8 +351,36 @@ public class WhistleStudyModel extends StudyModel
 				break;
 		}
 
+		// Identify what bounds to use with the objective function.
+		if (objectiveFunctionIntent == BaseObjectiveFunction.BLANK_CONSTRAINTS_INTENT)
+		{
+			// Ignore the default bounds, use 0..1.
+			Arrays.fill(lowerBound, 0.0);
+			Arrays.fill(upperBound, 1.0);
+		}
+		else if (objectiveFunctionIntent == BaseObjectiveFunction.OPTIMIZATION_INTENT)
+		{
+			// If a constraints file is selected, and agrees with
+			// the instrument, use its lower and upper bounds.
+			Constraints constraints = getConstraints();
+			if (constraints != null)
+			{
+				// Selected optimizer is associated with a constraints file.
+				if (constraints.getLowerBounds().length == lowerBound.length)
+				{
+					lowerBound = constraints.getLowerBounds();
+					upperBound = constraints.getUpperBounds();
+				}
+				else
+				{
+					System.out.println("Number of holes for specified constraints does not match number of holes for instrument.");
+					System.out.println("Using default constraints.");
+				}
+			}
+		}
 		objective.setLowerBounds(lowerBound);
 		objective.setUpperBounds(upperBound);
+
 		return objective;
 	}
 
@@ -304,7 +392,7 @@ public class WhistleStudyModel extends StudyModel
 
 		defaultMap.put(INSTRUMENT_CATEGORY_ID, ContainedInstrumentView.class);
 		defaultMap.put(TUNING_CATEGORY_ID, ContainedTuningView.class);
-		defaultMap.put(CONSTRAINTS_CATEGORY_ID, ConstraintsEditorView.class);
+		defaultMap.put(CONSTRAINTS_CATEGORY_ID, SizableConstraintsEditorView.class);
 
 		Class<? extends ContainedXmlView> defaultClass = defaultMap
 				.get(categoryName);
@@ -325,9 +413,140 @@ public class WhistleStudyModel extends StudyModel
 		toggleLists.put(TUNING_CATEGORY_ID, new Class[] {
 				ContainedXmlTextView.class, ContainedTuningView.class });
 		toggleLists.put(CONSTRAINTS_CATEGORY_ID, new Class[] {
-				ContainedXmlTextView.class, ConstraintsEditorView.class });
+				ContainedXmlTextView.class, SizableConstraintsEditorView.class });
 
 		return toggleLists;
+	}
+
+	@Override
+	public boolean addDataModel(FileDataModel dataModel) throws Exception
+	{
+		// Process Instrument and Tuning
+		if (super.addDataModel(dataModel))
+		{
+			return true;
+		}
+
+		// Process Constraints. May move to super.
+		String data = (String) dataModel.getData().toString();
+		if (data == null || data.length() == 0)
+		{
+			return false;
+		}
+		Constraints constraints = getConstraints(data);
+		if (constraints == null)
+		{
+			throw new DataOpenException("Data are not valid constraints",
+					DataOpenException.INVALID_CONSTRAINTS);
+		}
+
+		// Check that constraints apply to a known optimizer.
+		String objFuncClassName = constraints.getObjectiveFunctionName();
+		if (! objectiveFunctionNames.containsValue(objFuncClassName))
+		{
+			throw new DataOpenException(
+					"Whistle study model does not support required optimizer, "
+					+ objFuncClassName + " ("
+					+ constraints.getObjectiveDisplayName() + ")",
+					DataOpenException.OPTIMIZER_NOT_SUPPORTED);
+		}
+
+		// Constraints are filed in the optimizer category.
+		Category category = getCategory(OPTIMIZER_CATEGORY_ID);
+		category.addSub(dataModel.getName(), dataModel);
+		category.setSelectedSub(dataModel.getName());
+		objectiveFunctionNames.put(dataModel.getName(), objFuncClassName);
+
+		return true;
+	}
+
+	@Override
+	public boolean removeDataModel(FileDataModel dataModel)
+	{
+		String data = (String) dataModel.getData();
+		String categoryName = getCategoryName(data);
+		if (categoryName.equals(CONSTRAINTS_CATEGORY_ID))
+		{
+			// Constraints are filed in the optimizer category.
+			Category category = getCategory(OPTIMIZER_CATEGORY_ID);
+			category.removeSubByValue(dataModel);
+			return true;
+		}
+		return super.removeDataModel(dataModel);
+	}
+
+	@Override
+	public boolean replaceDataModel(FileDataModel dataModel)
+			throws DataOpenException
+	{
+		String data = (String) dataModel.getData();
+		String categoryName = getCategoryName(data);
+		if (categoryName.equals(CONSTRAINTS_CATEGORY_ID))
+		{
+			// Constraints are filed in the optimizer category.
+			Category category = getCategory(OPTIMIZER_CATEGORY_ID);
+			if (category.replaceSub(dataModel.getName(), dataModel))
+			{
+				category.setSelectedSub(dataModel.getName());
+				return true;
+			}
+			return false;
+		}
+		return super.replaceDataModel(dataModel);
+	}
+
+	@Override
+	public boolean isOptimizerFullySpecified(String constraintsDirectory)
+	{
+		boolean isSpecified;
+		if (constraintsDirectory == null
+				|| constraintsDirectory.trim().length() == 0)
+		{
+			return false;
+		}
+		Integer dataNumberOfHoles = getNumberOfHolesFromInstrument();
+		String optimizerSelected = getSelectedSub(OPTIMIZER_CATEGORY_ID);
+		// Constraints set is fully specified.
+		isSpecified = dataNumberOfHoles != null && optimizerSelected != null;
+
+		return isSpecified;
+	}
+
+	@Override
+	public File getConstraintsLeafDirectory(String rootDirectoryPath)
+	{
+		String studyModelName = getClass().getSimpleName();
+		String optimizerSelected = getSelectedSub(OPTIMIZER_CATEGORY_ID);
+		String objectiveFunctionName = objectiveFunctionNames.get(optimizerSelected);
+		File leaf = makeConstraintsDirectoryPath(rootDirectoryPath,
+				studyModelName, objectiveFunctionName, 0);
+		return leaf;
+	}
+
+	@Override
+	public File getConstraintsLeafDirectory(String rootDirectoryPath,
+			Constraints constraints)
+	{
+		String studyModelName = getClass().getSimpleName();
+		String objectiveFunctionName = constraints.getObjectiveFunctionName();
+		File leaf = makeConstraintsDirectoryPath(rootDirectoryPath,
+				studyModelName, objectiveFunctionName, 0);
+		return leaf;
+	}
+
+	protected File makeConstraintsDirectoryPath(String rootPath,
+			String studyModelName, String objectiveFunctionName,
+			int numberOfHoles)
+	{
+		// numberOfHoles does not affect directory name.
+		String path = rootPath + File.separator + studyModelName
+				+ File.separator + objectiveFunctionName;
+		File leaf = new File(path);
+		if (! leaf.exists())
+		{
+			leaf.mkdirs();
+		}
+		return leaf;
 	}
 
 }

@@ -21,7 +21,7 @@ import com.wwidesigner.note.TuningInterface;
  */
 public class HoleAndTaperObjectiveFunction extends MergedObjectiveFunction
 {
-	public static final String DISPLAY_NAME = "Hole position and size optimizer";
+	public static final String DISPLAY_NAME = "Hole and taper optimizer";
 
 	public HoleAndTaperObjectiveFunction(InstrumentCalculator calculator,
 			TuningInterface tuning, EvaluatorInterface evaluator)

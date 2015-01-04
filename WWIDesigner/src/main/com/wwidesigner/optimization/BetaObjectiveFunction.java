@@ -18,6 +18,7 @@ public class BetaObjectiveFunction extends BaseObjectiveFunction
 {
 	public static final String CONSTR_CAT = "Mouthpiece beta";
 	public static final ConstraintType CONSTR_TYPE = ConstraintType.DIMENSIONLESS;
+	public static final String DISPLAY_NAME = "Beta calibrator";
 
 	public BetaObjectiveFunction(InstrumentCalculator calculator,
 			TuningInterface tuning, EvaluatorInterface evaluator)
@@ -34,7 +35,9 @@ public class BetaObjectiveFunction extends BaseObjectiveFunction
 				CONSTR_TYPE));
 		constraints.setNumberOfHoles(calculator.getInstrument().getHole()
 				.size());
-		constraints.setObjectiveDisplayName("Beta factor optimizer");
+		constraints.setObjectiveDisplayName(DISPLAY_NAME);
+		constraints.setObjectiveFunctionName(this.getClass().getSimpleName());
+		constraints.setConstraintsName("Default");
 	}
 
 	@Override

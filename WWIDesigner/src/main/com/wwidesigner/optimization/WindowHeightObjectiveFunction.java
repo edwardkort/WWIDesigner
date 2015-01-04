@@ -17,6 +17,7 @@ public class WindowHeightObjectiveFunction extends BaseObjectiveFunction
 {
 	public static final String CONSTR_CAT = "Mouthpiece window";
 	public static final ConstraintType CONSTR_TYPE = ConstraintType.DIMENSIONAL;
+	public static final String DISPLAY_NAME = "Window Height calibrator";
 
 	public WindowHeightObjectiveFunction(InstrumentCalculator calculator,
 			TuningInterface tuning, EvaluatorInterface evaluator)
@@ -33,7 +34,9 @@ public class WindowHeightObjectiveFunction extends BaseObjectiveFunction
 				CONSTR_TYPE));
 		constraints.setNumberOfHoles(calculator.getInstrument().getHole()
 				.size());
-		constraints.setObjectiveDisplayName("Window height optimizer");
+		constraints.setObjectiveDisplayName(DISPLAY_NAME);
+		constraints.setObjectiveFunctionName(this.getClass().getSimpleName());
+		constraints.setConstraintsName("Default");
 	}
 
 	@Override

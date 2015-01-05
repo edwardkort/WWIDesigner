@@ -47,7 +47,7 @@ public class SingleTaperHoleGroupFromTopTest extends AbstractOptimizationTest
 					0.0203, 0.018, 0.002, 0.002, 0.002, 0.002, 0.002, 0.002,
 					0.8, 0.2, 0.0 };
 			upperBound = new double[] { 0.7, 0.05, 0.05, 0.1, 0.05, 0.05, 0.2,
-					0.014, 0.014, 0.014, 0.014, 0.014, 0.014, 1.2, 1.0, 1.0 };
+					0.014, 0.014, 0.014, 0.014, 0.014, 0.014, 1.2, 1.0, 0.9 };
 			evaluator = new CentDeviationEvaluator(calculator);
 			objective = new SingleTaperNoHoleGroupingObjectiveFunction(
 					calculator, tuning, evaluator);
@@ -67,7 +67,7 @@ public class SingleTaperHoleGroupFromTopTest extends AbstractOptimizationTest
 					0.0203, 0.0203, 0.002, 0.002, 0.002, 0.002, 0.002, 0.002,
 					0.8, 0.2, 0.0 };
 			upperBound = new double[] { 0.7, 1.0, 0.05, 0.05, 0.1, 0.05, 0.05,
-					0.014, 0.014, 0.014, 0.014, 0.014, 0.014, 1.2, 1.0, 1.0 };
+					0.014, 0.014, 0.014, 0.014, 0.014, 0.014, 1.2, 1.0, 0.9 };
 			evaluator = new CentDeviationEvaluator(calculator);
 			objective = new SingleTaperNoHoleGroupingFromTopObjectiveFunction(
 					calculator, tuning, evaluator);
@@ -88,7 +88,7 @@ public class SingleTaperHoleGroupFromTopTest extends AbstractOptimizationTest
 
 					0.8, 0.2, 0.0 };
 			upperBound = new double[] { 0.7, 0.05, 0.05, 0.1, 0.05, 0.05, 0.20,
-					0.014, 0.014, 0.014, 0.014, 0.014, 0.014, 1.2, 1.0, 1.0 };
+					0.014, 0.014, 0.014, 0.014, 0.014, 0.014, 1.2, 1.0, 0.9 };
 			holeGroups = new int[][] { { 0 }, { 1 }, { 2 }, { 3 }, { 4 }, { 5 } };
 			evaluator = new CentDeviationEvaluator(calculator);
 			objective = new SingleTaperHoleGroupObjectiveFunction(calculator,
@@ -109,7 +109,7 @@ public class SingleTaperHoleGroupFromTopTest extends AbstractOptimizationTest
 					0.0203, 0.0203, 0.002, 0.002, 0.002, 0.002, 0.002, 0.002,
 					0.8, 0.2, 0.0 };
 			upperBound = new double[] { 0.7, 1.0, 0.05, 0.05, 0.1, 0.05, 0.05,
-					0.014, 0.014, 0.014, 0.014, 0.014, 0.014, 1.2, 1.0, 1.0 };
+					0.014, 0.014, 0.014, 0.014, 0.014, 0.014, 1.2, 1.0, 0.9 };
 			holeGroups = new int[][] { { 0 }, { 1 }, { 2 }, { 3 }, { 4 }, { 5 } };
 			evaluator = new CentDeviationEvaluator(calculator);
 			objective = new SingleTaperHoleGroupFromTopObjectiveFunction(
@@ -125,22 +125,22 @@ public class SingleTaperHoleGroupFromTopTest extends AbstractOptimizationTest
 
 			assertEquals(
 					"SingleTaperNoHoleGrouping and SingleTaperHoleGroupFromTop yield different bore lengths",
-					boreLength1, boreLength4, 0.05);
+					boreLength1, boreLength4, 0.2);
 			assertEquals(
 					"SingleTaperNoHoleGrouping and SingleTaperHoleGroupFromTop yield different Hole 1 positions",
-					topHolePosition1, topHolePosition4, 0.05);
+					topHolePosition1, topHolePosition4, 0.2);
 			assertEquals(
 					"SingleTaperNoHoleGroupingFromTop and SingleTaperHoleGroupFromTop yield different bore lengths",
-					boreLength2, boreLength4, 0.05);
+					boreLength2, boreLength4, 0.2);
 			assertEquals(
 					"SingleTaperNoHoleGroupingFromTop and SingleTaperHoleGroupFromTop yield different Hole 1 positions",
-					topHolePosition2, topHolePosition4, 0.05);
+					topHolePosition2, topHolePosition4, 0.2);
 			assertEquals(
 					"SingleTaperHoleGroup and SingleTaperHoleGroupFromTop yield different bore lengths",
-					boreLength3, boreLength4, 0.05);
+					boreLength3, boreLength4, 0.1);
 			assertEquals(
 					"SingleTaperHoleGroup and SingleTaperHoleGroupFromTop yield different Hole 1 positions",
-					topHolePosition3, topHolePosition4, 0.05);
+					topHolePosition3, topHolePosition4, 0.2);
 		}
 		catch (Exception e)
 		{
@@ -169,7 +169,7 @@ public class SingleTaperHoleGroupFromTopTest extends AbstractOptimizationTest
 			lowerBound = new double[] { 0.2, 0.0203, 0.0203, 0.0203, 0.018,
 					0.002, 0.002, 0.002, 0.002, 0.002, 0.002, 0.8, 0.2, 0.0 };
 			upperBound = new double[] { 0.7, 0.05, 0.1, 0.05, 0.20, 0.014,
-					0.014, 0.014, 0.014, 0.014, 0.014, 1.2, 1.0, 1.0 };
+					0.014, 0.014, 0.014, 0.014, 0.014, 1.2, 1.0, 0.9 };
 			holeGroups = new int[][] { { 0, 1, 2 }, { 3, 4, 5 } };
 			evaluator = new CentDeviationEvaluator(calculator);
 			objective = new SingleTaperHoleGroupObjectiveFunction(calculator,
@@ -189,7 +189,7 @@ public class SingleTaperHoleGroupFromTopTest extends AbstractOptimizationTest
 			lowerBound = new double[] { 0.2, 0.0, 0.0203, 0.0203, 0.0203,
 					0.002, 0.002, 0.002, 0.002, 0.002, 0.002, 0.8, 0.2, 0.0 };
 			upperBound = new double[] { 0.7, 1.0, 0.05, 0.1, 0.05, 0.014,
-					0.014, 0.014, 0.014, 0.014, 0.014, 1.2, 1.0, 1.0 };
+					0.014, 0.014, 0.014, 0.014, 0.014, 1.2, 1.0, 0.9 };
 			holeGroups = new int[][] { { 0, 1, 2 }, { 3, 4, 5 } };
 			evaluator = new CentDeviationEvaluator(calculator);
 			objective = new SingleTaperHoleGroupFromTopObjectiveFunction(
@@ -209,7 +209,7 @@ public class SingleTaperHoleGroupFromTopTest extends AbstractOptimizationTest
 			lowerBound = new double[] { 0.2, 0.3, 0.0203, 0.0203, 0.0203,
 					0.002, 0.002, 0.002, 0.002, 0.002, 0.002, 0.8, 0.2, 0.0 };
 			upperBound = new double[] { 0.7, 1.0, 0.05, 0.1, 0.05, 0.014,
-					0.014, 0.014, 0.014, 0.014, 0.014, 1.2, 1.0, 1.0 };
+					0.014, 0.014, 0.014, 0.014, 0.014, 1.2, 1.0, 0.9 };
 			holeGroups = new int[][] { { 0, 1, 2 }, { 3, 4, 5 } };
 			evaluator = new CentDeviationEvaluator(calculator);
 			objective = new SingleTaperHoleGroupFromTopObjectiveFunction(
@@ -264,7 +264,7 @@ public class SingleTaperHoleGroupFromTopTest extends AbstractOptimizationTest
 					0.0203, 0.0203, 0.002, 0.002, 0.002, 0.002, 0.002, 0.002,
 					0.8, 0.2, 0.0 };
 			upperBound = new double[] { 0.7, 1.0, 0.05, 0.05, 0.1, 0.05, 0.05,
-					0.014, 0.014, 0.014, 0.014, 0.014, 0.014, 1.2, 1.0, 1.0 };
+					0.014, 0.014, 0.014, 0.014, 0.014, 0.014, 1.2, 1.0, 0.9 };
 			evaluator = new CentDeviationEvaluator(calculator);
 			objective = new SingleTaperNoHoleGroupingFromTopObjectiveFunction(
 					calculator, tuning, evaluator);
@@ -284,7 +284,7 @@ public class SingleTaperHoleGroupFromTopTest extends AbstractOptimizationTest
 					0.0203, 0.0203, 0.002, 0.002, 0.002, 0.002, 0.002, 0.002,
 					0.8, 0.2, 0.0 };
 			upperBound = new double[] { 0.7, 1.0, 0.05, 0.05, 0.1, 0.05, 0.05,
-					0.014, 0.014, 0.014, 0.014, 0.014, 0.014, 1.2, 1.0, 1.0 };
+					0.014, 0.014, 0.014, 0.014, 0.014, 0.014, 1.2, 1.0, 0.9 };
 			holeGroups = new int[][] { { 0 }, { 1 }, { 2 }, { 3 }, { 4 }, { 5 } };
 			evaluator = new CentDeviationEvaluator(calculator);
 			objective = new SingleTaperHoleGroupFromTopObjectiveFunction(

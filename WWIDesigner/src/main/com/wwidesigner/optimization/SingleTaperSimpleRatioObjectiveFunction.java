@@ -76,7 +76,7 @@ public class SingleTaperSimpleRatioObjectiveFunction extends
 
 		geometry[0] = topPoint.getBoreDiameter()
 				/ bottomPoint.getBoreDiameter();
-		if (topPoint.getBoreDiameter() == bottomPoint.getBoreDiameter())
+		if (Math.abs(topPoint.getBoreDiameter() - bottomPoint.getBoreDiameter()) < 0.0001)
 		{
 			// Bore doesn't really taper.
 			taperStart = topPoint.getBorePosition();
@@ -84,7 +84,8 @@ public class SingleTaperSimpleRatioObjectiveFunction extends
 		}
 		else
 		{
-			if (topPoint.getBoreDiameter() == nextPoint.getBoreDiameter())
+			if (Math.abs(topPoint.getBoreDiameter()
+					- nextPoint.getBoreDiameter()) < 0.0001)
 			{
 				// Taper starts on second point.
 				taperStart = nextPoint.getBorePosition();
@@ -94,8 +95,8 @@ public class SingleTaperSimpleRatioObjectiveFunction extends
 				// Taper starts on first point.
 				taperStart = topPoint.getBorePosition();
 			}
-			if (bottomPoint.getBoreDiameter() == penultimatePoint
-					.getBoreDiameter())
+			if (Math.abs(bottomPoint.getBoreDiameter()
+					- penultimatePoint.getBoreDiameter()) < 0.0001)
 			{
 				// Taper ends on second-last point.
 				taperEnd = penultimatePoint.getBorePosition();
@@ -139,14 +140,16 @@ public class SingleTaperSimpleRatioObjectiveFunction extends
 			// Taper begins on second point rather than first.
 			newPoint = new BorePoint();
 			newPoint.setBoreDiameter(headDiameter);
-			newPoint.setBorePosition(topPoint.getBorePosition() + taperStart);
+			newPoint.setBorePosition(topPoint.getBorePosition() + taperStart > boreLength ? boreLength
+					: taperStart);
 			borePoints.add(newPoint);
 		}
 		// Add point for end of taper.
 		newPoint = new BorePoint();
 		newPoint.setBoreDiameter(footDiameter);
-		newPoint.setBorePosition(topPoint.getBorePosition() + taperStart
-				+ taperLength);
+		double taperEnd = taperStart + taperLength;
+		taperEnd = taperEnd > boreLength ? boreLength : taperEnd;
+		newPoint.setBorePosition(topPoint.getBorePosition() + taperEnd);
 		borePoints.add(newPoint);
 		if (taperStart + taperLength < boreLength)
 		{
@@ -159,5 +162,4 @@ public class SingleTaperSimpleRatioObjectiveFunction extends
 		calculator.getInstrument().setBorePoint(borePoints);
 		calculator.getInstrument().updateComponents();
 	}
-
 }

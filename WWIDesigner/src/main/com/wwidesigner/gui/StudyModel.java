@@ -872,14 +872,14 @@ public abstract class StudyModel implements CategoryType
 
 		Category category = getCategory(categoryName);
 		FileDataModel model = (FileDataModel) category.getSelectedSubValue();
-		if (model.getApplication() != null)
+		if (model != null && model.getApplication() != null)
 		{
 			// If the file is a data view in an active application,
 			// update the data in model with the latest from the application's
 			// data view.
 			model.getApplication().getDataView(model).updateModel(model);
+			xmlString = (String) model.getData();
 		}
-		xmlString = (String) model.getData();
 
 		return xmlString;
 	}

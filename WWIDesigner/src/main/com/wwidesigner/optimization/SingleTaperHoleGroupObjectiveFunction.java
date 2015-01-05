@@ -27,7 +27,9 @@ public class SingleTaperHoleGroupObjectiveFunction extends
 				tuning, evaluator, holeGroups);
 		this.components[1] = new HoleSizeObjectiveFunction(calculator, tuning,
 				evaluator);
-		this.components[2] = new SingleTaperRatioObjectiveFunction(calculator,
+//		this.components[2] = new SingleTaperRatioObjectiveFunction(calculator,
+//				tuning, evaluator);
+		this.components[2] = new SingleTaperSimpleRatioObjectiveFunction(calculator,
 				tuning, evaluator);
 		optimizerType = OptimizerType.BOBYQAOptimizer; // MultivariateOptimizer
 		sumDimensions();

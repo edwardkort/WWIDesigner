@@ -14,7 +14,7 @@ public class NafStudyOptimizationTest extends PerturbedInstrumentOptimization
 	protected String tuningFile = "com/wwidesigner/optimization/example/D_NAF_Tuning.xml";
 	protected double initialNorm = 0.0;
 
-	@Test
+//	@Test
 	public final void optimizationTest() throws Exception
 	{
 		com.jidesoft.utils.Lm.verifyLicense("Edward Kort", "WWIDesigner",

@@ -127,24 +127,47 @@ public class HolePositionObjectiveFunction extends BaseObjectiveFunction
 				calculator.getInstrument().getBorePoint());
 		BorePoint endPoint = boreList.getLast();
 
+		// // Don't let optimizer delete a borePoint.
+		// // Instead, evenly space out the bore points
+		// BorePoint almostEndPoint = boreList.get(boreList.size() - 2);
+		// double almostEndPosition = almostEndPoint.getBorePosition();
+		// if (point[0] <= almostEndPosition)
+		// {
+		// int borePositions = boreList.size() - 1;
+		// double lastPosition = point[0];
+		// for (int i = borePositions - 1; i >= 0; i--)
+		// {
+		// BorePoint currentPoint = boreList.get(i);
+		// double currentPosition = currentPoint.getBorePosition();
+		// if (currentPosition >= lastPosition)
+		// {
+		// double newPosition = point[0] * i / borePositions;
+		// currentPoint.setBorePosition(newPosition);
+		// lastPosition = newPosition;
+		// }
+		// }
+		// }
+
 		// Don't let optimizer delete a borePoint.
-		// Instead, evenly space out the bore points
-		BorePoint almostEndPoint = boreList.get(boreList.size() - 2);
-		double almostEndPosition = almostEndPoint.getBorePosition();
-		if (point[0] <= almostEndPosition)
+		// Instead, maintain the spacing of the borePoints
+		double priorPointPosition = endPoint.getBorePosition();
+		int borePositions = boreList.size() - 1;
+		double lastPosition = point[0];
+		for (int i = borePositions - 1; i >= 0; i--)
 		{
-			int borePositions = boreList.size() - 1;
-			double lastPosition = point[0];
-			for (int i = borePositions - 1; i >= 0; i--)
+			BorePoint currentPoint = boreList.get(i);
+			double currentPointPosition = currentPoint.getBorePosition();
+			if (currentPointPosition >= lastPosition)
 			{
-				BorePoint currentPoint = boreList.get(i);
-				double currentPosition = currentPoint.getBorePosition();
-				if (currentPosition >= lastPosition)
-				{
-					double newPosition = point[0] * i / borePositions;
-					currentPoint.setBorePosition(newPosition);
-					lastPosition = newPosition;
-				}
+				double newPosition = lastPosition - priorPointPosition
+						+ currentPointPosition;
+				currentPoint.setBorePosition(newPosition);
+				lastPosition = newPosition;
+				priorPointPosition = currentPointPosition;
+			}
+			else
+			{
+				break;
 			}
 		}
 

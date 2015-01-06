@@ -58,6 +58,20 @@ public class PerturbedInstrumentOptimization
 	}
 
 	/**
+	 * Load the study model with the target tuning from a file.
+	 * @param tuningFile - name of file containing tuning XML.
+	 * @throws Exception 
+	 */
+	public void setDefaultConstraints() throws Exception
+	{
+		// Extract the XML for the constraints, and load it into the study model.
+		FileDataModel fileData = new FileDataModel();
+		fileData.setData(study.getDefaultConstraints());
+		fileData.setName("Default");
+		study.addDataModel(fileData);
+	}
+
+	/**
 	 * Load the study model with an instrument from a file,
 	 * after applying specified perturbations.
 	 * Pre:  testOptimization() assumes that the instrument in instrumentFile is already optimal.
@@ -117,7 +131,10 @@ public class PerturbedInstrumentOptimization
 		FileDataModel fileData = new FileDataModel();
 		fileData.setData(xmlString);
 		fileData.setName(instrumentName);
-		study.replaceDataModel(fileData);
+		if (! study.replaceDataModel(fileData))
+		{
+			study.addDataModel(fileData);
+		}
 	}
 
 	/**
@@ -126,7 +143,6 @@ public class PerturbedInstrumentOptimization
 	 * @param description - Explanatory text for this test.
 	 * @throws Exception
 	 */
-	@Deprecated
 	public void testOptimization(String description, double tolerance) throws Exception
 	{
 		// Optimize the perturbed instrument.

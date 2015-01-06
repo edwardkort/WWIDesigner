@@ -6,15 +6,13 @@ import org.junit.Test;
 
 import com.wwidesigner.gui.NafStudyModel;
 
-@Deprecated
-// NafStudyModel no longer serves constraint sets by default.
 public class NafStudyOptimizationTest extends PerturbedInstrumentOptimization
 {
 	protected String instrumentFile = "com/wwidesigner/optimization/example/Optimized-D-NAF.xml";
 	protected String tuningFile = "com/wwidesigner/optimization/example/D_NAF_Tuning.xml";
 	protected double initialNorm = 0.0;
 
-//	@Test
+	@Test
 	public final void optimizationTest() throws Exception
 	{
 		com.jidesoft.utils.Lm.verifyLicense("Edward Kort", "WWIDesigner",
@@ -26,12 +24,11 @@ public class NafStudyOptimizationTest extends PerturbedInstrumentOptimization
 		myStudy.getParams().setProperties(22.2, 101.0, 45, 0.000400);
 		myStudy.setCategorySelection(NafStudyModel.OPTIMIZER_CATEGORY_ID,
 				NafStudyModel.GROUP_OPT_SUB_CATEGORY_ID);
-		myStudy.setCategorySelection(NafStudyModel.CONSTRAINTS_CATEGORY_ID,
-				NafStudyModel.HOLE_6_1_25_SPACING_CONS_SUB_CATEGORY_ID);
 
 		setStudyModel(myStudy);
 		setTuning(tuningFile);
 		setInstrument(instrumentFile, 1.0, 1.0, 1.0);
+		setDefaultConstraints();
 		testOptimization("Re-optimize the un-perturbed instrument...", 0.01);
 		initialNorm = study.getInitialNorm();
 		assertEquals("Residual error incorrect", 1.0, study.getResidualErrorRatio(), 0.02);

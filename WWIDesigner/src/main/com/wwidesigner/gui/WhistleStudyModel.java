@@ -122,7 +122,7 @@ public class WhistleStudyModel extends StudyModel
 				HoleAndTaperObjectiveFunction.class.getSimpleName());
 		optimizers.addSub(ROUGH_CUT_OPT_SUB_CATEGORY_ID, null);
 		objectiveFunctionNames.put(ROUGH_CUT_OPT_SUB_CATEGORY_ID,
-				HoleObjectiveFunction.class.getSimpleName());
+				HolePositionObjectiveFunction.class.getSimpleName());
 		categories.add(optimizers);
 	}
 
@@ -481,18 +481,25 @@ public class WhistleStudyModel extends StudyModel
 	{
 		String data = (String) dataModel.getData();
 		String categoryName = getCategoryName(data);
+		if (categoryName == null)
+		{
+			removeDataModel(dataModel);
+			throw new DataOpenException(
+					"Data does not represent a supported type.",
+					DataOpenException.DATE_TYPE_NOT_SUPPORTED);
+		}
 		if (categoryName.equals(CONSTRAINTS_CATEGORY_ID))
 		{
 			// Constraints are filed in the optimizer category.
-			Category category = getCategory(OPTIMIZER_CATEGORY_ID);
-			if (category.replaceSub(dataModel.getName(), dataModel))
-			{
-				category.setSelectedSub(dataModel.getName());
-				return true;
-			}
-			return false;
+			categoryName = OPTIMIZER_CATEGORY_ID;
 		}
-		return super.replaceDataModel(dataModel);
+		Category category = getCategory(categoryName);
+		if (category.replaceSub(dataModel.getName(), dataModel))
+		{
+			category.setSelectedSub(dataModel.getName());
+			return true;
+		}
+		return false;
 	}
 
 	@Override

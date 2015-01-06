@@ -507,7 +507,7 @@ public abstract class StudyModel implements CategoryType
 		if (categoryName == null)
 		{
 			throw new DataOpenException("Data is not a supported type",
-					DataOpenException.DATE_TYPE_NOT_SUPPORTED);
+					DataOpenException.DATA_TYPE_NOT_SUPPORTED);
 		}
 		if (categoryName.equals(INSTRUMENT_CATEGORY_ID)
 				|| categoryName.equals(TUNING_CATEGORY_ID))
@@ -575,7 +575,7 @@ public abstract class StudyModel implements CategoryType
 			removeDataModel(dataModel);
 			throw new DataOpenException(
 					"Data does not represent a supported type.",
-					DataOpenException.DATE_TYPE_NOT_SUPPORTED);
+					DataOpenException.DATA_TYPE_NOT_SUPPORTED);
 		}
 		Category category = getCategory(categoryName);
 		if (category.replaceSub(dataModel.getName(), dataModel))
@@ -868,20 +868,20 @@ public abstract class StudyModel implements CategoryType
 
 	protected String getSelectedXmlString(String categoryName) throws Exception
 	{
-		String xmlString = null;
-
 		Category category = getCategory(categoryName);
 		FileDataModel model = (FileDataModel) category.getSelectedSubValue();
-		if (model != null && model.getApplication() != null)
+		if (model == null)
+		{
+			return null;
+		}
+		if (model.getApplication() != null)
 		{
 			// If the file is a data view in an active application,
 			// update the data in model with the latest from the application's
 			// data view.
 			model.getApplication().getDataView(model).updateModel(model);
-			xmlString = (String) model.getData();
 		}
-
-		return xmlString;
+		return (String) model.getData();
 	}
 
 	protected Instrument getInstrument() throws Exception

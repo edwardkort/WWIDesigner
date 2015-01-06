@@ -486,7 +486,7 @@ public class WhistleStudyModel extends StudyModel
 			removeDataModel(dataModel);
 			throw new DataOpenException(
 					"Data does not represent a supported type.",
-					DataOpenException.DATE_TYPE_NOT_SUPPORTED);
+					DataOpenException.DATA_TYPE_NOT_SUPPORTED);
 		}
 		if (categoryName.equals(CONSTRAINTS_CATEGORY_ID))
 		{

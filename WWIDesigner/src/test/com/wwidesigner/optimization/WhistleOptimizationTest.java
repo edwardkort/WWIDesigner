@@ -25,7 +25,7 @@ public class WhistleOptimizationTest extends PerturbedInstrumentOptimization
 				"DfuwPRAUR5KQYgePf:CH0LWIp63V8cs2");
 	}
 
-//	@Test
+	@Test
 	public final void optimizationTest() throws Exception
 	{
 		// Set up the study model to be tested.

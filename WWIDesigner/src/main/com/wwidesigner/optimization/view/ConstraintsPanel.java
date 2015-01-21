@@ -8,6 +8,7 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.KeyEvent;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,11 +19,13 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 import javax.swing.text.Document;
@@ -42,6 +45,7 @@ public class ConstraintsPanel extends JPanel implements DataChangedProvider
 	private List<DataChangedListener> dataChangedListeners;
 	private Dimension panelDimension = new Dimension(780, 150);
 	private int[] columnWidth = new int[] { 500, 110, 85, 85 };
+	private JTable[] constraintTables;
 
 	public ConstraintsPanel(Constraints constraints)
 	{
@@ -63,7 +67,26 @@ public class ConstraintsPanel extends JPanel implements DataChangedProvider
 
 	public Constraints getConstraintValues()
 	{
+		stopEditing();
 		return constraints;
+	}
+
+	protected void stopEditing()
+	{
+		if (constraintTables != null)
+		{
+			for (JTable table : constraintTables)
+			{
+				if (table != null)
+				{
+					TableCellEditor editor = table.getCellEditor();
+					if (editor != null)
+					{
+						editor.stopCellEditing();
+					}
+				}
+			}
+		}
 	}
 
 	public void setPanelDimension(int width, int height)
@@ -84,6 +107,8 @@ public class ConstraintsPanel extends JPanel implements DataChangedProvider
 	{
 		Set<String> categories = constraints.getCategories();
 		gbc.gridx = 0;
+		constraintTables = new JTable[categories.size()];
+		int catIndex = 0;
 		for (String category : categories)
 		{
 			JPanel panel = new JPanel();
@@ -96,6 +121,7 @@ public class ConstraintsPanel extends JPanel implements DataChangedProvider
 			JTable table = new JTable(
 					new ConstraintTableModel(constraintValues));
 			configureTable(table);
+			constraintTables[catIndex++] = table;
 			JScrollPane scrollPane = new JScrollPane(table);
 			scrollPane.setPreferredSize(panelDimension);
 			panel.add(scrollPane, BorderLayout.CENTER);
@@ -131,6 +157,9 @@ public class ConstraintsPanel extends JPanel implements DataChangedProvider
 		// Require a non-blank name field
 		final JTextField constraintsNameField = new JTextField(50);
 		constraintsNameField.setText(constraints.getConstraintsName());
+		// Remove ENTER_KEY action, handled by document listener
+		constraintsNameField.getKeymap().removeKeyStrokeBinding(
+				KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0));
 		constraintsNameField.getDocument().addDocumentListener(
 				new DocumentListener()
 				{
@@ -370,6 +399,7 @@ public class ConstraintsPanel extends JPanel implements DataChangedProvider
 		}
 	}
 
+	@Override
 	public void addDataChangedListener(DataChangedListener listener)
 	{
 		if (dataChangedListeners == null)
@@ -378,6 +408,15 @@ public class ConstraintsPanel extends JPanel implements DataChangedProvider
 		}
 
 		dataChangedListeners.add(listener);
+	}
+
+	@Override
+	public void removeDataChangedListener(DataChangedListener listener)
+	{
+		if (dataChangedListeners != null)
+		{
+			dataChangedListeners.remove(listener);
+		}
 	}
 
 	private void fireDataChangedEvent()

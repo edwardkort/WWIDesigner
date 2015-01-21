@@ -116,7 +116,7 @@ public class ObjectiveFunctionOptimizer
 		long startTime = System.currentTimeMillis();
 		double[] startPoint = objective.getInitialPoint();
 		double[] errorVector = objective.getErrorVector(startPoint);
-		initialNorm = BaseObjectiveFunction.calcNorm(errorVector);
+		initialNorm = objective.calcNorm(errorVector);
 		System.out.println();
 		printErrors("Initial error: ", initialNorm, errorVector);
 		finalNorm = initialNorm;
@@ -241,7 +241,7 @@ public class ObjectiveFunctionOptimizer
 		System.out.print(objective.getNumberOfEvaluations());
 		System.out.println(" error norm evaluations.");
 		errorVector = objective.getErrorVector(objective.getInitialPoint());
-		finalNorm = BaseObjectiveFunction.calcNorm(errorVector);
+		finalNorm = objective.calcNorm(errorVector);
 		printErrors("Final error:  ", finalNorm, errorVector);
 		System.out.print("Residual error ratio: ");
 		System.out.println(finalNorm / initialNorm);

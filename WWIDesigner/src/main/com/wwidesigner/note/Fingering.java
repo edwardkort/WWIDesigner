@@ -15,6 +15,7 @@ public class Fingering implements Serializable
 {
 	protected Note note;
 	protected List<Boolean> openHole;
+	protected Integer optimizationWeight;
 
 	public Fingering()
 	{
@@ -103,6 +104,31 @@ public class Fingering implements Serializable
 		}
 
 		return num;
+	}
+
+	/**
+	 * Returns the optimization weight.
+	 * 
+	 * @return The weight. If unset, returns 1; if less than 0, returns 0. Does
+	 *         NOT set the underlying weight in these circumstances.
+	 */
+	public Integer getOptimizationWeight()
+	{
+		if (optimizationWeight == null)
+		{
+			return 1;
+		}
+		if (optimizationWeight < 0)
+		{
+			return 0;
+		}
+
+		return optimizationWeight;
+	}
+
+	public void setOptimizationWeight(Integer optimizationWeight)
+	{
+		this.optimizationWeight = optimizationWeight;
 	}
 
 }

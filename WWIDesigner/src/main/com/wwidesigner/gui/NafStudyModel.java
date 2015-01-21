@@ -584,14 +584,16 @@ public class NafStudyModel extends StudyModel
 			if (multiStartSelected == VARY_FIRST_MULTI_START_SUB_CATEGORY_ID)
 			{
 				GridRangeProcessor rangeProcessor = new GridRangeProcessor(
-						lowerBound, upperBound, new int[] { 0 }, 30);
+						objective.getLowerBounds(), objective.getUpperBounds(),
+						new int[] { 0 }, 30);
 				objective.setRangeProcessor(rangeProcessor);
 				objective.setMaxEvaluations(30 * objective.getMaxEvaluations());
 			}
 			else if (multiStartSelected == VARY_ALL_MULTI_START_SUB_CATEGORY_ID)
 			{
 				GridRangeProcessor rangeProcessor = new GridRangeProcessor(
-						lowerBound, upperBound, null, 30);
+						objective.getLowerBounds(), objective.getUpperBounds(),
+						null, 30);
 				objective.setRangeProcessor(rangeProcessor);
 				objective.setMaxEvaluations(30 * objective.getMaxEvaluations());
 			}
@@ -609,7 +611,7 @@ public class NafStudyModel extends StudyModel
 		defaultMap.put(INSTRUMENT_CATEGORY_ID, ContainedXmlTextView.class);
 		// defaultMap.put(INSTRUMENT_CATEGORY_ID,
 		// ContainedInstrumentView.class);
-		defaultMap.put(TUNING_CATEGORY_ID, ContainedXmlTextView.class);
+		defaultMap.put(TUNING_CATEGORY_ID, ContainedNafTuningView.class);
 		defaultMap.put(CONSTRAINTS_CATEGORY_ID, ConstraintsEditorView.class);
 
 		Class<? extends ContainedXmlView> defaultClass = defaultMap
@@ -628,6 +630,8 @@ public class NafStudyModel extends StudyModel
 
 		toggleLists.put(CONSTRAINTS_CATEGORY_ID, new Class[] {
 				ContainedXmlTextView.class, ConstraintsEditorView.class });
+		toggleLists.put(TUNING_CATEGORY_ID, new Class[] {
+				ContainedNafTuningView.class, ContainedXmlTextView.class });
 
 		return toggleLists;
 	}

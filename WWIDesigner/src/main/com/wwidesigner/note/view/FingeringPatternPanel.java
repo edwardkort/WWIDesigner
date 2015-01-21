@@ -29,6 +29,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -44,8 +45,12 @@ import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableColumn;
 
 import com.jidesoft.grid.JideTable;
+import com.wwidesigner.gui.util.DataChangedEvent;
+import com.wwidesigner.gui.util.DataChangedListener;
+import com.wwidesigner.gui.util.DataChangedProvider;
 import com.wwidesigner.gui.util.DataPopulatedEvent;
 import com.wwidesigner.gui.util.DataPopulatedListener;
+import com.wwidesigner.gui.util.DataPopulatedProvider;
 import com.wwidesigner.gui.util.IntegerDocument;
 import com.wwidesigner.gui.util.NoOpTransferHandler;
 import com.wwidesigner.gui.util.TableSourceRowTransferHandler;
@@ -55,7 +60,8 @@ import com.wwidesigner.note.bind.NoteBindFactory;
 import com.wwidesigner.util.BindFactory;
 
 public class FingeringPatternPanel extends JPanel implements FocusListener,
-		TableModelListener
+		TableModelListener, DataPopulatedProvider, DataChangedProvider,
+		DataChangedListener
 {
 	public static final String NEW_EVENT_ID = "newData";
 	public static final String SAVE_EVENT_ID = "saveData";
@@ -65,6 +71,7 @@ public class FingeringPatternPanel extends JPanel implements FocusListener,
 	protected JTextPane descriptionWidget;
 	protected JTextField numberOfHolesWidget;
 	protected JideTable fingeringList;
+	protected FingeringRenderer renderer;
 	protected int componentWidth;
 	protected int numberOfHoles;
 	protected int numberOfColumns;
@@ -73,10 +80,13 @@ public class FingeringPatternPanel extends JPanel implements FocusListener,
 	protected boolean namePopulated;
 	protected boolean fingeringsPopulated;
 	protected List<DataPopulatedListener> populatedListeners;
+	protected List<DataChangedListener> dataChangedListeners;
 
 	/**
 	 * Create a panel with components of a specified preferred width.
-	 * @param componentWidth - preferred width of display/edit components.
+	 * 
+	 * @param componentWidth
+	 *            - preferred width of display/edit components.
 	 */
 	public FingeringPatternPanel(int componentWidth)
 	{
@@ -94,7 +104,7 @@ public class FingeringPatternPanel extends JPanel implements FocusListener,
 		setFingeringListWidget();
 		configureDragAndDrop();
 	}
-	
+
 	/**
 	 * Create a panel with components of a default preferred width.
 	 */
@@ -105,7 +115,9 @@ public class FingeringPatternPanel extends JPanel implements FocusListener,
 
 	/**
 	 * Load a fingering pattern from a fingering-pattern XML file.
-	 * @param file - contains XML for a fingering pattern
+	 * 
+	 * @param file
+	 *            - contains XML for a fingering pattern
 	 * @return true if the load was successful
 	 */
 	public boolean loadFromFile(File file)
@@ -141,7 +153,7 @@ public class FingeringPatternPanel extends JPanel implements FocusListener,
 	}
 
 	/**
-	 * Return an empty row suitable for the fingering table. 
+	 * Return an empty row suitable for the fingering table.
 	 */
 	protected Object[] emptyRow()
 	{
@@ -153,12 +165,21 @@ public class FingeringPatternPanel extends JPanel implements FocusListener,
 		return (new Fingering[] { fingering });
 	}
 
+	protected void setEditableNumberOfHoles(boolean isEditable)
+	{
+		numberOfHolesWidget.setEnabled(isEditable);
+	}
+
 	/**
 	 * Load a fingering pattern into this panel.
-	 * @param fingerings - fingering pattern to load.
-	 * @param suppressChangeEvent - if true, don't fire the DataPopulated event.
+	 * 
+	 * @param fingerings
+	 *            - fingering pattern to load.
+	 * @param suppressChangeEvent
+	 *            - if true, don't fire the DataPopulated event.
 	 */
-	public void loadData(FingeringPattern fingerings, boolean suppressChangeEvent)
+	public void loadData(FingeringPattern fingerings,
+			boolean suppressChangeEvent)
 	{
 		if (fingerings != null)
 		{
@@ -171,18 +192,20 @@ public class FingeringPatternPanel extends JPanel implements FocusListener,
 
 			stopTableEditing();
 			fingeringList.getModel().removeTableModelListener(this);
+			renderer.setEnableDataChanges(false);
 			resetTableData(0);
 			DefaultTableModel model = (DefaultTableModel) fingeringList
 					.getModel();
 			for (Fingering fingering : fingerings.getFingering())
 			{
-				model.addRow( rowData(fingering) );
+				model.addRow(rowData(fingering));
 			}
 
 			fingeringList.getModel().addTableModelListener(this);
+			renderer.setEnableDataChanges(true);
 			isNamePopulated();
 			areFingeringsPopulated();
-			if (! suppressChangeEvent)
+			if (!suppressChangeEvent)
 			{
 				fireDataStateChanged();
 			}
@@ -217,7 +240,9 @@ public class FingeringPatternPanel extends JPanel implements FocusListener,
 	}
 
 	/**
-	 * Verify that there is a name in the nameWidget, and set namePopulated accordingly.
+	 * Verify that there is a name in the nameWidget, and set namePopulated
+	 * accordingly.
+	 * 
 	 * @return true if the name has changed.
 	 */
 	protected boolean isNamePopulated()
@@ -225,7 +250,7 @@ public class FingeringPatternPanel extends JPanel implements FocusListener,
 		String newName = nameWidget.getText();
 
 		namePopulated = (newName != null && newName.trim().length() > 0);
-		if (newName != null && ! newName.equals(name))
+		if (newName != null && !newName.equals(name))
 		{
 			name = newName;
 			return true;
@@ -235,13 +260,14 @@ public class FingeringPatternPanel extends JPanel implements FocusListener,
 
 	/**
 	 * Test whether the description in descriptionWidget has changed.
+	 * 
 	 * @return true if the description has changed.
 	 */
 	protected boolean isDescriptionChanged()
 	{
 		String newDescription = descriptionWidget.getText();
 
-		if (newDescription != null && ! newDescription.equals(description))
+		if (newDescription != null && !newDescription.equals(description))
 		{
 			description = newDescription;
 			return true;
@@ -250,8 +276,9 @@ public class FingeringPatternPanel extends JPanel implements FocusListener,
 	}
 
 	/**
-	 * Validate the data in numberOfHolesWidget.
-	 * If the value is invalid, restore the original value in the widget.
+	 * Validate the data in numberOfHolesWidget. If the value is invalid,
+	 * restore the original value in the widget.
+	 * 
 	 * @return true if the number of holes has changed.
 	 */
 	protected boolean validateNumberOfHoles()
@@ -260,7 +287,8 @@ public class FingeringPatternPanel extends JPanel implements FocusListener,
 
 		if (number == null || number.trim().isEmpty())
 		{
-			JOptionPane.showMessageDialog(this, "Number of holes must be a valid number.");
+			JOptionPane.showMessageDialog(this,
+					"Number of holes must be a valid number.");
 			numberOfHolesWidget.setText(Integer.toString(numberOfHoles));
 			return false;
 		}
@@ -268,7 +296,8 @@ public class FingeringPatternPanel extends JPanel implements FocusListener,
 		Integer newNumberOfHoles = Integer.parseInt(number);
 		if (newNumberOfHoles < 0)
 		{
-			JOptionPane.showMessageDialog(this, "Number of holes must be non-negative.");
+			JOptionPane.showMessageDialog(this,
+					"Number of holes must be non-negative.");
 			numberOfHolesWidget.setText(Integer.toString(numberOfHoles));
 			return false;
 		}
@@ -282,8 +311,8 @@ public class FingeringPatternPanel extends JPanel implements FocusListener,
 	}
 
 	/**
-	 * Test whether the fingeringList table contains valid fingerings,
-	 * and set fingeringsPopulated accordingly.
+	 * Test whether the fingeringList table contains valid fingerings, and set
+	 * fingeringsPopulated accordingly.
 	 */
 	protected void areFingeringsPopulated()
 	{
@@ -358,7 +387,7 @@ public class FingeringPatternPanel extends JPanel implements FocusListener,
 		{
 			// If table is empty, we can't select anything.
 			// Insert at the top, and leave nothing selected.
-			model.insertRow(0, emptyRow() );
+			model.insertRow(0, emptyRow());
 			return;
 		}
 		int[] selectedRows = fingeringList.getSelectedRows();
@@ -385,7 +414,7 @@ public class FingeringPatternPanel extends JPanel implements FocusListener,
 	{
 		stopTableEditing();
 		DefaultTableModel model = (DefaultTableModel) fingeringList.getModel();
-		int bottomIndex = 0;		// If table is empty, insert at the top.
+		int bottomIndex = 0; // If table is empty, insert at the top.
 		if (model.getRowCount() > 0)
 		{
 			int[] selectedRows = fingeringList.getSelectedRows();
@@ -418,7 +447,7 @@ public class FingeringPatternPanel extends JPanel implements FocusListener,
 	public FingeringPattern getData()
 	{
 		stopTableEditing();
-		if (! namePopulated || ! fingeringsPopulated)
+		if (!namePopulated || !fingeringsPopulated)
 		{
 			return null;
 		}
@@ -591,7 +620,8 @@ public class FingeringPatternPanel extends JPanel implements FocusListener,
 		DefaultTableModel model = (DefaultTableModel) fingeringList.getModel();
 		model.setDataVector(new Object[0][numberOfColumns], columnNames());
 		fingeringList.setFillsGrids(false);
-		FingeringRenderer renderer = new FingeringRenderer(numberOfHoles);
+		renderer = new FingeringRenderer(numberOfHoles);
+		renderer.addDataChangedListener(this);
 		TableColumn column = fingeringList.getColumn("Fingering");
 		column.setCellRenderer(renderer);
 		column.setCellEditor(new FingeringEditor());
@@ -645,22 +675,47 @@ public class FingeringPatternPanel extends JPanel implements FocusListener,
 		populatedListeners.add(listener);
 	}
 
+	@Override
+	public void addDataChangedListener(DataChangedListener listener)
+	{
+		if (dataChangedListeners == null)
+		{
+			dataChangedListeners = new ArrayList<DataChangedListener>();
+		}
+		dataChangedListeners.add(listener);
+	}
+
+	@Override
+	public void removeDataChangedListener(DataChangedListener listener)
+	{
+		if (dataChangedListeners != null)
+		{
+			dataChangedListeners.remove(listener);
+		}
+	}
+
 	protected void fireDataStateChanged()
 	{
-		if (populatedListeners == null)
+		if (populatedListeners != null)
 		{
-			return;
+			List<DataPopulatedEvent> events = new ArrayList<DataPopulatedEvent>();
+			DataPopulatedEvent event = new DataPopulatedEvent(this,
+					SAVE_EVENT_ID, namePopulated && fingeringsPopulated);
+			events.add(event);
+			for (DataPopulatedEvent thisEvent : events)
+			{
+				for (DataPopulatedListener listener : populatedListeners)
+				{
+					listener.dataStateChanged(thisEvent);
+				}
+			}
 		}
 
-		List<DataPopulatedEvent> events = new ArrayList<DataPopulatedEvent>();
-		DataPopulatedEvent event = new DataPopulatedEvent(this, SAVE_EVENT_ID,
-				namePopulated && fingeringsPopulated);
-		events.add(event);
-		for (DataPopulatedEvent thisEvent : events)
+		if (dataChangedListeners != null)
 		{
-			for (DataPopulatedListener listener : populatedListeners)
+			for (DataChangedListener listener : dataChangedListeners)
 			{
-				listener.dataStateChanged(thisEvent);
+				listener.dataChanged(new DataChangedEvent(this));
 			}
 		}
 	}
@@ -671,6 +726,15 @@ public class FingeringPatternPanel extends JPanel implements FocusListener,
 		fingeringList.setTransferHandler(new TableSourceRowTransferHandler());
 		nameWidget.setTransferHandler(new NoOpTransferHandler());
 		descriptionWidget.setTransferHandler(new NoOpTransferHandler());
+	}
+
+	@Override
+	public void dataChanged(DataChangedEvent event)
+	{
+		if (event.getSource() instanceof FingeringRenderer)
+		{
+			fireDataStateChanged();
+		}
 	}
 
 }

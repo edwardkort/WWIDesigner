@@ -66,6 +66,30 @@ public interface Constants
 
 			return multiplier;
 		}
+
+		public int getDecimalPrecision()
+		{
+			int precision;
+			switch (this)
+			{
+				case MM:
+					precision = 2;
+					break;
+				case CM:
+					precision = 3;
+					break;
+				case IN:
+					precision = 3;
+					break;
+				case FT:
+					precision = 4;
+					break;
+				default:
+					precision = 5;
+			}
+
+			return precision;
+		}
 	}
 
 	double P_AIR = 101325.0; // Dry air pressure, Pa.

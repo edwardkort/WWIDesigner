@@ -10,7 +10,6 @@ import java.util.prefs.Preferences;
 
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
-import javax.swing.JComboBox;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -18,7 +17,6 @@ import javax.swing.JRadioButton;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
-import javax.swing.SwingConstants;
 
 import com.jidesoft.app.framework.ApplicationVetoException;
 import com.jidesoft.app.framework.DataView;
@@ -27,7 +25,7 @@ import com.jidesoft.app.framework.gui.DialogResponse;
 import com.jidesoft.app.framework.gui.GUIApplication;
 import com.jidesoft.app.framework.gui.PreferencesPane;
 import com.wwidesigner.gui.util.DirectoryChooserPanel;
-import com.wwidesigner.util.Constants.LengthType;
+import com.wwidesigner.util.view.LengthTypeComboBox;
 
 /**
  * Dialog pane to display/modify preferences for the optimization application.
@@ -91,7 +89,7 @@ public class OptimizationPreferences extends PreferencesPane
 	JFormattedTextField topHoleRatioField;
 	DirectoryChooserPanel constraintsDirChooser;
 
-	JComboBox<LengthType> lengthTypeComboBox;
+	LengthTypeComboBox lengthTypeComboBox;
 
 	JTextField messageField;
 
@@ -113,9 +111,7 @@ public class OptimizationPreferences extends PreferencesPane
 		blowingLevel = new SpinnerNumberModel(DEFAULT_BLOWING_LEVEL, 0, 10, 1);
 		blowingLevelSpinner = new JSpinner(blowingLevel);
 		blowingLevelSpinner.setName("Blowing Level");
-		lengthTypeComboBox = new JComboBox<LengthType>(LengthType.values());
-		((JLabel) lengthTypeComboBox.getRenderer())
-				.setHorizontalAlignment(SwingConstants.CENTER);
+		lengthTypeComboBox = new LengthTypeComboBox();
 
 		studyPanel.add(nafButton);
 		studyPanel.add(whistleButton);
@@ -256,7 +252,7 @@ public class OptimizationPreferences extends PreferencesPane
 
 		String dimensionType = myPreferences.get(LENGTH_TYPE_OPT,
 				LENGTH_TYPE_DEFAULT);
-		lengthTypeComboBox.setSelectedItem(LengthType.valueOf(dimensionType));
+		lengthTypeComboBox.setSelectedLengthType(dimensionType);
 	}
 
 	@Override
@@ -303,9 +299,9 @@ public class OptimizationPreferences extends PreferencesPane
 		myPreferences.put(CONSTRAINTS_DIRECTORY,
 				constraintsDirChooser.getSelectedDirectory());
 
-		LengthType dimensionType = (LengthType) lengthTypeComboBox
-				.getSelectedItem();
-		myPreferences.put(LENGTH_TYPE_OPT, dimensionType.name());
+		String dimensionType = lengthTypeComboBox
+				.getSelectedLengthTypeName();
+		myPreferences.put(LENGTH_TYPE_OPT, dimensionType);
 
 		DataView[] views = application.getFocusedViews();
 		for (DataView view : views)

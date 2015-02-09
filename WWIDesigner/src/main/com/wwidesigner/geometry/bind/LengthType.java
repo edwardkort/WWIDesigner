@@ -35,7 +35,13 @@ public enum LengthType {
     @XmlEnumValue("mm")
     MM("mm"),
     @XmlEnumValue("in")
-    IN("in");
+    IN("in"),
+    @XmlEnumValue("m")
+    M("m"),
+    @XmlEnumValue("cm")
+    CM("cm"),
+    @XmlEnumValue("ft")
+    FT("ft");
     private final String value;
 
     LengthType(String v) {

@@ -2,14 +2,12 @@ package com.wwidesigner.optimization.view;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.KeyEvent;
-import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -20,11 +18,9 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
-import javax.swing.SwingConstants;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.table.AbstractTableModel;
-import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
@@ -33,7 +29,9 @@ import javax.swing.text.Document;
 import com.wwidesigner.gui.util.DataChangedEvent;
 import com.wwidesigner.gui.util.DataChangedListener;
 import com.wwidesigner.gui.util.DataChangedProvider;
+import com.wwidesigner.gui.util.NumberFormatTableCellRenderer;
 import com.wwidesigner.optimization.Constraint;
+import com.wwidesigner.optimization.ConstraintType;
 import com.wwidesigner.optimization.Constraints;
 
 public class ConstraintsPanel extends JPanel implements DataChangedProvider
@@ -41,7 +39,8 @@ public class ConstraintsPanel extends JPanel implements DataChangedProvider
 	private Constraints constraints;
 	private GridBagConstraints gbc = new GridBagConstraints();
 	private int gridy = 0;
-	private int decimalPrecision = 5;
+	private int dimensionalDecimalPrecision;
+	private int dimensionlessDecimalPrecision = 4;
 	private List<DataChangedListener> dataChangedListeners;
 	private Dimension panelDimension = new Dimension(780, 150);
 	private int[] columnWidth = new int[] { 500, 110, 85, 85 };
@@ -60,6 +59,8 @@ public class ConstraintsPanel extends JPanel implements DataChangedProvider
 	public void setConstraintValues(Constraints constraints)
 	{
 		this.constraints = constraints;
+		dimensionalDecimalPrecision = constraints.getDimensionType()
+				.getDecimalPrecision();
 		setLayout(new GridBagLayout());
 		setMetadataValues();
 		setConstraintsValues();
@@ -382,20 +383,22 @@ public class ConstraintsPanel extends JPanel implements DataChangedProvider
 
 	}
 
-	class NumberFormatCellRenderer extends DefaultTableCellRenderer
+	class NumberFormatCellRenderer extends NumberFormatTableCellRenderer
 	{
-		public Component getTableCellRendererComponent(JTable table,
-				Object value, boolean isSelected, boolean hasFocus, int row,
-				int col)
+		@Override
+		public int getDecimalPrecision(JTable table, int row, int col)
 		{
-			JLabel label = (JLabel) super.getTableCellRendererComponent(table,
-					value, isSelected, hasFocus, row, col);
-			label.setHorizontalAlignment(SwingConstants.RIGHT);
-			NumberFormat format = NumberFormat.getNumberInstance();
-			format.setMinimumFractionDigits(decimalPrecision);
-			label.setText(value == null ? "" : format.format(value));
-
-			return label;
+			ConstraintTableModel model = (ConstraintTableModel) table
+					.getModel();
+			Object dimensionType = model.getValueAt(row, 1);
+			if (ConstraintType.DIMENSIONLESS.toString().equals(dimensionType))
+			{
+				return dimensionlessDecimalPrecision;
+			}
+			else
+			{
+				return dimensionalDecimalPrecision;
+			}
 		}
 	}
 

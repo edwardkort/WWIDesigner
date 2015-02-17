@@ -492,6 +492,24 @@ public class WhistleStudyModel extends StudyModel
 		{
 			// Constraints are filed in the optimizer category.
 			categoryName = OPTIMIZER_CATEGORY_ID;
+			Constraints constraints = getConstraints(data);
+			if (constraints == null)
+			{
+				throw new DataOpenException("Data are not valid constraints",
+						DataOpenException.INVALID_CONSTRAINTS);
+			}
+
+			// Check that constraints apply to a known optimizer.
+			String objFuncClassName = constraints.getObjectiveFunctionName();
+			if (! objectiveFunctionNames.containsValue(objFuncClassName))
+			{
+				throw new DataOpenException(
+						"Whistle study model does not support required optimizer, "
+						+ objFuncClassName + " ("
+						+ constraints.getObjectiveDisplayName() + ")",
+						DataOpenException.OPTIMIZER_NOT_SUPPORTED);
+			}
+			objectiveFunctionNames.put(dataModel.getName(), objFuncClassName);
 		}
 		Category category = getCategory(categoryName);
 		if (category.replaceSub(dataModel.getName(), dataModel))

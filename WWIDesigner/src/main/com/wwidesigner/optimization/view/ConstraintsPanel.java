@@ -22,6 +22,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableCellEditor;
+import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 import javax.swing.text.Document;
@@ -241,8 +242,9 @@ public class ConstraintsPanel extends JPanel implements DataChangedProvider
 		ubCol.setPreferredWidth(columnWidth[3]);
 
 		// Set number format
-		lbCol.setCellRenderer(new NumberFormatCellRenderer());
-		ubCol.setCellRenderer(new NumberFormatCellRenderer());
+		TableCellRenderer renderer = new NumberFormatCellRenderer();
+		lbCol.setCellRenderer(renderer);
+		ubCol.setCellRenderer(renderer);
 
 		// Set single cell selection
 		table.setColumnSelectionAllowed(false);

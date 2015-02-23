@@ -42,12 +42,17 @@ public class ContainedInstrumentView extends ContainedXmlView
 	{
 		super(parent);
 
-		instrumentPanel = new InstrumentPanel();
+		setInstrumentPanel();
 		scrollPane = new JScrollPane(instrumentPanel);
 		scrollPane.setBorder(null);
 		scrollPane.setOpaque(false);
 
 		setDataDirty();
+	}
+
+	protected void setInstrumentPanel()
+	{
+		instrumentPanel = new InstrumentPanel();
 	}
 
 	@Override

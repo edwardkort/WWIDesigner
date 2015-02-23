@@ -608,7 +608,7 @@ public class NafStudyModel extends StudyModel
 	{
 		Map<String, Class<? extends ContainedXmlView>> defaultMap = new HashMap<String, Class<? extends ContainedXmlView>>();
 
-		defaultMap.put(INSTRUMENT_CATEGORY_ID, ContainedInstrumentView.class);
+		defaultMap.put(INSTRUMENT_CATEGORY_ID, ContainedNafView.class);
 		defaultMap.put(TUNING_CATEGORY_ID, ContainedNafTuningView.class);
 		defaultMap.put(CONSTRAINTS_CATEGORY_ID, ConstraintsEditorView.class);
 
@@ -631,7 +631,7 @@ public class NafStudyModel extends StudyModel
 		toggleLists.put(TUNING_CATEGORY_ID, new Class[] {
 				ContainedNafTuningView.class, ContainedXmlTextView.class });
 		toggleLists.put(INSTRUMENT_CATEGORY_ID, new Class[] {
-				ContainedInstrumentView.class, ContainedXmlTextView.class });
+				ContainedNafView.class, ContainedXmlTextView.class });
 
 		return toggleLists;
 	}

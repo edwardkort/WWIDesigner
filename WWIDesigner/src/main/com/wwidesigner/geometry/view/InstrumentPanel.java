@@ -521,7 +521,21 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 		Instrument instrument = new Instrument();
 		instrument.setName(nameField.getText());
 		instrument.setDescription(descriptionField.getText());
-		instrument.setLengthType(LengthType.valueOf(lengthTypeField.getText()));
+		// Something really strange happening in the call to the static
+		// LengthType: depending on the order the Constraints, Instrument, and
+		// Tuning are loaded, running an optimization generates an
+		// enum-not-found exception which is irrelevant. This exception is not
+		// thrown in the debugger. The implemented try/catch block "cures" the
+		// problem. Without spending hours fighting the JDAF activity thread
+		// code, this band-aid will have to do.
+		try
+		{
+			String lengthTypeName = lengthTypeField.getText();
+			instrument.setLengthType(LengthType.valueOf(lengthTypeName));
+		}
+		catch (Exception e)
+		{
+		}
 		Mouthpiece mouthpiece = getMouthpiece();
 		if (mouthpiece == null)
 		{
@@ -812,131 +826,56 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 		}
 	}
 
-	private void setMouthpieceWidget(int gridx, int gridy, int gridheight)
+	protected void setMouthpieceWidget(int gridx, int gridy, int gridheight)
 	{
-		GridBagConstraints gbc = new GridBagConstraints();
-		JLabel label;
-		JPanel panel = new JPanel();
-		panel.setLayout(new GridBagLayout());
-		gbc.anchor = GridBagConstraints.NORTHWEST;
-		gbc.gridy = 0;
+		createMouthpieceComponents();
+		layoutMouthpieceComponents(gridx, gridy, gridheight);
+	}
 
-		label = new JLabel("Mouthpiece Position: ");
-		gbc.gridx = 0;
-		gbc.insets = new Insets(10, 0, 0, 0);
-		panel.add(label, gbc);
+	protected void createMouthpieceComponents()
+	{
 		mouthpiecePosition = new JFormattedTextField(formatterFactory);
 		mouthpiecePosition.setColumns(5);
 		mouthpiecePosition.setValue(0.0);
-		gbc.gridx = 1;
-		gbc.insets = new Insets(10, 0, 0, 10);
-		panel.add(mouthpiecePosition, gbc);
-		gbc.insets = new Insets(10, 0, 0, 0);
 
-		label = new JLabel("Beta Factor: ");
-		gbc.gridx = 2;
-		panel.add(label, gbc);
 		beta = new JFormattedTextField(formatterFactory);
 		beta.setColumns(5);
-		gbc.gridx = 3;
-		panel.add(beta, gbc);
-		gbc.insets = new Insets(0, 0, 0, 0);
 
-		++gbc.gridy;
 		fippleButton = new JRadioButton("Fipple Mouthpiece");
 		embouchureHoleButton = new JRadioButton("Embouchure Hole");
 		fippleButton.setSelected(true);
 		mouthpieceTypeGroup = new ButtonGroup();
 		mouthpieceTypeGroup.add(fippleButton);
 		mouthpieceTypeGroup.add(embouchureHoleButton);
-		gbc.gridx = 0;
-		gbc.gridwidth = 2;
-		panel.add(fippleButton, gbc);
-		gbc.gridx = 2;
-		panel.add(embouchureHoleButton, gbc);
 		fippleButton.addActionListener(this);
 		embouchureHoleButton.addActionListener(this);
 
-		gbc.gridwidth = 1;
-		++gbc.gridy;
-		label = new JLabel("Window Length: ");
-		gbc.gridx = 0;
-		panel.add(label, gbc);
 		windowLength = new JFormattedTextField(formatterFactory);
 		windowLength.setColumns(5);
-		gbc.gridx = 1;
-		panel.add(windowLength, gbc);
 
-		label = new JLabel("Outer Diameter: ");
-		gbc.gridx = 2;
-		gbc.gridwidth = 1;
-		panel.add(label, gbc);
 		outerDiameter = new JFormattedTextField(formatterFactory);
 		outerDiameter.setColumns(5);
-		gbc.gridx = 3;
-		panel.add(outerDiameter, gbc);
 
-		++gbc.gridy;
-		label = new JLabel("Window Width: ");
-		gbc.gridx = 0;
-		panel.add(label, gbc);
 		windowWidth = new JFormattedTextField(formatterFactory);
 		windowWidth.setColumns(5);
-		gbc.gridx = 1;
-		panel.add(windowWidth, gbc);
 
-		label = new JLabel("Inner Diameter: ");
-		gbc.gridx = 2;
-		gbc.gridwidth = 1;
-		panel.add(label, gbc);
 		innerDiameter = new JFormattedTextField(formatterFactory);
 		innerDiameter.setColumns(5);
-		gbc.gridx = 3;
-		panel.add(innerDiameter, gbc);
 
-		++gbc.gridy;
-		label = new JLabel("Window Height: ");
-		gbc.gridx = 0;
-		panel.add(label, gbc);
 		windowHeight = new JFormattedTextField(formatterFactory);
 		windowHeight.setColumns(5);
-		gbc.gridx = 1;
-		panel.add(windowHeight, gbc);
 
-		label = new JLabel("Emb Hole Height: ");
-		gbc.gridx = 2;
-		panel.add(label, gbc);
 		embHoleHeight = new JFormattedTextField(formatterFactory);
 		embHoleHeight.setColumns(5);
-		gbc.gridx = 3;
-		panel.add(embHoleHeight, gbc);
 
-		++gbc.gridy;
-		label = new JLabel("Windway Length: ");
-		gbc.gridx = 0;
-		panel.add(label, gbc);
 		windwayLength = new JFormattedTextField(formatterFactory);
 		windwayLength.setColumns(5);
-		gbc.gridx = 1;
-		panel.add(windwayLength, gbc);
 
-		++gbc.gridy;
-		label = new JLabel("Windway Height: ");
-		gbc.gridx = 0;
-		panel.add(label, gbc);
 		windwayHeight = new JFormattedTextField(formatterFactory);
 		windwayHeight.setColumns(5);
-		gbc.gridx = 1;
-		panel.add(windwayHeight, gbc);
 
-		++gbc.gridy;
-		label = new JLabel("Fipple Factor: ");
-		gbc.gridx = 0;
-		panel.add(label, gbc);
 		fippleFactor = new JFormattedTextField(formatterFactory);
 		fippleFactor.setColumns(5);
-		gbc.gridx = 1;
-		panel.add(fippleFactor, gbc);
 
 		outerDiameter.setEnabled(false);
 		innerDiameter.setEnabled(false);
@@ -954,6 +893,103 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 		windwayHeight.addFocusListener(this);
 		fippleFactor.addFocusListener(this);
 		beta.addFocusListener(this);
+	}
+
+	protected void layoutMouthpieceComponents(int gridx, int gridy,
+			int gridheight)
+	{
+		GridBagConstraints gbc = new GridBagConstraints();
+		JLabel label;
+		JPanel panel = new JPanel();
+		panel.setLayout(new GridBagLayout());
+		gbc.anchor = GridBagConstraints.NORTHWEST;
+		gbc.gridy = 0;
+
+		label = new JLabel("Mouthpiece Position: ");
+		gbc.gridx = 0;
+		gbc.insets = new Insets(10, 0, 0, 0);
+		panel.add(label, gbc);
+		gbc.gridx = 1;
+		gbc.insets = new Insets(10, 0, 0, 10);
+		panel.add(mouthpiecePosition, gbc);
+		gbc.insets = new Insets(10, 0, 0, 0);
+
+		label = new JLabel("Beta Factor: ");
+		gbc.gridx = 2;
+		panel.add(label, gbc);
+		gbc.gridx = 3;
+		panel.add(beta, gbc);
+		gbc.insets = new Insets(0, 0, 0, 0);
+
+		++gbc.gridy;
+		gbc.gridx = 0;
+		gbc.gridwidth = 2;
+		panel.add(fippleButton, gbc);
+		gbc.gridx = 2;
+		panel.add(embouchureHoleButton, gbc);
+
+		gbc.gridwidth = 1;
+		++gbc.gridy;
+		label = new JLabel("Window Length: ");
+		gbc.gridx = 0;
+		panel.add(label, gbc);
+		gbc.gridx = 1;
+		panel.add(windowLength, gbc);
+
+		label = new JLabel("Outer Diameter: ");
+		gbc.gridx = 2;
+		gbc.gridwidth = 1;
+		panel.add(label, gbc);
+		gbc.gridx = 3;
+		panel.add(outerDiameter, gbc);
+
+		++gbc.gridy;
+		label = new JLabel("Window Width: ");
+		gbc.gridx = 0;
+		panel.add(label, gbc);
+		gbc.gridx = 1;
+		panel.add(windowWidth, gbc);
+
+		label = new JLabel("Inner Diameter: ");
+		gbc.gridx = 2;
+		gbc.gridwidth = 1;
+		panel.add(label, gbc);
+		gbc.gridx = 3;
+		panel.add(innerDiameter, gbc);
+
+		++gbc.gridy;
+		label = new JLabel("Window Height: ");
+		gbc.gridx = 0;
+		panel.add(label, gbc);
+		gbc.gridx = 1;
+		panel.add(windowHeight, gbc);
+
+		label = new JLabel("Emb Hole Height: ");
+		gbc.gridx = 2;
+		panel.add(label, gbc);
+		gbc.gridx = 3;
+		panel.add(embHoleHeight, gbc);
+
+		++gbc.gridy;
+		label = new JLabel("Windway Length: ");
+		gbc.gridx = 0;
+		panel.add(label, gbc);
+		gbc.gridx = 1;
+		panel.add(windwayLength, gbc);
+
+		++gbc.gridy;
+		label = new JLabel("Windway Height: ");
+		gbc.gridx = 0;
+		panel.add(label, gbc);
+		gbc.gridx = 1;
+		panel.add(windwayHeight, gbc);
+
+		++gbc.gridy;
+		label = new JLabel("Fipple Factor: ");
+		gbc.gridx = 0;
+		panel.add(label, gbc);
+		gbc.gridx = 1;
+		panel.add(fippleFactor, gbc);
 
 		gbc.anchor = GridBagConstraints.NORTHWEST;
 		gbc.gridx = gridx;
@@ -1407,7 +1443,12 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 				for (int row = 0; row < rowCount; row++)
 				{
 					Double spacing = null;
-					double holePosition = (Double) model.getValueAt(row, 1);
+					Double holePosition = (Double) model.getValueAt(row, 1);
+					// Allow for a newly created row without a hole position.
+					if (holePosition == null)
+					{
+						continue;
+					}
 					if (!firstHole)
 					{
 						spacing = holePosition - priorHolePosition;

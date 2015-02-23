@@ -5,36 +5,39 @@
 // Generated on: 2012.07.04 at 12:07:42 PM MDT 
 //
 
-
 package com.wwidesigner.geometry;
 
-
-
 /**
- * <p>Java class for LengthType.
+ * <p>
+ * Java class for LengthType.
  * 
  */
-public enum LengthType {
+public enum LengthType
+{
 
-    MM("mm"),
-    IN("in");
-    private final String value;
+	MM("mm"), FT("ft"), M("m"), CM("cm"), IN("in");
+	private final String value;
 
-    LengthType(String v) {
-        value = v;
-    }
+	LengthType(String v)
+	{
+		value = v;
+	}
 
-    public String value() {
-        return value;
-    }
+	public String value()
+	{
+		return value;
+	}
 
-    public static LengthType fromValue(String v) {
-        for (LengthType c: LengthType.values()) {
-            if (c.value.equals(v)) {
-                return c;
-            }
-        }
-        throw new IllegalArgumentException(v);
-    }
+	public static LengthType fromValue(String v)
+	{
+		for (LengthType c : LengthType.values())
+		{
+			if (c.value.equals(v))
+			{
+				return c;
+			}
+		}
+		throw new IllegalArgumentException(v);
+	}
 
 }

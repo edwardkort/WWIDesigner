@@ -224,7 +224,13 @@ public class FingeringRenderer extends JPanel implements TableCellRenderer,
 	@Override
 	public Dimension getPreferredSize()
 	{
-		int width = mHoles.length * mHoleLength + 45;
+		// Make minimum width equal to a 4-hole flute.
+		int numHoles = mHoles.length;
+		if (numHoles < 4)
+		{
+			numHoles = 4;
+		}
+		int width = numHoles * mHoleLength + 45;
 		int height = mHoleHeight + 14;
 		return new Dimension(width, height);
 	}

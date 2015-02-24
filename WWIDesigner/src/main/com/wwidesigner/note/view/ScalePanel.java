@@ -65,7 +65,7 @@ public class ScalePanel extends JPanel implements KeyListener,
 	private List<DataPopulatedListener> populatedListeners;
 
 	public static final String LOAD_PAGE_ID = "loadData";
-	public static final int DEFAULT_WIDTH = 150;
+	public static final int DEFAULT_WIDTH = 190;
 
 	public ScalePanel()
 	{
@@ -160,7 +160,7 @@ public class ScalePanel extends JPanel implements KeyListener,
 		JScrollPane scrollPane = new JScrollPane(noteTable);
 		scrollPane.setBorder(new LineBorder(Color.BLACK));
 		scrollPane.setPreferredSize(new Dimension(DEFAULT_WIDTH, 200));
-		scrollPane.setMinimumSize(new Dimension(100, 180));
+		scrollPane.setMinimumSize(new Dimension(140, 180));
 		gbc.anchor = GridBagConstraints.NORTHEAST;
 		gbc.gridx = 0;
 		gbc.gridy = 1;
@@ -201,7 +201,7 @@ public class ScalePanel extends JPanel implements KeyListener,
 		model.setDataVector(new Object[60][2], new String[] { "Symbol",
 				"Frequency" });
 		noteTable.getColumn("Frequency").setCellRenderer(
-				new DoubleCellRenderer(6));
+				new DoubleCellRenderer(4));
 
 	}
 
@@ -333,7 +333,7 @@ public class ScalePanel extends JPanel implements KeyListener,
 		columnNames.add("Frequency");
 		model.setDataVector(data, columnNames);
 		noteTable.getColumn("Frequency").setCellRenderer(
-				new DoubleCellRenderer(6));
+				new DoubleCellRenderer(4));
 
 	}
 

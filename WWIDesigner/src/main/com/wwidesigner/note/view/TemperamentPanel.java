@@ -101,7 +101,7 @@ public class TemperamentPanel extends JPanel implements KeyListener,
 			DefaultTableModel model = (DefaultTableModel) ratioList.getModel();
 			model.setDataVector(rows, columns);
 			ratioList.getColumn("Ratio").setCellRenderer(
-					new DoubleCellRenderer(6));
+					new DoubleCellRenderer(5));
 			areRatiosPopulated();
 		}
 	}
@@ -256,7 +256,7 @@ public class TemperamentPanel extends JPanel implements KeyListener,
 	{
 		DefaultTableModel model = (DefaultTableModel) ratioList.getModel();
 		model.setDataVector(new Double[50][1], new String[] { "Ratio" });
-		ratioList.getColumn("Ratio").setCellRenderer(new DoubleCellRenderer(6));
+		ratioList.getColumn("Ratio").setCellRenderer(new DoubleCellRenderer(5));
 	}
 
 	private List<Double> getTableData()

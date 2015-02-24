@@ -14,7 +14,7 @@ import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.filechooser.FileFilter;
+import javax.swing.JScrollPane;
 
 import com.jidesoft.dialog.ButtonEvent;
 import com.jidesoft.dialog.ButtonNames;
@@ -23,6 +23,7 @@ import com.wwidesigner.gui.util.DataPopulatedEvent;
 import com.wwidesigner.gui.util.DataPopulatedListener;
 import com.wwidesigner.gui.util.DataPopulatedProvider;
 import com.wwidesigner.gui.util.MultiLineButton;
+import com.wwidesigner.gui.util.XmlFileChooser;
 import com.wwidesigner.note.Temperament;
 import com.wwidesigner.note.Temperament.StandardTemperament;
 import com.wwidesigner.note.view.TemperamentPanel;
@@ -31,14 +32,17 @@ public class TemperamentPage extends AbstractWizardPage implements
 		DataPopulatedListener, DataProvider, DataPopulatedProvider
 {
 	private JPanel contentPanel;
+	private JScrollPane scrollPane;
 	private TemperamentPanel tempPanel;
+	private TuningWizardDialog parent;
 	private JButton saveButton;
 	private boolean isInitialized;
 
-	public TemperamentPage()
+	public TemperamentPage(TuningWizardDialog parent)
 	{
 		super("Musical Temperament",
 				"Select or create the note intervals (temperament) used in the scale.");
+		this.parent = parent;
 		createWizardContent();
 	}
 
@@ -53,9 +57,10 @@ public class TemperamentPage extends AbstractWizardPage implements
 			loadTemperamentPanel();
 			loadTemperamentButtons();
 			isInitialized = true;
+			scrollPane = new JScrollPane(contentPanel);
 		}
 
-		return contentPanel;
+		return scrollPane;
 	}
 
 	private void loadListButtons()
@@ -132,7 +137,7 @@ public class TemperamentPage extends AbstractWizardPage implements
 			public void actionPerformed(ActionEvent arg0)
 			{
 				Temperament temp = null;
-				JFileChooser chooser = createChooser();
+				JFileChooser chooser = new XmlFileChooser(parent.getCurrentSaveDirectory());
 				int state = chooser.showOpenDialog(getParent());
 				if (state == JFileChooser.APPROVE_OPTION)
 				{
@@ -140,6 +145,7 @@ public class TemperamentPage extends AbstractWizardPage implements
 					temp = tempPanel.loadTemperament(file);
 					if (temp != null)
 					{
+						parent.setCurrentSaveDirectory(file.getParentFile());
 						tempPanel.populateWidgets(temp);
 					}
 				}
@@ -159,7 +165,7 @@ public class TemperamentPage extends AbstractWizardPage implements
 			@Override
 			public void actionPerformed(ActionEvent arg0)
 			{
-				JFileChooser chooser = createChooser();
+				JFileChooser chooser = new XmlFileChooser(parent.getCurrentSaveDirectory());
 				int state = chooser.showSaveDialog(getParent());
 				if (state == JFileChooser.APPROVE_OPTION)
 				{
@@ -181,6 +187,7 @@ public class TemperamentPage extends AbstractWizardPage implements
 						}
 					}
 
+					parent.setCurrentSaveDirectory(file.getParentFile());
 					tempPanel.saveTemperament(file);
 				}
 			}
@@ -188,34 +195,6 @@ public class TemperamentPage extends AbstractWizardPage implements
 		});
 		saveButton.setEnabled(false);
 		return saveButton;
-	}
-
-	private JFileChooser createChooser()
-	{
-		JFileChooser chooser = new JFileChooser();
-		chooser.setFileFilter(new FileFilter()
-		{
-
-			@Override
-			public boolean accept(File file)
-			{
-				if (file.isDirectory())
-				{
-					return true;
-				}
-
-				return file.getName().toLowerCase().endsWith(".xml");
-			}
-
-			@Override
-			public String getDescription()
-			{
-				return "XML Files (*.xml)";
-			}
-
-		});
-
-		return chooser;
 	}
 
 	private void loadTemperamentPanel()

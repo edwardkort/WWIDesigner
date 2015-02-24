@@ -36,6 +36,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 
 import com.jidesoft.grid.JideTable;
+import com.wwidesigner.gui.util.DoubleCellRenderer;
 import com.wwidesigner.gui.util.NoOpTransferHandler;
 import com.wwidesigner.gui.util.NumericTableModel;
 import com.wwidesigner.note.Fingering;
@@ -106,6 +107,14 @@ public class TuningPanel extends FingeringPatternPanel
 	}
 
 	@Override
+	public void resetTableData(int numRows)
+	{
+		super.resetTableData(numRows);
+		fingeringList.getColumn("Frequency").setCellRenderer(
+				new DoubleCellRenderer(4));
+	}
+
+	@Override
 	public boolean loadFromFile(File file)
 	{
 		Tuning tuning = null;
@@ -118,7 +127,7 @@ public class TuningPanel extends FingeringPatternPanel
 				tuning = (Tuning) bindery.unmarshalXml(file, true);
 				if (tuning != null)
 				{
-					loadData(tuning, true);
+					loadData(tuning, false);
 					return true;
 				}
 			}
@@ -230,10 +239,11 @@ public class TuningPanel extends FingeringPatternPanel
 		for (int i = 0; i < model.getRowCount(); i++)
 		{
 			String noteName = (String) model.getValueAt(i, 0);
+			Double freq = (Double) model.getValueAt(i, 1);
 			Fingering fingering = (Fingering) model.getValueAt(i,
 					fingeringColumnIdx);
 			if (noteName != null && noteName.trim().length() > 0
-					&& fingering != null)
+					&& fingering != null && freq != null)
 			{
 				fingeringsPopulated = true;
 				break;

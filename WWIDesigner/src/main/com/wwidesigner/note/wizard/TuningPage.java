@@ -35,6 +35,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 
 import com.jidesoft.dialog.ButtonEvent;
 import com.jidesoft.dialog.ButtonNames;
@@ -54,6 +55,7 @@ public class TuningPage extends AbstractWizardPage implements
 		DataPopulatedProvider, DataPopulatedListener
 {
 	private JPanel contentPanel;
+	private JScrollPane scrollPane;
 	private TuningPanel tuningPanel;
 	private ScalePanel scalePanel;
 	private FingeringPatternPanel fingeringPanel;
@@ -84,9 +86,10 @@ public class TuningPage extends AbstractWizardPage implements
 			setTuningPanel();
 			setFingeringPanel();
 			isInitialized = true;
+			scrollPane = new JScrollPane(contentPanel);
 		}
 
-		return contentPanel;
+		return scrollPane;
 	}
 
 	private void setTuningPanel()
@@ -107,7 +110,7 @@ public class TuningPage extends AbstractWizardPage implements
 		gbc.anchor = GridBagConstraints.CENTER;
 		panel.add(createTuningButtons(), gbc);
 
-		tuningPanel = new TuningPanel( 320 );
+		tuningPanel = new TuningPanel(360);
 		addDataPopulatedListener(this);
 		gbc.gridx = 0;
 		gbc.gridy = 2;
@@ -202,11 +205,13 @@ public class TuningPage extends AbstractWizardPage implements
 			@Override
 			public void actionPerformed(ActionEvent arg0)
 			{
-				JFileChooser chooser = new XmlFileChooser();
+				JFileChooser chooser = new XmlFileChooser(parent
+						.getCurrentSaveDirectory());
 				int state = chooser.showOpenDialog(getParent());
 				if (state == JFileChooser.APPROVE_OPTION)
 				{
 					File file = chooser.getSelectedFile();
+					parent.setCurrentSaveDirectory(file.getParentFile());
 					tuningPanel.loadFromFile(file);
 				}
 			}
@@ -225,7 +230,8 @@ public class TuningPage extends AbstractWizardPage implements
 			@Override
 			public void actionPerformed(ActionEvent arg0)
 			{
-				JFileChooser chooser = new XmlFileChooser();
+				JFileChooser chooser = new XmlFileChooser(parent
+						.getCurrentSaveDirectory());
 				int state = chooser.showSaveDialog(getParent());
 				if (state == JFileChooser.APPROVE_OPTION)
 				{
@@ -247,6 +253,7 @@ public class TuningPage extends AbstractWizardPage implements
 						}
 					}
 
+					parent.setCurrentSaveDirectory(file.getParentFile());
 					tuningPanel.saveFingeringPattern(file);
 				}
 			}
@@ -321,7 +328,8 @@ public class TuningPage extends AbstractWizardPage implements
 			public void actionPerformed(ActionEvent arg0)
 			{
 				Scale scale = null;
-				JFileChooser chooser = new XmlFileChooser();
+				JFileChooser chooser = new XmlFileChooser(parent
+						.getCurrentSaveDirectory());
 				int state = chooser.showOpenDialog(getParent());
 				if (state == JFileChooser.APPROVE_OPTION)
 				{
@@ -329,6 +337,7 @@ public class TuningPage extends AbstractWizardPage implements
 					scale = scalePanel.loadScale(file);
 					if (scale != null)
 					{
+						parent.setCurrentSaveDirectory(file.getParentFile());
 						scalePanel.populateWidgets(scale);
 					}
 				}
@@ -406,11 +415,13 @@ public class TuningPage extends AbstractWizardPage implements
 			@Override
 			public void actionPerformed(ActionEvent arg0)
 			{
-				JFileChooser chooser = new XmlFileChooser();
+				JFileChooser chooser = new XmlFileChooser(parent
+						.getCurrentSaveDirectory());
 				int state = chooser.showOpenDialog(getParent());
 				if (state == JFileChooser.APPROVE_OPTION)
 				{
 					File file = chooser.getSelectedFile();
+					parent.setCurrentSaveDirectory(file.getParentFile());
 					fingeringPanel.loadFromFile(file);
 				}
 			}

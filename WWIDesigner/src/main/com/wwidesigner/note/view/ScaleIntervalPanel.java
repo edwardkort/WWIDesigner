@@ -65,7 +65,7 @@ public class ScaleIntervalPanel extends JPanel implements TableModelListener
 		model.setDataVector(new Object[60][2], new String[] { "Symbol",
 				"Interval" });
 		intervalTable.getColumn("Interval").setCellRenderer(
-				new DoubleCellRenderer(6));
+				new DoubleCellRenderer(5));
 
 	}
 

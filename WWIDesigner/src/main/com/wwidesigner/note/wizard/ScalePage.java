@@ -26,6 +26,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
@@ -48,6 +49,7 @@ public class ScalePage extends AbstractWizardPage implements DataProvider,
 		DataPopulatedProvider, DataPopulatedListener, KeyListener
 {
 	private JPanel contentPanel;
+	private JScrollPane scrollPane;
 	private ScaleIntervalPanel scaleIntervalPanel;
 	private TuningWizardDialog parent;
 	private boolean isInitialized;
@@ -117,9 +119,10 @@ public class ScalePage extends AbstractWizardPage implements DataProvider,
 			setReferencePanel();
 			setScalePanel();
 			isInitialized = true;
+			scrollPane = new JScrollPane(contentPanel);
 		}
 
-		return contentPanel;
+		return scrollPane;
 	}
 
 	private JPanel createListButtons()
@@ -156,7 +159,8 @@ public class ScalePage extends AbstractWizardPage implements DataProvider,
 			@Override
 			public void actionPerformed(ActionEvent arg0)
 			{
-				JFileChooser chooser = new XmlFileChooser();
+				JFileChooser chooser = new XmlFileChooser(parent
+						.getCurrentSaveDirectory());
 				int state = chooser.showSaveDialog(getParent());
 				if (state == JFileChooser.APPROVE_OPTION)
 				{
@@ -178,6 +182,7 @@ public class ScalePage extends AbstractWizardPage implements DataProvider,
 						}
 					}
 
+					parent.setCurrentSaveDirectory(file.getParentFile());
 					scalePanel.saveScale(file);
 				}
 			}
@@ -198,7 +203,8 @@ public class ScalePage extends AbstractWizardPage implements DataProvider,
 			public void actionPerformed(ActionEvent arg0)
 			{
 				Scale scale = null;
-				JFileChooser chooser = new XmlFileChooser();
+				JFileChooser chooser = new XmlFileChooser(parent
+						.getCurrentSaveDirectory());
 				int state = chooser.showOpenDialog(getParent());
 				if (state == JFileChooser.APPROVE_OPTION)
 				{
@@ -206,6 +212,7 @@ public class ScalePage extends AbstractWizardPage implements DataProvider,
 					scale = scalePanel.loadScale(file);
 					if (scale != null)
 					{
+						parent.setCurrentSaveDirectory(file.getParentFile());
 						scalePanel.populateWidgets(scale);
 					}
 				}

@@ -5,7 +5,10 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+
+import com.wwidesigner.geometry.Mouthpiece;
 
 public class NafPanel extends InstrumentPanel
 {
@@ -64,6 +67,67 @@ public class NafPanel extends InstrumentPanel
 		gbc.gridheight = gridheight;
 		gbc.insets = new Insets(0, 0, 10, 10);
 		add(panel, gbc);
+	}
+
+	@Override
+	protected Mouthpiece getMouthpiece()
+	{
+		Mouthpiece mouthpiece = new Mouthpiece();
+		Double value;
+		value = (Double) mouthpiecePosition.getValue();
+		if (value == null)
+		{
+			JOptionPane.showMessageDialog(this,
+					"Splitting-edge position is required.");
+			mouthpiecePosition.requestFocusInWindow();
+			return null;
+		}
+		mouthpiece.setPosition(value);
+		Mouthpiece.Fipple fipple = new Mouthpiece.Fipple();
+		value = (Double) windowLength.getValue();
+		if (value == null || value <= 0.0)
+		{
+			JOptionPane.showMessageDialog(this, "TSH length must be positive.");
+			windowLength.requestFocusInWindow();
+			return null;
+		}
+		fipple.setWindowLength(value);
+		value = (Double) windowWidth.getValue();
+		if (value == null || value <= 0.0)
+		{
+			JOptionPane.showMessageDialog(this, "TSH width must be positive.");
+			windowWidth.requestFocusInWindow();
+			return null;
+		}
+		fipple.setWindowWidth(value);
+		value = (Double) windowHeight.getValue();
+		fipple.setWindowHeight(value);
+		value = (Double) windwayLength.getValue();
+		fipple.setWindwayLength(value);
+		value = (Double) windwayHeight.getValue();
+		if (value == null || value <= 0.0)
+		{
+			JOptionPane
+					.showMessageDialog(this, "Flue height must be positive.");
+			windwayHeight.requestFocusInWindow();
+			return null;
+		}
+		fipple.setWindwayHeight(value);
+		value = (Double) fippleFactor.getValue();
+		if (value == null || value <= 0.0)
+		{
+			JOptionPane.showMessageDialog(this,
+					"Fipple factor must be positive.");
+			fippleFactor.requestFocusInWindow();
+			return null;
+		}
+		fipple.setFippleFactor(value);
+		mouthpiece.setFipple(fipple);
+		mouthpiece.setEmbouchureHole(null);
+		value = (Double) beta.getValue();
+		mouthpiece.setBeta(value);
+
+		return mouthpiece;
 	}
 
 }

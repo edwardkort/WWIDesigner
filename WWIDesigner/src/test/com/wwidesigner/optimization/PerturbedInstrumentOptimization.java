@@ -54,7 +54,7 @@ public class PerturbedInstrumentOptimization
 		FileDataModel fileData = new FileDataModel();
 		fileData.setData(StudyModel.marshal(tuning));
 		fileData.setName(tuning.getName());
-		study.addDataModel(fileData);
+		study.addDataModel(fileData, false);
 	}
 
 	/**

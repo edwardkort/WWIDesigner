@@ -419,10 +419,10 @@ public class WhistleStudyModel extends StudyModel
 	}
 
 	@Override
-	public boolean addDataModel(FileDataModel dataModel) throws Exception
+	public boolean addDataModel(FileDataModel dataModel, boolean isNew) throws Exception
 	{
 		// Process Instrument and Tuning
-		if (super.addDataModel(dataModel))
+		if (super.addDataModel(dataModel, isNew))
 		{
 			return true;
 		}

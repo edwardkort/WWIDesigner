@@ -117,7 +117,6 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 	protected boolean holesArePopulated;
 	protected boolean boreIsPopulated;
 	protected boolean terminationIsPopulated;
-	protected boolean dataIsNew;
 	protected List<DataPopulatedListener> populatedListeners;
 
 	/**
@@ -139,7 +138,6 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 		setTerminationWidget(1, 3, 1);
 		setHoleTableWidget(0, 3, GridBagConstraints.REMAINDER);
 		setBoreTableWidget(1, 4, 1);
-		dataIsNew = true;
 	}
 
 	/**
@@ -163,7 +161,6 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 				if (instrument != null)
 				{
 					loadData(instrument, false);
-					dataIsNew = false;
 					return true;
 				}
 			}
@@ -201,7 +198,6 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 	{
 		if (instrument != null)
 		{
-			dataIsNew = false;
 			dimensionalDecimalPrecision = instrument.getLengthType()
 					.getDecimalPrecision();
 			nameField.setText(instrument.getName());
@@ -512,19 +508,8 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 
 	public Instrument getData()
 	{
-		// Under the covers, the JDAF framework calls this method when the view
-		// is created prior to data population. When this happens, the below if
-		// statement just returns null - with no attempt at data validation.
-		// This fix does not always work.
-		if (dataIsNew)
-		{
-			return null;
-		}
-
 		stopTableEditing(holeList);
 		stopTableEditing(boreList);
-		// The behavior (comment out) is incorrect and corrupts the view.
-		// Another approach is required.
 		if (!nameIsPopulated)
 		{
 			JOptionPane.showMessageDialog(this, "Name field is required.");

@@ -496,7 +496,8 @@ public abstract class StudyModel implements CategoryType
 	 *            - FileDataModel containing instrument or tuning XML.
 	 * @return true iff the dataModel contained valid instrument or tuning XML.
 	 */
-	public boolean addDataModel(FileDataModel dataModel) throws Exception
+	public boolean addDataModel(FileDataModel dataModel, boolean isNew)
+			throws Exception
 	{
 		String data = (String) dataModel.getData().toString();
 		if (data == null || data.length() == 0)
@@ -515,7 +516,10 @@ public abstract class StudyModel implements CategoryType
 			Category category = getCategory(categoryName);
 			category.addSub(dataModel.getName(), dataModel);
 			category.setSelectedSub(dataModel.getName());
-			validHoleCount();
+			if (!isNew)
+			{
+				validHoleCount();
+			}
 			return true;
 		}
 

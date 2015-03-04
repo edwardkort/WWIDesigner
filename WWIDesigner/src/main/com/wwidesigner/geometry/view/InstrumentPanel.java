@@ -28,6 +28,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.awt.event.KeyEvent;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -47,8 +48,11 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
+import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
 import javax.swing.border.LineBorder;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
@@ -56,6 +60,7 @@ import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.text.DefaultFormatter;
+import javax.swing.text.Document;
 import javax.swing.text.JTextComponent;
 
 import com.jidesoft.grid.JideTable;
@@ -371,7 +376,7 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 	 * Test whether all entries in the hole or bore table contain valid data,
 	 * and the table contains the minimum number of rows.
 	 */
-	static protected boolean isTablePopulated(JideTable table, int minimumRows)
+	protected boolean isTablePopulated(JideTable table, int minimumRows)
 	{
 		DefaultTableModel model = (DefaultTableModel) table.getModel();
 		if (model == null || model.getRowCount() < minimumRows)
@@ -383,6 +388,12 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 		{
 			for (int j = 0; j < model.getColumnCount(); j++)
 			{
+				// Third column in holeList is spacing, which is null for the
+				// first row.
+				if (table.equals(holeList) && j == 2)
+				{
+					continue;
+				}
 				if (model.getValueAt(i, j) == null)
 				{
 					return false;
@@ -720,6 +731,49 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 		nameField.setMargin(new Insets(2, 4, 2, 4));
 		nameField.setText("");
 		nameIsPopulated = false;
+		nameField.getKeymap().removeKeyStrokeBinding(
+				KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0));
+		nameField.getDocument().addDocumentListener(new DocumentListener()
+		{
+
+			@Override
+			public void insertUpdate(DocumentEvent e)
+			{
+				processDocumentChange(e);
+			}
+
+			@Override
+			public void removeUpdate(DocumentEvent e)
+			{
+				processDocumentChange(e);
+			}
+
+			@Override
+			public void changedUpdate(DocumentEvent e)
+			{
+				processDocumentChange(e);
+			}
+
+			private void processDocumentChange(DocumentEvent docEvent)
+			{
+				Document doc = docEvent.getDocument();
+				int docLength = doc.getLength();
+
+				if (docLength == 0)
+				{
+					nameField.setBackground(Color.PINK);
+					nameIsPopulated = false;
+				}
+				else
+				{
+					nameField.setBackground(Color.WHITE);
+					nameIsPopulated = true;
+				}
+
+				fireDataStateChanged();
+			}
+
+		});
 		gbc.gridy = 1;
 		gbc.insets = new Insets(0, 15, 0, 0);
 		panel.add(nameField, gbc);
@@ -752,6 +806,10 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 		descriptionField
 				.setMinimumSize(new Dimension(HOLE_TABLE_WIDTH - 30, 20));
 		descriptionField.setText("");
+		descriptionField.getKeymap().removeKeyStrokeBinding(
+				KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0));
+		descriptionField.getDocument().addDocumentListener(
+				new TextFieldChangeListener());
 		gbc.gridy = 1;
 		gbc.insets = new Insets(0, 15, 0, 0);
 		panel.add(descriptionField, gbc);
@@ -780,7 +838,6 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 		lengthTypeField.setEnabled(false);
 		lengthTypeField.setMargin(new Insets(2, 4, 2, 4));
 		lengthTypeField.setText("");
-		nameIsPopulated = false;
 		gbc.gridx = 1;
 		gbc.insets = new Insets(0, 15, 0, 0);
 		panel.add(lengthTypeField, gbc);
@@ -830,14 +887,22 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 		layoutMouthpieceComponents(gridx, gridy, gridheight);
 	}
 
+	protected JFormattedTextField setTextField(int numColumns,
+			Object initialValue)
+	{
+		JFormattedTextField field = new JFormattedTextField(formatterFactory);
+		field.setColumns(numColumns);
+		field.setValue(initialValue);
+		field.getDocument().addDocumentListener(new TextFieldChangeListener());
+
+		return field;
+	}
+
 	protected void createMouthpieceComponents()
 	{
-		mouthpiecePosition = new JFormattedTextField(formatterFactory);
-		mouthpiecePosition.setColumns(5);
-		mouthpiecePosition.setValue(0.0);
+		mouthpiecePosition = setTextField(5, 0.0);
 
-		beta = new JFormattedTextField(formatterFactory);
-		beta.setColumns(5);
+		beta = setTextField(5, null);
 
 		fippleButton = new JRadioButton("Fipple Mouthpiece");
 		embouchureHoleButton = new JRadioButton("Embouchure Hole");
@@ -848,32 +913,15 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 		fippleButton.addActionListener(this);
 		embouchureHoleButton.addActionListener(this);
 
-		windowLength = new JFormattedTextField(formatterFactory);
-		windowLength.setColumns(5);
-
-		outerDiameter = new JFormattedTextField(formatterFactory);
-		outerDiameter.setColumns(5);
-
-		windowWidth = new JFormattedTextField(formatterFactory);
-		windowWidth.setColumns(5);
-
-		innerDiameter = new JFormattedTextField(formatterFactory);
-		innerDiameter.setColumns(5);
-
-		windowHeight = new JFormattedTextField(formatterFactory);
-		windowHeight.setColumns(5);
-
-		embHoleHeight = new JFormattedTextField(formatterFactory);
-		embHoleHeight.setColumns(5);
-
-		windwayLength = new JFormattedTextField(formatterFactory);
-		windwayLength.setColumns(5);
-
-		windwayHeight = new JFormattedTextField(formatterFactory);
-		windwayHeight.setColumns(5);
-
-		fippleFactor = new JFormattedTextField(formatterFactory);
-		fippleFactor.setColumns(5);
+		windowLength = setTextField(5, null);
+		outerDiameter = setTextField(5, null);
+		windowWidth = setTextField(5, null);
+		innerDiameter = setTextField(5, null);
+		windowHeight = setTextField(5, null);
+		embHoleHeight = setTextField(5, null);
+		windwayLength = setTextField(5, null);
+		windwayHeight = setTextField(5, null);
+		fippleFactor = setTextField(5, null);
 
 		outerDiameter.setEnabled(false);
 		innerDiameter.setEnabled(false);
@@ -1005,8 +1053,7 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 		JLabel label = new JLabel("Termination Flange Diameter: ");
 		panel.add(label);
 
-		terminationFlange = new JFormattedTextField(formatterFactory);
-		terminationFlange.setColumns(5);
+		terminationFlange = setTextField(5, null);
 		terminationFlange.addFocusListener(this);
 		panel.add(terminationFlange);
 
@@ -1491,5 +1538,32 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 				listener.dataStateChanged(thisEvent);
 			}
 		}
+	}
+
+	class TextFieldChangeListener implements DocumentListener
+	{
+		@Override
+		public void insertUpdate(DocumentEvent e)
+		{
+			processDocumentChange(e);
+		}
+
+		@Override
+		public void removeUpdate(DocumentEvent e)
+		{
+			processDocumentChange(e);
+		}
+
+		@Override
+		public void changedUpdate(DocumentEvent e)
+		{
+			processDocumentChange(e);
+		}
+
+		private void processDocumentChange(DocumentEvent docEvent)
+		{
+			fireDataStateChanged();
+		}
+
 	}
 }

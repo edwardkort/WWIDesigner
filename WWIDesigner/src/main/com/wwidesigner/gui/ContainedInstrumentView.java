@@ -70,8 +70,16 @@ public class ContainedInstrumentView extends ContainedXmlView
 							.isPopulated(FingeringPatternPanel.SAVE_EVENT_ID);
 					if (dataPopulated != null)
 					{
-						// Data has changed. Enable saving if data is valid.
-						parent.makeDirty(dataPopulated);
+						// In JDAF, a "new" tab will be deleted, when opening a
+						// file-based tab, if it is not dirty. Currently, we
+						// don't know when a tab is "new", but it is set dirty
+						// on creation. Therefore, for now, do not make a tab
+						// not-dirty, if it is dirty.
+						if (!parent.isDirty())
+						{
+							// Data has changed. Enable saving if data is valid.
+							parent.makeDirty(dataPopulated);
+						}
 					}
 				}
 			}

@@ -50,9 +50,9 @@ import com.wwidesigner.optimization.multistart.RandomRangeProcessor;
 public class ObjectiveFunctionOptimizer
 {
 	// Statistics saved from the most recent call to optimizeObjectiveFunction
-	
-	protected static double initialNorm;		// Initial value of objective function.
-	protected static double finalNorm;		// Final value of objective function.
+
+	protected static double initialNorm; // Initial value of objective function.
+	protected static double finalNorm; // Final value of objective function.
 
 	/**
 	 * Print a vector of error values during optimization.
@@ -105,14 +105,12 @@ public class ObjectiveFunctionOptimizer
 		ConvergenceChecker<PointValuePair> convergenceChecker = new SimpleValueChecker(
 				1.e-6, 1.e-14);
 
-		if (objective.getNrDimensions() > objective.getNrNotes())
-		{
-			System.out.print("System is underconstrained, with ");
-			System.out.print(objective.getNrDimensions());
-			System.out.print(" dimensions, and only ");
-			System.out.print(objective.getNrNotes());
-			System.out.print(" notes.");
-		}
+		System.out.print("System has ");
+		System.out.print(objective.getNrDimensions());
+		System.out.print(" optimization variables and ");
+		System.out.print(objective.getNrNotes());
+		System.out.print(" target notes.");
+
 		long startTime = System.currentTimeMillis();
 		double[] startPoint = objective.getInitialPoint();
 		double[] errorVector = objective.getErrorVector(startPoint);
@@ -246,7 +244,7 @@ public class ObjectiveFunctionOptimizer
 		System.out.print("Residual error ratio: ");
 		System.out.println(finalNorm / initialNorm);
 		long elapsedTime = System.currentTimeMillis() - startTime;
-		double elapsedSeconds = 0.001 * (double)elapsedTime;
+		double elapsedSeconds = 0.001 * (double) elapsedTime;
 		System.out.print("Elapsed time: ");
 		System.out.printf("%3.1f", elapsedSeconds);
 		System.out.println(" seconds.");
@@ -390,9 +388,9 @@ public class ObjectiveFunctionOptimizer
 	{
 		return finalNorm;
 	}
-	
+
 	public static double getResidualErrorRatio()
 	{
-		return finalNorm/initialNorm;
+		return finalNorm / initialNorm;
 	}
 }

@@ -675,7 +675,7 @@ public class NafOptimizationRunner extends FileBasedApplication implements
 		message = "Calculating optimized instrument.\nThis may take several minutes.\nPlease be patient.";
 		optActivity.addProgressListener(new BlockingProgressListener(
 				getApplicationUIManager().getWindowsUI(),
-				OPTIMIZE_INSTRUMENT_ACTION_ID, message));
+				"Optimizing", message));
 		action = new ActivityAction(optActivity)
 		{
 			@Override

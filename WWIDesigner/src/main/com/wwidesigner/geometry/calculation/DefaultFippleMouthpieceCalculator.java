@@ -24,10 +24,11 @@ import com.wwidesigner.geometry.BoreSection;
 import com.wwidesigner.geometry.Mouthpiece;
 import com.wwidesigner.math.TransferMatrix;
 import com.wwidesigner.util.PhysicalParameters;
+import com.wwidesigner.util.SimplePhysicalParameters;
 
 public class DefaultFippleMouthpieceCalculator extends MouthpieceCalculator
 {
-	private PhysicalParameters mParams;
+	private SimplePhysicalParameters mParams;
 	private static final double DEFAULT_WINDWAY_HEIGHT = 0.00078740d;
 	private static final double AIR_GAMMA = 1.4018297351222222d;
 
@@ -35,7 +36,12 @@ public class DefaultFippleMouthpieceCalculator extends MouthpieceCalculator
 	public TransferMatrix calcTransferMatrix(Mouthpiece mouthpiece,
 			double waveNumber, PhysicalParameters parameters)
 	{
-		mParams = parameters;
+		// Use a simplified version of PhysicalParameters: no editable pressure
+		// nor CO2 concentration. This mouthpiece representation gives very
+		// wrong answers when they are varied.
+		// The SimplePhysicalParameters gives correct answers for varying
+		// temperature and humidity, all that a NAF make is likely to measure.
+		mParams = new SimplePhysicalParameters(parameters);
 
 		double z0 = parameters.calcZ0(mouthpiece.getBoreDiameter() / 2.);
 		double omega = waveNumber * parameters.getSpeedOfSound();
@@ -73,7 +79,7 @@ public class DefaultFippleMouthpieceCalculator extends MouthpieceCalculator
 
 	protected double calcJYE(Mouthpiece mouthpiece, double omega)
 	{
-		double gamma = AIR_GAMMA;	// mParams.getGamma();
+		double gamma = AIR_GAMMA; // mParams.getGamma();
 		double result = getCharacteristicLength(mouthpiece) / (gamma * omega);
 
 		return result;
@@ -81,7 +87,7 @@ public class DefaultFippleMouthpieceCalculator extends MouthpieceCalculator
 
 	protected double calcJYC(Mouthpiece mouthpiece, double omega)
 	{
-		double gamma = AIR_GAMMA;	// mParams.getGamma();
+		double gamma = AIR_GAMMA; // mParams.getGamma();
 		double speedOfSound = mParams.getSpeedOfSound();
 		double v = 2. * calcHeadspaceVolume(mouthpiece);
 
@@ -99,7 +105,7 @@ public class DefaultFippleMouthpieceCalculator extends MouthpieceCalculator
 		}
 
 		return volume * 1.5; // Multiplier set by eye to fit LightG6HoleNaf
-								//   tuning: 1.5 and subsequent NAFs.
+								// tuning: 1.5 and subsequent NAFs.
 	}
 
 	protected double getSectionVolume(BoreSection section)
@@ -145,7 +151,8 @@ public class DefaultFippleMouthpieceCalculator extends MouthpieceCalculator
 		}
 		else
 		{
-			scaledFippleFactor = mouthpiece.getFipple().getFippleFactor() * ratio;
+			scaledFippleFactor = mouthpiece.getFipple().getFippleFactor()
+					* ratio;
 		}
 
 		return scaledFippleFactor;

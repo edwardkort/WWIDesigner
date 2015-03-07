@@ -521,12 +521,12 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 	{
 		stopTableEditing(holeList);
 		stopTableEditing(boreList);
-		if (!nameIsPopulated)
-		{
-			JOptionPane.showMessageDialog(this, "Name field is required.");
-			nameField.requestFocusInWindow();
-			return null;
-		}
+//		if (!nameIsPopulated)
+//		{
+//			JOptionPane.showMessageDialog(this, "Name field is required.");
+//			nameField.requestFocusInWindow();
+//			return null;
+//		}
 		Instrument instrument = new Instrument();
 		instrument.setName(nameField.getText());
 		instrument.setDescription(descriptionField.getText());
@@ -546,28 +546,28 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 		{
 		}
 		Mouthpiece mouthpiece = getMouthpiece();
-		if (mouthpiece == null)
-		{
-			return null;
-		}
+//		if (mouthpiece == null)
+//		{
+//			return null;
+//		}
 		instrument.setMouthpiece(mouthpiece);
 		List<Hole> holes = getHoleTableData();
-		if (holes == null)
-		{
-			return null;
-		}
+//		if (holes == null)
+//		{
+//			return null;
+//		}
 		instrument.setHole(holes);
 		List<BorePoint> borePoints = getBoreTableData();
-		if (borePoints == null)
-		{
-			return null;
-		}
+//		if (borePoints == null)
+//		{
+//			return null;
+//		}
 		instrument.setBorePoint(borePoints);
 		Termination termination = getTermination();
-		if (termination == null)
-		{
-			return null;
-		}
+//		if (termination == null)
+//		{
+//			return null;
+//		}
 		instrument.setTermination(termination);
 
 		return instrument;

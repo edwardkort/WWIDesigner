@@ -27,7 +27,6 @@ import com.wwidesigner.geometry.Instrument;
 import com.wwidesigner.gui.util.DataOpenException;
 import com.wwidesigner.modelling.CentDeviationEvaluator;
 import com.wwidesigner.modelling.EvaluatorInterface;
-import com.wwidesigner.modelling.GordonCalculator;
 import com.wwidesigner.modelling.InstrumentCalculator;
 import com.wwidesigner.modelling.InstrumentTuner;
 import com.wwidesigner.modelling.NAFCalculator;
@@ -51,9 +50,6 @@ import com.wwidesigner.util.PhysicalParameters;
  */
 public class NafStudyModel extends StudyModel
 {
-	public static final String GORDON_CALC_SUB_CATEGORY_ID = "Gordon calculator";
-	public static final String NAF_CALC_SUB_CATEGORY_ID = "NAF calculator";
-
 	public static final String FIPPLE_OPT_SUB_CATEGORY_ID = FippleFactorObjectiveFunction.DISPLAY_NAME;
 	public static final String HOLESIZE_OPT_SUB_CATEGORY_ID = HoleSizeObjectiveFunction.DISPLAY_NAME;
 	public static final String NO_GROUP_OPT_SUB_CATEGORY_ID = HoleFromTopObjectiveFunction.DISPLAY_NAME;
@@ -88,11 +84,6 @@ public class NafStudyModel extends StudyModel
 	protected void setLocalCategories()
 	{
 		setParams(new PhysicalParameters(72.0, TemperatureType.F));
-		Category calculators = new Category(CALCULATOR_CATEGORY_ID);
-		calculators.addSub(GORDON_CALC_SUB_CATEGORY_ID, null);
-		calculators.addSub(NAF_CALC_SUB_CATEGORY_ID, null);
-		calculators.setSelectedSub(NAF_CALC_SUB_CATEGORY_ID);
-		categories.add(calculators);
 		Category multiStart = new Category(MULTI_START_CATEGORY_ID);
 		multiStart.addSub(NO_MULTI_START_SUB_CATEGORY_ID, null);
 		multiStart.addSub(VARY_FIRST_MULTI_START_SUB_CATEGORY_ID, null);
@@ -115,27 +106,7 @@ public class NafStudyModel extends StudyModel
 				SingleTaperHoleGroupFromTopObjectiveFunction.NAME);
 		categories.add(optimizers);
 		Category constraints = new Category(CONSTRAINTS_CATEGORY_ID);
-		// constraints.addSub(HOLE_0_CONS_SUB_CATEGORY_ID, null);
-		// constraints.addSub(HOLE_6_1_125_SPACING_CONS_SUB_CATEGORY_ID, null);
-		// constraints.addSub(HOLE_6_1_25_SPACING_CONS_SUB_CATEGORY_ID, null);
-		// constraints.addSub(HOLE_6_40_SPACING_CONS_SUB_CATEGORY_ID, null);
-		// constraints.addSub(HOLE_6_1_5_SPACING_CONS_SUB_CATEGORY_ID, null);
-		// constraints.addSub(HOLE_7_CONS_SUB_CATEGORY_ID, null);
 		categories.add(constraints);
-	}
-
-	@Override
-	public boolean canTune() throws Exception
-	{
-		boolean tuningReady = super.canTune();
-		if (tuningReady)
-		{
-			Category calculatorCategory = getCategory(CALCULATOR_CATEGORY_ID);
-			String calculatorSelected = calculatorCategory.getSelectedSub();
-			tuningReady = calculatorSelected != null;
-		}
-
-		return tuningReady;
 	}
 
 	@Override
@@ -323,25 +294,7 @@ public class NafStudyModel extends StudyModel
 	@Override
 	protected InstrumentCalculator getCalculator()
 	{
-		Category calculatorCategory = getCategory(CALCULATOR_CATEGORY_ID);
-		String calculatorSelected = calculatorCategory.getSelectedSub();
-		InstrumentCalculator calculator = null;
-
-		switch (calculatorSelected)
-		{
-			case GORDON_CALC_SUB_CATEGORY_ID:
-				calculator = new GordonCalculator();
-				break;
-			case NAF_CALC_SUB_CATEGORY_ID:
-				calculator = new NAFCalculator();
-				break;
-		}
-
-		if (calculator != null)
-		{
-			calculator.setPhysicalParameters(params);
-		}
-		return calculator;
+		return new NAFCalculator();
 	}
 
 	@Override

@@ -294,7 +294,10 @@ public class NafStudyModel extends StudyModel
 	@Override
 	protected InstrumentCalculator getCalculator()
 	{
-		return new NAFCalculator();
+		InstrumentCalculator calculator = new NAFCalculator();
+		calculator.setPhysicalParameters(params);
+
+		return calculator;
 	}
 
 	@Override
@@ -590,7 +593,8 @@ public class NafStudyModel extends StudyModel
 	}
 
 	@Override
-	public boolean addDataModel(FileDataModel dataModel, boolean isNew) throws Exception
+	public boolean addDataModel(FileDataModel dataModel, boolean isNew)
+			throws Exception
 	{
 		// Process Instrument and Tuning
 		if (super.addDataModel(dataModel, isNew))

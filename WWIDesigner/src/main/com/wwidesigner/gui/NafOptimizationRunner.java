@@ -461,7 +461,7 @@ public class NafOptimizationRunner extends FileBasedApplication implements
 							.getConstraints(xmlString);
 					File leaf = getConstraintsLeafDirectory(constraints);
 					setLastDirectory(leaf);
-					saveData(fileModel);
+					saveDataAs(fileModel);
 					setLastDirectory(priorStartDirectory);
 				}
 				catch (Exception ex)

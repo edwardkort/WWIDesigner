@@ -129,7 +129,7 @@ public class NafOptimizationRunner extends FileBasedApplication implements
 
 	public NafOptimizationRunner()
 	{
-		super("NAF Optimization Runner", TDI_APPLICATION_STYLE);
+		super("Woodwind Instrument Designer", TDI_APPLICATION_STYLE);
 
 		// Set behaviour
 		getApplicationUIManager().setUseJideDockingFramework(true);

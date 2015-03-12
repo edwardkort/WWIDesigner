@@ -21,6 +21,7 @@ package com.wwidesigner.gui;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.prefs.Preferences;
 
 import com.jidesoft.app.framework.file.FileDataModel;
 import com.wwidesigner.geometry.Instrument;
@@ -138,6 +139,29 @@ public class NafStudyModel extends StudyModel
 		isSpecified = dataNumberOfHoles != null && optimizerSelected != null;
 
 		return isSpecified;
+	}
+
+	/**
+	 * Ignores preferences for pressure, co2, and optimizer type, using the
+	 * defaults instead.
+	 */
+	@Override
+	public void setPreferences(Preferences newPreferences)
+	{
+		double currentTemperature = newPreferences.getDouble(
+				OptimizationPreferences.TEMPERATURE_OPT,
+				OptimizationPreferences.DEFAULT_TEMPERATURE);
+		double currentPressure = OptimizationPreferences.DEFAULT_PRESSURE;
+		int currentHumidity = newPreferences.getInt(
+				OptimizationPreferences.HUMIDITY_OPT,
+				OptimizationPreferences.DEFAULT_HUMIDITY);
+		int currentCO2 = OptimizationPreferences.DEFAULT_CO2_FRACTION;
+		double xCO2 = currentCO2 * 1.0e-6;
+		getParams().setProperties(currentTemperature, currentPressure,
+				currentHumidity, xCO2);
+		getParams().printProperties();
+
+		preferredOptimizerType = null;
 	}
 
 	/**

@@ -11,7 +11,6 @@ import java.io.File;
 import java.text.NumberFormat;
 import java.util.prefs.Preferences;
 
-import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
@@ -58,28 +57,15 @@ public class OptimizationPreferences extends PreferencesPane
 	public static final String CONSTRAINTS_DIRECTORY = "Constraints directory";
 	public static final String DEFAULT_CONSTRAINTS_DIRECTORY = "";
 
-	public static final int NrOptimizers = 6; // Including default
 	public static final String OPTIMIZER_TYPE_OPT = "OptimizerType";
 	public static final String OPT_DEFAULT_NAME = "Default";
-	public static final String OPT_BOBYQA_NAME = "BOBYQA";
-	public static final String OPT_CMAES_NAME = "CMAES";
-	public static final String OPT_MULTISTART_NAME = "Multi-Start";
-	public static final String OPT_SIMPLEX_NAME = "Simplex";
-	public static final String OPT_POWELL_NAME = "Powell";
 
 	public static final String LENGTH_TYPE_OPT = "Length Type";
 	public static final String LENGTH_TYPE_DEFAULT = "IN";
 
-	protected static String[] OptimizerName = new String[] { OPT_DEFAULT_NAME,
-			OPT_BOBYQA_NAME, OPT_CMAES_NAME, OPT_MULTISTART_NAME,
-			OPT_SIMPLEX_NAME, OPT_POWELL_NAME };
-
 	JRadioButton nafButton;
 	JRadioButton whistleButton;
 	ButtonGroup studyGroup;
-
-	JRadioButton[] optButton = new JRadioButton[NrOptimizers];
-	ButtonGroup optimizerGroup;
 
 	JSpinner blowingLevelSpinner;
 	SpinnerNumberModel blowingLevel;
@@ -96,7 +82,6 @@ public class OptimizationPreferences extends PreferencesPane
 	LengthTypeComboBox lengthTypeComboBox;
 
 	JTextField generalMessageField;
-	JTextField nafMessageField;
 	JTextField whistleMessageField;
 
 	OptionsTabView optionsPane;
@@ -130,23 +115,12 @@ public class OptimizationPreferences extends PreferencesPane
 
 		constraintsDirChooser = new DirectoryChooserPanel();
 
-		generalMessageField = new JTextField(22);
+		generalMessageField = new JTextField(25);
 		generalMessageField.setEditable(false);
 		generalMessageField.setText("");
-		nafMessageField = new JTextField(35);
-		nafMessageField.setEditable(false);
-		nafMessageField.setText("");
 		whistleMessageField = new JTextField(25);
 		whistleMessageField.setEditable(false);
 		whistleMessageField.setText("");
-
-		optimizerGroup = new ButtonGroup();
-		for (int i = 0; i < NrOptimizers; ++i)
-		{
-			optButton[i] = new JRadioButton(OptimizerName[i]);
-			optimizerGroup.add(optButton[i]);
-		}
-		optButton[0].setSelected(true);
 
 		optionsPane = new OptionsTabView();
 		add(optionsPane);
@@ -186,25 +160,6 @@ public class OptimizationPreferences extends PreferencesPane
 				DEFAULT_CO2_FRACTION);
 		co2Field.setValue(currentCO2);
 
-		String optimizerType = myPreferences.get(OPTIMIZER_TYPE_OPT,
-				OPT_DEFAULT_NAME);
-
-		// Ensure first button, Default, is selected if optimizer name not
-		// found.
-		optButton[0].setSelected(true);
-		for (int i = 1; i < NrOptimizers; ++i)
-		{
-			if (optimizerType.contentEquals(OptimizerName[i]))
-			{
-				optButton[0].setSelected(false);
-				optButton[i].setSelected(true);
-			}
-			else
-			{
-				optButton[i].setSelected(false);
-			}
-		}
-
 		String constraintsPath = myPreferences.get(CONSTRAINTS_DIRECTORY,
 				DEFAULT_CONSTRAINTS_DIRECTORY);
 		constraintsDirChooser.setSelectedDirectory(constraintsPath);
@@ -230,14 +185,6 @@ public class OptimizationPreferences extends PreferencesPane
 		else
 		{
 			studyName = WHISTLE_STUDY_NAME;
-		}
-
-		for (int i = 0; i < NrOptimizers; ++i)
-		{
-			if (optButton[i].isSelected())
-			{
-				optimizerName = OptimizerName[i];
-			}
 		}
 
 		// Update the preferences, and re-set the view's study model.
@@ -287,8 +234,6 @@ public class OptimizationPreferences extends PreferencesPane
 		// Validate the preferences.
 		generalMessageField.setText("");
 		generalMessageField.setForeground(Color.BLACK);
-		nafMessageField.setText("");
-		nafMessageField.setForeground(Color.BLACK);
 		whistleMessageField.setText("");
 		whistleMessageField.setForeground(Color.BLACK);
 
@@ -343,9 +288,9 @@ public class OptimizationPreferences extends PreferencesPane
 				}
 				catch (Exception e)
 				{
-					nafMessageField
+					generalMessageField
 							.setText("Constraints directory location is not valid");
-					nafMessageField.setForeground(Color.RED);
+					generalMessageField.setForeground(Color.RED);
 					throw new ApplicationVetoException();
 				}
 			}
@@ -366,8 +311,8 @@ public class OptimizationPreferences extends PreferencesPane
 		OptionsTabView()
 		{
 			add(new StudyPanel(), "General Study Options");
-			add(new NafPanel(), "NAF Only Options");
-			add(new WhistlePanel(), "Whistle Only Options");
+			add(new NafPanel(), "NAF Study Options");
+			add(new WhistlePanel(), "Whistle Study Options");
 		}
 	}
 
@@ -376,33 +321,47 @@ public class OptimizationPreferences extends PreferencesPane
 		StudyPanel()
 		{
 			setLayout(new GridBagLayout());
+
+			JPanel topPanel = new JPanel();
+			topPanel.setLayout(new GridBagLayout());
 			GridBagConstraints gbc = new GridBagConstraints();
 			gbc.anchor = GridBagConstraints.WEST;
 			gbc.gridx = 0;
 			gbc.gridy = 0;
-			add(nafButton, gbc);
+			topPanel.add(nafButton, gbc);
 			gbc.gridx = 1;
-			add(whistleButton, gbc);
+			topPanel.add(whistleButton, gbc);
 			gbc.gridx = 0;
 			gbc.gridy = 1;
-			add(new JLabel(LENGTH_TYPE_OPT + ": "), gbc);
+			topPanel.add(new JLabel(LENGTH_TYPE_OPT + ": "), gbc);
 			gbc.gridx = 1;
-			add(lengthTypeComboBox, gbc);
+			topPanel.add(lengthTypeComboBox, gbc);
 			gbc.gridx = 0;
 			gbc.gridy = 2;
-			add(new JLabel("Temperature, C: "), gbc);
+			topPanel.add(new JLabel("Temperature, C: "), gbc);
 			gbc.gridx = 1;
-			add(temperatureField, gbc);
+			topPanel.add(temperatureField, gbc);
 			gbc.gridx = 0;
 			gbc.gridy = 3;
-			add(new JLabel("Relative Humidity, %: "), gbc);
+			topPanel.add(new JLabel("Relative Humidity, %: "), gbc);
 			gbc.gridx = 1;
-			add(humidityField, gbc);
+			topPanel.add(humidityField, gbc);
+
 			gbc.gridx = 0;
-			gbc.gridy = 4;
-			gbc.insets = new Insets(10, 0, 5, 0);
-			gbc.gridwidth = 2;
+			gbc.gridy = 0;
 			gbc.anchor = GridBagConstraints.CENTER;
+			add(topPanel, gbc);
+
+			gbc.gridx = 0;
+			gbc.gridy = 1;
+			gbc.anchor = GridBagConstraints.WEST;
+			add(new JLabel(CONSTRAINTS_DIRECTORY + ": "), gbc);
+			gbc.gridy = 2;
+			gbc.anchor = GridBagConstraints.CENTER;
+			add(constraintsDirChooser, gbc);
+			gbc.gridx = 0;
+			gbc.gridy = 3;
+			gbc.insets = new Insets(10, 0, 5, 0);
 			add(generalMessageField, gbc);
 		}
 	}
@@ -415,15 +374,10 @@ public class OptimizationPreferences extends PreferencesPane
 			GridBagConstraints gbc = new GridBagConstraints();
 			gbc.gridx = 0;
 			gbc.gridy = 0;
-			gbc.anchor = GridBagConstraints.WEST;
-			add(new JLabel(CONSTRAINTS_DIRECTORY + ": "), gbc);
-			gbc.gridy = 1;
-			add(constraintsDirChooser, gbc);
-			gbc.gridx = 0;
-			gbc.gridy = 2;
-			gbc.insets = new Insets(10, 0, 5, 0);
 			gbc.anchor = GridBagConstraints.CENTER;
-			add(nafMessageField, gbc);
+			add(new JLabel(
+					"All NAF options are in the General Study Options tab"),
+					gbc);
 		}
 	}
 
@@ -432,71 +386,38 @@ public class OptimizationPreferences extends PreferencesPane
 		WhistlePanel()
 		{
 			setLayout(new GridBagLayout());
+
+			JPanel topPanel = new JPanel();
+			topPanel.setLayout(new GridBagLayout());
 			GridBagConstraints gbc = new GridBagConstraints();
 			gbc.gridx = 0;
 			gbc.gridy = 0;
 			gbc.anchor = GridBagConstraints.WEST;
 			gbc.insets = new Insets(5, 0, 3, 0);
-			add(new JLabel("Blowing Level: "), gbc);
+			topPanel.add(new JLabel("Blowing Level: "), gbc);
 			gbc.gridx = 1;
-			add(blowingLevelSpinner, gbc);
+			topPanel.add(blowingLevelSpinner, gbc);
 
 			gbc.gridx = 0;
 			gbc.gridy = 1;
-			gbc.insets = new Insets(0, 0, 0, 0);
-			add(new JLabel("Pressure, kPa: "), gbc);
+			topPanel.add(new JLabel("Pressure, kPa: "), gbc);
 			gbc.gridx = 1;
-			add(pressureField, gbc);
+			topPanel.add(pressureField, gbc);
 
 			gbc.gridx = 0;
 			gbc.gridy = 2;
-			add(new JLabel("CO2, ppm: "), gbc);
+			topPanel.add(new JLabel("CO2, ppm: "), gbc);
 			gbc.gridx = 1;
-			add(co2Field, gbc);
-
-			gbc.gridx = 2;
-			gbc.gridy = 0;
-			gbc.insets = new Insets(0, 10, 0, 0);
-			gbc.anchor = GridBagConstraints.CENTER;
-			gbc.gridwidth = 2;
-			add(new JLabel("Optimizer Type: "), gbc);
-
-			JPanel optimizerPanel1 = new JPanel();
-			optimizerPanel1.setLayout(new BoxLayout(optimizerPanel1,
-					BoxLayout.Y_AXIS));
-			// optimizerPanel1.add(new JLabel("Optimizer Type:"));
-			// Add all but Powell optimizer to the optimizerPanel.
-			for (int i = 0; i < 3; ++i)
-			{
-				optimizerPanel1.add(optButton[i]);
-			}
-			gbc.gridx = 2;
-			gbc.gridy = 1;
-			gbc.gridheight = 3;
-			gbc.gridwidth = 1;
-			gbc.anchor = GridBagConstraints.WEST;
-			// gbc.insets = new Insets(0, 10, 0, 0);
-			add(optimizerPanel1, gbc);
-
-			JPanel optimizerPanel2 = new JPanel();
-			optimizerPanel2.setLayout(new BoxLayout(optimizerPanel2,
-					BoxLayout.Y_AXIS));
-			// Add all but Powell optimizer to the optimizerPanel.
-			for (int i = 3; i < NrOptimizers - 1; ++i)
-			{
-				optimizerPanel2.add(optButton[i]);
-			}
-			gbc.gridx = 3;
-			gbc.gridy = 1;
-			gbc.gridheight = 2;
-			gbc.insets = new Insets(0, 0, 0, 0);
-			add(optimizerPanel2, gbc);
+			topPanel.add(co2Field, gbc);
 
 			gbc.gridx = 0;
-			gbc.gridy = 4;
-			gbc.insets = new Insets(10, 0, 5, 0);
-			gbc.gridwidth = 4;
+			gbc.gridy = 0;
 			gbc.anchor = GridBagConstraints.CENTER;
+			add(topPanel, gbc);
+
+			gbc.gridx = 0;
+			gbc.gridy = 1;
+			gbc.insets = new Insets(10, 0, 5, 0);
 			add(whistleMessageField, gbc);
 		}
 	}

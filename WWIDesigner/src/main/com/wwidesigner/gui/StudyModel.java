@@ -1032,31 +1032,6 @@ public abstract class StudyModel implements CategoryType
 		{
 			preferredOptimizerType = null;
 		}
-		else if (optimizerPreference
-				.contentEquals(OptimizationPreferences.OPT_BOBYQA_NAME))
-		{
-			preferredOptimizerType = BaseObjectiveFunction.OptimizerType.BOBYQAOptimizer;
-		}
-		else if (optimizerPreference
-				.contentEquals(OptimizationPreferences.OPT_CMAES_NAME))
-		{
-			preferredOptimizerType = BaseObjectiveFunction.OptimizerType.CMAESOptimizer;
-		}
-		else if (optimizerPreference
-				.contentEquals(OptimizationPreferences.OPT_MULTISTART_NAME))
-		{
-			preferredOptimizerType = BaseObjectiveFunction.OptimizerType.MultiStartOptimizer;
-		}
-		else if (optimizerPreference
-				.contentEquals(OptimizationPreferences.OPT_SIMPLEX_NAME))
-		{
-			preferredOptimizerType = BaseObjectiveFunction.OptimizerType.SimplexOptimizer;
-		}
-		else if (optimizerPreference
-				.contentEquals(OptimizationPreferences.OPT_POWELL_NAME))
-		{
-			preferredOptimizerType = BaseObjectiveFunction.OptimizerType.PowellOptimizer;
-		}
 		else
 		{
 			preferredOptimizerType = null;

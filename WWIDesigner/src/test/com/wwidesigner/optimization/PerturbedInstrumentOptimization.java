@@ -67,7 +67,7 @@ public class PerturbedInstrumentOptimization
 		FileDataModel fileData = new FileDataModel();
 		fileData.setData(study.getDefaultConstraints());
 		fileData.setName("Default");
-		study.addDataModel(fileData);
+		study.addDataModel(fileData, true);
 	}
 
 	/**
@@ -132,7 +132,7 @@ public class PerturbedInstrumentOptimization
 		fileData.setName(instrumentName);
 		if (! study.replaceDataModel(fileData))
 		{
-			study.addDataModel(fileData);
+			study.addDataModel(fileData, true);
 		}
 	}
 

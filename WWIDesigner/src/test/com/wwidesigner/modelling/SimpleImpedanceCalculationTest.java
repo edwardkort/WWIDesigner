@@ -33,12 +33,13 @@ public class SimpleImpedanceCalculationTest
 					.getInstance().unmarshalXml(instrumentFile_NAF, true, true);
 			PhysicalParameters params = new PhysicalParameters(74.,
 					TemperatureType.F);
-			InstrumentCalculator calculator = new GordonCalculator(instrument, params);
+			InstrumentCalculator calculator = new NAFCalculator(instrument, params);
 			Tuning tuning = (Tuning)NoteBindFactory.getInstance().unmarshalXml(tuningFile_NAF, true, true);
 			
 			for (Fingering fingering : tuning.getFingering()) {
 				calculator.calcZ(fingering);
 			}
+			System.out.println("Test successful.");
 		}
 		catch (Exception ex)
 		{

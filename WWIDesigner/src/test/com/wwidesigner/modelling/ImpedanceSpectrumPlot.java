@@ -10,8 +10,6 @@ import org.apache.commons.math3.complex.Complex;
 
 import com.wwidesigner.geometry.Instrument;
 import com.wwidesigner.geometry.bind.GeometryBindFactory;
-import com.wwidesigner.modelling.ImpedanceSpectrum;
-import com.wwidesigner.modelling.GordonCalculator;
 import com.wwidesigner.note.Fingering;
 import com.wwidesigner.note.Tuning;
 import com.wwidesigner.note.bind.NoteBindFactory;
@@ -43,7 +41,8 @@ public class ImpedanceSpectrumPlot
 					TemperatureType.C);
 			Instrument instrument = plot
 					.getInstrumentFromXml(inputInstrumentXML);
-			InstrumentCalculator calculator = new GordonCalculator(instrument,params);
+			InstrumentCalculator calculator = new NAFCalculator(instrument,
+					params);
 
 			Tuning tuning = plot.getTuningFromXml(inputTuningXML);
 			Fingering fingering = tuning.getFingering().get(0);

@@ -4,21 +4,22 @@
 package com.wwidesigner.gui;
 
 import java.awt.Color;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.io.File;
 import java.text.NumberFormat;
 import java.util.prefs.Preferences;
 
-import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
-import javax.swing.JComboBox;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JSpinner;
+import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
-import javax.swing.SwingConstants;
 
 import com.jidesoft.app.framework.ApplicationVetoException;
 import com.jidesoft.app.framework.DataView;
@@ -27,7 +28,7 @@ import com.jidesoft.app.framework.gui.DialogResponse;
 import com.jidesoft.app.framework.gui.GUIApplication;
 import com.jidesoft.app.framework.gui.PreferencesPane;
 import com.wwidesigner.gui.util.DirectoryChooserPanel;
-import com.wwidesigner.util.Constants.LengthType;
+import com.wwidesigner.util.view.LengthTypeComboBox;
 
 /**
  * Dialog pane to display/modify preferences for the optimization application.
@@ -56,28 +57,15 @@ public class OptimizationPreferences extends PreferencesPane
 	public static final String CONSTRAINTS_DIRECTORY = "Constraints directory";
 	public static final String DEFAULT_CONSTRAINTS_DIRECTORY = "";
 
-	public static final int NrOptimizers = 6; // Including default
 	public static final String OPTIMIZER_TYPE_OPT = "OptimizerType";
 	public static final String OPT_DEFAULT_NAME = "Default";
-	public static final String OPT_BOBYQA_NAME = "BOBYQA";
-	public static final String OPT_CMAES_NAME = "CMAES";
-	public static final String OPT_MULTISTART_NAME = "Multi-Start";
-	public static final String OPT_SIMPLEX_NAME = "Simplex";
-	public static final String OPT_POWELL_NAME = "Powell";
 
 	public static final String LENGTH_TYPE_OPT = "Length Type";
 	public static final String LENGTH_TYPE_DEFAULT = "IN";
 
-	protected static String[] OptimizerName = new String[] { OPT_DEFAULT_NAME,
-			OPT_BOBYQA_NAME, OPT_CMAES_NAME, OPT_MULTISTART_NAME,
-			OPT_SIMPLEX_NAME, OPT_POWELL_NAME };
-
 	JRadioButton nafButton;
 	JRadioButton whistleButton;
 	ButtonGroup studyGroup;
-
-	JRadioButton[] optButton = new JRadioButton[NrOptimizers];
-	ButtonGroup optimizerGroup;
 
 	JSpinner blowingLevelSpinner;
 	SpinnerNumberModel blowingLevel;
@@ -91,20 +79,19 @@ public class OptimizationPreferences extends PreferencesPane
 	JFormattedTextField topHoleRatioField;
 	DirectoryChooserPanel constraintsDirChooser;
 
-	JComboBox<LengthType> lengthTypeComboBox;
+	LengthTypeComboBox lengthTypeComboBox;
 
-	JTextField messageField;
+	JTextField generalMessageField;
+	JTextField whistleMessageField;
+
+	OptionsTabView optionsPane;
 
 	@Override
 	protected void initializeComponents(DialogRequest request)
 	{
 		// Setup dialog components.
 
-		JPanel studyPanel = new JPanel();
-		studyPanel.setLayout(new BoxLayout(studyPanel, BoxLayout.Y_AXIS));
-
 		nafButton = new JRadioButton("NAF Study");
-		nafButton.setSelected(true);
 		whistleButton = new JRadioButton("Whistle Study");
 		studyGroup = new ButtonGroup();
 		studyGroup.add(nafButton);
@@ -113,23 +100,8 @@ public class OptimizationPreferences extends PreferencesPane
 		blowingLevel = new SpinnerNumberModel(DEFAULT_BLOWING_LEVEL, 0, 10, 1);
 		blowingLevelSpinner = new JSpinner(blowingLevel);
 		blowingLevelSpinner.setName("Blowing Level");
-		lengthTypeComboBox = new JComboBox<LengthType>(LengthType.values());
-		((JLabel) lengthTypeComboBox.getRenderer())
-				.setHorizontalAlignment(SwingConstants.CENTER);
+		lengthTypeComboBox = new LengthTypeComboBox();
 
-		studyPanel.add(nafButton);
-		studyPanel.add(whistleButton);
-		studyPanel.add(new JLabel(" "));
-		studyPanel.add(new JLabel(LENGTH_TYPE_OPT + ":"));
-		studyPanel.add(lengthTypeComboBox);
-		studyPanel.add(new JLabel(" "));
-		studyPanel.add(new JLabel("Blowing Level:"));
-		studyPanel.add(blowingLevelSpinner);
-		studyPanel.add(new JLabel(" "));
-		studyPanel.add(new JLabel(" "));
-
-		JPanel airPanel = new JPanel();
-		airPanel.setLayout(new BoxLayout(airPanel, BoxLayout.Y_AXIS));
 		floatFormat = NumberFormat.getNumberInstance();
 		floatFormat.setMinimumFractionDigits(1);
 		temperatureField = new JFormattedTextField(floatFormat);
@@ -140,63 +112,20 @@ public class OptimizationPreferences extends PreferencesPane
 		pressureField.setColumns(5);
 		humidityField.setColumns(5);
 		co2Field.setColumns(5);
-		JLabel temperatureLabel = new JLabel("Temperature, C:");
-		JLabel pressureLabel = new JLabel("Pressure, kPa:");
-		JLabel humidityLabel = new JLabel("Relative Humidity, %:");
-		JLabel co2Label = new JLabel("CO2, ppm:");
-		temperatureLabel.setLabelFor(temperatureField);
-		pressureLabel.setLabelFor(pressureField);
-		humidityLabel.setLabelFor(humidityField);
-		co2Label.setLabelFor(co2Field);
-		airPanel.add(temperatureLabel);
-		airPanel.add(temperatureField);
-		airPanel.add(pressureLabel);
-		airPanel.add(pressureField);
-		airPanel.add(humidityLabel);
-		airPanel.add(humidityField);
-		airPanel.add(co2Label);
-		airPanel.add(co2Field);
 
-		JPanel constraintsDirPanel = new JPanel();
 		constraintsDirChooser = new DirectoryChooserPanel();
-		constraintsDirPanel.add(new JLabel(CONSTRAINTS_DIRECTORY + ": "));
-		constraintsDirPanel.add(constraintsDirChooser);
 
-		messageField = new JTextField();
-		messageField.setEditable(false);
-		messageField.setText("");
-		airPanel.add(messageField);
+		generalMessageField = new JTextField(25);
+		generalMessageField.setEditable(false);
+		generalMessageField.setText("");
+		whistleMessageField = new JTextField(25);
+		whistleMessageField.setEditable(false);
+		whistleMessageField.setText("");
 
-		JPanel optimizerPanel = new JPanel();
-		optimizerPanel
-				.setLayout(new BoxLayout(optimizerPanel, BoxLayout.Y_AXIS));
-		optimizerPanel.add(new JLabel("Optimizer Type:"));
+		optionsPane = new OptionsTabView();
+		add(optionsPane);
 
-		optimizerGroup = new ButtonGroup();
-
-		for (int i = 0; i < NrOptimizers; ++i)
-		{
-			optButton[i] = new JRadioButton(OptimizerName[i]);
-			optimizerGroup.add(optButton[i]);
-		}
-		optButton[0].setSelected(true);
-
-		// Add all but Powell optimizer to the optimizerPanel.
-		for (int i = 0; i < NrOptimizers - 1; ++i)
-		{
-			optimizerPanel.add(optButton[i]);
-		}
-
-		JPanel optionsPanel = new JPanel();
-		optionsPanel.setLayout(new BoxLayout(optionsPanel, BoxLayout.X_AXIS));
-		optionsPanel.add(studyPanel);
-		optionsPanel.add(airPanel);
-		optionsPanel.add(optimizerPanel);
-
-		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-		this.add(optionsPanel);
-		this.add(constraintsDirPanel);
-		this.add(messageField);
+		setDefaultStudy();
 	}
 
 	@Override
@@ -231,32 +160,13 @@ public class OptimizationPreferences extends PreferencesPane
 				DEFAULT_CO2_FRACTION);
 		co2Field.setValue(currentCO2);
 
-		String optimizerType = myPreferences.get(OPTIMIZER_TYPE_OPT,
-				OPT_DEFAULT_NAME);
-
-		// Ensure first button, Default, is selected if optimizer name not
-		// found.
-		optButton[0].setSelected(true);
-		for (int i = 1; i < NrOptimizers; ++i)
-		{
-			if (optimizerType.contentEquals(OptimizerName[i]))
-			{
-				optButton[0].setSelected(false);
-				optButton[i].setSelected(true);
-			}
-			else
-			{
-				optButton[i].setSelected(false);
-			}
-		}
-
 		String constraintsPath = myPreferences.get(CONSTRAINTS_DIRECTORY,
 				DEFAULT_CONSTRAINTS_DIRECTORY);
 		constraintsDirChooser.setSelectedDirectory(constraintsPath);
 
 		String dimensionType = myPreferences.get(LENGTH_TYPE_OPT,
 				LENGTH_TYPE_DEFAULT);
-		lengthTypeComboBox.setSelectedItem(LengthType.valueOf(dimensionType));
+		lengthTypeComboBox.setSelectedLengthType(dimensionType);
 	}
 
 	@Override
@@ -277,14 +187,6 @@ public class OptimizationPreferences extends PreferencesPane
 			studyName = WHISTLE_STUDY_NAME;
 		}
 
-		for (int i = 0; i < NrOptimizers; ++i)
-		{
-			if (optButton[i].isSelected())
-			{
-				optimizerName = OptimizerName[i];
-			}
-		}
-
 		// Update the preferences, and re-set the view's study model.
 
 		myPreferences.put(STUDY_MODEL_OPT, studyName);
@@ -303,9 +205,8 @@ public class OptimizationPreferences extends PreferencesPane
 		myPreferences.put(CONSTRAINTS_DIRECTORY,
 				constraintsDirChooser.getSelectedDirectory());
 
-		LengthType dimensionType = (LengthType) lengthTypeComboBox
-				.getSelectedItem();
-		myPreferences.put(LENGTH_TYPE_OPT, dimensionType.name());
+		String dimensionType = lengthTypeComboBox.getSelectedLengthTypeName();
+		myPreferences.put(LENGTH_TYPE_OPT, dimensionType);
 
 		DataView[] views = application.getFocusedViews();
 		for (DataView view : views)
@@ -331,37 +232,42 @@ public class OptimizationPreferences extends PreferencesPane
 			DialogResponse response) throws ApplicationVetoException
 	{
 		// Validate the preferences.
-		messageField.setText("");
-		messageField.setForeground(Color.BLACK);
+		generalMessageField.setText("");
+		generalMessageField.setForeground(Color.BLACK);
+		whistleMessageField.setText("");
+		whistleMessageField.setForeground(Color.BLACK);
 
 		double currentTemperature = ((Number) temperatureField.getValue())
 				.doubleValue();
 		if (currentTemperature < 0 || currentTemperature > 50)
 		{
-			messageField.setText("Temperature must be between 0 and 50 C.");
-			messageField.setForeground(Color.RED);
+			generalMessageField
+					.setText("Temperature must be between 0 and 50 C.");
+			generalMessageField.setForeground(Color.RED);
 			throw new ApplicationVetoException();
 		}
 		double currentPressure = ((Number) pressureField.getValue())
 				.doubleValue();
 		if (currentPressure < 10 || currentPressure > 150)
 		{
-			messageField.setText("Pressure must be between 10 and 150 kPa.");
-			messageField.setForeground(Color.RED);
+			whistleMessageField
+					.setText("Pressure must be between 10 and 150 kPa.");
+			whistleMessageField.setForeground(Color.RED);
 			throw new ApplicationVetoException();
 		}
 		int currentHumidity = ((Number) humidityField.getValue()).intValue();
 		if (currentHumidity < 0 || currentHumidity > 100)
 		{
-			messageField.setText("Humidity must be between 0 and 100%.");
-			messageField.setForeground(Color.RED);
+			generalMessageField.setText("Humidity must be between 0 and 100%.");
+			generalMessageField.setForeground(Color.RED);
 			throw new ApplicationVetoException();
 		}
 		int currentCO2 = ((Number) co2Field.getValue()).intValue();
 		if (currentCO2 < 0 || currentCO2 > 100000)
 		{
-			messageField.setText("CO2 must be between 0 and 100,000 ppm.");
-			messageField.setForeground(Color.RED);
+			whistleMessageField
+					.setText("CO2 must be between 0 and 100,000 ppm.");
+			whistleMessageField.setForeground(Color.RED);
 			throw new ApplicationVetoException();
 		}
 		if (nafButton.isSelected())
@@ -382,12 +288,138 @@ public class OptimizationPreferences extends PreferencesPane
 				}
 				catch (Exception e)
 				{
-					messageField
+					generalMessageField
 							.setText("Constraints directory location is not valid");
-					messageField.setForeground(Color.RED);
+					generalMessageField.setForeground(Color.RED);
 					throw new ApplicationVetoException();
 				}
 			}
 		}
 	}
+
+	/**
+	 * Convenience method so that the application can be distributed with any of
+	 * the studies as the initial default.
+	 */
+	protected void setDefaultStudy()
+	{
+		nafButton.setSelected(true);
+	}
+
+	class OptionsTabView extends JTabbedPane
+	{
+		OptionsTabView()
+		{
+			add(new StudyPanel(), "General Study Options");
+			add(new NafPanel(), "NAF Study Options");
+			add(new WhistlePanel(), "Whistle Study Options");
+		}
+	}
+
+	class StudyPanel extends JPanel
+	{
+		StudyPanel()
+		{
+			setLayout(new GridBagLayout());
+
+			JPanel topPanel = new JPanel();
+			topPanel.setLayout(new GridBagLayout());
+			GridBagConstraints gbc = new GridBagConstraints();
+			gbc.anchor = GridBagConstraints.WEST;
+			gbc.gridx = 0;
+			gbc.gridy = 0;
+			topPanel.add(nafButton, gbc);
+			gbc.gridx = 1;
+			topPanel.add(whistleButton, gbc);
+			gbc.gridx = 0;
+			gbc.gridy = 1;
+			topPanel.add(new JLabel(LENGTH_TYPE_OPT + ": "), gbc);
+			gbc.gridx = 1;
+			topPanel.add(lengthTypeComboBox, gbc);
+			gbc.gridx = 0;
+			gbc.gridy = 2;
+			topPanel.add(new JLabel("Temperature, C: "), gbc);
+			gbc.gridx = 1;
+			topPanel.add(temperatureField, gbc);
+			gbc.gridx = 0;
+			gbc.gridy = 3;
+			topPanel.add(new JLabel("Relative Humidity, %: "), gbc);
+			gbc.gridx = 1;
+			topPanel.add(humidityField, gbc);
+
+			gbc.gridx = 0;
+			gbc.gridy = 0;
+			gbc.anchor = GridBagConstraints.CENTER;
+			add(topPanel, gbc);
+
+			gbc.gridx = 0;
+			gbc.gridy = 1;
+			gbc.anchor = GridBagConstraints.WEST;
+			add(new JLabel(CONSTRAINTS_DIRECTORY + ": "), gbc);
+			gbc.gridy = 2;
+			gbc.anchor = GridBagConstraints.CENTER;
+			add(constraintsDirChooser, gbc);
+			gbc.gridx = 0;
+			gbc.gridy = 3;
+			gbc.insets = new Insets(10, 0, 5, 0);
+			add(generalMessageField, gbc);
+		}
+	}
+
+	class NafPanel extends JPanel
+	{
+		NafPanel()
+		{
+			setLayout(new GridBagLayout());
+			GridBagConstraints gbc = new GridBagConstraints();
+			gbc.gridx = 0;
+			gbc.gridy = 0;
+			gbc.anchor = GridBagConstraints.CENTER;
+			add(new JLabel(
+					"All NAF options are in the General Study Options tab"),
+					gbc);
+		}
+	}
+
+	class WhistlePanel extends JPanel
+	{
+		WhistlePanel()
+		{
+			setLayout(new GridBagLayout());
+
+			JPanel topPanel = new JPanel();
+			topPanel.setLayout(new GridBagLayout());
+			GridBagConstraints gbc = new GridBagConstraints();
+			gbc.gridx = 0;
+			gbc.gridy = 0;
+			gbc.anchor = GridBagConstraints.WEST;
+			gbc.insets = new Insets(5, 0, 3, 0);
+			topPanel.add(new JLabel("Blowing Level: "), gbc);
+			gbc.gridx = 1;
+			topPanel.add(blowingLevelSpinner, gbc);
+
+			gbc.gridx = 0;
+			gbc.gridy = 1;
+			topPanel.add(new JLabel("Pressure, kPa: "), gbc);
+			gbc.gridx = 1;
+			topPanel.add(pressureField, gbc);
+
+			gbc.gridx = 0;
+			gbc.gridy = 2;
+			topPanel.add(new JLabel("CO2, ppm: "), gbc);
+			gbc.gridx = 1;
+			topPanel.add(co2Field, gbc);
+
+			gbc.gridx = 0;
+			gbc.gridy = 0;
+			gbc.anchor = GridBagConstraints.CENTER;
+			add(topPanel, gbc);
+
+			gbc.gridx = 0;
+			gbc.gridy = 1;
+			gbc.insets = new Insets(10, 0, 5, 0);
+			add(whistleMessageField, gbc);
+		}
+	}
+
 }

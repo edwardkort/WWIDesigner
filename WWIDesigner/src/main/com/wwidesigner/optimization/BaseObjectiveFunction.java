@@ -40,7 +40,8 @@ import com.wwidesigner.optimization.multistart.AbstractRangeProcessor;
 public abstract class BaseObjectiveFunction implements MultivariateFunction,
 		UnivariateFunction
 {
-	// The Intent denotes the use of the ObjectiveFunction based on it Constraints
+	// The Intent denotes the use of the ObjectiveFunction based on it
+	// Constraints
 	// content.
 	public static final int OPTIMIZATION_INTENT = 0;
 	public static final int BLANK_CONSTRAINTS_INTENT = 1;
@@ -157,17 +158,21 @@ public abstract class BaseObjectiveFunction implements MultivariateFunction,
 
 	/**
 	 * Calculate an error norm from an error vector, as the sum of squares.
+	 * Weight each squared error by the optimization weight from each Fingering.
 	 * 
 	 * @param errorVector
 	 * @return sum of squared errors
 	 */
-	public static double calcNorm(double[] errorVector)
+	public double calcNorm(double[] errorVector)
 	{
 		double norm = 0.0;
-		for (double error : errorVector)
+		for (int i = 0; i < errorVector.length; i++)
 		{
-			norm += error * error;
+			double err = errorVector[i];
+			int weight = fingeringTargets.get(i).getOptimizationWeight();
+			norm += err * err * weight;
 		}
+
 		return norm;
 	}
 

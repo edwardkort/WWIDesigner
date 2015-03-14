@@ -208,7 +208,7 @@ public class StudyView extends DataViewPane implements EventSubscriber
 				case NafOptimizationRunner.FILE_OPENED_EVENT_ID:
 					try
 					{
-						study.addDataModel(source);
+						study.addDataModel(source, false);
 					}
 					catch (Exception ex)
 					{
@@ -313,7 +313,7 @@ public class StudyView extends DataViewPane implements EventSubscriber
 			FileDataModel data = (FileDataModel) app.newData("xml");
 			data.setData(xmlData);
 			data.setDirty(true);
-			study.addDataModel(data);
+			study.addDataModel(data, true);
 			updateView();
 		}
 	}
@@ -385,7 +385,7 @@ public class StudyView extends DataViewPane implements EventSubscriber
 			{
 				try
 				{
-					study.addDataModel((FileDataModel) model);
+					study.addDataModel((FileDataModel) model, false);
 				}
 				catch (Exception ex)
 				{

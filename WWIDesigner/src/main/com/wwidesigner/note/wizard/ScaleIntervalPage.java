@@ -15,6 +15,7 @@ import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 
 import com.jidesoft.dialog.ButtonEvent;
 import com.jidesoft.dialog.ButtonNames;
@@ -34,6 +35,7 @@ public class ScaleIntervalPage extends AbstractWizardPage implements
 		DataProvider, DataPopulatedProvider, DataPopulatedListener
 {
 	private JPanel contentPanel;
+	private JScrollPane scrollPane;
 	private ScaleIntervalPanel scaleIntervalPanel;
 	private ScaleSymbolListPanel symbolsPanel;
 	private TemperamentPanel temperamentPanel;
@@ -63,9 +65,10 @@ public class ScaleIntervalPage extends AbstractWizardPage implements
 			setScaleIntervalPanel();
 			setIntervalPanel();
 			isInitialized = true;
+			scrollPane = new JScrollPane(contentPanel);
 		}
 
-		return contentPanel;
+		return scrollPane;
 	}
 
 	private void setScaleIntervalPanel()
@@ -188,7 +191,8 @@ public class ScaleIntervalPage extends AbstractWizardPage implements
 			public void actionPerformed(ActionEvent arg0)
 			{
 				ScaleSymbolList symbols = null;
-				JFileChooser chooser = new XmlFileChooser();
+				JFileChooser chooser = new XmlFileChooser(parent
+						.getCurrentSaveDirectory());
 				int state = chooser.showOpenDialog(getParent());
 				if (state == JFileChooser.APPROVE_OPTION)
 				{
@@ -196,6 +200,7 @@ public class ScaleIntervalPage extends AbstractWizardPage implements
 					symbols = symbolsPanel.loadSymbolList(file);
 					if (symbols != null)
 					{
+						parent.setCurrentSaveDirectory(file.getParentFile());
 						symbolsPanel.populateWidgets(symbols);
 					}
 				}
@@ -272,7 +277,8 @@ public class ScaleIntervalPage extends AbstractWizardPage implements
 			public void actionPerformed(ActionEvent arg0)
 			{
 				Temperament temp = null;
-				JFileChooser chooser = new XmlFileChooser();
+				JFileChooser chooser = new XmlFileChooser(parent
+						.getCurrentSaveDirectory());
 				int state = chooser.showOpenDialog(getParent());
 				if (state == JFileChooser.APPROVE_OPTION)
 				{
@@ -280,6 +286,7 @@ public class ScaleIntervalPage extends AbstractWizardPage implements
 					temp = temperamentPanel.loadTemperament(file);
 					if (temp != null)
 					{
+						parent.setCurrentSaveDirectory(file.getParentFile());
 						temperamentPanel.populateWidgets(temp);
 					}
 				}

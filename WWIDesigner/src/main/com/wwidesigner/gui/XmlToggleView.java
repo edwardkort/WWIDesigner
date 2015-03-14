@@ -63,6 +63,10 @@ public class XmlToggleView extends DataViewPane
 	@Override
 	public void updateModel(DataModel dataModel)
 	{
+		if (currentView == null)
+		{
+			return;
+		}
 		if (dataModel instanceof BasicDataModel)
 		{
 			String text = currentView.getText();

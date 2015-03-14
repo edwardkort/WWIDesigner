@@ -33,6 +33,7 @@ import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 
 import com.jidesoft.dialog.ButtonEvent;
 import com.jidesoft.dialog.ButtonNames;
@@ -48,12 +49,14 @@ public class FingeringPatternPage extends AbstractWizardPage implements
 		DataPopulatedListener, DataProvider, DataPopulatedProvider
 {
 	private JPanel contentPanel;
+	private JScrollPane scrollPane;
 	private FingeringPatternPanel fingeringPanel;
+	private TuningWizardDialog parent;
 	private JButton newButton;
 	private JButton saveButton;
 	private boolean isInitialized;
 
-	public FingeringPatternPage()
+	public FingeringPatternPage(TuningWizardDialog parent)
 	{
 		super(
 				"Fingering Pattern",
@@ -61,6 +64,7 @@ public class FingeringPatternPage extends AbstractWizardPage implements
 						+ "Set the number of holes before creating a New fingering pattern. "
 						+ "Click on a fingering to initial editing (red outline); "
 						+ "Hit Esc to cancel editing, Enter to accept edits.");
+		this.parent = parent;
 		createWizardContent();
 	}
 
@@ -75,9 +79,10 @@ public class FingeringPatternPage extends AbstractWizardPage implements
 			loadFingeringPanel();
 			loadFingeringButtons();
 			isInitialized = true;
+			scrollPane = new JScrollPane(contentPanel);
 		}
 
-		return contentPanel;
+		return scrollPane;
 	}
 
 	@Override
@@ -160,11 +165,13 @@ public class FingeringPatternPage extends AbstractWizardPage implements
 			@Override
 			public void actionPerformed(ActionEvent arg0)
 			{
-				JFileChooser chooser = new XmlFileChooser();
+				JFileChooser chooser = new XmlFileChooser(parent
+						.getCurrentSaveDirectory());
 				int state = chooser.showOpenDialog(getParent());
 				if (state == JFileChooser.APPROVE_OPTION)
 				{
 					File file = chooser.getSelectedFile();
+					parent.setCurrentSaveDirectory(file.getParentFile());
 					fingeringPanel.loadFromFile(file);
 				}
 			}
@@ -246,7 +253,8 @@ public class FingeringPatternPage extends AbstractWizardPage implements
 			@Override
 			public void actionPerformed(ActionEvent arg0)
 			{
-				JFileChooser chooser = new XmlFileChooser();
+				JFileChooser chooser = new XmlFileChooser(parent
+						.getCurrentSaveDirectory());
 				int state = chooser.showSaveDialog(getParent());
 				if (state == JFileChooser.APPROVE_OPTION)
 				{
@@ -268,6 +276,7 @@ public class FingeringPatternPage extends AbstractWizardPage implements
 						}
 					}
 
+					parent.setCurrentSaveDirectory(file.getParentFile());
 					fingeringPanel.saveFingeringPattern(file);
 				}
 			}

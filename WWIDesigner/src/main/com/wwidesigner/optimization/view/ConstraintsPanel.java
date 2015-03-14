@@ -2,13 +2,12 @@ package com.wwidesigner.optimization.view;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.text.NumberFormat;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -18,11 +17,12 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
-import javax.swing.SwingConstants;
+import javax.swing.KeyStroke;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.table.AbstractTableModel;
-import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableCellEditor;
+import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 import javax.swing.text.Document;
@@ -30,7 +30,9 @@ import javax.swing.text.Document;
 import com.wwidesigner.gui.util.DataChangedEvent;
 import com.wwidesigner.gui.util.DataChangedListener;
 import com.wwidesigner.gui.util.DataChangedProvider;
+import com.wwidesigner.gui.util.NumberFormatTableCellRenderer;
 import com.wwidesigner.optimization.Constraint;
+import com.wwidesigner.optimization.ConstraintType;
 import com.wwidesigner.optimization.Constraints;
 
 public class ConstraintsPanel extends JPanel implements DataChangedProvider
@@ -38,10 +40,12 @@ public class ConstraintsPanel extends JPanel implements DataChangedProvider
 	private Constraints constraints;
 	private GridBagConstraints gbc = new GridBagConstraints();
 	private int gridy = 0;
-	private int decimalPrecision = 5;
+	private int dimensionalDecimalPrecision;
+	private int dimensionlessDecimalPrecision = 4;
 	private List<DataChangedListener> dataChangedListeners;
 	private Dimension panelDimension = new Dimension(780, 150);
 	private int[] columnWidth = new int[] { 500, 110, 85, 85 };
+	private JTable[] constraintTables;
 
 	public ConstraintsPanel(Constraints constraints)
 	{
@@ -56,6 +60,8 @@ public class ConstraintsPanel extends JPanel implements DataChangedProvider
 	public void setConstraintValues(Constraints constraints)
 	{
 		this.constraints = constraints;
+		dimensionalDecimalPrecision = constraints.getDimensionType()
+				.getDecimalPrecision();
 		setLayout(new GridBagLayout());
 		setMetadataValues();
 		setConstraintsValues();
@@ -63,7 +69,26 @@ public class ConstraintsPanel extends JPanel implements DataChangedProvider
 
 	public Constraints getConstraintValues()
 	{
+		stopEditing();
 		return constraints;
+	}
+
+	protected void stopEditing()
+	{
+		if (constraintTables != null)
+		{
+			for (JTable table : constraintTables)
+			{
+				if (table != null)
+				{
+					TableCellEditor editor = table.getCellEditor();
+					if (editor != null)
+					{
+						editor.stopCellEditing();
+					}
+				}
+			}
+		}
 	}
 
 	public void setPanelDimension(int width, int height)
@@ -84,6 +109,8 @@ public class ConstraintsPanel extends JPanel implements DataChangedProvider
 	{
 		Set<String> categories = constraints.getCategories();
 		gbc.gridx = 0;
+		constraintTables = new JTable[categories.size()];
+		int catIndex = 0;
 		for (String category : categories)
 		{
 			JPanel panel = new JPanel();
@@ -96,6 +123,7 @@ public class ConstraintsPanel extends JPanel implements DataChangedProvider
 			JTable table = new JTable(
 					new ConstraintTableModel(constraintValues));
 			configureTable(table);
+			constraintTables[catIndex++] = table;
 			JScrollPane scrollPane = new JScrollPane(table);
 			scrollPane.setPreferredSize(panelDimension);
 			panel.add(scrollPane, BorderLayout.CENTER);
@@ -131,6 +159,9 @@ public class ConstraintsPanel extends JPanel implements DataChangedProvider
 		// Require a non-blank name field
 		final JTextField constraintsNameField = new JTextField(50);
 		constraintsNameField.setText(constraints.getConstraintsName());
+		// Remove ENTER_KEY action, handled by document listener
+		constraintsNameField.getKeymap().removeKeyStrokeBinding(
+				KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0));
 		constraintsNameField.getDocument().addDocumentListener(
 				new DocumentListener()
 				{
@@ -211,8 +242,9 @@ public class ConstraintsPanel extends JPanel implements DataChangedProvider
 		ubCol.setPreferredWidth(columnWidth[3]);
 
 		// Set number format
-		lbCol.setCellRenderer(new NumberFormatCellRenderer());
-		ubCol.setCellRenderer(new NumberFormatCellRenderer());
+		TableCellRenderer renderer = new NumberFormatCellRenderer();
+		lbCol.setCellRenderer(renderer);
+		ubCol.setCellRenderer(renderer);
 
 		// Set single cell selection
 		table.setColumnSelectionAllowed(false);
@@ -353,23 +385,26 @@ public class ConstraintsPanel extends JPanel implements DataChangedProvider
 
 	}
 
-	class NumberFormatCellRenderer extends DefaultTableCellRenderer
+	class NumberFormatCellRenderer extends NumberFormatTableCellRenderer
 	{
-		public Component getTableCellRendererComponent(JTable table,
-				Object value, boolean isSelected, boolean hasFocus, int row,
-				int col)
+		@Override
+		public int getDecimalPrecision(JTable table, int row, int col)
 		{
-			JLabel label = (JLabel) super.getTableCellRendererComponent(table,
-					value, isSelected, hasFocus, row, col);
-			label.setHorizontalAlignment(SwingConstants.RIGHT);
-			NumberFormat format = NumberFormat.getNumberInstance();
-			format.setMinimumFractionDigits(decimalPrecision);
-			label.setText(value == null ? "" : format.format(value));
-
-			return label;
+			ConstraintTableModel model = (ConstraintTableModel) table
+					.getModel();
+			Object dimensionType = model.getValueAt(row, 1);
+			if (ConstraintType.DIMENSIONLESS.toString().equals(dimensionType))
+			{
+				return dimensionlessDecimalPrecision;
+			}
+			else
+			{
+				return dimensionalDecimalPrecision;
+			}
 		}
 	}
 
+	@Override
 	public void addDataChangedListener(DataChangedListener listener)
 	{
 		if (dataChangedListeners == null)
@@ -378,6 +413,15 @@ public class ConstraintsPanel extends JPanel implements DataChangedProvider
 		}
 
 		dataChangedListeners.add(listener);
+	}
+
+	@Override
+	public void removeDataChangedListener(DataChangedListener listener)
+	{
+		if (dataChangedListeners != null)
+		{
+			dataChangedListeners.remove(listener);
+		}
 	}
 
 	private void fireDataChangedEvent()

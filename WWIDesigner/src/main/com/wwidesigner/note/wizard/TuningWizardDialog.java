@@ -21,8 +21,10 @@ package com.wwidesigner.note.wizard;
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.HeadlessException;
+import java.awt.Toolkit;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.File;
 
 import javax.swing.SwingUtilities;
 
@@ -37,6 +39,9 @@ import com.wwidesigner.gui.util.DataPopulatedProvider;
 
 public class TuningWizardDialog extends WizardDialog
 {
+	private static final int PREFERRED_WIDTH = 1100;
+	private static final int PREFERRED_HEIGHT = 800;
+	private File currentSaveDirectory;
 
 	public TuningWizardDialog(Frame owner, String title, boolean modal)
 			throws HeadlessException
@@ -46,11 +51,11 @@ public class TuningWizardDialog extends WizardDialog
 		PageList pages = new PageList();
 
 		AbstractWizardPage page1 = new WelcomePage();
-		AbstractWizardPage page2 = new ScaleSymbolPage();
-		AbstractWizardPage page3 = new TemperamentPage();
+		AbstractWizardPage page2 = new ScaleSymbolPage(this);
+		AbstractWizardPage page3 = new TemperamentPage(this);
 		AbstractWizardPage page4 = new ScaleIntervalPage(this);
 		AbstractWizardPage page5 = new ScalePage(this);
-		AbstractWizardPage page6 = new FingeringPatternPage();
+		AbstractWizardPage page6 = new FingeringPatternPage(this);
 		AbstractWizardPage page7 = new TuningPage(this);
 
 		pages.append(page1);
@@ -71,10 +76,8 @@ public class TuningWizardDialog extends WizardDialog
 		addDataPopulatedDependency(page6, page7);
 
 		setStepsPaneNavigable(true);
-		setPreferredSize(new Dimension(1024, 768));
-		pack();
-		setResizable(true); // for wizard, it's better to make it not resizable.
-		JideSwingUtilities.globalCenterWindow(this);
+
+		setScreenSize();
 
 		addWindowListener(new WindowAdapter()
 		{
@@ -84,6 +87,21 @@ public class TuningWizardDialog extends WizardDialog
 				dispose();
 			}
 		});
+	}
+
+	/**
+	 * Ensures that the preferred wizard dimensions (invoking no scrollbars in
+	 * the widget pages) fit within the existing screen size.
+	 */
+	private void setScreenSize()
+	{
+		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		int width = Math.min(screenSize.width, PREFERRED_WIDTH);
+		int height = Math.min(screenSize.height, PREFERRED_HEIGHT);
+		setPreferredSize(new Dimension(width, height));
+		pack();
+		setResizable(true); // for wizard, it's better to make it not resizable.
+		JideSwingUtilities.globalCenterWindow(this);
 	}
 
 	private void addDataPopulatedDependency(AbstractWizardPage provider,
@@ -100,9 +118,16 @@ public class TuningWizardDialog extends WizardDialog
 		return ((DataProvider) page).getPageData();
 	}
 
-	/**
-	 * @param args
-	 */
+	public File getCurrentSaveDirectory()
+	{
+		return currentSaveDirectory;
+	}
+
+	public void setCurrentSaveDirectory(File currentSaveDirectory)
+	{
+		this.currentSaveDirectory = currentSaveDirectory;
+	}
+
 	public static void main(String[] args)
 	{
 		com.jidesoft.utils.Lm.verifyLicense("Edward Kort", "WWIDesigner",

@@ -12,6 +12,12 @@ public class XmlFileChooser extends JFileChooser
 		setFileFilter(new XmlFileFilter());
 	}
 
+	public XmlFileChooser(File currentDirectory)
+	{
+		super(currentDirectory);
+		setFileFilter(new XmlFileFilter());
+	}
+
 	class XmlFileFilter extends FileFilter
 	{
 		@Override

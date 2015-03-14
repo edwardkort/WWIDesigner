@@ -21,13 +21,13 @@ package com.wwidesigner.gui;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.prefs.Preferences;
 
 import com.jidesoft.app.framework.file.FileDataModel;
 import com.wwidesigner.geometry.Instrument;
 import com.wwidesigner.gui.util.DataOpenException;
 import com.wwidesigner.modelling.CentDeviationEvaluator;
 import com.wwidesigner.modelling.EvaluatorInterface;
-import com.wwidesigner.modelling.GordonCalculator;
 import com.wwidesigner.modelling.InstrumentCalculator;
 import com.wwidesigner.modelling.InstrumentTuner;
 import com.wwidesigner.modelling.NAFCalculator;
@@ -51,9 +51,6 @@ import com.wwidesigner.util.PhysicalParameters;
  */
 public class NafStudyModel extends StudyModel
 {
-	public static final String GORDON_CALC_SUB_CATEGORY_ID = "Gordon calculator";
-	public static final String NAF_CALC_SUB_CATEGORY_ID = "NAF calculator";
-
 	public static final String FIPPLE_OPT_SUB_CATEGORY_ID = FippleFactorObjectiveFunction.DISPLAY_NAME;
 	public static final String HOLESIZE_OPT_SUB_CATEGORY_ID = HoleSizeObjectiveFunction.DISPLAY_NAME;
 	public static final String NO_GROUP_OPT_SUB_CATEGORY_ID = HoleFromTopObjectiveFunction.DISPLAY_NAME;
@@ -88,11 +85,6 @@ public class NafStudyModel extends StudyModel
 	protected void setLocalCategories()
 	{
 		setParams(new PhysicalParameters(72.0, TemperatureType.F));
-		Category calculators = new Category(CALCULATOR_CATEGORY_ID);
-		calculators.addSub(GORDON_CALC_SUB_CATEGORY_ID, null);
-		calculators.addSub(NAF_CALC_SUB_CATEGORY_ID, null);
-		calculators.setSelectedSub(NAF_CALC_SUB_CATEGORY_ID);
-		categories.add(calculators);
 		Category multiStart = new Category(MULTI_START_CATEGORY_ID);
 		multiStart.addSub(NO_MULTI_START_SUB_CATEGORY_ID, null);
 		multiStart.addSub(VARY_FIRST_MULTI_START_SUB_CATEGORY_ID, null);
@@ -115,27 +107,7 @@ public class NafStudyModel extends StudyModel
 				SingleTaperHoleGroupFromTopObjectiveFunction.NAME);
 		categories.add(optimizers);
 		Category constraints = new Category(CONSTRAINTS_CATEGORY_ID);
-		// constraints.addSub(HOLE_0_CONS_SUB_CATEGORY_ID, null);
-		// constraints.addSub(HOLE_6_1_125_SPACING_CONS_SUB_CATEGORY_ID, null);
-		// constraints.addSub(HOLE_6_1_25_SPACING_CONS_SUB_CATEGORY_ID, null);
-		// constraints.addSub(HOLE_6_40_SPACING_CONS_SUB_CATEGORY_ID, null);
-		// constraints.addSub(HOLE_6_1_5_SPACING_CONS_SUB_CATEGORY_ID, null);
-		// constraints.addSub(HOLE_7_CONS_SUB_CATEGORY_ID, null);
 		categories.add(constraints);
-	}
-
-	@Override
-	public boolean canTune() throws Exception
-	{
-		boolean tuningReady = super.canTune();
-		if (tuningReady)
-		{
-			Category calculatorCategory = getCategory(CALCULATOR_CATEGORY_ID);
-			String calculatorSelected = calculatorCategory.getSelectedSub();
-			tuningReady = calculatorSelected != null;
-		}
-
-		return tuningReady;
 	}
 
 	@Override
@@ -167,6 +139,29 @@ public class NafStudyModel extends StudyModel
 		isSpecified = dataNumberOfHoles != null && optimizerSelected != null;
 
 		return isSpecified;
+	}
+
+	/**
+	 * Ignores preferences for pressure, co2, and optimizer type, using the
+	 * defaults instead.
+	 */
+	@Override
+	public void setPreferences(Preferences newPreferences)
+	{
+		double currentTemperature = newPreferences.getDouble(
+				OptimizationPreferences.TEMPERATURE_OPT,
+				OptimizationPreferences.DEFAULT_TEMPERATURE);
+		double currentPressure = OptimizationPreferences.DEFAULT_PRESSURE;
+		int currentHumidity = newPreferences.getInt(
+				OptimizationPreferences.HUMIDITY_OPT,
+				OptimizationPreferences.DEFAULT_HUMIDITY);
+		int currentCO2 = OptimizationPreferences.DEFAULT_CO2_FRACTION;
+		double xCO2 = currentCO2 * 1.0e-6;
+		getParams().setProperties(currentTemperature, currentPressure,
+				currentHumidity, xCO2);
+		getParams().printProperties();
+
+		preferredOptimizerType = null;
 	}
 
 	/**
@@ -323,24 +318,9 @@ public class NafStudyModel extends StudyModel
 	@Override
 	protected InstrumentCalculator getCalculator()
 	{
-		Category calculatorCategory = getCategory(CALCULATOR_CATEGORY_ID);
-		String calculatorSelected = calculatorCategory.getSelectedSub();
-		InstrumentCalculator calculator = null;
+		InstrumentCalculator calculator = new NAFCalculator();
+		calculator.setPhysicalParameters(params);
 
-		switch (calculatorSelected)
-		{
-			case GORDON_CALC_SUB_CATEGORY_ID:
-				calculator = new GordonCalculator();
-				break;
-			case NAF_CALC_SUB_CATEGORY_ID:
-				calculator = new NAFCalculator();
-				break;
-		}
-
-		if (calculator != null)
-		{
-			calculator.setPhysicalParameters(params);
-		}
 		return calculator;
 	}
 
@@ -433,8 +413,8 @@ public class NafStudyModel extends StudyModel
 					else if (numberOfHoles == 7)
 					{
 						lowerBound = new double[] { 0.2, 0.25, 0.0203, 0.0203,
-								0.0203, 0.0203, 0.0203, 0.0005, 0.012, 0.002,
-								0.002, 0.002, 0.002, 0.002, 0.002, 0.002 };
+								0.0203, 0.0203, 0.0203, 0.0005, 0.002, 0.002,
+								0.002, 0.002, 0.002, 0.002, 0.002 };
 						upperBound = new double[] { 0.7, 0.50, 0.05, 0.05, 0.1,
 								0.05, 0.05, 0.003, 0.014, 0.014, 0.014, 0.014,
 								0.014, 0.008, 0.008 };
@@ -507,9 +487,9 @@ public class NafStudyModel extends StudyModel
 					else if (numberOfHoles == 7)
 					{
 						lowerBound = new double[] { 0.2, 0.25, 0.0203, 0.0203,
-								0.0203, 0.0203, 0.0203, 0.0005, 0.012, 0.002,
-								0.002, 0.002, 0.002, 0.002, 0.002, 0.002, 0.8,
-								0.0, 0.0 };
+								0.0203, 0.0203, 0.0203, 0.0005, 0.002, 0.002,
+								0.002, 0.002, 0.002, 0.002, 0.002, 0.8, 0.0,
+								0.0 };
 						upperBound = new double[] { 0.7, 0.50, 0.05, 0.05, 0.1,
 								0.05, 0.05, 0.003, 0.014, 0.014, 0.014, 0.014,
 								0.014, 0.008, 0.008, 1.2, 1.0, 1.0 };
@@ -584,14 +564,16 @@ public class NafStudyModel extends StudyModel
 			if (multiStartSelected == VARY_FIRST_MULTI_START_SUB_CATEGORY_ID)
 			{
 				GridRangeProcessor rangeProcessor = new GridRangeProcessor(
-						lowerBound, upperBound, new int[] { 0 }, 30);
+						objective.getLowerBounds(), objective.getUpperBounds(),
+						new int[] { 0 }, 30);
 				objective.setRangeProcessor(rangeProcessor);
 				objective.setMaxEvaluations(30 * objective.getMaxEvaluations());
 			}
 			else if (multiStartSelected == VARY_ALL_MULTI_START_SUB_CATEGORY_ID)
 			{
 				GridRangeProcessor rangeProcessor = new GridRangeProcessor(
-						lowerBound, upperBound, null, 30);
+						objective.getLowerBounds(), objective.getUpperBounds(),
+						null, 30);
 				objective.setRangeProcessor(rangeProcessor);
 				objective.setMaxEvaluations(30 * objective.getMaxEvaluations());
 			}
@@ -606,10 +588,8 @@ public class NafStudyModel extends StudyModel
 	{
 		Map<String, Class<? extends ContainedXmlView>> defaultMap = new HashMap<String, Class<? extends ContainedXmlView>>();
 
-		defaultMap.put(INSTRUMENT_CATEGORY_ID, ContainedXmlTextView.class);
-		// defaultMap.put(INSTRUMENT_CATEGORY_ID,
-		// ContainedInstrumentView.class);
-		defaultMap.put(TUNING_CATEGORY_ID, ContainedXmlTextView.class);
+		defaultMap.put(INSTRUMENT_CATEGORY_ID, ContainedNafView.class);
+		defaultMap.put(TUNING_CATEGORY_ID, ContainedNafTuningView.class);
 		defaultMap.put(CONSTRAINTS_CATEGORY_ID, ConstraintsEditorView.class);
 
 		Class<? extends ContainedXmlView> defaultClass = defaultMap
@@ -628,15 +608,20 @@ public class NafStudyModel extends StudyModel
 
 		toggleLists.put(CONSTRAINTS_CATEGORY_ID, new Class[] {
 				ContainedXmlTextView.class, ConstraintsEditorView.class });
+		toggleLists.put(TUNING_CATEGORY_ID, new Class[] {
+				ContainedNafTuningView.class, ContainedXmlTextView.class });
+		toggleLists.put(INSTRUMENT_CATEGORY_ID, new Class[] {
+				ContainedNafView.class, ContainedXmlTextView.class });
 
 		return toggleLists;
 	}
 
 	@Override
-	public boolean addDataModel(FileDataModel dataModel) throws Exception
+	public boolean addDataModel(FileDataModel dataModel, boolean isNew)
+			throws Exception
 	{
 		// Process Instrument and Tuning
-		if (super.addDataModel(dataModel))
+		if (super.addDataModel(dataModel, isNew))
 		{
 			return true;
 		}

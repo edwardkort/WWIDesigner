@@ -1,8 +1,10 @@
 package com.wwidesigner.gui;
 
 import java.awt.Component;
+import java.util.prefs.Preferences;
 
 import com.jidesoft.app.framework.gui.DataViewPane;
+import com.wwidesigner.util.Constants.LengthType;
 
 /**
  * This class represents a data view that will be displayed within a
@@ -21,6 +23,21 @@ public abstract class ContainedXmlView
 	public ContainedXmlView(DataViewPane parent)
 	{
 		this.parent = parent;
+	}
+
+	/**
+	 * Returns the LengthType specified in the application preferences.
+	 * 
+	 * @return If not set (in the Options dialog), returns the default
+	 *         LengthType.
+	 */
+	protected LengthType getApplicationLengthType()
+	{
+		Preferences preferences = parent.getApplication().getPreferences();
+		String lengthTypeName = preferences.get(
+				OptimizationPreferences.LENGTH_TYPE_OPT,
+				OptimizationPreferences.LENGTH_TYPE_DEFAULT);
+		return LengthType.valueOf(lengthTypeName);
 	}
 
 	/**

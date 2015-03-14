@@ -35,8 +35,9 @@ import com.wwidesigner.note.Note;
 import com.wwidesigner.note.Tuning;
 
 /**
- * Display a tabular report comparing the target/measured tuning
- * to the predicted tuning for an instrument.
+ * Display a tabular report comparing the target/measured tuning to the
+ * predicted tuning for an instrument.
+ * 
  * @author Burton Patkau
  * 
  */
@@ -46,74 +47,75 @@ public class TuningComparisonTable extends DefaultTableModel
 	DecimalFormat format_0;
 	DecimalFormat format_00;
 	// Flags controlling which columns to display.
-	boolean tgtHasFnom  = false;
+	boolean tgtHasFnom = false;
 	boolean predHasFnom = false;
-	boolean tgtHasFmax  = false;
+	boolean tgtHasFmax = false;
 	boolean predHasFmax = false;
-	boolean tgtHasFmin  = false;
+	boolean tgtHasFmin = false;
 	boolean predHasFmin = false;
 
 	public TuningComparisonTable(String title)
 	{
 		this.title = title;
-		format_0  = new DecimalFormat("#0.0");
+		format_0 = new DecimalFormat("#0.0");
 		format_00 = new DecimalFormat("#0.00");
 	}
-	
-	protected void setColumns( Tuning target, Tuning predicted )
+
+	protected void setColumns(Tuning target, Tuning predicted)
 	{
-		tgtHasFnom  = false;
+		tgtHasFnom = false;
 		predHasFnom = false;
-		tgtHasFmax  = false;
+		tgtHasFmax = false;
 		predHasFmax = false;
-		tgtHasFmin  = false;
+		tgtHasFmin = false;
 		predHasFmin = false;
-		List<Fingering> tgtFingering  = target.getFingering();
+		List<Fingering> tgtFingering = target.getFingering();
 		List<Fingering> predFingering = predicted.getFingering();
 		Note tgtNote;
 		Note predNote;
 
 		assert tgtFingering.size() == predFingering.size();
-		for ( int i = 0; i < tgtFingering.size(); i++ )
+		for (int i = 0; i < tgtFingering.size(); i++)
 		{
-			tgtNote  = tgtFingering.get(i).getNote();
+			tgtNote = tgtFingering.get(i).getNote();
 			predNote = predFingering.get(i).getNote();
 			assert tgtNote.getName() == predNote.getName();
-			if ( tgtNote != null )
+			if (tgtNote != null)
 			{
-				if ( tgtNote.getFrequency() != null )
+				if (tgtNote.getFrequency() != null)
 				{
 					tgtHasFnom = true;
 				}
-				if ( tgtNote.getFrequencyMax() != null )
+				if (tgtNote.getFrequencyMax() != null)
 				{
 					tgtHasFmax = true;
 				}
-				if ( tgtNote.getFrequencyMin() != null )
+				if (tgtNote.getFrequencyMin() != null)
 				{
 					tgtHasFmin = true;
 				}
 			}
-			if ( predNote != null )
+			if (predNote != null)
 			{
-				if ( predNote.getFrequencyMax() != null )
+				if (predNote.getFrequencyMax() != null)
 				{
 					predHasFmax = true;
 				}
-				if ( predNote.getFrequencyMin() != null )
+				if (predNote.getFrequencyMin() != null)
 				{
 					predHasFmin = true;
 				}
 			}
-			if ( tgtNote != null && predNote != null
-				&& tgtNote.getFrequency() != null && predNote.getFrequency() != null
-				&& tgtNote.getFrequency() != predNote.getFrequency() )
+			if (tgtNote != null && predNote != null
+					&& tgtNote.getFrequency() != null
+					&& predNote.getFrequency() != null
+					&& tgtNote.getFrequency() != predNote.getFrequency())
 			{
 				predHasFnom = true;
 			}
 		}
 	}
-	
+
 	protected void addHeadings()
 	{
 		addColumn("Note");
@@ -154,10 +156,10 @@ public class TuningComparisonTable extends DefaultTableModel
 			}
 		}
 	}
-	
+
 	protected String formatted(Double f)
 	{
-		if ( f == null )
+		if (f == null)
 		{
 			return "N/A";
 		}
@@ -168,14 +170,18 @@ public class TuningComparisonTable extends DefaultTableModel
 	}
 
 	/**
-	 * Collect the data necessary to tabulate the predicted tuning for an instrument.
-	 * Following this call, use showTuning() or printTuning() to display the graph.
-	 * @param target - target tuning
-	 * @param predicted - predicted tuning for each note in target tuning.
+	 * Collect the data necessary to tabulate the predicted tuning for an
+	 * instrument. Following this call, use showTuning() or printTuning() to
+	 * display the graph.
+	 * 
+	 * @param target
+	 *            - target tuning
+	 * @param predicted
+	 *            - predicted tuning for each note in target tuning.
 	 */
 	public void buildTable(Tuning target, Tuning predicted)
 	{
-		List<Fingering> tgtFingering  = target.getFingering();
+		List<Fingering> tgtFingering = target.getFingering();
 		List<Fingering> predFingering = predicted.getFingering();
 		Note tgtNote;
 		Note predNote;
@@ -184,22 +190,26 @@ public class TuningComparisonTable extends DefaultTableModel
 		Double cents;
 		int colNr;
 
-		double totalNomError = 0.0;		// Net error in predicting fnom, in cents.
-		double varianceNom = 0.0;		// Sum of squared error in predicting fnom.
-		int nrNomPredictions = 0;		// Number of predictions of fnom.
-		double totalMaxError = 0.0;		// Net error in predicting fmax, in cents.
-		double varianceMax = 0.0;		// Sum of squared error in predicting fmax.
-		int nrMaxPredictions = 0;		// Number of predictions of fmax.
-		double totalMinError = 0.0;		// Net error in predicting fmin, in cents.
-		double varianceMin = 0.0;		// Sum of squared error in predicting fmin.
-		int nrMinPredictions = 0;		// Number of predictions of fmin.
-		
+		double totalNomError = 0.0; // Net error in predicting fnom, in cents.
+		double varianceNom = 0.0; // Sum of squared error in predicting fnom.
+		int nrNomPredictions = 0; // Number of predictions of fnom.
+		double totalMaxError = 0.0; // Net error in predicting fmax, in cents.
+		double varianceMax = 0.0; // Sum of squared error in predicting fmax.
+		int nrMaxPredictions = 0; // Number of predictions of fmax.
+		double totalMinError = 0.0; // Net error in predicting fmin, in cents.
+		double varianceMin = 0.0; // Sum of squared error in predicting fmin.
+		int nrMinPredictions = 0; // Number of predictions of fmin.
+
 		setColumns(target, predicted);
 		addHeadings();
 
-		for ( int i = 0; i < tgtFingering.size(); ++ i )
+		for (int i = 0; i < tgtFingering.size(); ++i)
 		{
-			tgtNote  = tgtFingering.get(i).getNote();
+			if (tgtFingering.get(i).getOptimizationWeight() <= 0)
+			{
+				continue;
+			}
+			tgtNote = tgtFingering.get(i).getNote();
 			predNote = predFingering.get(i).getNote();
 
 			Object[] values = new Object[getColumnCount()];
@@ -207,7 +217,7 @@ public class TuningComparisonTable extends DefaultTableModel
 
 			values[colNr++] = tgtNote.getName();
 
-			tgtF  = tgtNote.getFrequency();
+			tgtF = tgtNote.getFrequency();
 			if (tgtHasFnom)
 			{
 				values[colNr++] = formatted(tgtF);
@@ -218,7 +228,7 @@ public class TuningComparisonTable extends DefaultTableModel
 				values[colNr++] = formatted(predF);
 				if (tgtHasFnom)
 				{
-					if ( tgtF == null || predF == null )
+					if (tgtF == null || predF == null)
 					{
 						values[colNr++] = " ";
 					}
@@ -227,7 +237,7 @@ public class TuningComparisonTable extends DefaultTableModel
 						cents = Note.cents(tgtF, predF);
 						values[colNr++] = format_0.format(cents);
 						totalNomError += cents;
-						varianceNom   += cents*cents;
+						varianceNom += cents * cents;
 						nrNomPredictions += 1;
 					}
 				}
@@ -235,7 +245,7 @@ public class TuningComparisonTable extends DefaultTableModel
 
 			if (tgtHasFmin)
 			{
-				tgtF  = tgtNote.getFrequencyMin();
+				tgtF = tgtNote.getFrequencyMin();
 				values[colNr++] = formatted(tgtF);
 			}
 			if (predHasFmin)
@@ -244,7 +254,7 @@ public class TuningComparisonTable extends DefaultTableModel
 				values[colNr++] = formatted(predF);
 				if (tgtHasFmin)
 				{
-					if ( tgtF == null || predF == null )
+					if (tgtF == null || predF == null)
 					{
 						values[colNr++] = " ";
 					}
@@ -253,7 +263,7 @@ public class TuningComparisonTable extends DefaultTableModel
 						cents = Note.cents(tgtF, predF);
 						values[colNr++] = format_0.format(cents);
 						totalMinError += cents;
-						varianceMin   += cents*cents;
+						varianceMin += cents * cents;
 						nrMinPredictions += 1;
 					}
 				}
@@ -261,7 +271,7 @@ public class TuningComparisonTable extends DefaultTableModel
 
 			if (tgtHasFmax)
 			{
-				tgtF  = tgtNote.getFrequencyMax();
+				tgtF = tgtNote.getFrequencyMax();
 				values[colNr++] = formatted(tgtF);
 			}
 			if (predHasFmax)
@@ -270,7 +280,7 @@ public class TuningComparisonTable extends DefaultTableModel
 				values[colNr++] = formatted(predF);
 				if (tgtHasFmax)
 				{
-					if ( tgtF == null || predF == null )
+					if (tgtF == null || predF == null)
 					{
 						cents = null;
 						values[colNr++] = " ";
@@ -280,7 +290,7 @@ public class TuningComparisonTable extends DefaultTableModel
 						cents = Note.cents(tgtF, predF);
 						values[colNr++] = format_0.format(cents);
 						totalMaxError += cents;
-						varianceMax   += cents*cents;
+						varianceMax += cents * cents;
 						nrMaxPredictions += 1;
 					}
 				}
@@ -289,7 +299,8 @@ public class TuningComparisonTable extends DefaultTableModel
 			addRow(values);
 		}
 
-		if (nrNomPredictions == 0 && nrMinPredictions == 0 && nrMaxPredictions == 0)
+		if (nrNomPredictions == 0 && nrMinPredictions == 0
+				&& nrMaxPredictions == 0)
 		{
 			return;
 		}
@@ -298,19 +309,21 @@ public class TuningComparisonTable extends DefaultTableModel
 		colNr = 0;
 		errorRow[colNr] = "Net Error";
 		devRow[colNr++] = "Deviation";
-		if ( tgtHasFnom || predHasFnom )
+		if (tgtHasFnom || predHasFnom)
 		{
 			errorRow[colNr] = " ";
 			devRow[colNr++] = " ";
 		}
-		if ( tgtHasFnom && predHasFnom )
+		if (tgtHasFnom && predHasFnom)
 		{
 			errorRow[colNr] = " ";
 			devRow[colNr++] = " ";
-			if ( nrNomPredictions > 0 )
+			if (nrNomPredictions > 0)
 			{
-				errorRow[colNr] = format_00.format(totalNomError/nrNomPredictions);
-				devRow[colNr++] = format_00.format(Math.sqrt(varianceNom/nrNomPredictions));
+				errorRow[colNr] = format_00.format(totalNomError
+						/ nrNomPredictions);
+				devRow[colNr++] = format_00.format(Math.sqrt(varianceNom
+						/ nrNomPredictions));
 			}
 			else
 			{
@@ -318,19 +331,21 @@ public class TuningComparisonTable extends DefaultTableModel
 				devRow[colNr++] = " ";
 			}
 		}
-		if ( tgtHasFmin || predHasFmin )
+		if (tgtHasFmin || predHasFmin)
 		{
 			errorRow[colNr] = " ";
 			devRow[colNr++] = " ";
 		}
-		if ( tgtHasFmin && predHasFmin )
+		if (tgtHasFmin && predHasFmin)
 		{
 			errorRow[colNr] = " ";
 			devRow[colNr++] = " ";
-			if ( nrMinPredictions > 0 )
+			if (nrMinPredictions > 0)
 			{
-				errorRow[colNr] = format_00.format(totalMinError/nrMinPredictions);
-				devRow[colNr++] = format_00.format(Math.sqrt(varianceMin/nrMinPredictions));
+				errorRow[colNr] = format_00.format(totalMinError
+						/ nrMinPredictions);
+				devRow[colNr++] = format_00.format(Math.sqrt(varianceMin
+						/ nrMinPredictions));
 			}
 			else
 			{
@@ -338,19 +353,21 @@ public class TuningComparisonTable extends DefaultTableModel
 				devRow[colNr++] = " ";
 			}
 		}
-		if ( tgtHasFmax || predHasFmax )
+		if (tgtHasFmax || predHasFmax)
 		{
 			errorRow[colNr] = " ";
 			devRow[colNr++] = " ";
 		}
-		if ( tgtHasFmax && predHasFmax )
+		if (tgtHasFmax && predHasFmax)
 		{
 			errorRow[colNr] = " ";
 			devRow[colNr++] = " ";
-			if ( nrMaxPredictions > 0 )
+			if (nrMaxPredictions > 0)
 			{
-				errorRow[colNr] = format_00.format(totalMaxError/nrMaxPredictions);
-				devRow[colNr++] = format_00.format(Math.sqrt(varianceMax/nrMaxPredictions));
+				errorRow[colNr] = format_00.format(totalMaxError
+						/ nrMaxPredictions);
+				devRow[colNr++] = format_00.format(Math.sqrt(varianceMax
+						/ nrMaxPredictions));
 			}
 			else
 			{
@@ -361,18 +378,18 @@ public class TuningComparisonTable extends DefaultTableModel
 		addRow(errorRow);
 		addRow(devRow);
 	}
-	
+
 	public void printTuning(OutputStream os)
 	{
-		PrintWriter pw = new PrintWriter( os );
+		PrintWriter pw = new PrintWriter(os);
 		pw.println(title);
 		int col;
-		pw.printf("%-11s",getColumnName(0));
-		for ( col = 1; col < getColumnCount(); col++ )
+		pw.printf("%-11s", getColumnName(0));
+		for (col = 1; col < getColumnCount(); col++)
 		{
-			if ( getColumnName(col).length() < 11 )
+			if (getColumnName(col).length() < 11)
 			{
-				pw.printf("%11s",getColumnName(col));
+				pw.printf("%11s", getColumnName(col));
 			}
 			else
 			{
@@ -381,25 +398,25 @@ public class TuningComparisonTable extends DefaultTableModel
 		}
 		pw.println();
 		String secondLine = new String();
-		for ( col = 0; col < getColumnCount(); col++ )
+		for (col = 0; col < getColumnCount(); col++)
 		{
-			if ( getColumnName(col).length() >= 11 )
+			if (getColumnName(col).length() >= 11)
 			{
-				while ( secondLine.length() < 11 * col )
+				while (secondLine.length() < 11 * col)
 				{
 					secondLine += " ";
 				}
 				secondLine += getColumnName(col);
 			}
 		}
-		if ( ! secondLine.isEmpty() )
+		if (!secondLine.isEmpty())
 		{
 			pw.println(secondLine);
 		}
-		for ( int row = 0; row < getRowCount(); row++)
+		for (int row = 0; row < getRowCount(); row++)
 		{
 			pw.printf("%-11s", getValueAt(row, 0));
-			for ( col = 1; col < getColumnCount(); col++ )
+			for (col = 1; col < getColumnCount(); col++)
 			{
 				pw.printf("%11s", getValueAt(row, col));
 			}

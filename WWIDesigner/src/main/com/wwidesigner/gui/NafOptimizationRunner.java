@@ -129,7 +129,7 @@ public class NafOptimizationRunner extends FileBasedApplication implements
 
 	public NafOptimizationRunner()
 	{
-		super("NAF Optimization Runner", TDI_APPLICATION_STYLE);
+		super("Woodwind Instrument Designer", TDI_APPLICATION_STYLE);
 
 		// Set behaviour
 		getApplicationUIManager().setUseJideDockingFramework(true);
@@ -461,7 +461,7 @@ public class NafOptimizationRunner extends FileBasedApplication implements
 							.getConstraints(xmlString);
 					File leaf = getConstraintsLeafDirectory(constraints);
 					setLastDirectory(leaf);
-					saveData(fileModel);
+					saveDataAs(fileModel);
 					setLastDirectory(priorStartDirectory);
 				}
 				catch (Exception ex)
@@ -611,6 +611,7 @@ public class NafOptimizationRunner extends FileBasedApplication implements
 				TuningWizardDialog wizard = new TuningWizardDialog(
 						getApplicationUIManager().getWindowsUI()
 								.getDialogParent(), "Tuning File Wizard", false);
+				wizard.setCurrentSaveDirectory(getLastDirectory());
 				wizard.setVisible(true);
 			}
 		};
@@ -674,7 +675,7 @@ public class NafOptimizationRunner extends FileBasedApplication implements
 		message = "Calculating optimized instrument.\nThis may take several minutes.\nPlease be patient.";
 		optActivity.addProgressListener(new BlockingProgressListener(
 				getApplicationUIManager().getWindowsUI(),
-				OPTIMIZE_INSTRUMENT_ACTION_ID, message));
+				"Optimizing", message));
 		action = new ActivityAction(optActivity)
 		{
 			@Override
@@ -825,22 +826,22 @@ public class NafOptimizationRunner extends FileBasedApplication implements
 			@Override
 			public void dataModelOpened(DataModelEvent dataModelEvent)
 			{
-				getEventManager().publish(
-						FILE_OPENED_EVENT_ID, dataModelEvent.getDataModel());
+				getEventManager().publish(FILE_OPENED_EVENT_ID,
+						dataModelEvent.getDataModel());
 			}
 
 			@Override
 			public void dataModelClosed(DataModelEvent dataModelEvent)
 			{
-				getEventManager().publish(
-						FILE_CLOSED_EVENT_ID, dataModelEvent.getDataModel());
+				getEventManager().publish(FILE_CLOSED_EVENT_ID,
+						dataModelEvent.getDataModel());
 			}
 
 			@Override
 			public void dataModelSaved(DataModelEvent dataModelEvent)
 			{
-				getEventManager().publish(
-						FILE_SAVED_EVENT_ID, dataModelEvent.getDataModel());
+				getEventManager().publish(FILE_SAVED_EVENT_ID,
+						dataModelEvent.getDataModel());
 			}
 
 			public void dataModelClosing(DataModelEvent dataModelEvent)

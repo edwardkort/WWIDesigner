@@ -41,13 +41,14 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "Fingering", propOrder = { "note", "openHole" })
+@XmlType(name = "Fingering", propOrder = { "note", "openHole", "optimizationWeight" })
 public class Fingering
 {
 
 	protected Note note;
 	@XmlElement(type = Boolean.class)
 	protected List<Boolean> openHole;
+	protected Integer optimizationWeight;
 
 	/**
 	 * Gets the value of the note property.
@@ -110,6 +111,16 @@ public class Fingering
 	public void setOpenHole(List<Boolean> openHole)
 	{
 		this.openHole = openHole;
+	}
+
+	public Integer getOptimizationWeight()
+	{
+		return optimizationWeight;
+	}
+
+	public void setOptimizationWeight(Integer optimizationWeight)
+	{
+		this.optimizationWeight = optimizationWeight;
 	}
 
 }

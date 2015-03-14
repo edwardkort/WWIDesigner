@@ -32,6 +32,7 @@ import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.geom.Arc2D;
 import java.awt.geom.Line2D;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JPanel;
@@ -39,15 +40,21 @@ import javax.swing.JRadioButton;
 import javax.swing.JTable;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.table.TableCellRenderer;
 
+import com.wwidesigner.gui.util.DataChangedEvent;
+import com.wwidesigner.gui.util.DataChangedListener;
+import com.wwidesigner.gui.util.DataChangedProvider;
 import com.wwidesigner.note.Fingering;
 
 /**
  * @author Edward Kort
  *
  */
-public class FingeringRenderer extends JPanel implements TableCellRenderer
+public class FingeringRenderer extends JPanel implements TableCellRenderer,
+		ChangeListener, DataChangedProvider
 {
 	protected static final float NORMAL_STROKE_WIDTH = 1.0f;
 	protected static final float BOLD_STROKE_WIDTH = 3.0f;
@@ -57,10 +64,12 @@ public class FingeringRenderer extends JPanel implements TableCellRenderer
 	protected JRadioButton[] mHoles = {};
 	protected JPanel mButtonPanel = new JPanel();
 	protected Image mImage;
-	protected int mHoleLength = 17;
-	protected int mHoleHeight = 13;
+	protected int mHoleLength = 20;
+	protected int mHoleHeight = 16;
 	protected float strokeWidth = NORMAL_STROKE_WIDTH;
 	protected Color strokeColor = NORMAL_COLOR;
+	protected List<DataChangedListener> dataChangedListeners;
+	private boolean enableDataChanges = false;
 
 	public FingeringRenderer(int numHoles)
 	{
@@ -79,16 +88,17 @@ public class FingeringRenderer extends JPanel implements TableCellRenderer
 		mHoles = new JRadioButton[numHoles];
 		for (int i = 0; i < numHoles; i++)
 		{
-			mHoles[i] = new JRadioButton();
+			JRadioButton button = new JRadioButton();
+			mHoles[i] = button;
 			mHoles[i].setPreferredSize(new Dimension(mHoleLength, mHoleHeight));
 			mHoles[i].setMinimumSize(new Dimension(mHoleLength, mHoleHeight));
 		}
-	
+
 		setLayout(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.anchor = GridBagConstraints.WEST;
 		gbc.gridy = 0;
-		gbc.insets = new Insets(0, 15, 0, 0);	// For first hole only.
+		gbc.insets = new Insets(0, 15, 0, 0); // For first hole only.
 		for (int i = 0; i < mHoles.length; i++)
 		{
 			gbc.gridx = i;
@@ -97,7 +107,8 @@ public class FingeringRenderer extends JPanel implements TableCellRenderer
 		}
 	}
 
-	protected void initializeComponents(int numHoles, boolean isSelected, boolean isEditing)
+	protected void initializeComponents(int numHoles, boolean isSelected,
+			boolean isEditing)
 	{
 		if (isSelected)
 		{
@@ -129,7 +140,8 @@ public class FingeringRenderer extends JPanel implements TableCellRenderer
 		if (value != null && value instanceof Fingering)
 		{
 			Fingering fingering = (Fingering) value;
-			initializeComponents(fingering.getNumberOfHoles(), isSelected, false);
+			initializeComponents(fingering.getNumberOfHoles(), isSelected,
+					false);
 			setOpenHoles(fingering.getOpenHole());
 			return this;
 		}
@@ -142,18 +154,18 @@ public class FingeringRenderer extends JPanel implements TableCellRenderer
 		initializeComponents(fingering.getNumberOfHoles(), isSelected, true);
 		setOpenHoles(fingering.getOpenHole());
 	}
-	
+
 	public void stopCellEditing()
 	{
 		strokeColor = NORMAL_COLOR;
 	}
-	
+
 	public boolean[] getOpenHoles()
 	{
-		boolean[]  openHoles = new boolean[mHoles.length];
+		boolean[] openHoles = new boolean[mHoles.length];
 		for (int i = 0; i < mHoles.length; i++)
 		{
-			openHoles[i] = ! mHoles[i].isSelected();
+			openHoles[i] = !mHoles[i].isSelected();
 		}
 		return openHoles;
 	}
@@ -163,7 +175,8 @@ public class FingeringRenderer extends JPanel implements TableCellRenderer
 		boolean isClosed;
 		for (int i = 0; i < mHoles.length; i++)
 		{
-			if (i >= openHoles.size() || openHoles.get(i) == null || ! openHoles.get(i))
+			if (i >= openHoles.size() || openHoles.get(i) == null
+					|| !openHoles.get(i))
 			{
 				isClosed = true;
 			}
@@ -185,11 +198,13 @@ public class FingeringRenderer extends JPanel implements TableCellRenderer
 		g2.fill(new Rectangle(getPreferredSize()));
 		g2.setStroke(new BasicStroke(strokeWidth));
 		g2.setColor(strokeColor);
-		g2.draw(new Arc2D.Double(4, 2, 68, mHoleHeight+7, 90, 180, Arc2D.OPEN));
+		g2.draw(new Arc2D.Double(4, 2, 68, mHoleHeight + 7, 90, 180, Arc2D.OPEN));
 		int lineLength = mHoles.length * mHoleLength;
-		g2.draw(new Line2D.Double(38, 2, 38+lineLength, 2));
-		g2.draw(new Line2D.Double(38, mHoleHeight+9, 38+lineLength, mHoleHeight+9));
-		g2.draw(new Line2D.Double(38+lineLength, 2,  38+lineLength, mHoleHeight+9));
+		g2.draw(new Line2D.Double(38, 2, 38 + lineLength, 2));
+		g2.draw(new Line2D.Double(38, mHoleHeight + 9, 38 + lineLength,
+				mHoleHeight + 9));
+		g2.draw(new Line2D.Double(38 + lineLength, 2, 38 + lineLength,
+				mHoleHeight + 9));
 		g2.setStroke(new BasicStroke(NORMAL_STROKE_WIDTH));
 		g2.setColor(NORMAL_COLOR);
 	}
@@ -209,9 +224,78 @@ public class FingeringRenderer extends JPanel implements TableCellRenderer
 	@Override
 	public Dimension getPreferredSize()
 	{
-		int width = mHoles.length * mHoleLength + 45;
+		// Make minimum width equal to a 4-hole flute.
+		int numHoles = mHoles.length;
+		if (numHoles < 4)
+		{
+			numHoles = 4;
+		}
+		int width = numHoles * mHoleLength + 45;
 		int height = mHoleHeight + 14;
 		return new Dimension(width, height);
+	}
+
+	@Override
+	public void stateChanged(ChangeEvent event)
+	{
+		if (event.getSource() instanceof JRadioButton)
+		{
+			JRadioButton button = (JRadioButton) event.getSource();
+			if (button.getModel().isPressed())
+			{
+				fireDataChangedEvent();
+			}
+		}
+	}
+
+	public void setEnableDataChanges(boolean enableChanges)
+	{
+		enableDataChanges = enableChanges;
+		for (JRadioButton button : mHoles)
+		{
+			if (!enableDataChanges)
+			{
+				button.removeChangeListener(this);
+			}
+			else
+			{
+				button.addChangeListener(this);
+			}
+		}
+	}
+
+	private void fireDataChangedEvent()
+	{
+		if (enableDataChanges)
+		{
+			if (dataChangedListeners != null)
+			{
+				for (DataChangedListener listener : dataChangedListeners)
+				{
+					listener.dataChanged(new DataChangedEvent(this));
+				}
+			}
+		}
+	}
+
+	@Override
+	public void addDataChangedListener(DataChangedListener listener)
+	{
+		if (dataChangedListeners == null)
+		{
+			dataChangedListeners = new ArrayList<DataChangedListener>();
+		}
+
+		dataChangedListeners.add(listener);
+	}
+
+	@Override
+	public void removeDataChangedListener(DataChangedListener listener)
+	{
+		if (dataChangedListeners != null)
+		{
+			dataChangedListeners.remove(listener);
+		}
 	}
 
 }

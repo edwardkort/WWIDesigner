@@ -285,7 +285,9 @@ public class HoleGroupPositionObjectiveFunction extends BaseObjectiveFunction
 				endPosition = borePoint.getBorePosition();
 			}
 		}
+		// BorePoint lastPoint = boreList.get(boreList.size() - 1);
 		return endPosition;
+		// return lastPoint.getBorePosition();
 	}
 
 	@Override
@@ -319,7 +321,7 @@ public class HoleGroupPositionObjectiveFunction extends BaseObjectiveFunction
 	public void setGeometryPoint(double[] point)
 	{
 		setBore(point);
-		
+
 		PositionInterface[] sortedHoles = Instrument.sortList(calculator
 				.getInstrument().getHole());
 
@@ -344,27 +346,33 @@ public class HoleGroupPositionObjectiveFunction extends BaseObjectiveFunction
 			throw new DimensionMismatchException(point.length, nrDimensions);
 		}
 
-		// Ensure that no bore points are beyond the new bottom position. FOR
-		// NOW, NO.
-		// Find the farthest one out, and update its position.
+		double minimumBorePointSpacing = 0.00001d;
 
+		// Ensure that no bore points are beyond the new bottom position.
+		double newEndPosition = point[0];
 		SortedPositionList<BorePoint> boreList = new SortedPositionList<BorePoint>(
 				calculator.getInstrument().getBorePoint());
 		BorePoint endPoint = boreList.getLast();
+		endPoint.setBorePosition(newEndPosition);
 
-		// Don't let optimizer delete a borePoint
-		BorePoint almostEndPoint = boreList.get(boreList.size() - 2);
-		double almostEndPosition = almostEndPoint.getBorePosition();
-		if (point[0] <= almostEndPosition)
+		// Don't let optimizer delete a borePoint.
+		// Instead, move them up the bore a bit.
+		// And do not change any bore diameters.
+		int lastPointIndex = boreList.size() - 1;
+		for (int i = lastPointIndex - 1; i >= 0; i--)
 		{
-			point[0] = almostEndPosition + 0.01;
+			BorePoint borePoint = boreList.get(i);
+			double currentPosition = borePoint.getBorePosition();
+			if (currentPosition >= newEndPosition)
+			{
+				newEndPosition -= minimumBorePointSpacing;
+				borePoint.setBorePosition(newEndPosition);
+			}
+			else
+			{
+				break;
+			}
 		}
-
-		// Extrapolate/interpolate the bore diameter of end point
-		double endDiameter = BorePoint.getInterpolatedExtrapolatedBoreDiameter(
-				boreList, point[0]);
-		endPoint.setBorePosition(point[0]);
-		endPoint.setBoreDiameter(endDiameter);
 	}
 
 }

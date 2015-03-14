@@ -31,12 +31,13 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import com.jidesoft.app.framework.gui.DataViewPane;
-import com.wwidesigner.note.Tuning;
 import com.wwidesigner.gui.util.DataPopulatedEvent;
 import com.wwidesigner.gui.util.DataPopulatedListener;
+import com.wwidesigner.note.Tuning;
 import com.wwidesigner.note.bind.NoteBindFactory;
 import com.wwidesigner.note.view.FingeringPatternPanel;
 import com.wwidesigner.note.view.TuningPanel;
+import com.wwidesigner.note.view.WhistleTuningPanel;
 import com.wwidesigner.util.BindFactory;
 
 public class ContainedTuningView extends ContainedXmlView implements DataPopulatedListener
@@ -48,7 +49,7 @@ public class ContainedTuningView extends ContainedXmlView implements DataPopulat
 	{
 		super(parent);
 
-		tuningPanel = new TuningPanel( 480 );
+		tuningPanel = new WhistleTuningPanel( 480 );
 		tuningPanel.addDataPopulatedListener(this);
 		myPanel = new JPanel();
 		myPanel.setLayout(new GridBagLayout());

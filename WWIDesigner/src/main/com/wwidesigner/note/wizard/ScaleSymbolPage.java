@@ -15,6 +15,7 @@ import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 
 import com.jidesoft.dialog.ButtonEvent;
 import com.jidesoft.dialog.ButtonNames;
@@ -32,14 +33,17 @@ public class ScaleSymbolPage extends AbstractWizardPage implements
 		DataPopulatedListener, DataProvider, DataPopulatedProvider
 {
 	private JPanel contentPanel;
+	private JScrollPane scrollPane;
 	private ScaleSymbolListPanel symbolPanel;
+	private TuningWizardDialog parent;
 	private JButton saveButton;
 	private boolean isInitialized;
 
-	public ScaleSymbolPage()
+	public ScaleSymbolPage(TuningWizardDialog parent)
 	{
 		super("Scale Symbols",
 				"Select or create the note symbols used in the scale.");
+		this.parent = parent;
 		createWizardContent();
 	}
 
@@ -54,9 +58,10 @@ public class ScaleSymbolPage extends AbstractWizardPage implements
 			loadSymbolsPanel();
 			loadSymbolButtons();
 			isInitialized = true;
+			scrollPane = new JScrollPane(contentPanel);
 		}
 
-		return contentPanel;
+		return scrollPane;
 	}
 
 	@Override
@@ -170,7 +175,8 @@ public class ScaleSymbolPage extends AbstractWizardPage implements
 			public void actionPerformed(ActionEvent arg0)
 			{
 				ScaleSymbolList symbols = null;
-				JFileChooser chooser = new XmlFileChooser();
+				JFileChooser chooser = new XmlFileChooser(parent
+						.getCurrentSaveDirectory());
 				int state = chooser.showOpenDialog(getParent());
 				if (state == JFileChooser.APPROVE_OPTION)
 				{
@@ -178,6 +184,7 @@ public class ScaleSymbolPage extends AbstractWizardPage implements
 					symbols = symbolPanel.loadSymbolList(file);
 					if (symbols != null)
 					{
+						parent.setCurrentSaveDirectory(file.getParentFile());
 						symbolPanel.populateWidgets(symbols);
 					}
 				}
@@ -260,7 +267,8 @@ public class ScaleSymbolPage extends AbstractWizardPage implements
 			@Override
 			public void actionPerformed(ActionEvent arg0)
 			{
-				JFileChooser chooser = new XmlFileChooser();
+				JFileChooser chooser = new XmlFileChooser(parent
+						.getCurrentSaveDirectory());
 				int state = chooser.showSaveDialog(getParent());
 				if (state == JFileChooser.APPROVE_OPTION)
 				{
@@ -282,6 +290,7 @@ public class ScaleSymbolPage extends AbstractWizardPage implements
 						}
 					}
 
+					parent.setCurrentSaveDirectory(file.getParentFile());
 					symbolPanel.saveSymbolList(file);
 				}
 			}

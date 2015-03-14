@@ -19,9 +19,10 @@
 package com.wwidesigner.gui;
 
 import java.awt.Component;
-import java.io.StringWriter;
 
 import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
+
 import com.jidesoft.app.framework.gui.DataViewPane;
 import com.wwidesigner.geometry.Instrument;
 import com.wwidesigner.geometry.bind.GeometryBindFactory;
@@ -30,43 +31,79 @@ import com.wwidesigner.gui.util.DataPopulatedEvent;
 import com.wwidesigner.gui.util.DataPopulatedListener;
 import com.wwidesigner.note.view.FingeringPatternPanel;
 import com.wwidesigner.util.BindFactory;
+import com.wwidesigner.util.Constants.LengthType;
 
-public class ContainedInstrumentView extends ContainedXmlView implements DataPopulatedListener
+public class ContainedInstrumentView extends ContainedXmlView
 {
 	protected InstrumentPanel instrumentPanel;
+	private JScrollPane scrollPane;
 
 	public ContainedInstrumentView(DataViewPane parent)
 	{
 		super(parent);
 
+		setInstrumentPanel();
+		scrollPane = new JScrollPane(instrumentPanel);
+		scrollPane.setBorder(null);
+		scrollPane.setOpaque(false);
+
+		setDataDirty();
+	}
+
+	protected void setInstrumentPanel()
+	{
 		instrumentPanel = new InstrumentPanel();
-		instrumentPanel.addDataPopulatedListener(this);
 	}
 
 	@Override
 	protected void setDataDirty()
 	{
+		instrumentPanel.addDataPopulatedListener(new DataPopulatedListener()
+		{
+			@Override
+			public void dataStateChanged(DataPopulatedEvent event)
+			{
+				Object source = event.getSource();
+				if (source.equals(instrumentPanel))
+				{
+					Boolean dataPopulated = event
+							.isPopulated(FingeringPatternPanel.SAVE_EVENT_ID);
+					if (dataPopulated != null)
+					{
+						// In JDAF, a "new" tab will be deleted, when opening a
+						// file-based tab, if it is not dirty. Currently, we
+						// don't know when a tab is "new", but it is set dirty
+						// on creation. Therefore, for now, do not make a tab
+						// not-dirty, if it is dirty.
+						if (!parent.isDirty())
+						{
+							// Data has changed. Enable saving if data is valid.
+							parent.makeDirty(dataPopulated);
+						}
+					}
+				}
+			}
+		});
 	}
 
 	@Override
 	public String getText()
 	{
-		BindFactory binder = GeometryBindFactory.getInstance();
-		StringWriter writer = new StringWriter();
-		try
+		String xmlText = null;
+		Instrument instrument = instrumentPanel.getData();
+		if (instrument != null)
 		{
-			Instrument instrument = instrumentPanel.getData();
-			if (instrument != null)
+			try
 			{
-				binder.marshalToXml(instrument, writer);
-				return writer.toString();
+				xmlText = StudyModel.marshal(instrument);
+			}
+			catch (Exception e)
+			{
+				System.err.println(e.getMessage());
 			}
 		}
-		catch (Exception e)
-		{
-			System.out.println("Instrument update failed: " + e.getMessage());
-		}
-		return null;
+
+		return xmlText;
 	}
 
 	@Override
@@ -75,15 +112,22 @@ public class ContainedInstrumentView extends ContainedXmlView implements DataPop
 		BindFactory geometryBindFactory = GeometryBindFactory.getInstance();
 		try
 		{
-			if (text != null && ! text.isEmpty())
+			if (text != null && !text.isEmpty())
 			{
-				Instrument instrument = (Instrument) geometryBindFactory.unmarshalXml(text, true);
-				instrumentPanel.loadData(instrument, true);
+				Instrument instrument = (Instrument) geometryBindFactory
+						.unmarshalXml(text, true);
+				LengthType originalDimensionType = instrument.getLengthType();
+				LengthType dimensionType = getApplicationLengthType();
+				instrument.convertToMetres();
+				instrument.setLengthType(dimensionType);
+				instrument.convertToLengthType();
+				instrumentPanel.loadData(instrument,
+						originalDimensionType.equals(dimensionType));
 			}
 		}
 		catch (Exception e)
 		{
-			JOptionPane.showMessageDialog(parent, 
+			JOptionPane.showMessageDialog(parent,
 					"XML input does not define a valid Instrument.");
 		}
 	}
@@ -91,22 +135,7 @@ public class ContainedInstrumentView extends ContainedXmlView implements DataPop
 	@Override
 	public Component getViewComponent()
 	{
-		return instrumentPanel;
+		return scrollPane;
 	}
 
-	@Override
-	public void dataStateChanged(DataPopulatedEvent event)
-	{
-		Object source = event.getSource();
-		if (source.equals(instrumentPanel))
-		{
-			Boolean dataPopulated = event
-						.isPopulated(FingeringPatternPanel.SAVE_EVENT_ID);
-			if (dataPopulated != null)
-			{
-				// Data has changed.  Enable saving if data is valid.
-				parent.makeDirty(dataPopulated);
-			}
-		}
-	}
 }

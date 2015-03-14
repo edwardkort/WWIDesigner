@@ -18,6 +18,7 @@
  */
 package com.wwidesigner.util;
 
+import java.text.DecimalFormat;
 import java.text.ParseException;
 
 import javax.swing.text.DefaultFormatter;
@@ -25,6 +26,7 @@ import javax.swing.text.DefaultFormatter;
 public class DoubleFormatter extends DefaultFormatter
 {
 	boolean isOptional;
+	DecimalFormat decFormatter;
 
 	public DoubleFormatter()
 	{
@@ -32,7 +34,7 @@ public class DoubleFormatter extends DefaultFormatter
 		setValueClass(Double.class);
 		this.isOptional = false;
 	}
-	
+
 	public DoubleFormatter(boolean isOptional)
 	{
 		super();
@@ -40,7 +42,9 @@ public class DoubleFormatter extends DefaultFormatter
 		this.isOptional = isOptional;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see javax.swing.text.DefaultFormatter#stringToValue(java.lang.String)
 	 */
 	@Override
@@ -60,7 +64,9 @@ public class DoubleFormatter extends DefaultFormatter
 		return super.stringToValue(string);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see javax.swing.text.DefaultFormatter#valueToString(java.lang.Object)
 	 */
 	@Override
@@ -74,10 +80,10 @@ public class DoubleFormatter extends DefaultFormatter
 			}
 			else
 			{
-				return new String("0");
+				return formatValue(0);
 			}
 		}
-		return super.valueToString(value);
+		return formatValue(value);
 	}
 
 	public boolean isOptional()
@@ -98,12 +104,37 @@ public class DoubleFormatter extends DefaultFormatter
 		{
 			myClone = (DoubleFormatter) super.clone();
 			myClone.setOptional(isOptional);
+			if (decFormatter != null)
+			{
+				int decDigits = decFormatter.getMaximumFractionDigits();
+				myClone.setDecimatPrecision(decDigits);
+			}
 		}
 		catch (CloneNotSupportedException e)
 		{
 			myClone = new DoubleFormatter(isOptional);
 		}
 		return myClone;
+	}
+
+	public void setDecimatPrecision(int decimalPrecision)
+	{
+		if (decFormatter == null)
+		{
+			decFormatter = new DecimalFormat();
+		}
+		decFormatter.setMinimumFractionDigits(decimalPrecision);
+		decFormatter.setMaximumFractionDigits(decimalPrecision);
+	}
+
+	protected String formatValue(Object value) throws ParseException
+	{
+		if (decFormatter != null)
+		{
+			String text = decFormatter.format(value);
+			return text;
+		}
+		return super.valueToString(value);
 	}
 
 }

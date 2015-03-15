@@ -376,9 +376,23 @@ public abstract class BaseObjectiveFunction implements MultivariateFunction,
 		return nrDimensions;
 	}
 
+	/**
+	 * 
+	 * @return The number of Fingerings that have a positive optimization
+	 *         weight.
+	 */
 	public int getNrNotes()
 	{
-		return fingeringTargets.size();
+		int weightedNotes = 0;
+		for (Fingering fingering : fingeringTargets)
+		{
+			if (fingering.getOptimizationWeight() > 0)
+			{
+				weightedNotes++;
+			}
+		}
+
+		return weightedNotes;
 	}
 
 	public double[] getUpperBounds()

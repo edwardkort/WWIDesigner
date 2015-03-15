@@ -122,6 +122,7 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 	protected boolean holesArePopulated;
 	protected boolean boreIsPopulated;
 	protected boolean terminationIsPopulated;
+	protected boolean dataIsLoaded;
 	protected List<DataPopulatedListener> populatedListeners;
 
 	/**
@@ -134,6 +135,7 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 		this.boreIsPopulated = false;
 		this.mouthpieceIsPopulated = false;
 		this.terminationIsPopulated = false;
+		this.dataIsLoaded = false;
 		this.priorValue = "";
 		setLayout(new GridBagLayout());
 		setNameWidget(0, 0, 1);
@@ -306,6 +308,7 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 			holesArePopulated = isTablePopulated(holeList, 0);
 			boreIsPopulated = isTablePopulated(boreList, 2);
 			isTerminationPopulated();
+			dataIsLoaded = true;
 			if (!suppressChangeEvent)
 			{
 				fireDataStateChanged();
@@ -519,14 +522,18 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 
 	public Instrument getData()
 	{
+		if (!dataIsLoaded)
+		{
+			return null;
+		}
 		stopTableEditing(holeList);
 		stopTableEditing(boreList);
-//		if (!nameIsPopulated)
-//		{
-//			JOptionPane.showMessageDialog(this, "Name field is required.");
-//			nameField.requestFocusInWindow();
-//			return null;
-//		}
+		if (!nameIsPopulated)
+		{
+			JOptionPane.showMessageDialog(this, "Name field is required.");
+			nameField.requestFocusInWindow();
+			return null;
+		}
 		Instrument instrument = new Instrument();
 		instrument.setName(nameField.getText());
 		instrument.setDescription(descriptionField.getText());
@@ -546,28 +553,28 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 		{
 		}
 		Mouthpiece mouthpiece = getMouthpiece();
-//		if (mouthpiece == null)
-//		{
-//			return null;
-//		}
+		if (mouthpiece == null)
+		{
+			return null;
+		}
 		instrument.setMouthpiece(mouthpiece);
 		List<Hole> holes = getHoleTableData();
-//		if (holes == null)
-//		{
-//			return null;
-//		}
+		if (holes == null)
+		{
+			return null;
+		}
 		instrument.setHole(holes);
 		List<BorePoint> borePoints = getBoreTableData();
-//		if (borePoints == null)
-//		{
-//			return null;
-//		}
+		if (borePoints == null)
+		{
+			return null;
+		}
 		instrument.setBorePoint(borePoints);
 		Termination termination = getTermination();
-//		if (termination == null)
-//		{
-//			return null;
-//		}
+		if (termination == null)
+		{
+			return null;
+		}
 		instrument.setTermination(termination);
 
 		return instrument;

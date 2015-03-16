@@ -16,6 +16,7 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
 
+import com.jidesoft.grid.JideTable;
 import com.wwidesigner.gui.util.DataPopulatedEvent;
 import com.wwidesigner.gui.util.DataPopulatedListener;
 import com.wwidesigner.gui.util.DoubleCellRenderer;
@@ -42,7 +43,7 @@ public class ScaleIntervalPanel extends JPanel implements TableModelListener
 
 		DefaultTableModel model = new NumericTableModel();
 		model.addTableModelListener(this);
-		intervalTable = new JTable(model);
+		intervalTable = new JideTable(model);
 		intervalTable.setCellSelectionEnabled(true);
 		resetTableData();
 		intervalTable.setAutoscrolls(true);

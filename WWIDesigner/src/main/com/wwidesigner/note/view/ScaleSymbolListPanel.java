@@ -26,6 +26,7 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
 
+import com.jidesoft.grid.JideTable;
 import com.wwidesigner.gui.util.DataPopulatedEvent;
 import com.wwidesigner.gui.util.DataPopulatedListener;
 import com.wwidesigner.gui.util.NoOpTransferHandler;
@@ -270,7 +271,7 @@ public class ScaleSymbolListPanel extends JPanel implements KeyListener,
 
 		DefaultTableModel model = new DefaultTableModel();
 		model.addTableModelListener(this);
-		symbolList = new JTable(model);
+		symbolList = new JideTable(model);
 		resetTableData();
 		symbolList.setAutoscrolls(true);
 		JScrollPane scrollPane = new JScrollPane(symbolList);

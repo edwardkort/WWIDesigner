@@ -26,6 +26,7 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
 
+import com.jidesoft.grid.JideTable;
 import com.wwidesigner.gui.util.DataPopulatedEvent;
 import com.wwidesigner.gui.util.DataPopulatedListener;
 import com.wwidesigner.gui.util.DoubleCellRenderer;
@@ -208,7 +209,7 @@ public class TemperamentPanel extends JPanel implements KeyListener,
 
 		DefaultTableModel model = new DoubleTableModel();
 		model.addTableModelListener(this);
-		ratioList = new JTable(model);
+		ratioList = new JideTable(model);
 		resetTableData();
 		ratioList.setAutoscrolls(true);
 		JScrollPane scrollPane = new JScrollPane(ratioList);

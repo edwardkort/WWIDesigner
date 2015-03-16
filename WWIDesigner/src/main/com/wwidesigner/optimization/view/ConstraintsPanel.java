@@ -27,6 +27,7 @@ import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 import javax.swing.text.Document;
 
+import com.jidesoft.grid.JideTable;
 import com.wwidesigner.gui.util.DataChangedEvent;
 import com.wwidesigner.gui.util.DataChangedListener;
 import com.wwidesigner.gui.util.DataChangedProvider;
@@ -120,7 +121,7 @@ public class ConstraintsPanel extends JPanel implements DataChangedProvider
 
 			List<Constraint> constraintValues = constraints
 					.getConstraints(category);
-			JTable table = new JTable(
+			JTable table = new JideTable(
 					new ConstraintTableModel(constraintValues));
 			configureTable(table);
 			constraintTables[catIndex++] = table;

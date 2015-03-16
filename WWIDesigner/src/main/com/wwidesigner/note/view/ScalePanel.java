@@ -44,6 +44,7 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
 
+import com.jidesoft.grid.JideTable;
 import com.wwidesigner.gui.util.DataPopulatedEvent;
 import com.wwidesigner.gui.util.DataPopulatedListener;
 import com.wwidesigner.gui.util.DoubleCellRenderer;
@@ -153,7 +154,7 @@ public class ScalePanel extends JPanel implements KeyListener,
 
 		DefaultTableModel model = new NumericTableModel();
 		model.addTableModelListener(this);
-		noteTable = new JTable(model);
+		noteTable = new JideTable(model);
 		setTableCellSelectionEnabled(true);
 		resetTableData();
 		noteTable.setAutoscrolls(true);

@@ -49,7 +49,7 @@ public class ContainedTuningView extends ContainedXmlView implements DataPopulat
 	{
 		super(parent);
 
-		tuningPanel = new WhistleTuningPanel( 480 );
+		tuningPanel = new WhistleTuningPanel( 490 );
 		tuningPanel.addDataPopulatedListener(this);
 		myPanel = new JPanel();
 		myPanel.setLayout(new GridBagLayout());

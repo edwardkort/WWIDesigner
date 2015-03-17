@@ -257,14 +257,7 @@ public class FingeringComponent extends JPanel
 					true, true);
 			gbc.gridy = 3;
 			panel.add(fingeringComponent4, gbc);
-			final Image image = ComponentPainter.paintComponent(panel, 90, 30);
-			JPanel panel2 = new JPanel()
-			{
-				public void paintComponent(Graphics g)
-				{
-					g.drawImage(image, 0, 0, this);
-				}
-			};
+			ComponentPainter.paintComponent(panel, 90, 30);
 			frame.getContentPane().add(panel);
 			frame.pack();
 			frame.setVisible(true);

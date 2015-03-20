@@ -64,7 +64,7 @@ public class WhistleEvaluator implements EvaluatorInterface
 		int i = 0;
 		for (Fingering target: fingeringTargets)
 		{
-			deviation = Double.MAX_VALUE;
+			deviation = 0.0;
 			if ( target.getNote() != null && target.getNote().getFrequency() != null )
 			{
 				double f = target.getNote().getFrequency();

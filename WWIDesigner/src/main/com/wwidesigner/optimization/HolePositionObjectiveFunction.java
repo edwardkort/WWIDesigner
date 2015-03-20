@@ -31,6 +31,7 @@ public class HolePositionObjectiveFunction extends BaseObjectiveFunction
 {
 	public static final String CONSTR_CAT = "Hole position";
 	public static final ConstraintType CONSTR_TYPE = ConstraintType.DIMENSIONAL;
+	protected boolean allowBoreSizeInterpolation = true;
 
 	public HolePositionObjectiveFunction(InstrumentCalculator calculator,
 			TuningInterface tuning, EvaluatorInterface evaluator)
@@ -112,6 +113,13 @@ public class HolePositionObjectiveFunction extends BaseObjectiveFunction
 		calculator.getInstrument().updateComponents();
 	}
 
+	public BaseObjectiveFunction setAllowBoreSizeInterpolation(boolean allow)
+	{
+		allowBoreSizeInterpolation = allow;
+
+		return this;
+	}
+
 	protected void setBore(double[] point)
 	{
 		if (point.length != nrDimensions)
@@ -126,11 +134,9 @@ public class HolePositionObjectiveFunction extends BaseObjectiveFunction
 		SortedPositionList<BorePoint> boreList = new SortedPositionList<BorePoint>(
 				calculator.getInstrument().getBorePoint());
 		BorePoint endPoint = boreList.getLast();
-		endPoint.setBorePosition(newEndPosition);
 
 		// Don't let optimizer delete a borePoint.
 		// Instead, move them up the bore a bit.
-		// And do not change any bore diameters.
 		int lastPointIndex = boreList.size() - 1;
 		for (int i = lastPointIndex - 1; i >= 0; i--)
 		{
@@ -146,6 +152,16 @@ public class HolePositionObjectiveFunction extends BaseObjectiveFunction
 				break;
 			}
 		}
+
+		// Extrapolate/interpolate the bore diameter of end point
+		if (allowBoreSizeInterpolation)
+		{
+			double endDiameter = BorePoint
+					.getInterpolatedExtrapolatedBoreDiameter(boreList, point[0]);
+			endPoint.setBorePosition(point[0]);
+			endPoint.setBoreDiameter(endDiameter);
+		}
+
 	}
 
 	protected void setConstraints()

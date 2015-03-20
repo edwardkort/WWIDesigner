@@ -24,13 +24,15 @@ public class SingleTaperHoleGroupObjectiveFunction extends
 		super(calculator, tuning, evaluator);
 		this.components = new BaseObjectiveFunction[3];
 		this.components[0] = new HoleGroupPositionObjectiveFunction(calculator,
-				tuning, evaluator, holeGroups);
+				tuning, evaluator, holeGroups)
+				.setAllowBoreSizeInterpolation(false);
 		this.components[1] = new HoleSizeObjectiveFunction(calculator, tuning,
 				evaluator);
-//		this.components[2] = new SingleTaperRatioObjectiveFunction(calculator,
-//				tuning, evaluator);
-		this.components[2] = new SingleTaperSimpleRatioObjectiveFunction(calculator,
-				tuning, evaluator);
+		// this.components[2] = new
+		// SingleTaperRatioObjectiveFunction(calculator,
+		// tuning, evaluator);
+		this.components[2] = new SingleTaperSimpleRatioObjectiveFunction(
+				calculator, tuning, evaluator);
 		optimizerType = OptimizerType.BOBYQAOptimizer; // MultivariateOptimizer
 		sumDimensions();
 		maxEvaluations = 20000 + (getNrDimensions() - 1) * 5000;

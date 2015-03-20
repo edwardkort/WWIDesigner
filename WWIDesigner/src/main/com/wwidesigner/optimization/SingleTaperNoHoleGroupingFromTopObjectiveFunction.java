@@ -25,7 +25,7 @@ public class SingleTaperNoHoleGroupingFromTopObjectiveFunction extends
 		super(calculator, tuning, evaluator);
 		this.components = new BaseObjectiveFunction[3];
 		this.components[0] = new HolePositionFromTopObjectiveFunction(
-				calculator, tuning, evaluator);
+				calculator, tuning, evaluator).setAllowBoreSizeInterpolation(false);
 		this.components[1] = new HoleSizeObjectiveFunction(calculator, tuning,
 				evaluator);
 //		this.components[2] = new SingleTaperRatioObjectiveFunction(calculator,

@@ -217,6 +217,8 @@ public class HoleGroupPositionFromTopObjectiveFunction extends
 
 		constraints.setNumberOfHoles(sortedHoles.length);
 		constraints.setObjectiveDisplayName("Grouped hole-spacing optimizer");
+
+		constraints.setHoleGroups(holeGroups);
 	}
 
 }

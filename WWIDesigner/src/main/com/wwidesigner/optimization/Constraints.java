@@ -19,6 +19,7 @@ public class Constraints
 	protected List<Constraint> constraint;
 	private transient double[] lowerBounds;
 	private transient double[] upperBounds;
+	protected HoleGroups holeGroups;
 
 	public Constraints()
 	{
@@ -70,11 +71,34 @@ public class Constraints
 		return null;
 	}
 
+	/**
+	 * Adds the Constraint values into this merged Constraints
+	 * 
+	 * @param newConstraints
+	 */
 	public void addConstraints(Constraints newConstraints)
 	{
 		for (Constraint thisConstraint : newConstraints.getConstraint())
 		{
 			addConstraint(thisConstraint);
+		}
+		addNonConstraints(newConstraints);
+	}
+
+	/**
+	 * Adds the non-Constraint values into this merged Constraints. Currently,
+	 * only HoleGroups.
+	 * 
+	 * @param newConstraints
+	 */
+	protected void addNonConstraints(Constraints newConstraints)
+	{
+		HoleGroups newHoleGroups = newConstraints.getHoleGroups();
+		if (newHoleGroups != null)
+		{
+			// Since Constraints has only one HoleGroups, replace the existing
+			// one.
+			this.holeGroups = newHoleGroups;
 		}
 	}
 
@@ -305,6 +329,32 @@ public class Constraints
 		{
 			thisConstraint.setParent(this);
 		}
+	}
+
+	public HoleGroups getHoleGroups()
+	{
+		return holeGroups;
+	}
+
+	public void setHoleGroups(HoleGroups holeGroups)
+	{
+		this.holeGroups = holeGroups;
+	}
+
+	public void setHoleGroups(int[][] groups)
+	{
+		this.holeGroups = new HoleGroups(groups);
+	}
+
+	public int[][] getHoleGroupsArray()
+	{
+		int[][] holeGroupsArray = null;
+		if (holeGroups != null)
+		{
+			holeGroupsArray = holeGroups.getHoleGroupsArray();
+		}
+
+		return holeGroupsArray;
 	}
 
 }

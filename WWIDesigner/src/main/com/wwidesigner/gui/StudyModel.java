@@ -18,6 +18,7 @@
  */
 package com.wwidesigner.gui;
 
+import java.awt.Frame;
 import java.io.File;
 import java.io.StringWriter;
 import java.lang.reflect.Constructor;
@@ -768,9 +769,14 @@ public abstract class StudyModel implements CategoryType
 				false);
 	}
 
-	public String getDefaultConstraints() throws Exception
+	public String getDefaultConstraints(Object... parentFrame) throws Exception
 	{
 		BaseObjectiveFunction objective = getObjectiveFunction(BaseObjectiveFunction.DEFAULT_CONSTRAINTS_INTENT);
+		// For the case of a cancelled hole-grouping.
+		if (objective == null)
+		{
+			return null;
+		}
 		Constraints constraints = objective.getConstraints();
 		constraints.setConstraintsName("Default");
 		String xmlConstraints = marshal(constraints);
@@ -778,9 +784,14 @@ public abstract class StudyModel implements CategoryType
 		return xmlConstraints;
 	}
 
-	public String getBlankConstraints() throws Exception
+	public String getBlankConstraints(Frame parentFrame) throws Exception
 	{
 		BaseObjectiveFunction objective = getObjectiveFunction(BaseObjectiveFunction.BLANK_CONSTRAINTS_INTENT);
+		// For the case of a cancelled hole-grouping.
+		if (objective == null)
+		{
+			return null;
+		}
 		Constraints constraints = objective.getConstraints();
 		constraints.setConstraintsName("Blank");
 		String xmlConstraints = marshal(constraints);

@@ -466,6 +466,34 @@ public abstract class BaseObjectiveFunction implements MultivariateFunction,
 		return constraints;
 	}
 
+	/**
+	 * Sets the lower and upper bounds using values contained in the
+	 * constraints.
+	 * 
+	 * @param constraints
+	 * @throws Exception
+	 *             If the constraints are invalid for this optimizer.
+	 */
+	public void setConstraintsBounds(Constraints constraints) throws Exception
+	{
+		lowerBounds = constraints.getLowerBounds();
+		upperBounds = constraints.getUpperBounds();
+		setConstraints(constraints);
+	}
+
+	/**
+	 * Sets the member constraints from an externally derive one.
+	 * 
+	 * @param constraints
+	 */
+	public void setConstraints(Constraints constraints)
+	{
+		this.constraints = constraints;
+	}
+
+	/**
+	 * Creates the Constraints unique to a given ObjectiveFunction.
+	 */
 	abstract protected void setConstraints();
 
 }

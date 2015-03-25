@@ -28,6 +28,7 @@ import java.util.prefs.Preferences;
 
 import javax.swing.JScrollPane;
 import javax.swing.JTree;
+import javax.swing.SwingUtilities;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeModel;
@@ -161,7 +162,14 @@ public class StudyView extends DataViewPane implements EventSubscriber
 		tree.setModel(model);
 		TreeUtils.expandAll(tree);
 		tree.setSelectionPaths(selectionPaths.toArray(new TreePath[0]));
-		updateActions();
+		// Update on the appropriate thread
+		SwingUtilities.invokeLater(new Runnable()
+		{
+			public void run()
+			{
+				updateActions();
+			}
+		});
 	}
 
 	protected void updateActions()
@@ -264,8 +272,15 @@ public class StudyView extends DataViewPane implements EventSubscriber
 	{
 		try
 		{
-			String xmlConstraints = study.getDefaultConstraints();
-			addNewDataModel(xmlConstraints);
+			String xmlConstraints = study
+					.getDefaultConstraints(getApplication()
+							.getApplicationUIManager().getWindowsUI()
+							.getDialogParent());
+			// For the cancelled hole-grouping scenario
+			if (xmlConstraints != null)
+			{
+				addNewDataModel(xmlConstraints);
+			}
 		}
 		catch (Exception e)
 		{
@@ -278,8 +293,15 @@ public class StudyView extends DataViewPane implements EventSubscriber
 	{
 		try
 		{
-			String xmlConstraints = study.getBlankConstraints();
-			addNewDataModel(xmlConstraints);
+			String xmlConstraints = study
+					.getBlankConstraints(getApplication()
+							.getApplicationUIManager().getWindowsUI()
+							.getDialogParent());
+			// For the cancelled hole-grouping scenario
+			if (xmlConstraints != null)
+			{
+				addNewDataModel(xmlConstraints);
+			}
 		}
 		catch (Exception e)
 		{
@@ -302,9 +324,6 @@ public class StudyView extends DataViewPane implements EventSubscriber
 		}
 	}
 
-	/**
-	 * 
-	 */
 	private void addNewDataModel(String xmlData) throws Exception
 	{
 		if (xmlData != null && !xmlData.isEmpty())
@@ -404,7 +423,8 @@ public class StudyView extends DataViewPane implements EventSubscriber
 		if (studyClassName
 				.contentEquals(OptimizationPreferences.NAF_STUDY_NAME))
 		{
-			setStudyModel(new NafStudyModel());
+			setStudyModel(new NafStudyModel(getApplication()
+					.getApplicationUIManager().getWindowsUI().getDialogParent()));
 		}
 		else if (studyClassName
 				.contentEquals(OptimizationPreferences.WHISTLE_STUDY_NAME))
@@ -449,8 +469,10 @@ public class StudyView extends DataViewPane implements EventSubscriber
 		return study.getConstraintsLeafDirectory(rootDirectoryPath);
 	}
 
-	public File getConstraintsLeafDirectory(String rootDirectoryPath, Constraints constraints)
+	public File getConstraintsLeafDirectory(String rootDirectoryPath,
+			Constraints constraints)
 	{
-		return study.getConstraintsLeafDirectory(rootDirectoryPath, constraints);
+		return study
+				.getConstraintsLeafDirectory(rootDirectoryPath, constraints);
 	}
 }

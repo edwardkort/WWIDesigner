@@ -56,6 +56,12 @@ public class HoleGroupPositionObjectiveFunction extends BaseObjectiveFunction
 
 	public void setHoleGroups(int[][] groups) throws Exception
 	{
+		// Allows the constructor to have a null holeGroup parameter.
+		if (groups == null)
+		{
+			return;
+		}
+
 		numberOfHoles = getNumberOfHoles();
 
 		if (numberOfHoles > 0)
@@ -217,6 +223,8 @@ public class HoleGroupPositionObjectiveFunction extends BaseObjectiveFunction
 		constraints.setNumberOfHoles(calculator.getInstrument().getHole()
 				.size());
 		constraints.setObjectiveDisplayName("Grouped hole-spacing optimizer");
+
+		constraints.setHoleGroups(holeGroups);
 	}
 
 	protected String getHoleNameFromGroup(int groupIdx, boolean firstHole,

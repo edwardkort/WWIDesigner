@@ -18,6 +18,7 @@
  */
 package com.wwidesigner.gui;
 
+import java.awt.Frame;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
@@ -25,6 +26,7 @@ import java.util.prefs.Preferences;
 
 import com.jidesoft.app.framework.file.FileDataModel;
 import com.wwidesigner.geometry.Instrument;
+import com.wwidesigner.geometry.view.HoleGroupSpacingDialog;
 import com.wwidesigner.gui.util.DataOpenException;
 import com.wwidesigner.modelling.CentDeviationEvaluator;
 import com.wwidesigner.modelling.EvaluatorInterface;
@@ -75,10 +77,13 @@ public class NafStudyModel extends StudyModel
 	// Values is a Category containing the list of Constraints (as XML) for the
 	// key.
 	protected Map<String, Category> constraintsByOptimizer = new HashMap<String, Category>();
+	protected Frame parentFrame; // for displaying dialogs not appropriate to
+									// pass to the StudyView.
 
-	public NafStudyModel()
+	public NafStudyModel(Frame parentFrame)
 	{
 		super();
+		this.parentFrame = parentFrame;
 		setLocalCategories();
 	}
 
@@ -332,6 +337,7 @@ public class NafStudyModel extends StudyModel
 		return tuner;
 	}
 
+	@Override
 	protected BaseObjectiveFunction getObjectiveFunction(
 			int objectiveFunctionIntent) throws Exception
 	{
@@ -358,6 +364,11 @@ public class NafStudyModel extends StudyModel
 		double[] lowerBound = null;
 		double[] upperBound = null;
 		int[][] holeGroups = null;
+		Constraints constraints = null;
+		if (objectiveFunctionIntent == BaseObjectiveFunction.OPTIMIZATION_INTENT)
+		{
+			constraints = getConstraints();
+		}
 
 		switch (optimizer)
 		{
@@ -389,12 +400,16 @@ public class NafStudyModel extends StudyModel
 								0.014, 0.008, 0.008 };
 					}
 					else if (numberOfHoles == 6)
-					// Assume 6 holes.
 					{
 						lowerBound = new double[] { 0.002, 0.003, 0.003, 0.003,
 								0.003, 0.003 };
 						upperBound = new double[] { 0.0102, 0.0102, 0.010,
 								0.010, 0.010, 0.012 };
+					}
+					else
+					// Create blank constraints for the no-default scenario
+					{
+						objectiveFunctionIntent = BaseObjectiveFunction.BLANK_CONSTRAINTS_INTENT;
 					}
 				}
 				break;
@@ -428,25 +443,47 @@ public class NafStudyModel extends StudyModel
 								0.07, 0.032, 0.032, 0.0102, 0.0102, 0.010,
 								0.010, 0.010, 0.012 };
 					}
+					else
+					// Create blank constraints for the no-default scenario
+					{
+						objectiveFunctionIntent = BaseObjectiveFunction.BLANK_CONSTRAINTS_INTENT;
+					}
 				}
 				break;
 			case GROUP_OPT_SUB_CATEGORY_ID:
 				// Length bounds are expressed in meters, diameter bounds as
 				// ratios.
-				if (numberOfHoles == 0)
+				if (objectiveFunctionIntent == BaseObjectiveFunction.BLANK_CONSTRAINTS_INTENT)
 				{
-					holeGroups = new int[][] { {} };
-					if (objectiveFunctionIntent == BaseObjectiveFunction.DEFAULT_CONSTRAINTS_INTENT)
+					if (numberOfHoles == 0)
 					{
+						holeGroups = new int[][] { {} };
+					}
+					else
+					{
+						holeGroups = getUserHoleGroups(numberOfHoles);
+						if (holeGroups == null)
+						{
+							return null;
+						}
+					}
+				}
+				else if (objectiveFunctionIntent == BaseObjectiveFunction.OPTIMIZATION_INTENT)
+				{
+					holeGroups = constraints.getHoleGroupsArray();
+				}
+				else if (objectiveFunctionIntent == BaseObjectiveFunction.DEFAULT_CONSTRAINTS_INTENT)
+				{
+					if (numberOfHoles == 0)
+					{
+						holeGroups = new int[][] { {} };
 						lowerBound = new double[] { 0.2 };
 						upperBound = new double[] { 0.7 };
 					}
-				}
-				else if (numberOfHoles == 7)
-				{
-					holeGroups = new int[][] { { 0, 1, 2 }, { 3, 4, 5 }, { 6 } };
-					if (objectiveFunctionIntent == BaseObjectiveFunction.DEFAULT_CONSTRAINTS_INTENT)
+					else if (numberOfHoles == 7)
 					{
+						holeGroups = new int[][] { { 0, 1, 2 }, { 3, 4, 5 },
+								{ 6 } };
 						lowerBound = new double[] { 0.2, 0.25, 0.0203, 0.0203,
 								0.0203, 0.0005, 0.002, 0.002, 0.002, 0.002,
 								0.002, 0.002, 0.002 };
@@ -454,18 +491,25 @@ public class NafStudyModel extends StudyModel
 								0.003, 0.014, 0.014, 0.014, 0.014, 0.014,
 								0.008, 0.008 };
 					}
-				}
-				else if (numberOfHoles == 6)
-				{
-					holeGroups = new int[][] { { 0, 1, 2 }, { 3, 4, 5 } };
-					if (objectiveFunctionIntent == BaseObjectiveFunction.DEFAULT_CONSTRAINTS_INTENT)
+					else if (numberOfHoles == 6)
 					{
+						holeGroups = new int[][] { { 0, 1, 2 }, { 3, 4, 5 } };
 						lowerBound = new double[] { 0.2, 0.25, 0.0203, 0.0203,
 								0.0203, 0.002, 0.003, 0.003, 0.003, 0.003,
 								0.003 };
 						upperBound = new double[] { 0.7, 1.0, 0.032, 0.07,
 								0.032, 0.0102, 0.0102, 0.010, 0.010, 0.010,
 								0.012 };
+					}
+					else
+					// Create blank constraints for the no-default scenario
+					{
+						objectiveFunctionIntent = BaseObjectiveFunction.BLANK_CONSTRAINTS_INTENT;
+						holeGroups = getUserHoleGroups(numberOfHoles);
+						if (holeGroups == null)
+						{
+							return null;
+						}
 					}
 				}
 				objective = new HoleGroupFromTopObjectiveFunction(calculator,
@@ -503,26 +547,48 @@ public class NafStudyModel extends StudyModel
 								0.07, 0.032, 0.032, 0.0102, 0.0102, 0.010,
 								0.010, 0.010, 0.012, 1.15, 1.0, 1.0 };
 					}
+					else
+					// Create blank constraints for the no-default scenario
+					{
+						objectiveFunctionIntent = BaseObjectiveFunction.BLANK_CONSTRAINTS_INTENT;
+					}
 				}
 				break;
 			case TAPER_GROUP_OPT_SUB_CATEGORY_ID:
 				// Length bounds are expressed in meters, diameter bounds as
 				// ratios,
 				// taper bounds as ratios.
-				if (numberOfHoles == 0)
+				if (objectiveFunctionIntent == BaseObjectiveFunction.BLANK_CONSTRAINTS_INTENT)
 				{
-					holeGroups = new int[][] { {} };
-					if (objectiveFunctionIntent == BaseObjectiveFunction.DEFAULT_CONSTRAINTS_INTENT)
+					if (numberOfHoles == 0)
 					{
+						holeGroups = new int[][] { {} };
+					}
+					else
+					{
+						holeGroups = getUserHoleGroups(numberOfHoles);
+						if (holeGroups == null)
+						{
+							return null;
+						}
+					}
+				}
+				else if (objectiveFunctionIntent == BaseObjectiveFunction.OPTIMIZATION_INTENT)
+				{
+					holeGroups = constraints.getHoleGroupsArray();
+				}
+				else if (objectiveFunctionIntent == BaseObjectiveFunction.DEFAULT_CONSTRAINTS_INTENT)
+				{
+					if (numberOfHoles == 0)
+					{
+						holeGroups = new int[][] { {} };
 						lowerBound = new double[] { 0.2, 0.8, 0.0, 0.0 };
 						upperBound = new double[] { 0.7, 1.2, 1.0, 1.0 };
 					}
-				}
-				else if (numberOfHoles == 7)
-				{
-					holeGroups = new int[][] { { 0, 1, 2 }, { 3, 4, 5 }, { 6 } };
-					if (objectiveFunctionIntent == BaseObjectiveFunction.DEFAULT_CONSTRAINTS_INTENT)
+					else if (numberOfHoles == 7)
 					{
+						holeGroups = new int[][] { { 0, 1, 2 }, { 3, 4, 5 },
+								{ 6 } };
 						lowerBound = new double[] { 0.2, 0.25, 0.0203, 0.0203,
 								0.0203, 0.0005, 0.002, 0.002, 0.002, 0.002,
 								0.002, 0.002, 0.002, 0.8, 0.0, 0.0 };
@@ -530,18 +596,25 @@ public class NafStudyModel extends StudyModel
 								0.003, 0.014, 0.014, 0.014, 0.014, 0.014,
 								0.008, 0.008, 1.2, 1.0, 1.0 };
 					}
-				}
-				else if (numberOfHoles == 6)
-				{
-					holeGroups = new int[][] { { 0, 1, 2 }, { 3, 4, 5 } };
-					if (objectiveFunctionIntent == BaseObjectiveFunction.DEFAULT_CONSTRAINTS_INTENT)
+					else if (numberOfHoles == 6)
 					{
+						holeGroups = new int[][] { { 0, 1, 2 }, { 3, 4, 5 } };
 						lowerBound = new double[] { 0.2, 0.25, 0.0203, 0.0203,
 								0.0203, 0.002, 0.003, 0.003, 0.003, 0.003,
 								0.003, 0.8, 0.0, 0.0 };
 						upperBound = new double[] { 0.7, 1.0, 0.032, 0.07,
 								0.032, 0.0102, 0.0102, 0.010, 0.010, 0.010,
 								0.012, 1.2, 1.0, 1.0 };
+					}
+					else
+					// Create blank constraints for the no-default scenario
+					{
+						objectiveFunctionIntent = BaseObjectiveFunction.BLANK_CONSTRAINTS_INTENT;
+						holeGroups = getUserHoleGroups(numberOfHoles);
+						if (holeGroups == null)
+						{
+							return null;
+						}
 					}
 				}
 				objective = new SingleTaperHoleGroupFromTopObjectiveFunction(
@@ -556,9 +629,7 @@ public class NafStudyModel extends StudyModel
 		}
 		else if (objectiveFunctionIntent == BaseObjectiveFunction.OPTIMIZATION_INTENT)
 		{
-			Constraints constraints = getConstraints();
-			objective.setLowerBounds(constraints.getLowerBounds());
-			objective.setUpperBounds(constraints.getUpperBounds());
+			objective.setConstraintsBounds(constraints);
 			Category multiStartCategory = getCategory(MULTI_START_CATEGORY_ID);
 			String multiStartSelected = multiStartCategory.getSelectedSub();
 			if (multiStartSelected == VARY_FIRST_MULTI_START_SUB_CATEGORY_ID)
@@ -581,6 +652,22 @@ public class NafStudyModel extends StudyModel
 
 		return objective;
 	} // getObjectiveFunction
+
+	protected int[][] getUserHoleGroups(int numberOfHoles)
+	{
+		HoleGroupSpacingDialog spacingDialog = new HoleGroupSpacingDialog(
+				parentFrame, numberOfHoles);
+		spacingDialog.pack();
+		spacingDialog.setVisible(true);
+		if (spacingDialog.getDialogResult() == HoleGroupSpacingDialog.RESULT_AFFIRMED)
+		{
+			return spacingDialog.getHoleSpacingGroups();
+		}
+		else
+		{
+			return null;
+		}
+	}
 
 	@Override
 	protected Class<? extends ContainedXmlView> getDefaultViewClass(
@@ -620,6 +707,15 @@ public class NafStudyModel extends StudyModel
 	public boolean addDataModel(FileDataModel dataModel, boolean isNew)
 			throws Exception
 	{
+		// When invoked by an Activity with a new dataModel, this methods is
+		// called twice, first with a bogus "Untitled" dataModel name, then with
+		// the correctly sequenced dataModel.
+		// This if statement short circuits the bogus call.
+		if ("Untitled".equals(dataModel.getName()))
+		{
+			return false;
+		}
+
 		// Process Instrument and Tuning
 		if (super.addDataModel(dataModel, isNew))
 		{

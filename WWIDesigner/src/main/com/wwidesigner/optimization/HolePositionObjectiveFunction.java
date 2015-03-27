@@ -158,10 +158,9 @@ public class HolePositionObjectiveFunction extends BaseObjectiveFunction
 		{
 			double endDiameter = BorePoint
 					.getInterpolatedExtrapolatedBoreDiameter(boreList, point[0]);
-			endPoint.setBorePosition(point[0]);
 			endPoint.setBoreDiameter(endDiameter);
 		}
-
+		endPoint.setBorePosition(point[0]);
 	}
 
 	protected void setConstraints()

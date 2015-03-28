@@ -53,6 +53,7 @@ public class ObjectiveFunctionOptimizer
 
 	protected static double initialNorm; // Initial value of objective function.
 	protected static double finalNorm; // Final value of objective function.
+	protected static final boolean DEBUG_MODE = false;
 
 	/**
 	 * Print a vector of error values during optimization.
@@ -70,20 +71,24 @@ public class ObjectiveFunctionOptimizer
 		boolean firstPass = true;
 		System.out.print(description);
 		System.out.print(errorNorm);
-		System.out.print(" from [");
-		for (double err : errorVector)
+		if (DEBUG_MODE)
 		{
-			if (!firstPass)
+			System.out.print(" from [");
+			for (double err : errorVector)
 			{
-				System.out.print(",  ");
+				if (!firstPass)
+				{
+					System.out.print(",  ");
+				}
+				else
+				{
+					firstPass = false;
+				}
+				System.out.print(err);
 			}
-			else
-			{
-				firstPass = false;
-			}
-			System.out.print(err);
+			System.out.print("]");
 		}
-		System.out.println("].");
+		System.out.println(".");
 	}
 
 	/**
@@ -105,7 +110,7 @@ public class ObjectiveFunctionOptimizer
 		ConvergenceChecker<PointValuePair> convergenceChecker = new SimpleValueChecker(
 				1.e-6, 1.e-14);
 
-		System.out.print("System has ");
+		System.out.print("\nSystem has ");
 		System.out.print(objective.getNrDimensions());
 		System.out.print(" optimization variables and ");
 		System.out.print(objective.getNrNotes());

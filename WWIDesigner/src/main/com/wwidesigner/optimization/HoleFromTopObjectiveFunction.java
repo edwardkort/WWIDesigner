@@ -18,7 +18,7 @@ import com.wwidesigner.note.TuningInterface;
  */
 public class HoleFromTopObjectiveFunction extends MergedObjectiveFunction
 {
-	public static final String DISPLAY_NAME = "Hole position and size optimizer";
+	public static final String DISPLAY_NAME = "Hole size & position";
 	public static final String NAME = HoleFromTopObjectiveFunction.class.getSimpleName();
 
 	public HoleFromTopObjectiveFunction(InstrumentCalculator calculator,

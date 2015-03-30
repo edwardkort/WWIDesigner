@@ -6,7 +6,7 @@ import com.wwidesigner.note.TuningInterface;
 
 public class HoleGroupFromTopObjectiveFunction extends MergedObjectiveFunction
 {
-	public static final String DISPLAY_NAME = "Grouped hole-position and hole size optimizer";
+	public static final String DISPLAY_NAME = "Grouped-hole position & size";
 	public static final String NAME = HoleGroupFromTopObjectiveFunction.class.getSimpleName();
 
 	public HoleGroupFromTopObjectiveFunction(InstrumentCalculator calculator,

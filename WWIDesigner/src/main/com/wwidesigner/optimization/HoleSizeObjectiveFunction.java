@@ -20,7 +20,7 @@ public class HoleSizeObjectiveFunction extends BaseObjectiveFunction
 {
 	public static final String CONSTR_CAT = "Hole size";
 	public static final ConstraintType CONSTR_TYPE = ConstraintType.DIMENSIONAL;
-	public static final String DISPLAY_NAME = "Hole size optimizer";
+	public static final String DISPLAY_NAME = "Hole size only";
 	public static final String NAME = HoleSizeObjectiveFunction.class.getSimpleName();
 
 	public HoleSizeObjectiveFunction(InstrumentCalculator calculator,

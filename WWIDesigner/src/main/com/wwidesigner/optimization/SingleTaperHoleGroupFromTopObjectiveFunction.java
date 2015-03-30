@@ -30,7 +30,7 @@ import com.wwidesigner.note.TuningInterface;
 public class SingleTaperHoleGroupFromTopObjectiveFunction extends
 		MergedObjectiveFunction
 {
-	public static final String DISPLAY_NAME = "Single taper, grouped-hole optimizer";
+	public static final String DISPLAY_NAME = "Single taper, grouped hole";
 	public static final String NAME = SingleTaperHoleGroupFromTopObjectiveFunction.class
 			.getSimpleName();
 
@@ -45,9 +45,6 @@ public class SingleTaperHoleGroupFromTopObjectiveFunction extends
 				.setAllowBoreSizeInterpolation(false);
 		this.components[1] = new HoleSizeObjectiveFunction(calculator, tuning,
 				evaluator);
-		// this.components[2] = new
-		// SingleTaperRatioObjectiveFunction(calculator,
-		// tuning, evaluator);
 		this.components[2] = new SingleTaperSimpleRatioObjectiveFunction(
 				calculator, tuning, evaluator);
 		optimizerType = OptimizerType.BOBYQAOptimizer; // MultivariateOptimizer
@@ -56,6 +53,19 @@ public class SingleTaperHoleGroupFromTopObjectiveFunction extends
 		constraints.setObjectiveDisplayName(DISPLAY_NAME);
 		constraints.setObjectiveFunctionName(NAME);
 		constraints.setConstraintsName("Default");
+	}
+
+	@Override
+	public double getInitialTrustRegionRadius(double[] initial)
+	{
+		initialTrustRegionRadius = 10.;
+		return initialTrustRegionRadius;
+	}
+
+	@Override
+	public double getStoppingTrustRegionRadius()
+	{
+		return 1.e-8;
 	}
 
 }

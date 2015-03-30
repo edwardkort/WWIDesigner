@@ -212,10 +212,12 @@ public class ObjectiveFunctionOptimizer
 				// Multivariate BOBYQA optimization, with bounds.
 				MultivariateOptimizer optimizer;
 				double trustRegion = objective.getInitialTrustRegionRadius();
+				double stoppingTrustRegion = objective
+						.getStoppingTrustRegionRadius();
 				PointValuePair outcome;
 				optimizer = new BOBYQAOptimizer(
 						objective.getNrInterpolations(), trustRegion,
-						1e-8 * trustRegion);
+						stoppingTrustRegion);
 				outcome = optimizer.optimize(
 						GoalType.MINIMIZE,
 						new ObjectiveFunction(objective),
@@ -300,9 +302,11 @@ public class ObjectiveFunctionOptimizer
 			{
 				double trustRegion = objective
 						.getInitialTrustRegionRadius(nextStart);
+				double stoppingTrustRegion = objective
+						.getStoppingTrustRegionRadius();
 				BOBYQAOptimizer optimizer = new BOBYQAOptimizer(
 						objective.getNrInterpolations(), trustRegion,
-						1e-8 * trustRegion);
+						stoppingTrustRegion);
 				try
 				{
 					System.out.print("Start " + (int) (startNr + 1) + ": ");

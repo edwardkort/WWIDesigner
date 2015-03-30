@@ -69,6 +69,10 @@ public abstract class BaseObjectiveFunction implements MultivariateFunction,
 	protected OptimizerType optimizerType;
 	protected int maxEvaluations; // Limit on number of error norm calculations.
 	protected AbstractRangeProcessor rangeProcessor;
+	protected Double initialTrustRegionRadius; // Used by the BOBYQA optimizer
+												// for
+												// processing and termination
+												// logic.
 
 	// Statistics for the results of an optimization.
 	protected int tuningsDone; // Number of tuning error calculations.
@@ -275,8 +279,18 @@ public abstract class BaseObjectiveFunction implements MultivariateFunction,
 	 */
 	public double getInitialTrustRegionRadius()
 	{
-		double initial[] = getInitialPoint();
-		return getInitialTrustRegionRadius(initial);
+		if (initialTrustRegionRadius == null)
+		{
+			double initial[] = getInitialPoint();
+			getInitialTrustRegionRadius(initial);
+		}
+
+		return initialTrustRegionRadius;
+	}
+
+	public double getStoppingTrustRegionRadius()
+	{
+		return 1.e-8 * getInitialTrustRegionRadius();
 	}
 
 	/**
@@ -308,7 +322,9 @@ public abstract class BaseObjectiveFunction implements MultivariateFunction,
 				minRadius = minDimensionRadius;
 			}
 		}
-		return minRadius;
+		initialTrustRegionRadius = minRadius;
+		
+		return initialTrustRegionRadius;
 	}
 
 	/**
@@ -358,6 +374,8 @@ public abstract class BaseObjectiveFunction implements MultivariateFunction,
 		}
 		this.lowerBounds = lowerBounds.clone();
 		constraints.setLowerBounds(this.lowerBounds);
+		// Reset initialTrustRadius
+		initialTrustRegionRadius = null;
 	}
 
 	public void setUpperBounds(double[] upperBounds)
@@ -369,6 +387,8 @@ public abstract class BaseObjectiveFunction implements MultivariateFunction,
 		}
 		this.upperBounds = upperBounds.clone();
 		constraints.setUpperBounds(this.upperBounds);
+		// Reset initialTrustRadius
+		initialTrustRegionRadius = null;
 	}
 
 	public int getNrDimensions()

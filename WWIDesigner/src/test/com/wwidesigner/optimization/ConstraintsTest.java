@@ -25,7 +25,7 @@ public class ConstraintsTest extends AbstractOptimizationTest
 			Constraints constraints = objective.getConstraints();
 			assertEquals("Number of holes incorrect", 0,
 					constraints.getNumberOfHoles());
-			assertEquals("Optimizer name incorrect", "Fipple factor optimizer",
+			assertEquals("Optimizer name incorrect", "Fipple factor",
 					constraints.getObjectiveDisplayName());
 
 			String category = "Mouthpiece fipple";

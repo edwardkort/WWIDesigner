@@ -24,7 +24,7 @@ public class FippleFactorObjectiveFunction extends BaseObjectiveFunction
 {
 	public static final String CONSTR_CAT = "Mouthpiece fipple";
 	public static final ConstraintType CONSTR_TYPE = ConstraintType.DIMENSIONLESS;
-	public static final String DISPLAY_NAME = "Fipple factor optimizer";
+	public static final String DISPLAY_NAME = "Fipple factor";
 	public static final String NAME = FippleFactorObjectiveFunction.class.getSimpleName();
 
 	public FippleFactorObjectiveFunction(InstrumentCalculator calculator,

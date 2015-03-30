@@ -100,10 +100,10 @@ public class NafStudyModel extends StudyModel
 		Category optimizers = new Category(OPTIMIZER_CATEGORY_ID);
 		optimizers.addSub(FIPPLE_OPT_SUB_CATEGORY_ID,
 				FippleFactorObjectiveFunction.NAME);
-		optimizers.addSub(NO_GROUP_OPT_SUB_CATEGORY_ID,
-				HoleFromTopObjectiveFunction.NAME);
 		optimizers.addSub(HOLESIZE_OPT_SUB_CATEGORY_ID,
 				HoleSizeObjectiveFunction.NAME);
+		optimizers.addSub(NO_GROUP_OPT_SUB_CATEGORY_ID,
+				HoleFromTopObjectiveFunction.NAME);
 		optimizers.addSub(GROUP_OPT_SUB_CATEGORY_ID,
 				HoleGroupFromTopObjectiveFunction.NAME);
 		optimizers.addSub(TAPER_NO_GROUP_OPT_SUB_CATEGORY_ID,

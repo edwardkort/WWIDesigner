@@ -54,9 +54,12 @@ import com.jidesoft.app.framework.gui.actions.ComponentAction;
 import com.jidesoft.app.framework.gui.feature.AutoInstallActionsFeature;
 import com.jidesoft.app.framework.gui.filebased.FileBasedApplication;
 import com.jidesoft.app.framework.gui.framed.DockableConfiguration;
+import com.jidesoft.app.framework.gui.framed.DockableFrameCustomizer;
 import com.jidesoft.app.framework.gui.framed.DockingApplicationFeature;
 import com.jidesoft.app.framework.gui.framed.ToggleFrameAction;
 import com.jidesoft.docking.DockContext;
+import com.jidesoft.docking.DockableFrame;
+import com.jidesoft.docking.DockingManager;
 import com.wwidesigner.gui.util.FileOpenDialogPreviewPane;
 import com.wwidesigner.note.wizard.TuningWizardDialog;
 import com.wwidesigner.optimization.Constraints;
@@ -673,9 +676,10 @@ public class NafOptimizationRunner extends FileBasedApplication implements
 			}
 		};
 		message = "Calculating optimized instrument.\nThis may take several minutes.\nPlease be patient.";
-		optActivity.addProgressListener(new BlockingProgressListener(
-				getApplicationUIManager().getWindowsUI(),
-				"Optimizing", message));
+		optActivity
+				.addProgressListener(new BlockingProgressListener(
+						getApplicationUIManager().getWindowsUI(), "Optimizing",
+						message));
 		action = new ActivityAction(optActivity)
 		{
 			@Override
@@ -844,6 +848,7 @@ public class NafOptimizationRunner extends FileBasedApplication implements
 						dataModelEvent.getDataModel());
 			}
 
+			@Override
 			public void dataModelClosing(DataModelEvent dataModelEvent)
 					throws ApplicationVetoException
 			{
@@ -857,6 +862,7 @@ public class NafOptimizationRunner extends FileBasedApplication implements
 					}
 				}
 			}
+
 		});
 
 		addDataViewListener(new DataViewAdapter()
@@ -896,11 +902,13 @@ public class NafOptimizationRunner extends FileBasedApplication implements
 				}
 			}
 
+			@Override
 			public void dataViewClosed(DataViewEvent event)
 			{
 				checkConstraintsFocused();
 			}
 
+			@Override
 			public void dataViewOpened(DataViewEvent event)
 			{
 				checkConstraintsFocused();
@@ -936,6 +944,23 @@ public class NafOptimizationRunner extends FileBasedApplication implements
 
 		// add feature
 		addApplicationFeature(docking);
+		
+		// Set initial Study view width
+		docking.addDockableCustomizer(new DockableFrameCustomizer()
+		{
+
+			@Override
+			public void customizeDockable(DockingApplicationFeature feature,
+					DockingManager manager, DockableFrame dockable,
+					DataView dataView)
+			{
+				if (dockable.getSideTitle().equals("Study"))
+				{
+					dockable.setDockedWidth(230);
+				}
+			}
+		});
+
 	}
 
 	protected void customizeAboutBox()

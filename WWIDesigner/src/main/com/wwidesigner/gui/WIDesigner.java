@@ -83,7 +83,7 @@ import com.wwidesigner.optimization.Constraints;
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-public class NafOptimizationRunner extends FileBasedApplication implements
+public class WIDesigner extends FileBasedApplication implements
 		EventSubscriber
 {
 	static final String FILE_OPENED_EVENT_ID = "FileOpened";
@@ -127,10 +127,10 @@ public class NafOptimizationRunner extends FileBasedApplication implements
 		com.jidesoft.utils.Lm.verifyLicense("Edward Kort", "WWIDesigner",
 				"DfuwPRAUR5KQYgePf:CH0LWIp63V8cs2");
 
-		new NafOptimizationRunner().run(args);
+		new WIDesigner().run(args);
 	}
 
-	public NafOptimizationRunner()
+	public WIDesigner()
 	{
 		super("Woodwind Instrument Designer", TDI_APPLICATION_STYLE);
 
@@ -338,7 +338,7 @@ public class NafOptimizationRunner extends FileBasedApplication implements
 		};
 		action.putValue(Action.SHORT_DESCRIPTION,
 				"Toggle data view of current editor tab");
-		imageUrl = NafOptimizationRunner.class.getResource("images/view.png");
+		imageUrl = WIDesigner.class.getResource("images/view.png");
 		if (imageUrl != null)
 		{
 			action.putValue(Action.SMALL_ICON, new ImageIcon(imageUrl));
@@ -591,7 +591,7 @@ public class NafOptimizationRunner extends FileBasedApplication implements
 		};
 		action.putValue(Action.SHORT_DESCRIPTION,
 				"Compare instrument selected in study to the current editor tab");
-		imageUrl = NafOptimizationRunner.class
+		imageUrl = WIDesigner.class
 				.getResource("images/compare.png");
 		if (imageUrl != null)
 		{
@@ -620,7 +620,7 @@ public class NafOptimizationRunner extends FileBasedApplication implements
 		};
 		action.putValue(Action.SHORT_DESCRIPTION,
 				"Create a tuning file from notes and fingerings");
-		imageUrl = NafOptimizationRunner.class.getResource("images/tuning.png");
+		imageUrl = WIDesigner.class.getResource("images/tuning.png");
 		if (imageUrl != null)
 		{
 			action.putValue(Action.SMALL_ICON, new ImageIcon(imageUrl));
@@ -647,7 +647,7 @@ public class NafOptimizationRunner extends FileBasedApplication implements
 		};
 		action.putValue(Action.SHORT_DESCRIPTION,
 				"Draw a sketch of an instrument");
-		imageUrl = NafOptimizationRunner.class.getResource("images/sketch.png");
+		imageUrl = WIDesigner.class.getResource("images/sketch.png");
 		if (imageUrl != null)
 		{
 			action.putValue(Action.SMALL_ICON, new ImageIcon(imageUrl));
@@ -689,7 +689,7 @@ public class NafOptimizationRunner extends FileBasedApplication implements
 			}
 		};
 		action.putValue(Action.SHORT_DESCRIPTION, "Optimize instrument");
-		imageUrl = NafOptimizationRunner.class
+		imageUrl = WIDesigner.class
 				.getResource("images/optimize.png");
 		if (imageUrl != null)
 		{
@@ -731,7 +731,7 @@ public class NafOptimizationRunner extends FileBasedApplication implements
 		};
 		action.putValue(Action.SHORT_DESCRIPTION,
 				"Draw graph of instrument tuning");
-		imageUrl = NafOptimizationRunner.class.getResource("images/graph.png");
+		imageUrl = WIDesigner.class.getResource("images/graph.png");
 		if (imageUrl != null)
 		{
 			action.putValue(Action.SMALL_ICON, new ImageIcon(imageUrl));
@@ -775,7 +775,7 @@ public class NafOptimizationRunner extends FileBasedApplication implements
 		};
 		action.putValue(Action.SHORT_DESCRIPTION,
 				"Calculate instrument tuning table");
-		imageUrl = NafOptimizationRunner.class
+		imageUrl = WIDesigner.class
 				.getResource("images/calculate.png");
 		if (imageUrl != null)
 		{

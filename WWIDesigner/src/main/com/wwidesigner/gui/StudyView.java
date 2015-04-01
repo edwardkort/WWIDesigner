@@ -115,13 +115,13 @@ public class StudyView extends DataViewPane implements EventSubscriber
 		study.setPreferences(myPreferences);
 
 		getApplication().getEventManager().subscribe(
-				NafOptimizationRunner.FILE_OPENED_EVENT_ID, this);
+				WIDesigner.FILE_OPENED_EVENT_ID, this);
 		getApplication().getEventManager().subscribe(
-				NafOptimizationRunner.FILE_CLOSED_EVENT_ID, this);
+				WIDesigner.FILE_CLOSED_EVENT_ID, this);
 		getApplication().getEventManager().subscribe(
-				NafOptimizationRunner.FILE_SAVED_EVENT_ID, this);
+				WIDesigner.FILE_SAVED_EVENT_ID, this);
 		getApplication().getEventManager().subscribe(
-				NafOptimizationRunner.WINDOW_RENAMED_EVENT_ID, this);
+				WIDesigner.WINDOW_RENAMED_EVENT_ID, this);
 	}
 
 	protected void updateView()
@@ -192,14 +192,14 @@ public class StudyView extends DataViewPane implements EventSubscriber
 		}
 
 		getApplication().getEventManager().publish(
-				NafOptimizationRunner.OPTIMIZATION_ACTIVE_EVENT_ID,
+				WIDesigner.OPTIMIZATION_ACTIVE_EVENT_ID,
 				canDoOptimization);
 		getApplication().getEventManager().publish(
-				NafOptimizationRunner.TUNING_ACTIVE_EVENT_ID, canDoTuning);
-		String constraintsDirectory = ((NafOptimizationRunner) getApplication())
+				WIDesigner.TUNING_ACTIVE_EVENT_ID, canDoTuning);
+		String constraintsDirectory = ((WIDesigner) getApplication())
 				.getConstraintsRootDirectoryPath();
 		getApplication().getEventManager().publish(
-				NafOptimizationRunner.CONSTRAINTS_ACTIVE_EVENT_ID,
+				WIDesigner.CONSTRAINTS_ACTIVE_EVENT_ID,
 				study.isOptimizerFullySpecified(constraintsDirectory));
 	}
 
@@ -213,7 +213,7 @@ public class StudyView extends DataViewPane implements EventSubscriber
 			FileDataModel source = (FileDataModel) eventSource;
 			switch (eventId)
 			{
-				case NafOptimizationRunner.FILE_OPENED_EVENT_ID:
+				case WIDesigner.FILE_OPENED_EVENT_ID:
 					try
 					{
 						study.addDataModel(source, false);
@@ -223,11 +223,11 @@ public class StudyView extends DataViewPane implements EventSubscriber
 						showException(ex);
 					}
 					break;
-				case NafOptimizationRunner.FILE_CLOSED_EVENT_ID:
+				case WIDesigner.FILE_CLOSED_EVENT_ID:
 					study.removeDataModel(source);
 					break;
-				case NafOptimizationRunner.FILE_SAVED_EVENT_ID:
-				case NafOptimizationRunner.WINDOW_RENAMED_EVENT_ID:
+				case WIDesigner.FILE_SAVED_EVENT_ID:
+				case WIDesigner.WINDOW_RENAMED_EVENT_ID:
 					try
 					{
 						study.replaceDataModel(source);

@@ -63,7 +63,7 @@ public class ConsoleView extends DataViewPane
 
 		redirectSystemStreams();
 
-		System.out.println("NafOptimizationRunner");
+		System.out.println("Woodwind Instrument Designer");
 		System.out.println("Copyright (C) 2014, Edward Kort, Antoine Lefebvre, Burton Patkau.");
 		System.out.println("This program comes with ABSOLUTELY NO WARRANTY.");
 		System.out.println("This is free software, and you are welcome to redistribute it");

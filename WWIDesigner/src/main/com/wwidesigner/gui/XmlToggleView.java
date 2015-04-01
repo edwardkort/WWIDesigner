@@ -43,7 +43,7 @@ public class XmlToggleView extends DataViewPane
 		setPreferredSize(new Dimension(550, 400));
 		setBorder(null);
 
-		studyModel = ((NafOptimizationRunner) getApplication()).getStudyView()
+		studyModel = ((WIDesigner) getApplication()).getStudyView()
 				.getStudyModel();
 	}
 

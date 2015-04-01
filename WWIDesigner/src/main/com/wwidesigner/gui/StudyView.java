@@ -49,6 +49,7 @@ import com.wwidesigner.gui.util.DataOpenException;
 import com.wwidesigner.gui.util.HoleNumberMismatchException;
 import com.wwidesigner.modelling.SketchInstrument;
 import com.wwidesigner.optimization.Constraints;
+import com.wwidesigner.util.Constants.LengthType;
 
 /**
  * @author kort
@@ -174,14 +175,26 @@ public class StudyView extends DataViewPane implements EventSubscriber
 
 	protected void updateActions()
 	{
+		boolean isInstrumentSelected = false;
 		boolean canDoTuning = false;
 		boolean canDoOptimization = false;
+		String selectedInstrumentName = "";
 		try
 		{
-			canDoTuning = study.canTune();
-			if (canDoTuning)
+			selectedInstrumentName = study.getSelectedInstrumentName();
+			isInstrumentSelected = selectedInstrumentName != null;
+			if (isInstrumentSelected)
 			{
-				canDoOptimization = study.canOptimize();
+				canDoTuning = study.canTune();
+				if (canDoTuning)
+				{
+					canDoOptimization = study.canOptimize();
+				}
+			}
+			else
+			{
+				// Event source cannot be null;
+				selectedInstrumentName = "";
 			}
 		}
 		catch (Exception e)
@@ -192,8 +205,7 @@ public class StudyView extends DataViewPane implements EventSubscriber
 		}
 
 		getApplication().getEventManager().publish(
-				WIDesigner.OPTIMIZATION_ACTIVE_EVENT_ID,
-				canDoOptimization);
+				WIDesigner.OPTIMIZATION_ACTIVE_EVENT_ID, canDoOptimization);
 		getApplication().getEventManager().publish(
 				WIDesigner.TUNING_ACTIVE_EVENT_ID, canDoTuning);
 		String constraintsDirectory = ((WIDesigner) getApplication())
@@ -201,6 +213,9 @@ public class StudyView extends DataViewPane implements EventSubscriber
 		getApplication().getEventManager().publish(
 				WIDesigner.CONSTRAINTS_ACTIVE_EVENT_ID,
 				study.isOptimizerFullySpecified(constraintsDirectory));
+		getApplication().getEventManager()
+				.publish(WIDesigner.INSTRUMENT_SELECTED_EVENT_ID,
+						selectedInstrumentName);
 	}
 
 	@Override
@@ -357,26 +372,13 @@ public class StudyView extends DataViewPane implements EventSubscriber
 		{
 			FileBasedApplication app = (FileBasedApplication) getApplication();
 			DataModel data = app.getFocusedModel();
-			if (data != null)
-			{
-				DataView view = app.getDataView(data);
-				if (view != null && view instanceof XmlToggleView)
-				{
-					String xmlInstrument2 = ((XmlToggleView) view).getText();
-					Instrument instrument2 = StudyModel
-							.getInstrument(xmlInstrument2);
-					if (instrument2 == null)
-					{
-						System.out.print("\nError: Current editor tab, ");
-						System.out.print(data.getName());
-						System.out.println(", is not a valid instrument.");
-						System.out
-								.println("Select the edit tab for a valid instrument.");
-						return;
-					}
-					study.compareInstrument(data.getName(), instrument2);
-				}
-			}
+			DataView view = app.getDataView(data);
+			String xmlInstrument2 = ((XmlToggleView) view).getText();
+			Instrument instrument2 = StudyModel.getInstrument(xmlInstrument2);
+			LengthType defaultLengthType = ((WIDesigner) getApplication())
+					.getApplicationLengthType();
+			study.compareInstrument(data.getName(), instrument2,
+					defaultLengthType);
 		}
 		catch (Exception e)
 		{

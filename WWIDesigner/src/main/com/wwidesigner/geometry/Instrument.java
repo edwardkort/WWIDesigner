@@ -216,30 +216,64 @@ public class Instrument implements InstrumentInterface
 		termination = value;
 	}
 
-	public void convertToMetres()
+	/**
+	 * Converts the instrument, if not already done, to metric.
+	 * 
+	 * @return True if a conversion was performed.
+	 */
+	public boolean convertToMetres()
 	{
 		if (convertedToMetres)
 		{
-			return;
+			return false;
 		}
 
 		double multiplier = lengthType.getMultiplierToMetres();
 
 		convertDimensions(multiplier);
 		convertedToMetres = true;
+		return true;
 	}
 
-	public void convertToLengthType()
+	/**
+	 * Converts the instrument, if not already done, to the specified
+	 * lengthType.
+	 * 
+	 * @param lengthType
+	 * @return True is a conversion is performed.
+	 */
+	public boolean convertToLengthType(LengthType lengthType)
+	{
+		LengthType originalLengthType = getLengthType();
+		if (!originalLengthType.equals(lengthType))
+		{
+			convertToMetres();
+			setLengthType(lengthType);
+			convertToLengthType();
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * Converts the instrument, if necessary, to the LengthType already set for
+	 * this instrument.
+	 * 
+	 * @return True if conversion is performed.
+	 */
+	public boolean convertToLengthType()
 	{
 		if (!convertedToMetres)
 		{
-			return;
+			return false;
 		}
 
 		double multiplier = lengthType.getMultiplierFromMetres();
 
 		convertDimensions(multiplier);
 		convertedToMetres = false;
+		return true;
 	}
 
 	protected void convertDimensions(double multiplier)
@@ -361,11 +395,12 @@ public class Instrument implements InstrumentInterface
 		}
 
 		mouthpiece.setHeadspace(headspace);
-		
+
 		// Move the first borepoint to top of TSH
-//		BorePoint firstPoint = borePointList.getFirst();
-//		double newPosition = firstPoint.getBorePosition() - mouthpiece.getFipple().getWindowLength();
-//		firstPoint.setBorePosition(newPosition);
+		// BorePoint firstPoint = borePointList.getFirst();
+		// double newPosition = firstPoint.getBorePosition() -
+		// mouthpiece.getFipple().getWindowLength();
+		// firstPoint.setBorePosition(newPosition);
 	}
 
 	protected void processPosition(SortedPositionList<BorePoint> borePointList,

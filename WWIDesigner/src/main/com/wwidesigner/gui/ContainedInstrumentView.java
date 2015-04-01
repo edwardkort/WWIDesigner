@@ -116,13 +116,9 @@ public class ContainedInstrumentView extends ContainedXmlView
 			{
 				Instrument instrument = (Instrument) geometryBindFactory
 						.unmarshalXml(text, true);
-				LengthType originalDimensionType = instrument.getLengthType();
 				LengthType dimensionType = getApplicationLengthType();
-				instrument.convertToMetres();
-				instrument.setLengthType(dimensionType);
-				instrument.convertToLengthType();
-				instrumentPanel.loadData(instrument,
-						originalDimensionType.equals(dimensionType));
+				boolean changed = instrument.convertToLengthType(dimensionType);
+				instrumentPanel.loadData(instrument, !changed);
 			}
 		}
 		catch (Exception e)

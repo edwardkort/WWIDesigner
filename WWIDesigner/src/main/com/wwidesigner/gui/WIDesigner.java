@@ -6,6 +6,7 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.net.URL;
+import java.util.prefs.Preferences;
 
 import javax.swing.AbstractButton;
 import javax.swing.Action;
@@ -63,6 +64,7 @@ import com.jidesoft.docking.DockingManager;
 import com.wwidesigner.gui.util.FileOpenDialogPreviewPane;
 import com.wwidesigner.note.wizard.TuningWizardDialog;
 import com.wwidesigner.optimization.Constraints;
+import com.wwidesigner.util.Constants.LengthType;
 
 /**
  * Main program to present a study view to the user, and allow them to interact
@@ -83,8 +85,7 @@ import com.wwidesigner.optimization.Constraints;
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-public class WIDesigner extends FileBasedApplication implements
-		EventSubscriber
+public class WIDesigner extends FileBasedApplication implements EventSubscriber
 {
 	static final String FILE_OPENED_EVENT_ID = "FileOpened";
 	static final String FILE_CLOSED_EVENT_ID = "FileClosed";
@@ -94,6 +95,8 @@ public class WIDesigner extends FileBasedApplication implements
 	static final String WINDOW_RENAMED_EVENT_ID = "WindowRenamed";
 	static final String CONSTRAINTS_ACTIVE_EVENT_ID = "ConstraintsActive";
 	static final String CONSTRAINTS_SAVE_AS_ACTIVE_EVENT_ID = "ConstraintsSaveAsActive";
+	static final String INSTRUMENT_IN_FOCUS_EVENT_ID = "InstrumentInFocus";
+	static final String INSTRUMENT_SELECTED_EVENT_ID = "InstrumentSelected";
 
 	static final String CONSOLE_ACTION_ID = "Console";
 	static final String STUDY_ACTION_ID = "Study";
@@ -591,8 +594,7 @@ public class WIDesigner extends FileBasedApplication implements
 		};
 		action.putValue(Action.SHORT_DESCRIPTION,
 				"Compare instrument selected in study to the current editor tab");
-		imageUrl = WIDesigner.class
-				.getResource("images/compare.png");
+		imageUrl = WIDesigner.class.getResource("images/compare.png");
 		if (imageUrl != null)
 		{
 			action.putValue(Action.SMALL_ICON, new ImageIcon(imageUrl));
@@ -689,8 +691,7 @@ public class WIDesigner extends FileBasedApplication implements
 			}
 		};
 		action.putValue(Action.SHORT_DESCRIPTION, "Optimize instrument");
-		imageUrl = WIDesigner.class
-				.getResource("images/optimize.png");
+		imageUrl = WIDesigner.class.getResource("images/optimize.png");
 		if (imageUrl != null)
 		{
 			action.putValue(Action.SMALL_ICON, new ImageIcon(imageUrl));
@@ -775,8 +776,7 @@ public class WIDesigner extends FileBasedApplication implements
 		};
 		action.putValue(Action.SHORT_DESCRIPTION,
 				"Calculate instrument tuning table");
-		imageUrl = WIDesigner.class
-				.getResource("images/calculate.png");
+		imageUrl = WIDesigner.class.getResource("images/calculate.png");
 		if (imageUrl != null)
 		{
 			action.putValue(Action.SMALL_ICON, new ImageIcon(imageUrl));
@@ -809,11 +809,13 @@ public class WIDesigner extends FileBasedApplication implements
 		eventManager.addEvent(WINDOW_RENAMED_EVENT_ID);
 		eventManager.addEvent(CONSTRAINTS_ACTIVE_EVENT_ID);
 		eventManager.addEvent(CONSTRAINTS_SAVE_AS_ACTIVE_EVENT_ID);
+		eventManager.addEvent(INSTRUMENT_SELECTED_EVENT_ID);
 
 		eventManager.subscribe(TUNING_ACTIVE_EVENT_ID, this);
 		eventManager.subscribe(OPTIMIZATION_ACTIVE_EVENT_ID, this);
 		eventManager.subscribe(CONSTRAINTS_ACTIVE_EVENT_ID, this);
 		eventManager.subscribe(CONSTRAINTS_SAVE_AS_ACTIVE_EVENT_ID, this);
+		eventManager.subscribe(INSTRUMENT_SELECTED_EVENT_ID, this);
 	}
 
 	protected void addListeners()
@@ -899,6 +901,16 @@ public class WIDesigner extends FileBasedApplication implements
 					{
 						action.setEnabled(false);
 					}
+
+					if (StudyModel.INSTRUMENT_CATEGORY_ID.equals(model
+							.getSemanticName()))
+					{
+						setCompareInstrumentAction(model.getName(), true);
+					}
+					else
+					{
+						setCompareInstrumentAction(null, true);
+					}
 				}
 			}
 
@@ -915,6 +927,43 @@ public class WIDesigner extends FileBasedApplication implements
 			}
 
 		});
+	}
+
+	protected void setCompareInstrumentAction(String modelName,
+			boolean isFromDataView)
+	{
+		Action action = getActionMap().get(COMPARE_INSTRUMENT_ACTION_ID);
+		if (modelName == null || modelName.length() == 0)
+		{
+			action.setEnabled(false);
+		}
+		else if (isFromDataView)
+		{
+			String otherModelName = getStudyView().getStudyModel()
+					.getSelectedInstrumentName();
+			if (otherModelName == null || modelName.equals(otherModelName))
+			{
+				action.setEnabled(false);
+			}
+			else
+			{
+				action.setEnabled(true);
+			}
+		}
+		else
+		{
+			DataModel otherModel = getFocusedModel();
+			if (otherModel == null
+					|| !StudyModel.INSTRUMENT_CATEGORY_ID.equals(otherModel
+							.getSemanticName()))
+			{
+				action.setEnabled(false);
+			}
+			else
+			{
+				action.setEnabled(!modelName.equals(otherModel.getName()));
+			}
+		}
 	}
 
 	protected void addDockedViews()
@@ -944,7 +993,7 @@ public class WIDesigner extends FileBasedApplication implements
 
 		// add feature
 		addApplicationFeature(docking);
-		
+
 		// Set initial Study view width
 		docking.addDockableCustomizer(new DockableFrameCustomizer()
 		{
@@ -1050,11 +1099,6 @@ public class WIDesigner extends FileBasedApplication implements
 			{
 				action.setEnabled((Boolean) e.getSource());
 			}
-			action = getActionMap().get(COMPARE_INSTRUMENT_ACTION_ID);
-			if (action != null)
-			{
-				action.setEnabled((Boolean) e.getSource());
-			}
 		}
 		else if (OPTIMIZATION_ACTIVE_EVENT_ID.equals(eventName))
 		{
@@ -1089,6 +1133,10 @@ public class WIDesigner extends FileBasedApplication implements
 			{
 				action.setEnabled((Boolean) e.getSource());
 			}
+		}
+		else if (INSTRUMENT_SELECTED_EVENT_ID.equals(eventName))
+		{
+			setCompareInstrumentAction((String) e.getSource(), false);
 		}
 	}
 
@@ -1152,4 +1200,19 @@ public class WIDesigner extends FileBasedApplication implements
 		return consoleView;
 	}
 
+	/**
+	 * Returns the LengthType specified in the application preferences.
+	 * 
+	 * @return If not set (in the Options dialog), returns the default
+	 *         LengthType.
+	 */
+	public LengthType getApplicationLengthType()
+	{
+		Preferences preferences = getPreferences();
+		String lengthTypeName = preferences.get(
+				OptimizationPreferences.LENGTH_TYPE_OPT,
+				OptimizationPreferences.LENGTH_TYPE_DEFAULT);
+
+		return LengthType.valueOf(lengthTypeName);
+	}
 }

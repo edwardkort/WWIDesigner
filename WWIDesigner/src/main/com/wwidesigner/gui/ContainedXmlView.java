@@ -1,7 +1,6 @@
 package com.wwidesigner.gui;
 
 import java.awt.Component;
-import java.util.prefs.Preferences;
 
 import com.jidesoft.app.framework.gui.DataViewPane;
 import com.wwidesigner.util.Constants.LengthType;
@@ -33,11 +32,8 @@ public abstract class ContainedXmlView
 	 */
 	protected LengthType getApplicationLengthType()
 	{
-		Preferences preferences = parent.getApplication().getPreferences();
-		String lengthTypeName = preferences.get(
-				OptimizationPreferences.LENGTH_TYPE_OPT,
-				OptimizationPreferences.LENGTH_TYPE_DEFAULT);
-		return LengthType.valueOf(lengthTypeName);
+		return ((WIDesigner) parent.getApplication())
+				.getApplicationLengthType();
 	}
 
 	/**

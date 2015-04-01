@@ -1,9 +1,9 @@
 package com.wwidesigner.modelling;
 
-import java.util.List;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.text.DecimalFormat;
+import java.util.List;
 
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
@@ -12,11 +12,11 @@ import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 
-import com.wwidesigner.util.Constants.LengthType;
 import com.wwidesigner.geometry.BorePoint;
 import com.wwidesigner.geometry.Hole;
 import com.wwidesigner.geometry.Instrument;
 import com.wwidesigner.geometry.Mouthpiece;
+import com.wwidesigner.util.Constants.LengthType;
 
 /**
  * Display a tabular report comparing differences between two related instruments.
@@ -35,7 +35,7 @@ public class InstrumentComparisonTable extends DefaultTableModel
 	// Mostly to eliminate minor floating point errors.
 	public static final double MinDifference = 0.000001;
 
-	public InstrumentComparisonTable(String title)
+	public InstrumentComparisonTable(String title, LengthType defaultLengthType)
 	{
 		this.title = title;
 		format_   = new DecimalFormat("#0");

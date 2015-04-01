@@ -49,6 +49,7 @@ import com.wwidesigner.optimization.Constraints;
 import com.wwidesigner.optimization.ObjectiveFunctionOptimizer;
 import com.wwidesigner.optimization.bind.OptimizationBindFactory;
 import com.wwidesigner.util.BindFactory;
+import com.wwidesigner.util.Constants.LengthType;
 import com.wwidesigner.util.PhysicalParameters;
 
 /**
@@ -511,6 +512,7 @@ public abstract class StudyModel implements CategoryType
 			throw new DataOpenException("Data is not a supported type",
 					DataOpenException.DATA_TYPE_NOT_SUPPORTED);
 		}
+		dataModel.setSemanticName(categoryName);
 		if (categoryName.equals(INSTRUMENT_CATEGORY_ID)
 				|| categoryName.equals(TUNING_CATEGORY_ID))
 		{
@@ -833,25 +835,28 @@ public abstract class StudyModel implements CategoryType
 		return null;
 	} // optimizeInstrument
 
-	public void compareInstrument(String newName, Instrument newInstrument)
-			throws Exception
+	public void compareInstrument(String newName, Instrument newInstrument,
+			LengthType defaultLengthType) throws Exception
 	{
-		Category category = getCategory(INSTRUMENT_CATEGORY_ID);
-		FileDataModel model = (FileDataModel) category.getSelectedSubValue();
-		String oldName = model.getName();
-		if (oldName.equals(newName))
-		{
-			System.out.print("\nError: Current editor tab, ");
-			System.out.print(newName);
-			System.out.println(" is the same as the selected instrument.");
-			System.out
-					.println("Select the edit tab for a different instrument.");
-			return;
-		}
+		String oldName = getSelectedInstrumentName();
 		Instrument oldInstrument = getInstrument();
-		InstrumentComparisonTable table = new InstrumentComparisonTable("");
+		InstrumentComparisonTable table = new InstrumentComparisonTable("",
+				defaultLengthType);
 		table.buildTable(oldName, oldInstrument, newName, newInstrument);
 		table.showTable(false);
+	}
+
+	public String getSelectedInstrumentName()
+	{
+		String name = "";
+		Category category = getCategory(INSTRUMENT_CATEGORY_ID);
+		FileDataModel model = (FileDataModel) category.getSelectedSubValue();
+		if (model != null)
+		{
+			name = model.getName();
+		}
+
+		return name;
 	}
 
 	public static String marshal(Instrument instrument) throws Exception

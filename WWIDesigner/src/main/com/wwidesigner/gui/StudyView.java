@@ -382,8 +382,7 @@ public class StudyView extends DataViewPane implements EventSubscriber
 		}
 		catch (Exception e)
 		{
-			System.out.println("Exception: " + e.getMessage());
-			e.printStackTrace();
+			showException(e);
 		}
 	}
 

@@ -37,10 +37,10 @@ import com.jidesoft.app.framework.file.FileDataModel;
 import com.jidesoft.app.framework.gui.DataViewPane;
 import com.wwidesigner.geometry.Instrument;
 import com.wwidesigner.geometry.bind.GeometryBindFactory;
+import com.wwidesigner.geometry.view.InstrumentComparisonTable;
 import com.wwidesigner.gui.util.DataOpenException;
 import com.wwidesigner.gui.util.HoleNumberMismatchException;
 import com.wwidesigner.modelling.InstrumentCalculator;
-import com.wwidesigner.modelling.InstrumentComparisonTable;
 import com.wwidesigner.modelling.InstrumentTuner;
 import com.wwidesigner.note.Tuning;
 import com.wwidesigner.note.bind.NoteBindFactory;
@@ -840,10 +840,16 @@ public abstract class StudyModel implements CategoryType
 	{
 		String oldName = getSelectedInstrumentName();
 		Instrument oldInstrument = getInstrument();
-		InstrumentComparisonTable table = new InstrumentComparisonTable("",
+		InstrumentComparisonTable table = getInstrumentComparisonTable("",
 				defaultLengthType);
 		table.buildTable(oldName, oldInstrument, newName, newInstrument);
-		table.showTable(false);
+		table.showTable();
+	}
+
+	protected InstrumentComparisonTable getInstrumentComparisonTable(
+			String title, LengthType defaultLengthType)
+	{
+		return new InstrumentComparisonTable(title, defaultLengthType);
 	}
 
 	public String getSelectedInstrumentName()

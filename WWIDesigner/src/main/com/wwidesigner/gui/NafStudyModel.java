@@ -27,6 +27,8 @@ import java.util.prefs.Preferences;
 import com.jidesoft.app.framework.file.FileDataModel;
 import com.wwidesigner.geometry.Instrument;
 import com.wwidesigner.geometry.view.HoleGroupSpacingDialog;
+import com.wwidesigner.geometry.view.InstrumentComparisonTable;
+import com.wwidesigner.geometry.view.NafInstrumentComparisonTable;
 import com.wwidesigner.gui.util.DataOpenException;
 import com.wwidesigner.modelling.CentDeviationEvaluator;
 import com.wwidesigner.modelling.EvaluatorInterface;
@@ -44,6 +46,7 @@ import com.wwidesigner.optimization.HoleSizeObjectiveFunction;
 import com.wwidesigner.optimization.SingleTaperHoleGroupFromTopObjectiveFunction;
 import com.wwidesigner.optimization.SingleTaperNoHoleGroupingFromTopObjectiveFunction;
 import com.wwidesigner.optimization.multistart.GridRangeProcessor;
+import com.wwidesigner.util.Constants.LengthType;
 import com.wwidesigner.util.Constants.TemperatureType;
 import com.wwidesigner.util.PhysicalParameters;
 
@@ -824,6 +827,13 @@ public class NafStudyModel extends StudyModel
 			}
 		}
 		return false;
+	}
+
+	@Override
+	protected InstrumentComparisonTable getInstrumentComparisonTable(
+			String title, LengthType defaultLengthType)
+	{
+		return new NafInstrumentComparisonTable(title, defaultLengthType);
 	}
 
 }

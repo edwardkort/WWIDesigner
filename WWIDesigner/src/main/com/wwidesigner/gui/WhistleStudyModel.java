@@ -390,7 +390,7 @@ public class WhistleStudyModel extends StudyModel
 	{
 		Map<String, Class<? extends ContainedXmlView>> defaultMap = new HashMap<String, Class<? extends ContainedXmlView>>();
 
-		defaultMap.put(INSTRUMENT_CATEGORY_ID, ContainedInstrumentView.class);
+		defaultMap.put(INSTRUMENT_CATEGORY_ID, ContainedWhistleInstrumentView.class);
 		defaultMap.put(TUNING_CATEGORY_ID, ContainedTuningView.class);
 		defaultMap.put(CONSTRAINTS_CATEGORY_ID, SizableConstraintsEditorView.class);
 
@@ -409,7 +409,7 @@ public class WhistleStudyModel extends StudyModel
 		Map<String, Class<ContainedXmlView>[]> toggleLists = new HashMap<String, Class<ContainedXmlView>[]>();
 
 		toggleLists.put(INSTRUMENT_CATEGORY_ID, new Class[] {
-				ContainedXmlTextView.class, ContainedInstrumentView.class });
+				ContainedXmlTextView.class, ContainedWhistleInstrumentView.class });
 		toggleLists.put(TUNING_CATEGORY_ID, new Class[] {
 				ContainedXmlTextView.class, ContainedTuningView.class });
 		toggleLists.put(CONSTRAINTS_CATEGORY_ID, new Class[] {

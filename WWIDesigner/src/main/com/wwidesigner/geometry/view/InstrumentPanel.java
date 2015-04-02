@@ -834,7 +834,7 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 		JPanel panel = new JPanel();
 		panel.setLayout(new GridBagLayout());
 
-		JLabel label = new JLabel("Length Type: ");
+		JLabel label = new JLabel("Dimensions are in: ");
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.anchor = GridBagConstraints.NORTHWEST;
 		gbc.gridx = 0;
@@ -843,6 +843,8 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 
 		lengthTypeField = new JTextField();
 		lengthTypeField.setEnabled(false);
+		lengthTypeField.setPreferredSize(new Dimension(30, 18));
+		lengthTypeField.setMinimumSize(new Dimension(30, 18));
 		lengthTypeField.setMargin(new Insets(2, 4, 2, 4));
 		lengthTypeField.setText("");
 		gbc.gridx = 1;

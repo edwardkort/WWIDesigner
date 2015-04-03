@@ -1094,11 +1094,6 @@ public class WIDesigner extends FileBasedApplication implements EventSubscriber
 			{
 				action.setEnabled((Boolean) e.getSource());
 			}
-			action = getActionMap().get(SKETCH_INSTRUMENT_ACTION_ID);
-			if (action != null)
-			{
-				action.setEnabled((Boolean) e.getSource());
-			}
 		}
 		else if (OPTIMIZATION_ACTIVE_EVENT_ID.equals(eventName))
 		{
@@ -1137,6 +1132,11 @@ public class WIDesigner extends FileBasedApplication implements EventSubscriber
 		else if (INSTRUMENT_SELECTED_EVENT_ID.equals(eventName))
 		{
 			setCompareInstrumentAction((String) e.getSource(), false);
+			Action action = getActionMap().get(SKETCH_INSTRUMENT_ACTION_ID);
+			if (action != null)
+			{
+				action.setEnabled(((String) e.getSource()).length() > 0);
+			}
 		}
 	}
 

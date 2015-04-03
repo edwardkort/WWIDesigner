@@ -51,12 +51,19 @@ public class FileOpenDialogPreviewPane extends DialogAdapter
 					{
 						public void propertyChange(PropertyChangeEvent chEvent)
 						{
-							if (chEvent
-									.getPropertyName()
+							String propertyName = chEvent.getPropertyName();
+							if (propertyName
 									.equals(JFileChooser.SELECTED_FILE_CHANGED_PROPERTY))
 							{
 								File file = (File) chEvent.getNewValue();
 								preview.configure(file);
+							}
+							else if (propertyName
+									.equals(JFileChooser.DIRECTORY_CHANGED_PROPERTY)
+									|| propertyName
+											.equals(JFileChooser.ACCESSORY_CHANGED_PROPERTY))
+							{
+								preview.configure(null);
 							}
 						}
 					});

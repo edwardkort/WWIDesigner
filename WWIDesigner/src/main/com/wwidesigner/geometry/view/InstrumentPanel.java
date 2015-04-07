@@ -530,7 +530,7 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 		stopTableEditing(boreList);
 		if (!nameIsPopulated)
 		{
-			JOptionPane.showMessageDialog(this, "Name field is required.");
+			JOptionPane.showMessageDialog(this, "Enter a name for the instrument.");
 			nameField.requestFocusInWindow();
 			return null;
 		}

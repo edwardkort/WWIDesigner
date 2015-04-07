@@ -465,7 +465,8 @@ public class WhistleStudyModel extends StudyModel
 	{
 		String data = (String) dataModel.getData();
 		String categoryName = getCategoryName(data);
-		if (categoryName.equals(CONSTRAINTS_CATEGORY_ID))
+		if (categoryName != null
+			&& categoryName.equals(CONSTRAINTS_CATEGORY_ID))
 		{
 			// Constraints are filed in the optimizer category.
 			Category category = getCategory(OPTIMIZER_CATEGORY_ID);

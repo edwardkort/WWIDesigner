@@ -104,7 +104,8 @@ public class WIDesigner extends FileBasedApplication implements EventSubscriber
 	static final String GRAPH_TUNING_ACTION_ID = "Graph tuning";
 	static final String OPTIMIZE_INSTRUMENT_ACTION_ID = "Optimize instrument";
 	static final String SKETCH_INSTRUMENT_ACTION_ID = "Sketch instrument";
-	static final String CREATE_TUNING_FILE_ACTION_ID = "Create tuning file";
+	static final String CREATE_INSTRUMENT_FILE_ACTION_ID = "New Instrument";
+	static final String CREATE_TUNING_FILE_ACTION_ID = "New Tuning ...";
 	static final String COMPARE_INSTRUMENT_ACTION_ID = "Compare instruments";
 	static final String CLEAR_CONSOLE_ACTION_ID = "Clear Console";
 	static final String WARN_ON_DIRTY_CLOSE_ACTION_ID = "Warn on dirty close";
@@ -157,8 +158,6 @@ public class WIDesigner extends FileBasedApplication implements EventSubscriber
 		PreferencesDialogRequest.installPreferences(this, preferencesDialog);
 
 		addFileMapping(new TextFileFormat("xml", "XML"), XmlToggleView.class);
-		addFileMapping(new TextFileFormat("t-xml", "Tuning"),
-				TuningViewPane.class);
 
 		addActions();
 		addDockedViews();
@@ -222,9 +221,6 @@ public class WIDesigner extends FileBasedApplication implements EventSubscriber
 							COMPARE_INSTRUMENT_ACTION_ID);
 					toolbarsUI.addToolBarSeparator(toolbar);
 					button = toolbarsUI.addToolBarButton(toolbar,
-							CREATE_TUNING_FILE_ACTION_ID);
-					toolbarsUI.addToolBarSeparator(toolbar);
-					button = toolbarsUI.addToolBarButton(toolbar,
 							TOGGLE_VIEW_ACTION_ID);
 					button.setText("Vu");
 				}
@@ -267,9 +263,6 @@ public class WIDesigner extends FileBasedApplication implements EventSubscriber
 						.getAction(SKETCH_INSTRUMENT_ACTION_ID));
 				menuItem.setMnemonic('S');
 				menuItem = menu.add(menuBarUI
-						.getAction(CREATE_TUNING_FILE_ACTION_ID));
-				menuItem.setMnemonic('T');
-				menuItem = menu.add(menuBarUI
 						.getAction(COMPARE_INSTRUMENT_ACTION_ID));
 				menuItem.setMnemonic('m');
 				menu.setMnemonic('T');
@@ -284,8 +277,12 @@ public class WIDesigner extends FileBasedApplication implements EventSubscriber
 				Action action;
 				if (menuID == FILE_MENU_ID)
 				{
-					MenuGroup group = menuBarsUI.getMenuGroup(
-							FILE_USER_GROUP_ID, menu);
+					MenuGroup group = menuBarsUI.getMenuGroup(FILE_NEW_GROUP_ID, menu);
+					action = menuBarsUI.getAction(CREATE_TUNING_FILE_ACTION_ID);
+					menuItem = group.addMenuItem(action);
+					menuItem.setMnemonic('T');
+
+					group = menuBarsUI.getMenuGroup(FILE_USER_GROUP_ID, menu);
 					action = menuBarsUI.getAction(OPEN_CONSTRAINTS_ACTION_ID);
 					menuItem = group.addMenuItem(action);
 					action = menuBarsUI
@@ -621,7 +618,7 @@ public class WIDesigner extends FileBasedApplication implements EventSubscriber
 			}
 		};
 		action.putValue(Action.SHORT_DESCRIPTION,
-				"Create a tuning file from notes and fingerings");
+				"Use the Tuning Wizard to create a tuning file from notes and fingerings");
 		imageUrl = WIDesigner.class.getResource("images/tuning.png");
 		if (imageUrl != null)
 		{

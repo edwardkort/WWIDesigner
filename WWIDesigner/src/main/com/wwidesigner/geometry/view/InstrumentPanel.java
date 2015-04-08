@@ -1071,7 +1071,7 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 		gbc.gridx = gridx;
 		gbc.gridy = gridy;
 		gbc.gridheight = gridheight;
-		gbc.insets = new Insets(0, 0, 10, 10);
+		gbc.insets = new Insets(10, 0, 10, 10);
 		add(panel, gbc);
 	}
 

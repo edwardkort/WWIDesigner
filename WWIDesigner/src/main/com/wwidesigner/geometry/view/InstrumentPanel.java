@@ -530,7 +530,8 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 		stopTableEditing(boreList);
 		if (!nameIsPopulated)
 		{
-			JOptionPane.showMessageDialog(this, "Enter a name for the instrument.");
+			JOptionPane.showMessageDialog(this,
+					"Enter a name for the instrument.");
 			nameField.requestFocusInWindow();
 			return null;
 		}
@@ -1108,6 +1109,19 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 				else
 				{
 					return Double.class;
+				}
+			}
+
+			@Override
+			public boolean isCellEditable(int row, int column)
+			{
+				if (column == 2)
+				{
+					return false;
+				}
+				else
+				{
+					return true;
 				}
 			}
 		};

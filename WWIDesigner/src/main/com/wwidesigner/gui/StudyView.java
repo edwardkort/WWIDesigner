@@ -91,8 +91,11 @@ public class StudyView extends DataViewPane implements EventSubscriber
 				return tip == null ? getToolTipText() : tip;
 			}
 		};
+		// Show tooltips for the Study view, and let them persist for 8 seconds.
 		ToolTipManager.sharedInstance().registerComponent(tree);
 		ToolTipManager.sharedInstance().setDismissDelay(8000);
+		// If a Study view node doesn't fit in the pane, expand it when hovering
+		// over it.
 		ExpandedTipUtils.install(tree);
 		tree.setRootVisible(false);
 		tree.getSelectionModel().setSelectionMode(

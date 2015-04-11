@@ -323,7 +323,7 @@ public abstract class BaseObjectiveFunction implements MultivariateFunction,
 			}
 		}
 		initialTrustRegionRadius = minRadius;
-		
+
 		return initialTrustRegionRadius;
 	}
 
@@ -373,7 +373,7 @@ public abstract class BaseObjectiveFunction implements MultivariateFunction,
 					nrDimensions);
 		}
 		this.lowerBounds = lowerBounds.clone();
-		constraints.setLowerBounds(this.lowerBounds);
+		validateBounds();
 		// Reset initialTrustRadius
 		initialTrustRegionRadius = null;
 	}
@@ -386,9 +386,46 @@ public abstract class BaseObjectiveFunction implements MultivariateFunction,
 					nrDimensions);
 		}
 		this.upperBounds = upperBounds.clone();
-		constraints.setUpperBounds(this.upperBounds);
+		validateBounds();
 		// Reset initialTrustRadius
 		initialTrustRegionRadius = null;
+	}
+
+	/**
+	 * Support the input bounds being reversed (lower bound > upper bound) or
+	 * equal. Rebuilds the bounds arrays.
+	 */
+	protected void validateBounds()
+	{
+		if (lowerBounds != null && upperBounds != null)
+		{
+			for (int i = 0; i < nrDimensions; i++)
+			{
+				double lb = lowerBounds[i];
+				double ub = upperBounds[i];
+				if (lb > ub)
+				{
+					lowerBounds[i] = ub;
+					upperBounds[i] = lb;
+				}
+				// Subtract a small amount from the lower bound so that the
+				// optimizer sees the range as non-zero.
+				else if (lb == ub)
+				{
+					lowerBounds[i] = lb - 1.e-7;
+				}
+			}
+			constraints.setLowerBounds(lowerBounds);
+			constraints.setUpperBounds(upperBounds);
+		}
+		else if (lowerBounds != null)
+		{
+			constraints.setLowerBounds(lowerBounds);
+		}
+		else if (upperBounds != null)
+		{
+			constraints.setUpperBounds(upperBounds);
+		}
 	}
 
 	public int getNrDimensions()
@@ -417,15 +454,7 @@ public abstract class BaseObjectiveFunction implements MultivariateFunction,
 
 	public double[] getUpperBounds()
 	{
-		double[] bounds = upperBounds.clone();
-		for (int i = 0; i < bounds.length; i++)
-		{
-			if (bounds[i] <= lowerBounds[i])
-			{
-				bounds[i] = lowerBounds[i];
-			}
-		}
-		return bounds;
+		return upperBounds;
 	}
 
 	public OptimizerType getOptimizerType()
@@ -498,6 +527,7 @@ public abstract class BaseObjectiveFunction implements MultivariateFunction,
 	{
 		lowerBounds = constraints.getLowerBounds();
 		upperBounds = constraints.getUpperBounds();
+		validateBounds();
 		setConstraints(constraints);
 	}
 

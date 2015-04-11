@@ -57,11 +57,23 @@ import com.wwidesigner.util.PhysicalParameters;
 public class NafStudyModel extends StudyModel
 {
 	public static final String FIPPLE_OPT_SUB_CATEGORY_ID = FippleFactorObjectiveFunction.DISPLAY_NAME;
+	public static final String FIPPLE_OPT_TOOL_TIP = "Determine the parameter that defines the mouthpiece geometry's effect on tuning";
 	public static final String HOLESIZE_OPT_SUB_CATEGORY_ID = HoleSizeObjectiveFunction.DISPLAY_NAME;
+	public static final String HOLESIZE_OPT_TOOL_TIP = "Determine the hole sizes that minimize tuning error";
 	public static final String NO_GROUP_OPT_SUB_CATEGORY_ID = HoleFromTopObjectiveFunction.DISPLAY_NAME;
+	public static final String NO_GROUP_OPT_TOOL_TIP = "Determine the hole sizes and positions, and bore length, that minimize tuning error";
 	public static final String GROUP_OPT_SUB_CATEGORY_ID = HoleGroupFromTopObjectiveFunction.DISPLAY_NAME;
+	public static final String GROUP_OPT_TOOL_TIP = "<html>Determine the hole sizes and positions, and bore length, that minimize tuning error.<br/>"
+			+ "Supports grouping sets of adjacent holes to have the same inter-hole spacing</html>";
 	public static final String TAPER_GROUP_OPT_SUB_CATEGORY_ID = SingleTaperHoleGroupFromTopObjectiveFunction.DISPLAY_NAME;
+	public static final String TAPER_GROUP_TOOL_TIP = "<html>Determine the hole sizes and positions, and bore length, that minimize tuning error.<br/>"
+			+ "Supports grouping sets of adjacent holes to have the same inter-hole spacing.<br/>"
+			+ "Creates a linear taper in the bore, with constrained start, end, and bore-diameter<br/>"
+			+ "changes. The diameter at the bore end is not changed</html>";
 	public static final String TAPER_NO_GROUP_OPT_SUB_CATEGORY_ID = SingleTaperNoHoleGroupingFromTopObjectiveFunction.DISPLAY_NAME;
+	public static final String TAPER_NO_GROUP_TOOL_TIP = "<html>Determine the hole sizes and positions, and bore length, that minimize tuning error.<br/>"
+			+ "Creates a linear taper in the bore, with constrained start, end, and bore-diameter<br/>"
+			+ "changes. The diameter at the bore end is not changed</html>";
 
 	public static final String HOLE_0_CONS_SUB_CATEGORY_ID = "0 holes";
 	public static final String HOLE_6_1_125_SPACING_CONS_SUB_CATEGORY_ID = "6 holes, 1-1/8\" max spacing";
@@ -71,8 +83,11 @@ public class NafStudyModel extends StudyModel
 	public static final String HOLE_7_CONS_SUB_CATEGORY_ID = "7 holes";
 
 	public static final String NO_MULTI_START_SUB_CATEGORY_ID = "No multi-start optimization";
+	public static final String NO_MULTI_START_TOOL_TIP = "Run optimizer once";
 	public static final String VARY_FIRST_MULTI_START_SUB_CATEGORY_ID = "Vary first bound variable";
+	public static final String VARY_FIRST_MULTI_START_TOOL_TIP = "Run optimizer multiple times, starting with different bore lengths (typically)";
 	public static final String VARY_ALL_MULTI_START_SUB_CATEGORY_ID = "Vary all dimensions";
+	public static final String VARY_ALL_MULTI_START_TOOL_TIP = "Run optimizer multiple times, starting with different values for all parameters";
 
 	protected int numberOfStarts = 30;
 
@@ -94,25 +109,30 @@ public class NafStudyModel extends StudyModel
 	{
 		setParams(new PhysicalParameters(72.0, TemperatureType.F));
 		Category multiStart = new Category(MULTI_START_CATEGORY_ID);
-		multiStart.addSub(NO_MULTI_START_SUB_CATEGORY_ID, null);
-		multiStart.addSub(VARY_FIRST_MULTI_START_SUB_CATEGORY_ID, null);
-		multiStart.addSub(VARY_ALL_MULTI_START_SUB_CATEGORY_ID, null);
+		multiStart.addSub(NO_MULTI_START_SUB_CATEGORY_ID, null,
+				NO_MULTI_START_TOOL_TIP);
+		multiStart.addSub(VARY_FIRST_MULTI_START_SUB_CATEGORY_ID, null,
+				VARY_FIRST_MULTI_START_TOOL_TIP);
+		multiStart.addSub(VARY_ALL_MULTI_START_SUB_CATEGORY_ID, null,
+				VARY_ALL_MULTI_START_TOOL_TIP);
 		// Default to no multi-start
 		multiStart.setSelectedSub(NO_MULTI_START_SUB_CATEGORY_ID);
 		categories.add(multiStart);
 		Category optimizers = new Category(OPTIMIZER_CATEGORY_ID);
 		optimizers.addSub(FIPPLE_OPT_SUB_CATEGORY_ID,
-				FippleFactorObjectiveFunction.NAME);
+				FippleFactorObjectiveFunction.NAME, FIPPLE_OPT_TOOL_TIP);
 		optimizers.addSub(HOLESIZE_OPT_SUB_CATEGORY_ID,
-				HoleSizeObjectiveFunction.NAME);
+				HoleSizeObjectiveFunction.NAME, HOLESIZE_OPT_TOOL_TIP);
 		optimizers.addSub(NO_GROUP_OPT_SUB_CATEGORY_ID,
-				HoleFromTopObjectiveFunction.NAME);
+				HoleFromTopObjectiveFunction.NAME, NO_GROUP_OPT_TOOL_TIP);
 		optimizers.addSub(GROUP_OPT_SUB_CATEGORY_ID,
-				HoleGroupFromTopObjectiveFunction.NAME);
+				HoleGroupFromTopObjectiveFunction.NAME, GROUP_OPT_TOOL_TIP);
 		optimizers.addSub(TAPER_NO_GROUP_OPT_SUB_CATEGORY_ID,
-				SingleTaperNoHoleGroupingFromTopObjectiveFunction.NAME);
+				SingleTaperNoHoleGroupingFromTopObjectiveFunction.NAME,
+				TAPER_NO_GROUP_TOOL_TIP);
 		optimizers.addSub(TAPER_GROUP_OPT_SUB_CATEGORY_ID,
-				SingleTaperHoleGroupFromTopObjectiveFunction.NAME);
+				SingleTaperHoleGroupFromTopObjectiveFunction.NAME,
+				TAPER_GROUP_TOOL_TIP);
 		categories.add(optimizers);
 		Category constraints = new Category(CONSTRAINTS_CATEGORY_ID);
 		categories.add(constraints);

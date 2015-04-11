@@ -24,11 +24,13 @@ import java.awt.event.MouseEvent;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.prefs.Preferences;
 
 import javax.swing.JScrollPane;
 import javax.swing.JTree;
 import javax.swing.SwingUtilities;
+import javax.swing.ToolTipManager;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeModel;
@@ -43,6 +45,7 @@ import com.jidesoft.app.framework.file.FileDataModel;
 import com.jidesoft.app.framework.gui.DataViewPane;
 import com.jidesoft.app.framework.gui.MessageDialogRequest;
 import com.jidesoft.app.framework.gui.filebased.FileBasedApplication;
+import com.jidesoft.tooltip.ExpandedTipUtils;
 import com.jidesoft.tree.TreeUtils;
 import com.wwidesigner.geometry.Instrument;
 import com.wwidesigner.gui.util.DataOpenException;
@@ -66,7 +69,31 @@ public class StudyView extends DataViewPane implements EventSubscriber
 	protected void initializeComponents()
 	{
 		// create file tree
-		tree = new JTree();
+		tree = new JTree()
+		{
+			@Override
+			public String getToolTipText(MouseEvent e)
+			{
+				String tip = null;
+				TreePath path = tree.getPathForLocation(e.getX(), e.getY());
+				if (path != null)
+				{
+					if (path.getPathCount() == 3) // it is a leaf
+					{
+						DefaultMutableTreeNode node = (DefaultMutableTreeNode) path
+								.getLastPathComponent();
+						if (node instanceof TreeNodeWithToolTips)
+						{
+							tip = ((TreeNodeWithToolTips) node).getToolTip();
+						}
+					}
+				}
+				return tip == null ? getToolTipText() : tip;
+			}
+		};
+		ToolTipManager.sharedInstance().registerComponent(tree);
+		ToolTipManager.sharedInstance().setDismissDelay(8000);
+		ExpandedTipUtils.install(tree);
 		tree.setRootVisible(false);
 		tree.getSelectionModel().setSelectionMode(
 				TreeSelectionModel.DISCONTIGUOUS_TREE_SELECTION);
@@ -144,16 +171,22 @@ public class StudyView extends DataViewPane implements EventSubscriber
 				root.add(node);
 			}
 			String selectedSub = study.getSelectedSub(category);
+			Map<String, String> toolTips = study.getCategory(category)
+					.getToolTips();
 			for (String name : study.getSubcategories(category))
 			{
-				DefaultMutableTreeNode childNode = new DefaultMutableTreeNode(
-						name);
+				TreeNodeWithToolTips childNode = new TreeNodeWithToolTips(name);
 				if (childNode != null)
 				{
 					node.add(childNode);
 					if (name.equals(selectedSub))
 					{
 						selectionPaths.add(new TreePath(childNode.getPath()));
+					}
+					String tip = toolTips.get(name);
+					if (tip != null)
+					{
+						childNode.setToolTip(tip);
 					}
 				}
 			}
@@ -475,5 +508,25 @@ public class StudyView extends DataViewPane implements EventSubscriber
 	{
 		return study
 				.getConstraintsLeafDirectory(rootDirectoryPath, constraints);
+	}
+
+	class TreeNodeWithToolTips extends DefaultMutableTreeNode
+	{
+		private String toolTip;
+
+		public TreeNodeWithToolTips(Object userObject)
+		{
+			super(userObject);
+		}
+
+		public void setToolTip(String tip)
+		{
+			toolTip = tip;
+		}
+
+		public String getToolTip()
+		{
+			return toolTip;
+		}
 	}
 }

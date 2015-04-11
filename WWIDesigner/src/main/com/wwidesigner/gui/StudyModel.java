@@ -23,6 +23,7 @@ import java.io.File;
 import java.io.StringWriter;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -259,6 +260,7 @@ public abstract class StudyModel implements CategoryType
 		private String name;
 		private Map<String, Object> subs;
 		private String selectedSub;
+		private Map<String, String> toolTips = new HashMap<String, String>();
 
 		public Category(String name)
 		{
@@ -279,6 +281,12 @@ public abstract class StudyModel implements CategoryType
 			subs.put(name, sub);
 		}
 
+		public void addSub(String name, Object sub, String toolTip)
+		{
+			addSub(name, sub);
+			toolTips.put(name, toolTip);
+		}
+
 		public void removeSub(String name)
 		{
 			if (name.equals(selectedSub))
@@ -286,6 +294,7 @@ public abstract class StudyModel implements CategoryType
 				selectedSub = null;
 			}
 			subs.remove(name);
+			toolTips.remove(name);
 		}
 
 		public void removeSubByValue(Object value)
@@ -308,6 +317,7 @@ public abstract class StudyModel implements CategoryType
 				if (value.equals(entry.getValue()))
 				{
 					iterator.remove();
+					toolTips.remove(entry.getKey());
 					break;
 				}
 			}
@@ -320,6 +330,11 @@ public abstract class StudyModel implements CategoryType
 				subs = new TreeMap<String, Object>();
 			}
 			return subs;
+		}
+
+		public Map<String, String> getToolTips()
+		{
+			return toolTips;
 		}
 
 		public void setSelectedSub(String key)

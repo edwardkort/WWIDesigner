@@ -527,8 +527,8 @@ public abstract class BaseObjectiveFunction implements MultivariateFunction,
 	{
 		lowerBounds = constraints.getLowerBounds();
 		upperBounds = constraints.getUpperBounds();
-		validateBounds();
 		setConstraints(constraints);
+		validateBounds();
 	}
 
 	/**

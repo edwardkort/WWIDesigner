@@ -417,17 +417,18 @@ public class NafStudyModel extends StudyModel
 					}
 					else if (numberOfHoles == 7)
 					{
-						lowerBound = new double[] { 0.002, 0.002, 0.002, 0.002,
-								0.002, 0.002, 0.002 };
-						upperBound = new double[] { 0.014, 0.014, 0.014, 0.014,
-								0.014, 0.008, 0.008 };
+						lowerBound = new double[] { 0.002032, 0.003175,
+								0.003175, 0.003175, 0.003175, 0.002032,
+								0.002032 };
+						upperBound = new double[] { 0.0127, 0.0127, 0.0127,
+								0.0127, 0.0127, 0.00635, 0.00635 };
 					}
 					else if (numberOfHoles == 6)
 					{
-						lowerBound = new double[] { 0.002, 0.003, 0.003, 0.003,
-								0.003, 0.003 };
-						upperBound = new double[] { 0.0102, 0.0102, 0.010,
-								0.010, 0.010, 0.012 };
+						lowerBound = new double[] { 0.002032, 0.003175,
+								0.003175, 0.003175, 0.003175, 0.003175 };
+						upperBound = new double[] { 0.0127, 0.0127, 0.0127,
+								0.0127, 0.0127, 0.0127 };
 					}
 					else
 					// Create blank constraints for the no-default scenario
@@ -445,26 +446,29 @@ public class NafStudyModel extends StudyModel
 					// ratios.
 					if (numberOfHoles == 0)
 					{
-						lowerBound = new double[] { 0.2 };
-						upperBound = new double[] { 0.7 };
+						lowerBound = new double[] { 0.1905 };
+						upperBound = new double[] { 0.6985 };
 					}
 					else if (numberOfHoles == 7)
 					{
-						lowerBound = new double[] { 0.2, 0.25, 0.0203, 0.0203,
-								0.0203, 0.0203, 0.0203, 0.0005, 0.002, 0.002,
-								0.002, 0.002, 0.002, 0.002, 0.002 };
-						upperBound = new double[] { 0.7, 0.50, 0.05, 0.05, 0.1,
-								0.05, 0.05, 0.003, 0.014, 0.014, 0.014, 0.014,
-								0.014, 0.008, 0.008 };
+						lowerBound = new double[] { 0.1905, 0.25, 0.02032,
+								0.02032, 0.02032, 0.02032, 0.02032, 0.0,
+								0.002032, 0.003175, 0.003175, 0.003175,
+								0.003175, 0.002032, 0.002032 };
+						upperBound = new double[] { 0.6985, 0.50, 0.03175,
+								0.03175, 0.0762, 0.03175, 0.03175, 0.003175,
+								0.0127, 0.0127, 0.0127, 0.0127, 0.0127,
+								0.00635, 0.00635 };
 					}
 					else if (numberOfHoles == 6)
 					{
-						lowerBound = new double[] { 0.2, 0.25, 0.0203, 0.0203,
-								0.0203, 0.0203, 0.0203, 0.002, 0.003, 0.003,
-								0.003, 0.003, 0.003 };
-						upperBound = new double[] { 0.7, 0.50, 0.032, 0.032,
-								0.07, 0.032, 0.032, 0.0102, 0.0102, 0.010,
-								0.010, 0.010, 0.012 };
+						lowerBound = new double[] { 0.1905, 0.25, 0.02032,
+								0.02032, 0.02032, 0.02032, 0.02032, 0.002032,
+								0.003175, 0.003175, 0.003175, 0.003175,
+								0.003175 };
+						upperBound = new double[] { 0.6985, 0.50, 0.03175,
+								0.03175, 0.0762, 0.03175, 0.03175, 0.0127,
+								0.0127, 0.0127, 0.0127, 0.0127, 0.0127 };
 					}
 					else
 					// Create blank constraints for the no-default scenario
@@ -500,29 +504,30 @@ public class NafStudyModel extends StudyModel
 					if (numberOfHoles == 0)
 					{
 						holeGroups = new int[][] { {} };
-						lowerBound = new double[] { 0.2 };
-						upperBound = new double[] { 0.7 };
+						lowerBound = new double[] { 0.1905 };
+						upperBound = new double[] { 0.6985 };
 					}
 					else if (numberOfHoles == 7)
 					{
 						holeGroups = new int[][] { { 0, 1, 2 }, { 3, 4, 5 },
 								{ 6 } };
-						lowerBound = new double[] { 0.2, 0.25, 0.0203, 0.0203,
-								0.0203, 0.0005, 0.002, 0.002, 0.002, 0.002,
-								0.002, 0.002, 0.002 };
-						upperBound = new double[] { 0.7, 1.0, 0.05, 0.05, 0.1,
-								0.003, 0.014, 0.014, 0.014, 0.014, 0.014,
-								0.008, 0.008 };
+						lowerBound = new double[] { 0.1905, 0.25, 0.02032,
+								0.02032, 0.02032, 0.0, 0.002032, 0.003175,
+								0.003175, 0.003175, 0.003175, 0.002032,
+								0.002032 };
+						upperBound = new double[] { 0.6985, 0.5, 0.03175,
+								0.0762, 0.03175, 0.003175, 0.0127, 0.0127,
+								0.0127, 0.0127, 0.0127, 0.00635, 0.00635 };
 					}
 					else if (numberOfHoles == 6)
 					{
 						holeGroups = new int[][] { { 0, 1, 2 }, { 3, 4, 5 } };
-						lowerBound = new double[] { 0.2, 0.25, 0.0203, 0.0203,
-								0.0203, 0.002, 0.003, 0.003, 0.003, 0.003,
-								0.003 };
-						upperBound = new double[] { 0.7, 1.0, 0.032, 0.07,
-								0.032, 0.0102, 0.0102, 0.010, 0.010, 0.010,
-								0.012 };
+						lowerBound = new double[] { 0.1905, 0.25, 0.02032,
+								0.02032, 0.02032, 0.002032, 0.003175, 0.003175,
+								0.003175, 0.003175, 0.003175 };
+						upperBound = new double[] { 0.6985, 0.5, 0.03175,
+								0.0762, 0.03175, 0.0127, 0.0127, 0.0127,
+								0.0127, 0.0127, 0.0127 };
 					}
 					else
 					// Create blank constraints for the no-default scenario
@@ -548,27 +553,30 @@ public class NafStudyModel extends StudyModel
 					// taper bounds as ratios.
 					if (numberOfHoles == 0)
 					{
-						lowerBound = new double[] { 0.2, 0.8, 0.0, 0.0 };
-						upperBound = new double[] { 0.7, 1.2, 1.0, 1.0 };
+						lowerBound = new double[] { 0.1905, 0.8, 0.0, 0.0 };
+						upperBound = new double[] { 0.6985, 1.2, 1.0, 1.0 };
 					}
 					else if (numberOfHoles == 7)
 					{
-						lowerBound = new double[] { 0.2, 0.25, 0.0203, 0.0203,
-								0.0203, 0.0203, 0.0203, 0.0005, 0.002, 0.002,
-								0.002, 0.002, 0.002, 0.002, 0.002, 0.8, 0.0,
-								0.0 };
-						upperBound = new double[] { 0.7, 0.50, 0.05, 0.05, 0.1,
-								0.05, 0.05, 0.003, 0.014, 0.014, 0.014, 0.014,
-								0.014, 0.008, 0.008, 1.2, 1.0, 1.0 };
+						lowerBound = new double[] { 0.1905, 0.25, 0.02032,
+								0.02032, 0.02032, 0.02032, 0.02032, 0.0,
+								0.002032, 0.003175, 0.003175, 0.003175,
+								0.003175, 0.002032, 0.002032, 0.8, 0.0, 0.0 };
+						upperBound = new double[] { 0.6985, 0.50, 0.03175,
+								0.03175, 0.0762, 0.03175, 0.03175, 0.003175,
+								0.0127, 0.0127, 0.0127, 0.0127, 0.0127,
+								0.00635, 0.00635, 1.2, 1.0, 1.0 };
 					}
 					else if (numberOfHoles == 6)
 					{
-						lowerBound = new double[] { 0.2, 0.25, 0.0203, 0.0203,
-								0.0203, 0.0203, 0.0203, 0.002, 0.003, 0.003,
-								0.003, 0.003, 0.003, 0.8, 0.0, 0.0 };
-						upperBound = new double[] { 0.7, 0.50, 0.032, 0.032,
-								0.07, 0.032, 0.032, 0.0102, 0.0102, 0.010,
-								0.010, 0.010, 0.012, 1.15, 1.0, 1.0 };
+						lowerBound = new double[] { 0.1905, 0.25, 0.02032,
+								0.02032, 0.02032, 0.02032, 0.02032, 0.002032,
+								0.003175, 0.003175, 0.003175, 0.003175,
+								0.003175, 0.8, 0.0, 0.0 };
+						upperBound = new double[] { 0.6985, 0.50, 0.03175,
+								0.03175, 0.0762, 0.03175, 0.03175, 0.0127,
+								0.0127, 0.0127, 0.0127, 0.0127, 0.0127, 1.2,
+								1.0, 1.0 };
 					}
 					else
 					// Create blank constraints for the no-default scenario
@@ -605,29 +613,31 @@ public class NafStudyModel extends StudyModel
 					if (numberOfHoles == 0)
 					{
 						holeGroups = new int[][] { {} };
-						lowerBound = new double[] { 0.2, 0.8, 0.0, 0.0 };
-						upperBound = new double[] { 0.7, 1.2, 1.0, 1.0 };
+						lowerBound = new double[] { 0.1905, 0.8, 0.0, 0.0 };
+						upperBound = new double[] { 0.6985, 1.2, 1.0, 1.0 };
 					}
 					else if (numberOfHoles == 7)
 					{
 						holeGroups = new int[][] { { 0, 1, 2 }, { 3, 4, 5 },
 								{ 6 } };
-						lowerBound = new double[] { 0.2, 0.25, 0.0203, 0.0203,
-								0.0203, 0.0005, 0.002, 0.002, 0.002, 0.002,
-								0.002, 0.002, 0.002, 0.8, 0.0, 0.0 };
-						upperBound = new double[] { 0.7, 1.0, 0.05, 0.05, 0.1,
-								0.003, 0.014, 0.014, 0.014, 0.014, 0.014,
-								0.008, 0.008, 1.2, 1.0, 1.0 };
+						lowerBound = new double[] { 0.1905, 0.25, 0.02032,
+								0.02032, 0.02032, 0.0, 0.002032, 0.003175,
+								0.003175, 0.003175, 0.003175, 0.002032,
+								0.002032, 0.8, 0.0, 0.0 };
+						upperBound = new double[] { 0.6985, 0.5, 0.03175,
+								0.0762, 0.03175, 0.003175, 0.0127, 0.0127,
+								0.0127, 0.0127, 0.0127, 0.00635, 0.00635, 1.2,
+								1.0, 1.0 };
 					}
 					else if (numberOfHoles == 6)
 					{
 						holeGroups = new int[][] { { 0, 1, 2 }, { 3, 4, 5 } };
-						lowerBound = new double[] { 0.2, 0.25, 0.0203, 0.0203,
-								0.0203, 0.002, 0.003, 0.003, 0.003, 0.003,
-								0.003, 0.8, 0.0, 0.0 };
-						upperBound = new double[] { 0.7, 1.0, 0.032, 0.07,
-								0.032, 0.0102, 0.0102, 0.010, 0.010, 0.010,
-								0.012, 1.2, 1.0, 1.0 };
+						lowerBound = new double[] { 0.1905, 0.25, 0.02032,
+								0.02032, 0.02032, 0.002032, 0.003175, 0.003175,
+								0.003175, 0.003175, 0.003175, 0.8, 0.0, 0.0 };
+						upperBound = new double[] { 0.6985, 0.5, 0.03175,
+								0.0762, 0.03175, 0.0127, 0.0127, 0.0127,
+								0.0127, 0.0127, 0.0127, 1.2, 1.0, 1.0 };
 					}
 					else
 					// Create blank constraints for the no-default scenario

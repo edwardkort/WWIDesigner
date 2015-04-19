@@ -1,5 +1,7 @@
 package com.wwidesigner.geometry;
 
+import com.wwidesigner.util.InvalidFieldException;
+
 
 public class Hole implements ComponentInterface, BorePointInterface
 {
@@ -173,5 +175,18 @@ public class Hole implements ComponentInterface, BorePointInterface
 	public void setRatio(double alpha)
 	{
 		diameter = alpha * boreDiameter;
+	}
+	
+	public Exception checkValidity()
+	{
+		if (diameter <= 0.0)
+		{
+			return new InvalidFieldException("Instrument", "Hole diameter must be positive.");
+		}
+		if (height <= 0.0)
+		{
+			return new InvalidFieldException("Instrument", "Hole height must be positive.");
+		}
+		return null;
 	}
 }

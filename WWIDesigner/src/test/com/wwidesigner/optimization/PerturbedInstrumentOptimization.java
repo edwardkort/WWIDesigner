@@ -85,6 +85,11 @@ public class PerturbedInstrumentOptimization
 			double boreLengthFactor, double spacingFactor, double diameterFactor) throws Exception
 	{
 		originalInstrument = StudyModel.getInstrumentFromFile(instrumentFile);
+		Exception ex = originalInstrument.checkValidity();
+		if (ex != null)
+		{
+			throw ex;
+		}
 		perturbInstrument(boreLengthFactor, spacingFactor, diameterFactor);
 	}
 	

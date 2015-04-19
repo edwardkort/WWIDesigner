@@ -23,7 +23,6 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import com.wwidesigner.geometry.Mouthpiece;
@@ -109,66 +108,35 @@ public class WhistleInstrumentPanel extends InstrumentPanel
 		value = (Double) mouthpiecePosition.getValue();
 		if (value == null)
 		{
-			JOptionPane.showMessageDialog(this, "Mouthpiece position is required.");
-			mouthpiecePosition.requestFocusInWindow();
-			return null;
+			// Position is required. Assume zero.
+			value = 0.0;
 		}
 		mouthpiece.setPosition(value);
 
 		Mouthpiece.Fipple fipple = new Mouthpiece.Fipple();
 		value = (Double) windowLength.getValue();
-		if (value == null || value <= 0.0)
+		if (value == null)
 		{
-			JOptionPane.showMessageDialog(this, "Window length must be positive.");
-			windowLength.requestFocusInWindow();
-			return null;
+			// Value is required. Assume zero, which fails validity checking.
+			value = 0.0;
 		}
 		fipple.setWindowLength(value);
 		value = (Double) windowWidth.getValue();
-		if (value == null || value <= 0.0)
+		if (value == null)
 		{
-			JOptionPane.showMessageDialog(this, "Window width must be positive.");
-			windowWidth.requestFocusInWindow();
-			return null;
+			// Value is required. Assume zero, which fails validity checking.
+			value = 0.0;
 		}
 		fipple.setWindowWidth(value);
 		value = (Double) windowHeight.getValue();
-		if (value != null && value <= 0.0)
-		{
-			JOptionPane.showMessageDialog(this,
-					"Window height, if specified, must be positive.");
-			windowHeight.requestFocusInWindow();
-			return null;
-		}
 		fipple.setWindowHeight(value);
 		value = (Double) windwayLength.getValue();
-		if (value != null && value <= 0.0)
-		{
-			JOptionPane.showMessageDialog(this,
-					"Windway length, if specified, must be positive.");
-			windwayLength.requestFocusInWindow();
-			return null;
-		}
 		fipple.setWindwayLength(value);
 		value = (Double) windwayHeight.getValue();
-		if (value != null && value <= 0.0)
-		{
-			JOptionPane.showMessageDialog(this,
-					"Windway height, if specified, must be positive.");
-			windwayHeight.requestFocusInWindow();
-			return null;
-		}
 		fipple.setWindwayHeight(value);
 		mouthpiece.setFipple(fipple);
 		mouthpiece.setEmbouchureHole(null);
 		value = (Double) beta.getValue();
-		if (value != null && (value <= 0.0 || value >= 1.0))
-		{
-			JOptionPane.showMessageDialog(this,
-					"Beta, if specified, must be positive and less than 1.0.");
-			beta.requestFocusInWindow();
-			return null;
-		}
 		mouthpiece.setBeta(value);
 		return mouthpiece;
 	}

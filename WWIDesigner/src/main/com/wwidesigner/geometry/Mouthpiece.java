@@ -5,6 +5,8 @@ package com.wwidesigner.geometry;
 
 import java.util.List;
 
+import com.wwidesigner.util.InvalidFieldException;
+
 /**
  * @author kort
  * 
@@ -182,6 +184,31 @@ public class Mouthpiece implements ComponentInterface, MouthpieceInterface,
 		}
 	}
 
+	Exception checkValidity()
+	{
+		Exception ex = null;
+		if (fipple != null)
+		{
+			ex = fipple.checkValidity();
+		}
+		else if (embouchureHole != null)
+		{
+			ex = embouchureHole.checkValidity();
+		}
+		else 
+		{
+			return new InvalidFieldException("Instrument", "The type of mouthpiece is not specified");
+		}
+		if (ex != null)
+		{
+			return ex;
+		}
+		if (beta != null && (beta <= 0.0 || beta >= 1.0))
+		{
+			return new InvalidFieldException("Instrument", "Beta, if specified, must be positive and less than 1.");
+		}
+		return null;
+	}
 	/**
 	 * <p>
 	 * Java class for anonymous complex type.
@@ -254,6 +281,22 @@ public class Mouthpiece implements ComponentInterface, MouthpieceInterface,
 			height *= multiplier;
 		}
 
+		public Exception checkValidity()
+		{
+			if (innerDiameter <= 0.0)
+			{
+				return new InvalidFieldException("Instrument", "Embouchure hole inner diameter must be positive.");
+			}
+			if (outerDiameter <= 0.0)
+			{
+				return new InvalidFieldException("Instrument", "Embouchure hole outer diameter must be positive.");
+			}
+			if (height <= 0.0)
+			{
+				return new InvalidFieldException("Instrument", "Embouchure hole height must be positive.");
+			}
+			return null;
+		}
 	}
 
 	/**
@@ -391,6 +434,34 @@ public class Mouthpiece implements ComponentInterface, MouthpieceInterface,
 			}
 		}
 
+		public Exception checkValidity()
+		{
+			if (windowLength <= 0.0)
+			{
+				return new InvalidFieldException("Instrument", "Window or TSH length must be positive.");
+			}
+			if (windowWidth <= 0.0)
+			{
+				return new InvalidFieldException("Instrument", "Window or TSH width must be positive.");
+			}
+			if (windowHeight != null && windowHeight <= 0.0)
+			{
+				return new InvalidFieldException("Instrument", "Window height, if specified, must be positive.");
+			}
+			if (windwayHeight != null && windwayHeight <= 0.0)
+			{
+				return new InvalidFieldException("Instrument", "Windway height, if specified, must be positive.");
+			}
+			if (windwayLength != null && windwayLength <= 0.0)
+			{
+				return new InvalidFieldException("Instrument", "Windway length, if specified, must be positive.");
+			}
+			if (fippleFactor != null && fippleFactor <= 0.0)
+			{
+				return new InvalidFieldException("Instrument", "Fipple factor, if specified, must be positive.");
+			}
+			return null;
+		}
 	}
 
 	@Override

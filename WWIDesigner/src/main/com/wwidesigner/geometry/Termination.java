@@ -3,6 +3,8 @@
  */
 package com.wwidesigner.geometry;
 
+import com.wwidesigner.util.InvalidFieldException;
+
 /**
  * @author kort
  * 
@@ -33,4 +35,13 @@ public class Termination extends BorePoint implements TerminationInterface
 		flangeDiameter *= multiplier;
 	}
 
+	@Override
+	public Exception checkValidity()
+	{
+		if (flangeDiameter <= boreDiameter)
+		{
+			return new InvalidFieldException("Instrument", "Termination flange diameter must be greater than bore diameter.");
+		}
+		return null;
+	}
 }

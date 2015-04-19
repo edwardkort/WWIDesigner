@@ -99,7 +99,7 @@ public class ContainedInstrumentView extends ContainedXmlView
 			}
 			catch (Exception e)
 			{
-				System.err.println(e.getMessage());
+				System.err.println("Error on instrument panel: " + e.getMessage());
 			}
 		}
 

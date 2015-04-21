@@ -44,6 +44,8 @@ import org.apache.commons.math3.optim.univariate.UnivariateObjectiveFunction;
 import org.apache.commons.math3.optim.univariate.UnivariatePointValuePair;
 import org.apache.commons.math3.random.MersenneTwister;
 
+import com.wwidesigner.modelling.EvaluatorInterface;
+import com.wwidesigner.modelling.ReflectionEvaluator;
 import com.wwidesigner.optimization.multistart.AbstractRangeProcessor;
 import com.wwidesigner.optimization.multistart.RandomRangeProcessor;
 
@@ -218,12 +220,30 @@ public class ObjectiveFunctionOptimizer
 				optimizer = new BOBYQAOptimizer(
 						objective.getNrInterpolations(), trustRegion,
 						stoppingTrustRegion);
+
+				// Run optimization first with ReflectionEvaluator if specified
+				EvaluatorInterface originalEvaluator = objective.getEvaluator();
+				if (objective.isRunTwoStageOptimization())
+				{
+					objective.setEvaluator(new ReflectionEvaluator(objective
+							.getCalculator()));
+					outcome = optimizer.optimize(GoalType.MINIMIZE,
+							new ObjectiveFunction(objective), new MaxEval(
+									objective.getMaxEvaluations()), MaxIter
+									.unlimited(), new InitialGuess(startPoint),
+							new SimpleBounds(objective.getLowerBounds(),
+									objective.getUpperBounds()));
+					objective.setGeometryPoint(outcome.getPoint());
+				}
+
+				objective.setEvaluator(originalEvaluator);
 				outcome = optimizer.optimize(
 						GoalType.MINIMIZE,
 						new ObjectiveFunction(objective),
-						new MaxEval(objective.getMaxEvaluations()),
+						new MaxEval(objective.getMaxEvaluations()
+								- objective.getNumberOfEvaluations()),
 						MaxIter.unlimited(),
-						new InitialGuess(startPoint),
+						new InitialGuess(objective.getInitialPoint()),
 						new SimpleBounds(objective.getLowerBounds(), objective
 								.getUpperBounds()));
 				objective.setGeometryPoint(outcome.getPoint());

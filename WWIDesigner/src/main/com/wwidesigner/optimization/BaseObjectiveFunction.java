@@ -78,6 +78,8 @@ public abstract class BaseObjectiveFunction implements MultivariateFunction,
 	protected int tuningsDone; // Number of tuning error calculations.
 	protected int evaluationsDone; // Number of calculations of error norm.
 
+	protected boolean runTwoStageOptimization = false;
+
 	/**
 	 * The constructor sets what is to be optimized.
 	 * 
@@ -142,6 +144,26 @@ public abstract class BaseObjectiveFunction implements MultivariateFunction,
 	}
 
 	/**
+	 * Supports the changing of the evaluator at any time.
+	 * 
+	 * @param evaluator
+	 */
+	public void setEvaluator(EvaluatorInterface evaluator)
+	{
+		this.evaluator = evaluator;
+	}
+
+	public EvaluatorInterface getEvaluator()
+	{
+		return evaluator;
+	}
+
+	public InstrumentCalculator getCalculator()
+	{
+		return calculator;
+	}
+
+	/**
 	 * Calculate errors at each fingering target.
 	 * 
 	 * @param point
@@ -178,6 +200,16 @@ public abstract class BaseObjectiveFunction implements MultivariateFunction,
 		}
 
 		return norm;
+	}
+
+	public boolean isRunTwoStageOptimization()
+	{
+		return runTwoStageOptimization;
+	}
+
+	public void setRunTwoStageOptimization(boolean runTwoStageOptimization)
+	{
+		this.runTwoStageOptimization = runTwoStageOptimization;
 	}
 
 	/**

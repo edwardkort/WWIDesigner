@@ -380,7 +380,6 @@ public class NafStudyModel extends StudyModel
 		InstrumentCalculator calculator = getCalculator();
 		calculator.setInstrument(instrument);
 		EvaluatorInterface evaluator = new CentDeviationEvaluator(calculator);
-		// EvaluatorInterface evaluator = new ReflectionEvaluator(calculator);
 		int numberOfHoles = instrument.getHole().size();
 
 		BaseObjectiveFunction objective = null;
@@ -663,6 +662,7 @@ public class NafStudyModel extends StudyModel
 		else if (objectiveFunctionIntent == BaseObjectiveFunction.OPTIMIZATION_INTENT)
 		{
 			objective.setConstraintsBounds(constraints);
+			objective.setRunTwoStageOptimization(true);
 			Category multiStartCategory = getCategory(MULTI_START_CATEGORY_ID);
 			String multiStartSelected = multiStartCategory.getSelectedSub();
 			if (multiStartSelected == VARY_FIRST_MULTI_START_SUB_CATEGORY_ID)

@@ -20,9 +20,9 @@ package com.wwidesigner.gui;
 
 import java.awt.Component;
 
-import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 
+import com.jidesoft.app.framework.DataModelException;
 import com.jidesoft.app.framework.gui.DataViewPane;
 import com.wwidesigner.geometry.Instrument;
 import com.wwidesigner.geometry.bind.GeometryBindFactory;
@@ -87,27 +87,29 @@ public class ContainedInstrumentView extends ContainedXmlView
 	}
 
 	@Override
-	public String getText()
+	public String getText() throws DataModelException
 	{
 		String xmlText = null;
 		Instrument instrument = instrumentPanel.getData();
-		if (instrument != null)
+		if (instrument == null)
 		{
-			try
-			{
-				xmlText = StudyModel.marshal(instrument);
-			}
-			catch (Exception e)
-			{
-				System.err.println(e.getMessage());
-			}
+			throw new DataModelException("Missing or invalid data on Instrument panel");
+		}
+		try
+		{
+			instrument.checkValidity();
+			xmlText = StudyModel.marshal(instrument);
+		}
+		catch (Exception ex)
+		{
+			throw new DataModelException(null, ex);
 		}
 
 		return xmlText;
 	}
 
 	@Override
-	public void setText(String text)
+	public void setText(String text) throws DataModelException
 	{
 		BindFactory geometryBindFactory = GeometryBindFactory.getInstance();
 		try
@@ -123,8 +125,7 @@ public class ContainedInstrumentView extends ContainedXmlView
 		}
 		catch (Exception e)
 		{
-			JOptionPane.showMessageDialog(parent,
-					"XML input does not define a valid Instrument.");
+			throw new DataModelException(null, e);
 		}
 	}
 

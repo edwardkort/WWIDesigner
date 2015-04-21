@@ -4,6 +4,7 @@ import java.awt.Component;
 
 import javax.swing.JScrollPane;
 
+import com.jidesoft.app.framework.DataModelException;
 import com.jidesoft.app.framework.gui.DataViewPane;
 import com.wwidesigner.gui.util.DataChangedEvent;
 import com.wwidesigner.gui.util.DataChangedListener;
@@ -37,7 +38,7 @@ public class ConstraintsEditorView extends ContainedXmlView
 	}
 
 	@Override
-	public String getText()
+	public String getText() throws DataModelException
 	{
 		Constraints constraints = constraintsPanel.getConstraintValues();
 		String xmlText = null;
@@ -47,7 +48,7 @@ public class ConstraintsEditorView extends ContainedXmlView
 		}
 		catch (Exception e)
 		{
-			System.err.println(e.getMessage());
+			throw new DataModelException(null, e);
 		}
 
 		return xmlText;
@@ -56,7 +57,7 @@ public class ConstraintsEditorView extends ContainedXmlView
 	@Override
 	// Perhaps this method should throw Exceptions up to the parent rather than
 	// trap them here.
-	public void setText(String text)
+	public void setText(String text) throws DataModelException
 	{
 		BindFactory bindFactory = OptimizationBindFactory.getInstance();
 		try
@@ -70,7 +71,7 @@ public class ConstraintsEditorView extends ContainedXmlView
 		}
 		catch (Exception e)
 		{
-			System.err.println(e.getMessage());
+			throw new DataModelException(null, e);
 		}
 	}
 

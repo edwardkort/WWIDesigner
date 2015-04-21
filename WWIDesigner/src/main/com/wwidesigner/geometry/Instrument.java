@@ -27,6 +27,7 @@ import java.util.List;
 
 import com.wwidesigner.note.Fingering;
 import com.wwidesigner.util.Constants.LengthType;
+import com.wwidesigner.util.InvalidFieldException;
 import com.wwidesigner.util.SortedPositionList;
 
 /**
@@ -303,6 +304,32 @@ public class Instrument implements InstrumentInterface
 		{
 			termination.convertDimensions(multiplier);
 		}
+	}
+
+	public void checkValidity() throws InvalidFieldException
+	{
+		if (name.isEmpty())
+		{
+			throw new InvalidFieldException("Instrument", "Enter a name for the instrument.");
+		}
+		if (mouthpiece == null)
+		{
+			throw new InvalidFieldException("Instrument", "A mouthpiece description is required.");
+		}
+		mouthpiece.checkValidity();
+		for (Hole currentHole : hole)
+		{
+			currentHole.checkValidity();
+		}
+		if (borePoint.size() < 2)
+		{
+			throw new InvalidFieldException("Instrument", "Instrument must have at least two bore points.");
+		}
+		for (BorePoint bore : borePoint)
+		{
+			bore.checkValidity();
+		}
+		termination.checkValidity();
 	}
 
 	@Override

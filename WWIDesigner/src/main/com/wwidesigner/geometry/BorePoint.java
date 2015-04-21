@@ -5,6 +5,7 @@ package com.wwidesigner.geometry;
 
 import java.util.List;
 
+import com.wwidesigner.util.InvalidFieldException;
 import com.wwidesigner.util.SortedPositionList;
 
 /**
@@ -64,6 +65,14 @@ public class BorePoint implements BorePointInterface
 	{
 		borePosition *= multiplier;
 		boreDiameter *= multiplier;
+	}
+	
+	public void checkValidity() throws InvalidFieldException
+	{
+		if (boreDiameter <= 0.0)
+		{
+			throw new InvalidFieldException("Instrument", "Bore point must have a positive diameter.");
+		}
 	}
 
 	public static double getInterpolatedExtrapolatedBoreDiameter(

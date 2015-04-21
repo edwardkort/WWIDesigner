@@ -4,6 +4,7 @@ import java.awt.Dimension;
 
 import com.jidesoft.app.framework.BasicDataModel;
 import com.jidesoft.app.framework.DataModel;
+import com.jidesoft.app.framework.DataModelException;
 import com.jidesoft.app.framework.file.FileDataModel;
 import com.jidesoft.app.framework.gui.DataViewPane;
 
@@ -48,7 +49,7 @@ public class XmlToggleView extends DataViewPane
 	}
 
 	@Override
-	public void updateView(DataModel dataModel)
+	public void updateView(DataModel dataModel) throws DataModelException
 	{
 		if (dataModel instanceof FileDataModel)
 		{
@@ -61,7 +62,7 @@ public class XmlToggleView extends DataViewPane
 	}
 
 	@Override
-	public void updateModel(DataModel dataModel)
+	public void updateModel(DataModel dataModel) throws DataModelException
 	{
 		if (currentView == null)
 		{
@@ -77,7 +78,7 @@ public class XmlToggleView extends DataViewPane
 		}
 	}
 
-	public void toggleView()
+	public void toggleView() throws DataModelException
 	{
 		BasicDataModel dataModel = (BasicDataModel) getApplication()
 				.getDataModel(this);
@@ -90,7 +91,7 @@ public class XmlToggleView extends DataViewPane
 		updateUI();
 	}
 
-	public String getText()
+	public String getText() throws DataModelException
 	{
 		return currentView.getText();
 	}

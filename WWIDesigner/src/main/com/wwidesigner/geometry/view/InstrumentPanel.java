@@ -391,9 +391,10 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 		{
 			for (int j = 0; j < model.getColumnCount(); j++)
 			{
-				// Third column in holeList is spacing, which is null for the
-				// first row.
-				if (table.equals(holeList) && j == 2)
+				// For holeList, first column is name, which is optional,
+				// and third column is spacing, which is read-only,
+				// and always null for the first row.
+				if (table.equals(holeList) && (j == 0 || j == 2))
 				{
 					continue;
 				}
@@ -505,21 +506,20 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 		model.insertRow(bottomIndex, emptyRow(model.getColumnCount()));
 	}
 
-	public void saveInstrument(File file)
+	public void saveInstrument(File file) throws Exception
 	{
 		Instrument instrument = getData();
 
 		BindFactory bindery = GeometryBindFactory.getInstance();
-		try
-		{
-			bindery.marshalToXml(instrument, file);
-		}
-		catch (Exception ex)
-		{
-			JOptionPane.showMessageDialog(getParent(), "Save failed: " + ex);
-		}
+		instrument.checkValidity();
+		bindery.marshalToXml(instrument, file);
 	}
 
+	/**
+	 * Build an Instrument from the data entered on the panel.
+	 * Does not check the instrument for validity.
+	 * @return an Instrument, or null
+	 */
 	public Instrument getData()
 	{
 		if (!dataIsLoaded)
@@ -528,13 +528,6 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 		}
 		stopTableEditing(holeList);
 		stopTableEditing(boreList);
-		if (!nameIsPopulated)
-		{
-			JOptionPane.showMessageDialog(this,
-					"Enter a name for the instrument.");
-			nameField.requestFocusInWindow();
-			return null;
-		}
 		Instrument instrument = new Instrument();
 		instrument.setName(nameField.getText());
 		instrument.setDescription(descriptionField.getText());
@@ -552,6 +545,7 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 		}
 		catch (Exception e)
 		{
+			instrument.setLengthType(LengthType.M);
 		}
 		Mouthpiece mouthpiece = getMouthpiece();
 		if (mouthpiece == null)
@@ -588,10 +582,8 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 		value = (Double) mouthpiecePosition.getValue();
 		if (value == null)
 		{
-			JOptionPane.showMessageDialog(this,
-					"Mouthpiece position is required.");
-			mouthpiecePosition.requestFocusInWindow();
-			return null;
+			// Position is required. Assume zero.
+			value = 0.0;
 		}
 		mouthpiece.setPosition(value);
 		if (fippleButton.isSelected())
@@ -600,56 +592,24 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 			value = (Double) windowLength.getValue();
 			if (value == null || value <= 0.0)
 			{
-				JOptionPane.showMessageDialog(this,
-						"Window length must be positive.");
-				windowLength.requestFocusInWindow();
-				return null;
+				// Value is required. Assume zero, which fails validity checking.
+				value = 0.0;
 			}
 			fipple.setWindowLength(value);
 			value = (Double) windowWidth.getValue();
 			if (value == null || value <= 0.0)
 			{
-				JOptionPane.showMessageDialog(this,
-						"Window width must be positive.");
-				windowWidth.requestFocusInWindow();
-				return null;
+				// Value is required. Assume zero, which fails validity checking.
+				value = 0.0;
 			}
 			fipple.setWindowWidth(value);
 			value = (Double) windowHeight.getValue();
-			if (value != null && value <= 0.0)
-			{
-				JOptionPane.showMessageDialog(this,
-						"Window height, if specified, must be positive.");
-				windowHeight.requestFocusInWindow();
-				return null;
-			}
 			fipple.setWindowHeight(value);
 			value = (Double) windwayLength.getValue();
-			if (value != null && value <= 0.0)
-			{
-				JOptionPane.showMessageDialog(this,
-						"Windway length, if specified, must be positive.");
-				windwayLength.requestFocusInWindow();
-				return null;
-			}
 			fipple.setWindwayLength(value);
 			value = (Double) windwayHeight.getValue();
-			if (value != null && value <= 0.0)
-			{
-				JOptionPane.showMessageDialog(this,
-						"Windway height, if specified, must be positive.");
-				windwayHeight.requestFocusInWindow();
-				return null;
-			}
 			fipple.setWindwayHeight(value);
 			value = (Double) fippleFactor.getValue();
-			if (value != null && value <= 0.0)
-			{
-				JOptionPane.showMessageDialog(this,
-						"Fipple factor, if specified, must be positive.");
-				fippleFactor.requestFocusInWindow();
-				return null;
-			}
 			fipple.setFippleFactor(value);
 			mouthpiece.setFipple(fipple);
 			mouthpiece.setEmbouchureHole(null);
@@ -660,28 +620,22 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 			value = (Double) outerDiameter.getValue();
 			if (value == null || value <= 0.0)
 			{
-				JOptionPane.showMessageDialog(this,
-						"Outer diameter must be positive.");
-				outerDiameter.requestFocusInWindow();
-				return null;
+				// Value is required. Assume zero, which fails validity checking.
+				value = 0.0;
 			}
 			hole.setOuterDiameter(value);
 			value = (Double) innerDiameter.getValue();
 			if (value == null || value <= 0.0)
 			{
-				JOptionPane.showMessageDialog(this,
-						"Inner diameter must be positive.");
-				innerDiameter.requestFocusInWindow();
-				return null;
+				// Value is required. Assume zero, which fails validity checking.
+				value = 0.0;
 			}
 			hole.setInnerDiameter(value);
 			value = (Double) embHoleHeight.getValue();
 			if (value == null || value <= 0.0)
 			{
-				JOptionPane.showMessageDialog(this,
-						"Embouchure hole height must be positive.");
-				embHoleHeight.requestFocusInWindow();
-				return null;
+				// Value is required. Assume zero, which fails validity checking.
+				value = 0.0;
 			}
 			hole.setHeight(value);
 			mouthpiece.setEmbouchureHole(hole);
@@ -693,13 +647,6 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 			return null;
 		}
 		value = (Double) beta.getValue();
-		if (value != null && (value <= 0.0 || value >= 1.0))
-		{
-			JOptionPane.showMessageDialog(this,
-					"Beta, if specified, must be positive and less than 1.0.");
-			beta.requestFocusInWindow();
-			return null;
-		}
 		mouthpiece.setBeta(value);
 		return mouthpiece;
 	}
@@ -711,10 +658,8 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 		value = (Double) terminationFlange.getValue();
 		if (value == null || value <= 0.0)
 		{
-			JOptionPane.showMessageDialog(this,
-					"Termination flange diameter must be positive.");
-			terminationFlange.requestFocusInWindow();
-			return null;
+			// Value is required. Assume zero, which fails validity checking.
+			value = 0.0;
 		}
 		termination.setFlangeDiameter(value);
 		return termination;
@@ -1364,29 +1309,18 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 			Double height = (Double) model.getValueAt(i, 4);
 			if (position == null)
 			{
-				JOptionPane.showMessageDialog(this, "Missing hole position.");
-				holeList.requestFocusInWindow();
-				holeList.editCellAt(i, 0);
-				holeList.getEditorComponent().requestFocusInWindow();
-				return null;
+				// Value is required. Assume zero.
+				position = 0.0;
 			}
 			if (diameter == null || diameter <= 0.0)
 			{
-				JOptionPane.showMessageDialog(this,
-						"All hole diameters must be positive.");
-				holeList.requestFocusInWindow();
-				holeList.editCellAt(i, 1);
-				holeList.getEditorComponent().requestFocusInWindow();
-				return null;
+				// Value is required. Assume zero, which fails validity checking.
+				diameter = 0.0;
 			}
 			if (height == null || height <= 0.0)
 			{
-				JOptionPane.showMessageDialog(this,
-						"All hole heights must be positive.");
-				holeList.requestFocusInWindow();
-				holeList.editCellAt(i, 2);
-				holeList.getEditorComponent().requestFocusInWindow();
-				return null;
+				// Value is required. Assume zero, which fails validity checking.
+				height = 0.0;
 			}
 			Hole hole = new Hole(position, diameter, height);
 			hole.setName(holeName);
@@ -1400,13 +1334,6 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 		stopTableEditing(boreList);
 		DefaultTableModel model = (DefaultTableModel) boreList.getModel();
 		ArrayList<BorePoint> data = new ArrayList<BorePoint>();
-		if (model.getRowCount() < 2)
-		{
-			JOptionPane.showMessageDialog(this,
-					"Must specify at least two bore points.");
-			boreList.requestFocusInWindow();
-			return null;
-		}
 
 		for (int i = 0; i < model.getRowCount(); i++)
 		{
@@ -1414,21 +1341,13 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 			Double diameter = (Double) model.getValueAt(i, 1);
 			if (position == null)
 			{
-				JOptionPane.showMessageDialog(this,
-						"Missing bore point position.");
-				boreList.editCellAt(i, 0);
-				boreList.requestFocusInWindow();
-				boreList.getEditorComponent().requestFocusInWindow();
-				return null;
+				// Value is required. Assume zero.
+				position = 0.0;
 			}
 			if (diameter == null || diameter <= 0.0)
 			{
-				JOptionPane.showMessageDialog(this,
-						"All bore diameters must be positive.");
-				boreList.requestFocusInWindow();
-				boreList.editCellAt(i, 1);
-				boreList.getEditorComponent().requestFocusInWindow();
-				return null;
+				// Value is required. Assume zero, which fails validity checking.
+				diameter = 0.0;
 			}
 			data.add(new BorePoint(position, diameter));
 		}

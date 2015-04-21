@@ -36,8 +36,13 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
+import javax.xml.bind.UnmarshalException;
+import javax.xml.bind.MarshalException;
+
+import org.xml.sax.SAXParseException;
 
 import com.jidesoft.app.framework.DataModel;
+import com.jidesoft.app.framework.DataModelException;
 import com.jidesoft.app.framework.DataView;
 import com.jidesoft.app.framework.event.EventSubscriber;
 import com.jidesoft.app.framework.event.SubscriberEvent;
@@ -53,6 +58,7 @@ import com.wwidesigner.gui.util.HoleNumberMismatchException;
 import com.wwidesigner.modelling.SketchInstrument;
 import com.wwidesigner.optimization.Constraints;
 import com.wwidesigner.util.Constants.LengthType;
+import com.wwidesigner.util.InvalidFieldException;
 
 /**
  * @author kort
@@ -214,30 +220,21 @@ public class StudyView extends DataViewPane implements EventSubscriber
 		boolean isInstrumentSelected = false;
 		boolean canDoTuning = false;
 		boolean canDoOptimization = false;
-		String selectedInstrumentName = "";
-		try
+		String selectedInstrumentName;
+		selectedInstrumentName = study.getSelectedInstrumentName();
+		isInstrumentSelected = selectedInstrumentName != null;
+		if (isInstrumentSelected)
 		{
-			selectedInstrumentName = study.getSelectedInstrumentName();
-			isInstrumentSelected = selectedInstrumentName != null;
-			if (isInstrumentSelected)
+			canDoTuning = study.canTune();
+			if (canDoTuning)
 			{
-				canDoTuning = study.canTune();
-				if (canDoTuning)
-				{
-					canDoOptimization = study.canOptimize();
-				}
-			}
-			else
-			{
-				// Event source cannot be null;
-				selectedInstrumentName = "";
+				canDoOptimization = study.canOptimize();
 			}
 		}
-		catch (Exception e)
+		else
 		{
-			MessageDialogRequest.showMessageDialog(getApplication(),
-					e.getMessage(), "Input File Error",
-					MessageDialogRequest.ERROR_STYLE);
+			// Event source cannot be null;
+			selectedInstrumentName = "";
 		}
 
 		getApplication().getEventManager().publish(
@@ -299,10 +296,9 @@ public class StudyView extends DataViewPane implements EventSubscriber
 		{
 			study.calculateTuning("Tuning"); // This a title, not a constant
 		}
-		catch (Exception e)
+		catch (Exception ex)
 		{
-			System.out.println("Exception: " + e.getMessage());
-			e.printStackTrace();
+			showException(ex);
 		}
 	}
 
@@ -312,10 +308,9 @@ public class StudyView extends DataViewPane implements EventSubscriber
 		{
 			study.graphTuning("Tuning"); // This a title, not a constant
 		}
-		catch (Exception e)
+		catch (Exception ex)
 		{
-			System.out.println("Exception: " + e.getMessage());
-			e.printStackTrace();
+			showException(ex);
 		}
 	}
 
@@ -333,10 +328,9 @@ public class StudyView extends DataViewPane implements EventSubscriber
 				addNewDataModel(xmlConstraints);
 			}
 		}
-		catch (Exception e)
+		catch (Exception ex)
 		{
-			System.out.println("Exception: " + e.getMessage());
-			e.printStackTrace();
+			showException(ex);
 		}
 	}
 
@@ -354,10 +348,9 @@ public class StudyView extends DataViewPane implements EventSubscriber
 				addNewDataModel(xmlConstraints);
 			}
 		}
-		catch (Exception e)
+		catch (Exception ex)
 		{
-			System.out.println("Exception: " + e.getMessage());
-			e.printStackTrace();
+			showException(ex);
 		}
 	}
 
@@ -368,10 +361,9 @@ public class StudyView extends DataViewPane implements EventSubscriber
 			String xmlInstrument = study.optimizeInstrument();
 			addNewDataModel(xmlInstrument);
 		}
-		catch (Exception e)
+		catch (Exception ex)
 		{
-			System.out.println("Exception: " + e.getMessage());
-			e.printStackTrace();
+			showException(ex);
 		}
 	}
 
@@ -395,10 +387,9 @@ public class StudyView extends DataViewPane implements EventSubscriber
 			SketchInstrument sketch = new SketchInstrument();
 			sketch.draw(study.getInstrument(), false);
 		}
-		catch (Exception e)
+		catch (Exception ex)
 		{
-			System.out.println("Exception: " + e.getMessage());
-			e.printStackTrace();
+			showException(ex);
 		}
 	}
 
@@ -475,10 +466,26 @@ public class StudyView extends DataViewPane implements EventSubscriber
 		}
 	}
 
-	protected void showException(Exception exception)
+	/**
+	 * Display a message box reporting a processing exception.
+	 * @param ex - the exception encountered.
+	 */
+	public void showException(Exception ex)
 	{
-		String exceptionType;
-		int messageType;
+		Exception exception = ex;
+		Throwable cause = exception.getCause();
+		if (exception instanceof DataModelException
+			&& cause instanceof Exception)
+		{
+			// We use DataModelExceptions as a wrapper for more specific cause exception.
+			exception = (Exception) cause;
+			cause = exception.getCause();
+		}
+		int messageType = MessageDialogRequest.ERROR_STYLE;	// Message box style.
+		String exceptionType;	// Message box title.
+		String exceptionMessage = exception.getMessage();	// Message box text.
+		boolean withTrace = false;	// true to print on console log.
+
 		if (exception instanceof DataOpenException)
 		{
 			DataOpenException doException = (DataOpenException) exception;
@@ -486,19 +493,47 @@ public class StudyView extends DataViewPane implements EventSubscriber
 			messageType = doException.isWarning() ? MessageDialogRequest.WARNING_STYLE
 					: MessageDialogRequest.ERROR_STYLE;
 		}
+		else if (exception instanceof InvalidFieldException)
+		{
+			InvalidFieldException fldException = (InvalidFieldException) exception;
+			exceptionType = fldException.getLabel();
+		}
 		else if (exception instanceof HoleNumberMismatchException)
 		{
 			exceptionType = "Hole number mismatch";
 			messageType = MessageDialogRequest.WARNING_STYLE;
 		}
+		else if (exception instanceof UnmarshalException
+				|| exception instanceof MarshalException)
+		{
+			exceptionType = "Invalid XML Definition";
+			exceptionMessage = "Invalid XML structure.\n";
+			exceptionMessage += exception.getCause().getMessage();
+			if (cause instanceof SAXParseException)
+			{
+				SAXParseException parseEx = (SAXParseException) cause;
+				exceptionMessage += "\nAt line " + parseEx.getLineNumber()
+						+ ", column " + parseEx.getColumnNumber() + ".";
+			}
+		}
+		else if (exception instanceof DataModelException)
+		{
+			withTrace = true;
+			exceptionType = "Error in data model";
+		}
 		else
 		{
-			exceptionType = "Data content is invalid";
-			messageType = MessageDialogRequest.ERROR_STYLE;
+			withTrace = true;
+			exceptionType = "Operation failed";
 		}
 
 		MessageDialogRequest.showMessageDialog(getApplication(),
-				exception.getMessage(), exceptionType, messageType);
+				exceptionMessage, exceptionType, messageType);
+		if (withTrace)
+		{
+			System.out.println(exception.getClass().getName() + " Exception: " +  exceptionMessage);
+			exception.printStackTrace();
+		}
 	}
 
 	public File getConstraintsLeafDirectory(String rootDirectoryPath)

@@ -27,9 +27,9 @@ import java.awt.event.ActionListener;
 import java.io.StringWriter;
 
 import javax.swing.JButton;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
+import com.jidesoft.app.framework.DataModelException;
 import com.jidesoft.app.framework.gui.DataViewPane;
 import com.wwidesigner.gui.util.DataPopulatedEvent;
 import com.wwidesigner.gui.util.DataPopulatedListener;
@@ -116,7 +116,7 @@ public class ContainedTuningView extends ContainedXmlView implements DataPopulat
 	}
 
 	@Override
-	public String getText()
+	public String getText() throws DataModelException
 	{
 		BindFactory binder = NoteBindFactory.getInstance();
 		StringWriter writer = new StringWriter();
@@ -131,13 +131,13 @@ public class ContainedTuningView extends ContainedXmlView implements DataPopulat
 		}
 		catch (Exception e)
 		{
-			System.out.println("Tuning update failed: " + e.getMessage());
+			throw new DataModelException(null, e);
 		}
 		return null;
 	}
 
 	@Override
-	public void setText(String text)
+	public void setText(String text) throws DataModelException
 	{
 		BindFactory binder = NoteBindFactory.getInstance();
 		try
@@ -150,8 +150,7 @@ public class ContainedTuningView extends ContainedXmlView implements DataPopulat
 		}
 		catch (Exception e)
 		{
-			JOptionPane.showMessageDialog(parent, 
-					"XML input does not define a valid Tuning.");
+			throw new DataModelException(null, e);
 		}
 	}
 

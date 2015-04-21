@@ -4,6 +4,7 @@ import java.awt.Component;
 
 import javax.swing.JScrollPane;
 
+import com.jidesoft.app.framework.DataModelException;
 import com.jidesoft.app.framework.gui.DataViewPane;
 import com.wwidesigner.gui.util.DataChangedEvent;
 import com.wwidesigner.gui.util.DataChangedListener;
@@ -42,7 +43,7 @@ public class ContainedNafTuningView extends ContainedXmlView implements
 	}
 
 	@Override
-	public String getText()
+	public String getText() throws DataModelException
 	{
 		Tuning tuning = tuningPanel.getData();
 		String xmlText = null;
@@ -52,14 +53,14 @@ public class ContainedNafTuningView extends ContainedXmlView implements
 		}
 		catch (Exception e)
 		{
-			System.err.println(e.getMessage());
+			throw new DataModelException(null, e);
 		}
 
 		return xmlText;
 	}
 
 	@Override
-	public void setText(String text)
+	public void setText(String text) throws DataModelException
 	{
 		BindFactory bindFactory = NoteBindFactory.getInstance();
 		try
@@ -69,7 +70,7 @@ public class ContainedNafTuningView extends ContainedXmlView implements
 		}
 		catch (Exception e)
 		{
-			System.err.println(e.getMessage());
+			throw new DataModelException(null, e);
 		}
 	}
 

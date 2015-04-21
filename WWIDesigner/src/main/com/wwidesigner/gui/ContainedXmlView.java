@@ -2,6 +2,7 @@ package com.wwidesigner.gui;
 
 import java.awt.Component;
 
+import com.jidesoft.app.framework.DataModelException;
 import com.jidesoft.app.framework.gui.DataViewPane;
 import com.wwidesigner.util.Constants.LengthType;
 
@@ -54,7 +55,7 @@ public abstract class ContainedXmlView
 	 * 
 	 * @return
 	 */
-	public abstract String getText();
+	public abstract String getText() throws DataModelException;
 
 	/**
 	 * Processes the input XML and displays the data appropriately in the view.
@@ -62,6 +63,6 @@ public abstract class ContainedXmlView
 	 * @param text
 	 *            - an XML text representation of the data.
 	 */
-	public abstract void setText(String text);
+	public abstract void setText(String text) throws DataModelException;
 
 }

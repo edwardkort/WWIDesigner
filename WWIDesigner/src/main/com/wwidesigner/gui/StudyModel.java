@@ -449,38 +449,11 @@ public abstract class StudyModel implements CategoryType
 		return null;
 	}
 
-	/**
-	 * Determines the number of holes in the selected instrument. If that is
-	 * null, determines the number of holes in the selected tuning.
-	 * 
-	 * @return The number of holes found, null otherwise.
-	 */
-	protected Integer getNumberOfHolesFromInstrumentOrTuning()
-	{
-		Integer numHoles = getNumberOfHolesFromInstrument();
-		if (numHoles != null)
-		{
-			return numHoles;
-		}
-		try
-		{
-			return getHoleCountFromSelected(TUNING_CATEGORY_ID);
-		}
-		catch (Exception e)
-		{
-			return null;
-		}
-	}
-
 	protected Integer getNumberOfHolesFromInstrument()
 	{
 		try
 		{
-			Integer numHoles = getHoleCountFromSelected(INSTRUMENT_CATEGORY_ID);
-			if (numHoles != null)
-			{
-				return numHoles;
-			}
+			return getHoleCountFromSelected(INSTRUMENT_CATEGORY_ID);
 		}
 		catch (Exception e)
 		{
@@ -613,14 +586,14 @@ public abstract class StudyModel implements CategoryType
 	 * @return true if category selections are sufficient for calls to
 	 *         calculateTuning() and graphTuning().
 	 */
-	public boolean canTune() throws Exception
+	public boolean canTune()
 	{
 		boolean canTune = false;
 		try
 		{
 			canTune = validHoleCount();
 		}
-		catch (HoleNumberMismatchException e)
+		catch (Exception e)
 		{
 		}
 
@@ -676,6 +649,7 @@ public abstract class StudyModel implements CategoryType
 			if (instrumentSelected != null)
 			{
 				Instrument instrument = getInstrument();
+				// Don't bother checking instrument validity.
 				holeCount = instrument.getHole().size();
 			}
 		}
@@ -697,7 +671,7 @@ public abstract class StudyModel implements CategoryType
 	 * @return true if category selections are sufficient for calls to
 	 *         optimizeInstrument().
 	 */
-	public boolean canOptimize() throws Exception
+	public boolean canOptimize()
 	{
 		if (!canTune())
 		{
@@ -756,11 +730,11 @@ public abstract class StudyModel implements CategoryType
 
 		Category category = this.getCategory(INSTRUMENT_CATEGORY_ID);
 		String instrumentName = category.getSelectedSub();
-		tuner.setInstrument(getSelectedXmlString(INSTRUMENT_CATEGORY_ID));
+		tuner.setInstrument(getInstrument());
 
 		category = getCategory(TUNING_CATEGORY_ID);
 		String tuningName = category.getSelectedSub();
-		tuner.setTuning(getSelectedXmlString(TUNING_CATEGORY_ID));
+		tuner.setTuning(getTuning());
 
 		tuner.setCalculator(getCalculator());
 
@@ -774,11 +748,11 @@ public abstract class StudyModel implements CategoryType
 
 		Category category = this.getCategory(INSTRUMENT_CATEGORY_ID);
 		String instrumentName = category.getSelectedSub();
-		tuner.setInstrument(getSelectedXmlString(INSTRUMENT_CATEGORY_ID));
+		tuner.setInstrument(getInstrument());
 
 		category = getCategory(TUNING_CATEGORY_ID);
 		String tuningName = category.getSelectedSub();
-		tuner.setTuning(getSelectedXmlString(TUNING_CATEGORY_ID));
+		tuner.setTuning(getTuning());
 
 		tuner.setCalculator(getCalculator());
 
@@ -824,6 +798,10 @@ public abstract class StudyModel implements CategoryType
 	 */
 	public String optimizeInstrument() throws Exception
 	{
+		if (! validHoleCount())
+		{
+			return null;
+		}
 		BaseObjectiveFunction objective = getObjectiveFunction(BaseObjectiveFunction.OPTIMIZATION_INTENT);
 		BaseObjectiveFunction.OptimizerType optimizerType = objective
 				.getOptimizerType();
@@ -925,16 +903,29 @@ public abstract class StudyModel implements CategoryType
 		return (String) model.getData();
 	}
 
+	/**
+	 * Return the instrument currently selected in the study model.
+	 * @return a valid Instrument
+	 * @throws Exception if no valid instrument is selected.
+	 */
 	protected Instrument getInstrument() throws Exception
 	{
 		BindFactory geometryBindFactory = GeometryBindFactory.getInstance();
 		String xmlString = getSelectedXmlString(INSTRUMENT_CATEGORY_ID);
 		Instrument instrument = (Instrument) geometryBindFactory.unmarshalXml(
 				xmlString, true);
+		instrument.checkValidity();
 		instrument.updateComponents();
 		return instrument;
 	}
 
+	
+	/**
+	 * Extract an instrument from an XML string, if possible.
+	 * The instrument is not checked for validity.
+	 * @param xmlString - String containing XML for an instrument definition.
+	 * @return an Instrument, or null
+	 */
 	public static Instrument getInstrument(String xmlString)
 	{
 		try

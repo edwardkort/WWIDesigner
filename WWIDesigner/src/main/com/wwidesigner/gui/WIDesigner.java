@@ -23,6 +23,7 @@ import com.jidesoft.app.framework.BasicDataModel;
 import com.jidesoft.app.framework.DataModel;
 import com.jidesoft.app.framework.DataModelAdapter;
 import com.jidesoft.app.framework.DataModelEvent;
+import com.jidesoft.app.framework.DataModelException;
 import com.jidesoft.app.framework.DataView;
 import com.jidesoft.app.framework.ProgressEvent;
 import com.jidesoft.app.framework.ProgressListener;
@@ -332,7 +333,11 @@ public class WIDesigner extends FileBasedApplication implements EventSubscriber
 				DataView view = getFocusedView();
 				if (view instanceof XmlToggleView)
 				{
-					((XmlToggleView) view).toggleView();
+					try {
+						((XmlToggleView) view).toggleView();
+					} catch (DataModelException ex) {
+						getStudyView().showException(ex);
+					}
 				}
 			}
 		};

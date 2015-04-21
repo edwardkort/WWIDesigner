@@ -449,38 +449,11 @@ public abstract class StudyModel implements CategoryType
 		return null;
 	}
 
-	/**
-	 * Determines the number of holes in the selected instrument. If that is
-	 * null, determines the number of holes in the selected tuning.
-	 * 
-	 * @return The number of holes found, null otherwise.
-	 */
-	protected Integer getNumberOfHolesFromInstrumentOrTuning()
-	{
-		Integer numHoles = getNumberOfHolesFromInstrument();
-		if (numHoles != null)
-		{
-			return numHoles;
-		}
-		try
-		{
-			return getHoleCountFromSelected(TUNING_CATEGORY_ID);
-		}
-		catch (Exception e)
-		{
-			return null;
-		}
-	}
-
 	protected Integer getNumberOfHolesFromInstrument()
 	{
 		try
 		{
-			Integer numHoles = getHoleCountFromSelected(INSTRUMENT_CATEGORY_ID);
-			if (numHoles != null)
-			{
-				return numHoles;
-			}
+			return getHoleCountFromSelected(INSTRUMENT_CATEGORY_ID);
 		}
 		catch (Exception e)
 		{
@@ -613,7 +586,7 @@ public abstract class StudyModel implements CategoryType
 	 * @return true if category selections are sufficient for calls to
 	 *         calculateTuning() and graphTuning().
 	 */
-	public boolean canTune() throws Exception
+	public boolean canTune()
 	{
 		boolean canTune = false;
 		try
@@ -698,7 +671,7 @@ public abstract class StudyModel implements CategoryType
 	 * @return true if category selections are sufficient for calls to
 	 *         optimizeInstrument().
 	 */
-	public boolean canOptimize() throws Exception
+	public boolean canOptimize()
 	{
 		if (!canTune())
 		{
@@ -941,11 +914,7 @@ public abstract class StudyModel implements CategoryType
 		String xmlString = getSelectedXmlString(INSTRUMENT_CATEGORY_ID);
 		Instrument instrument = (Instrument) geometryBindFactory.unmarshalXml(
 				xmlString, true);
-		Exception ex = instrument.checkValidity();
-		if (ex != null)
-		{
-			throw ex;
-		}
+		instrument.checkValidity();
 		instrument.updateComponents();
 		return instrument;
 	}

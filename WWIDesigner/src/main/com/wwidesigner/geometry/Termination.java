@@ -36,12 +36,11 @@ public class Termination extends BorePoint implements TerminationInterface
 	}
 
 	@Override
-	public Exception checkValidity()
+	public void checkValidity() throws InvalidFieldException
 	{
-		if (flangeDiameter <= boreDiameter)
+		if (flangeDiameter <= 0.0)
 		{
-			return new InvalidFieldException("Instrument", "Termination flange diameter must be greater than bore diameter.");
+			throw new InvalidFieldException("Instrument", "Termination flange diameter must be positive.");
 		}
-		return null;
 	}
 }

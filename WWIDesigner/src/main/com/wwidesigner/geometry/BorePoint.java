@@ -67,13 +67,12 @@ public class BorePoint implements BorePointInterface
 		boreDiameter *= multiplier;
 	}
 	
-	public Exception checkValidity()
+	public void checkValidity() throws InvalidFieldException
 	{
 		if (boreDiameter <= 0.0)
 		{
-			return new InvalidFieldException("Instrument", "Bore diameter must be positive.");
+			throw new InvalidFieldException("Instrument", "Bore point must have a positive diameter.");
 		}
-		return null;
 	}
 
 	public static double getInterpolatedExtrapolatedBoreDiameter(

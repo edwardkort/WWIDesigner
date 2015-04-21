@@ -506,26 +506,20 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 		model.insertRow(bottomIndex, emptyRow(model.getColumnCount()));
 	}
 
-	public void saveInstrument(File file)
+	public void saveInstrument(File file) throws Exception
 	{
 		Instrument instrument = getData();
 
 		BindFactory bindery = GeometryBindFactory.getInstance();
-		try
-		{
-			Exception ex = instrument.checkValidity();
-			if (ex != null)
-			{
-				throw ex;
-			}
-			bindery.marshalToXml(instrument, file);
-		}
-		catch (Exception ex)
-		{
-			JOptionPane.showMessageDialog(getParent(), "Save failed: " + ex);
-		}
+		instrument.checkValidity();
+		bindery.marshalToXml(instrument, file);
 	}
 
+	/**
+	 * Build an Instrument from the data entered on the panel.
+	 * Does not check the instrument for validity.
+	 * @return an Instrument, or null
+	 */
 	public Instrument getData()
 	{
 		if (!dataIsLoaded)

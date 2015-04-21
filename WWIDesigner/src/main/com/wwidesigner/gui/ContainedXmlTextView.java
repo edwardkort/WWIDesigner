@@ -5,6 +5,7 @@ import java.awt.Component;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
+import com.jidesoft.app.framework.DataModelException;
 import com.jidesoft.app.framework.gui.DataViewPane;
 import com.jidesoft.editor.CodeEditor;
 import com.jidesoft.editor.language.LanguageSpecManager;
@@ -54,17 +55,20 @@ public class ContainedXmlTextView extends ContainedXmlView
 	}
 
 	@Override
-	public void setText(String text)
+	public void setText(String text) throws DataModelException
 	{
 		try
 		{
-			codeEditor.getDocument().removeDocumentListener(docListener);
-			codeEditor.setText(text != null ? text : "");
-			codeEditor.getDocument().addDocumentListener(docListener);
+			if (text != null && ! text.isEmpty())
+			{
+				codeEditor.getDocument().removeDocumentListener(docListener);
+				codeEditor.setText(text != null ? text : "");
+				codeEditor.getDocument().addDocumentListener(docListener);
+			}
 		}
 		catch (Exception e)
 		{
-
+			throw new DataModelException(null, e);
 		}
 	}
 

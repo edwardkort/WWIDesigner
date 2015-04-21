@@ -139,7 +139,7 @@ public class NafStudyModel extends StudyModel
 	}
 
 	@Override
-	public boolean canOptimize() throws Exception
+	public boolean canOptimize()
 	{
 		boolean optimizeReady = super.canOptimize();
 		if (optimizeReady)

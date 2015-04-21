@@ -177,16 +177,20 @@ public class Hole implements ComponentInterface, BorePointInterface
 		diameter = alpha * boreDiameter;
 	}
 	
-	public Exception checkValidity()
+	public void checkValidity() throws InvalidFieldException
 	{
+		String holeName = "Hole";
+		if (this.name != null && ! this.name.isEmpty())
+		{
+			holeName += " " + this.name;
+		}
 		if (diameter <= 0.0)
 		{
-			return new InvalidFieldException("Instrument", "Hole diameter must be positive.");
+			throw new InvalidFieldException("Instrument", holeName + " diameter must be positive.");
 		}
 		if (height <= 0.0)
 		{
-			return new InvalidFieldException("Instrument", "Hole height must be positive.");
+			throw new InvalidFieldException("Instrument", holeName + " height must be positive.");
 		}
-		return null;
 	}
 }

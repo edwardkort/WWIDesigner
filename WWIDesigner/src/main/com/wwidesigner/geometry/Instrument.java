@@ -306,48 +306,30 @@ public class Instrument implements InstrumentInterface
 		}
 	}
 
-	public Exception checkValidity()
+	public void checkValidity() throws InvalidFieldException
 	{
-		Exception ex = null;
 		if (name.isEmpty())
 		{
-			return new InvalidFieldException("Instrument", "Enter a name for the instrument.");
+			throw new InvalidFieldException("Instrument", "Enter a name for the instrument.");
 		}
 		if (mouthpiece == null)
 		{
-			return new InvalidFieldException("Instrument", "A mouthpiece description is required.");
+			throw new InvalidFieldException("Instrument", "A mouthpiece description is required.");
 		}
-		ex = mouthpiece.checkValidity();
-		if (ex != null)
-		{
-			return ex;
-		}
+		mouthpiece.checkValidity();
 		for (Hole currentHole : hole)
 		{
-			ex = currentHole.checkValidity();
-			if (ex != null)
-			{
-				return ex;
-			}
+			currentHole.checkValidity();
 		}
 		if (borePoint.size() < 2)
 		{
-			return new InvalidFieldException("Instrument", "Instrument must have at least two bore points.");
+			throw new InvalidFieldException("Instrument", "Instrument must have at least two bore points.");
 		}
 		for (BorePoint bore : borePoint)
 		{
-			ex = bore.checkValidity();
-			if (ex != null)
-			{
-				return ex;
-			}
+			bore.checkValidity();
 		}
-		ex = termination.checkValidity();
-		if (ex != null)
-		{
-			return ex;
-		}
-		return null;
+		termination.checkValidity();
 	}
 
 	@Override

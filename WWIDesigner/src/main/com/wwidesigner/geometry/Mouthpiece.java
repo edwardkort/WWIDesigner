@@ -443,7 +443,7 @@ public class Mouthpiece implements ComponentInterface, MouthpieceInterface,
 			}
 			if (windwayHeight != null && windwayHeight <= 0.0)
 			{
-				throw new InvalidFieldException("Instrument", "Windway height, if specified, must be positive.");
+				throw new InvalidFieldException("Instrument", "Windway height or flue depth, if specified, must be positive.");
 			}
 			if (windwayLength != null && windwayLength <= 0.0)
 			{

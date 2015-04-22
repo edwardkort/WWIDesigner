@@ -221,12 +221,12 @@ public class ObjectiveFunctionOptimizer
 						objective.getNrInterpolations(), trustRegion,
 						stoppingTrustRegion);
 
-				// Run optimization first with ReflectionEvaluator if specified
+				// Run optimization first with the first-stage evaluator, if
+				// specified
 				EvaluatorInterface originalEvaluator = objective.getEvaluator();
 				if (objective.isRunTwoStageOptimization())
 				{
-					objective.setEvaluator(new ReflectionEvaluator(objective
-							.getCalculator()));
+					objective.setEvaluator(objective.getFirstStageEvaluator());
 					outcome = optimizer.optimize(GoalType.MINIMIZE,
 							new ObjectiveFunction(objective), new MaxEval(
 									objective.getMaxEvaluations()), MaxIter

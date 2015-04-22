@@ -35,6 +35,7 @@ import com.wwidesigner.modelling.EvaluatorInterface;
 import com.wwidesigner.modelling.InstrumentCalculator;
 import com.wwidesigner.modelling.InstrumentTuner;
 import com.wwidesigner.modelling.NAFCalculator;
+import com.wwidesigner.modelling.ReflectionEvaluator;
 import com.wwidesigner.modelling.SimpleInstrumentTuner;
 import com.wwidesigner.note.Tuning;
 import com.wwidesigner.optimization.BaseObjectiveFunction;
@@ -663,6 +664,8 @@ public class NafStudyModel extends StudyModel
 		{
 			objective.setConstraintsBounds(constraints);
 			objective.setRunTwoStageOptimization(true);
+			objective
+					.setFirstStageEvaluator(new ReflectionEvaluator(calculator));
 			Category multiStartCategory = getCategory(MULTI_START_CATEGORY_ID);
 			String multiStartSelected = multiStartCategory.getSelectedSub();
 			if (multiStartSelected == VARY_FIRST_MULTI_START_SUB_CATEGORY_ID)

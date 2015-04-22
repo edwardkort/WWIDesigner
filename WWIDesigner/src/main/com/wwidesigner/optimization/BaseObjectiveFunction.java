@@ -51,6 +51,7 @@ public abstract class BaseObjectiveFunction implements MultivariateFunction,
 	protected InstrumentCalculator calculator;
 	protected List<Fingering> fingeringTargets;
 	protected EvaluatorInterface evaluator;
+	protected EvaluatorInterface firstStageEvaluator;
 
 	// Description of the geometry that this particular objective function
 	// supports.
@@ -158,6 +159,16 @@ public abstract class BaseObjectiveFunction implements MultivariateFunction,
 		return evaluator;
 	}
 
+	public EvaluatorInterface getFirstStageEvaluator()
+	{
+		return firstStageEvaluator;
+	}
+
+	public void setFirstStageEvaluator(EvaluatorInterface firstStageEvaluator)
+	{
+		this.firstStageEvaluator = firstStageEvaluator;
+	}
+
 	public InstrumentCalculator getCalculator()
 	{
 		return calculator;
@@ -204,7 +215,7 @@ public abstract class BaseObjectiveFunction implements MultivariateFunction,
 
 	public boolean isRunTwoStageOptimization()
 	{
-		return runTwoStageOptimization;
+		return runTwoStageOptimization && firstStageEvaluator != null;
 	}
 
 	public void setRunTwoStageOptimization(boolean runTwoStageOptimization)

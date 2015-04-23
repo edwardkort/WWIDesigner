@@ -124,7 +124,7 @@ public class NafStudyModel extends StudyModel
 		optimizers.addSub(FIPPLE_OPT_SUB_CATEGORY_ID,
 				FippleFactorObjectiveFunction.NAME, FIPPLE_OPT_TOOL_TIP);
 		optimizers.addSub(HOLESIZE_OPT_SUB_CATEGORY_ID,
-				HoleSizeObjectiveFunction.NAME, HOLESIZE_OPT_TOOL_TIP);
+				NafHoleSizeObjectiveFunction.NAME, HOLESIZE_OPT_TOOL_TIP);
 		optimizers.addSub(NO_GROUP_OPT_SUB_CATEGORY_ID,
 				HoleFromTopObjectiveFunction.NAME, NO_GROUP_OPT_TOOL_TIP);
 		optimizers.addSub(GROUP_OPT_SUB_CATEGORY_ID,
@@ -406,8 +406,8 @@ public class NafStudyModel extends StudyModel
 				}
 				break;
 			case HOLESIZE_OPT_SUB_CATEGORY_ID:
-				objective = new NafHoleSizeObjectiveFunction(calculator, tuning,
-						evaluator);
+				objective = new NafHoleSizeObjectiveFunction(calculator,
+						tuning, evaluator);
 				if (objectiveFunctionIntent == BaseObjectiveFunction.DEFAULT_CONSTRAINTS_INTENT)
 				{
 					// Bounds are hole diameters expressed in meters.

@@ -6,7 +6,7 @@ import com.wwidesigner.note.TuningInterface;
 
 public class NafHoleSizeObjectiveFunction extends HoleSizeObjectiveFunction
 {
-	public static final String NAME = HoleSizeObjectiveFunction.class
+	public static final String NAME = NafHoleSizeObjectiveFunction.class
 			.getSimpleName();
 
 	public NafHoleSizeObjectiveFunction(InstrumentCalculator calculator,

@@ -17,7 +17,7 @@ public abstract class AbstractRangeProcessor implements RandomVectorGenerator
 	{
 		numberOfSetsToGenerate = numberOfStarts;
 		numberOfValuesToVary = indicesToVary == null ? lowerBound.length : indicesToVary.length;
-		lowVector = lowerBound;
+		lowVector = lowerBound.clone();
 
 		int vectorLength = lowVector.length;
 		range = new double[vectorLength];

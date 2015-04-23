@@ -102,4 +102,17 @@ public class FippleFactorObjectiveFunction extends BaseObjectiveFunction
 		return reducedTuning;
 	}
 
+	@Override
+	public double getInitialTrustRegionRadius(double[] initial)
+	{
+		initialTrustRegionRadius = 10.;
+		return initialTrustRegionRadius;
+	}
+
+	@Override
+	public double getStoppingTrustRegionRadius()
+	{
+		return 1.e-8;
+	}
+
 }

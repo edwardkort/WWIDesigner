@@ -44,6 +44,7 @@ import com.wwidesigner.optimization.FippleFactorObjectiveFunction;
 import com.wwidesigner.optimization.HoleFromTopObjectiveFunction;
 import com.wwidesigner.optimization.HoleGroupFromTopObjectiveFunction;
 import com.wwidesigner.optimization.HoleSizeObjectiveFunction;
+import com.wwidesigner.optimization.NafHoleSizeObjectiveFunction;
 import com.wwidesigner.optimization.SingleTaperHoleGroupFromTopObjectiveFunction;
 import com.wwidesigner.optimization.SingleTaperNoHoleGroupingFromTopObjectiveFunction;
 import com.wwidesigner.optimization.multistart.GridRangeProcessor;
@@ -405,7 +406,7 @@ public class NafStudyModel extends StudyModel
 				}
 				break;
 			case HOLESIZE_OPT_SUB_CATEGORY_ID:
-				objective = new HoleSizeObjectiveFunction(calculator, tuning,
+				objective = new NafHoleSizeObjectiveFunction(calculator, tuning,
 						evaluator);
 				if (objectiveFunctionIntent == BaseObjectiveFunction.DEFAULT_CONSTRAINTS_INTENT)
 				{

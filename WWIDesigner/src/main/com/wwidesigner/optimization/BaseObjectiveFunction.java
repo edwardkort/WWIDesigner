@@ -286,7 +286,8 @@ public abstract class BaseObjectiveFunction implements MultivariateFunction,
 			return 5 + (int) (5 * Math.log(nrDimensions));
 		}
 
-		if (optimizerType.equals(OptimizerType.BOBYQAOptimizer))
+		if (optimizerType.equals(OptimizerType.BOBYQAOptimizer)
+				|| optimizerType.equals(OptimizerType.MultiStartOptimizer))
 		{
 			// Largest recommended value for BOBYQA.
 			return 2 * nrDimensions + 1;

@@ -21,6 +21,7 @@ package com.wwidesigner.optimization;
 
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.NoSuchElementException;
 
 import org.apache.commons.math3.exception.TooManyEvaluationsException;
 import org.apache.commons.math3.optim.ConvergenceChecker;
@@ -45,7 +46,6 @@ import org.apache.commons.math3.optim.univariate.UnivariatePointValuePair;
 import org.apache.commons.math3.random.MersenneTwister;
 
 import com.wwidesigner.modelling.EvaluatorInterface;
-import com.wwidesigner.modelling.ReflectionEvaluator;
 import com.wwidesigner.optimization.multistart.AbstractRangeProcessor;
 import com.wwidesigner.optimization.multistart.RandomRangeProcessor;
 
@@ -314,14 +314,9 @@ public class ObjectiveFunctionOptimizer
 
 		for (int startNr = 0; startNr < nrStarts; ++startNr)
 		{
-			if (totalEvaluations >= maxEvaluations)
+			if (totalEvaluations < maxEvaluations)
 			{
-				optima[startNr] = null;
-			}
-			else
-			{
-				double trustRegion = objective
-						.getInitialTrustRegionRadius(nextStart);
+				double trustRegion = objective.getInitialTrustRegionRadius(nextStart);
 				double stoppingTrustRegion = objective
 						.getStoppingTrustRegionRadius();
 				BOBYQAOptimizer optimizer = new BOBYQAOptimizer(
@@ -346,19 +341,25 @@ public class ObjectiveFunctionOptimizer
 						System.out.print("optimum "
 								+ optima[startNr].getValue());
 					}
-					System.out.println(" at start point "
-							+ Arrays.toString(nextStart));
 				}
 				catch (TooManyEvaluationsException e)
 				{
-					System.out.println("Exception: " + e.getMessage());
-					optima[startNr] = null;
+					System.out.print("Exception: " + e.getMessage());
+				}
+				// Thrown by BOBYQA for no apparent reason: a bug?
+				catch (NoSuchElementException e)
+				{
+					System.out.print("no valid solution found");
 				}
 				catch (Exception e)
 				{
-					System.out.println("Exception: " + e.getMessage());
+					System.out.print("Exception: " + e.getMessage());
 					// e.printStackTrace();
-					optima[startNr] = null;
+				}
+				finally
+				{
+					System.out.println(" at start point "
+							+ Arrays.toString(nextStart));
 				}
 
 				totalEvaluations += optimizer.getEvaluations();

@@ -92,7 +92,7 @@ public class WhistleStudyModel extends StudyModel
 	protected void setLocalCategories()
 	{
 		setParams(new PhysicalParameters(27, TemperatureType.C, 98.4, 100, 0.04));
-		
+
 		// Add the standard set of optimizers to the Optimizer category,
 		// and assign an associated objective function name to each one.
 		Category optimizers = new Category(OPTIMIZER_CATEGORY_ID);
@@ -183,11 +183,13 @@ public class WhistleStudyModel extends StudyModel
 	}
 
 	@Override
-	protected BaseObjectiveFunction getObjectiveFunction(int objectiveFunctionIntent) throws Exception
+	protected BaseObjectiveFunction getObjectiveFunction(
+			int objectiveFunctionIntent) throws Exception
 	{
 		Instrument instrument = getInstrument();
 		Tuning tuning = getTuning();
-		if (tuning == null && objectiveFunctionIntent != BaseObjectiveFunction.OPTIMIZATION_INTENT)
+		if (tuning == null
+				&& objectiveFunctionIntent != BaseObjectiveFunction.OPTIMIZATION_INTENT)
 		{
 			// Tuning is not required for creating constraints.
 			tuning = new Tuning();
@@ -207,7 +209,8 @@ public class WhistleStudyModel extends StudyModel
 		double[] upperBound = null;
 
 		// From the objective function class, create the objective function,
-		// evaluator, and default bounds.  The default bounds may be discarded below.
+		// evaluator, and default bounds. The default bounds may be discarded
+		// below.
 		switch (objectiveFunctionClass)
 		{
 			case "WindowHeightObjectiveFunction":
@@ -373,7 +376,8 @@ public class WhistleStudyModel extends StudyModel
 				}
 				else
 				{
-					System.out.println("Number of holes for specified constraints does not match number of holes for instrument.");
+					System.out
+							.println("Number of holes for specified constraints does not match number of holes for instrument.");
 					System.out.println("Using default constraints.");
 				}
 			}
@@ -385,41 +389,36 @@ public class WhistleStudyModel extends StudyModel
 	}
 
 	@Override
-	protected Class<? extends ContainedXmlView> getDefaultViewClass(
-			String categoryName)
+	protected void setDefaultViewClassMap()
 	{
-		Map<String, Class<? extends ContainedXmlView>> defaultMap = new HashMap<String, Class<? extends ContainedXmlView>>();
+		defaultXmlViewMap = new HashMap<String, Class<? extends ContainedXmlView>>();
 
-		defaultMap.put(INSTRUMENT_CATEGORY_ID, ContainedWhistleInstrumentView.class);
-		defaultMap.put(TUNING_CATEGORY_ID, ContainedTuningView.class);
-		defaultMap.put(CONSTRAINTS_CATEGORY_ID, SizableConstraintsEditorView.class);
-
-		Class<? extends ContainedXmlView> defaultClass = defaultMap
-				.get(categoryName);
-		defaultClass = defaultClass == null ? ContainedXmlTextView.class
-				: defaultClass;
-
-		return defaultClass;
+		defaultXmlViewMap.put(INSTRUMENT_CATEGORY_ID,
+				ContainedWhistleInstrumentView.class);
+		defaultXmlViewMap.put(TUNING_CATEGORY_ID, ContainedTuningView.class);
+		defaultXmlViewMap.put(CONSTRAINTS_CATEGORY_ID,
+				SizableConstraintsEditorView.class);
 	}
 
 	@Override
 	@SuppressWarnings("unchecked")
-	protected Map<String, Class<ContainedXmlView>[]> getToggleViewClasses()
+	protected void setToggleViewClassesMap()
 	{
-		Map<String, Class<ContainedXmlView>[]> toggleLists = new HashMap<String, Class<ContainedXmlView>[]>();
+		toggleXmlViewLists = new HashMap<String, Class<ContainedXmlView>[]>();
 
-		toggleLists.put(INSTRUMENT_CATEGORY_ID, new Class[] {
-				ContainedXmlTextView.class, ContainedWhistleInstrumentView.class });
-		toggleLists.put(TUNING_CATEGORY_ID, new Class[] {
+		toggleXmlViewLists.put(INSTRUMENT_CATEGORY_ID, new Class[] {
+				ContainedXmlTextView.class,
+				ContainedWhistleInstrumentView.class });
+		toggleXmlViewLists.put(TUNING_CATEGORY_ID, new Class[] {
 				ContainedXmlTextView.class, ContainedTuningView.class });
-		toggleLists.put(CONSTRAINTS_CATEGORY_ID, new Class[] {
-				ContainedXmlTextView.class, SizableConstraintsEditorView.class });
-
-		return toggleLists;
+		toggleXmlViewLists.put(CONSTRAINTS_CATEGORY_ID,
+				new Class[] { ContainedXmlTextView.class,
+						SizableConstraintsEditorView.class });
 	}
 
 	@Override
-	public boolean addDataModel(FileDataModel dataModel, boolean isNew) throws Exception
+	public boolean addDataModel(FileDataModel dataModel, boolean isNew)
+			throws Exception
 	{
 		// Process Instrument and Tuning
 		if (super.addDataModel(dataModel, isNew))
@@ -442,12 +441,12 @@ public class WhistleStudyModel extends StudyModel
 
 		// Check that constraints apply to a known optimizer.
 		String objFuncClassName = constraints.getObjectiveFunctionName();
-		if (! objectiveFunctionNames.containsValue(objFuncClassName))
+		if (!objectiveFunctionNames.containsValue(objFuncClassName))
 		{
 			throw new DataOpenException(
 					"Whistle study model does not support required optimizer, "
-					+ objFuncClassName + " ("
-					+ constraints.getObjectiveDisplayName() + ")",
+							+ objFuncClassName + " ("
+							+ constraints.getObjectiveDisplayName() + ")",
 					DataOpenException.OPTIMIZER_NOT_SUPPORTED);
 		}
 
@@ -466,7 +465,7 @@ public class WhistleStudyModel extends StudyModel
 		String data = (String) dataModel.getData();
 		String categoryName = getCategoryName(data);
 		if (categoryName != null
-			&& categoryName.equals(CONSTRAINTS_CATEGORY_ID))
+				&& categoryName.equals(CONSTRAINTS_CATEGORY_ID))
 		{
 			// Constraints are filed in the optimizer category.
 			Category category = getCategory(OPTIMIZER_CATEGORY_ID);
@@ -502,12 +501,12 @@ public class WhistleStudyModel extends StudyModel
 
 			// Check that constraints apply to a known optimizer.
 			String objFuncClassName = constraints.getObjectiveFunctionName();
-			if (! objectiveFunctionNames.containsValue(objFuncClassName))
+			if (!objectiveFunctionNames.containsValue(objFuncClassName))
 			{
 				throw new DataOpenException(
 						"Whistle study model does not support required optimizer, "
-						+ objFuncClassName + " ("
-						+ constraints.getObjectiveDisplayName() + ")",
+								+ objFuncClassName + " ("
+								+ constraints.getObjectiveDisplayName() + ")",
 						DataOpenException.OPTIMIZER_NOT_SUPPORTED);
 			}
 			objectiveFunctionNames.put(dataModel.getName(), objFuncClassName);
@@ -543,7 +542,8 @@ public class WhistleStudyModel extends StudyModel
 	{
 		String studyModelName = getClass().getSimpleName();
 		String optimizerSelected = getSelectedSub(OPTIMIZER_CATEGORY_ID);
-		String objectiveFunctionName = objectiveFunctionNames.get(optimizerSelected);
+		String objectiveFunctionName = objectiveFunctionNames
+				.get(optimizerSelected);
 		File leaf = makeConstraintsDirectoryPath(rootDirectoryPath,
 				studyModelName, objectiveFunctionName, 0);
 		return leaf;
@@ -568,7 +568,7 @@ public class WhistleStudyModel extends StudyModel
 		String path = rootPath + File.separator + studyModelName
 				+ File.separator + objectiveFunctionName;
 		File leaf = new File(path);
-		if (! leaf.exists())
+		if (!leaf.exists())
 		{
 			leaf.mkdirs();
 		}

@@ -76,6 +76,17 @@ public abstract class StudyModel implements CategoryType
 	protected List<Category> categories;
 
 	/**
+	 * Map of the default ContainedXmlView for each viewable category.
+	 */
+	protected Map<String, Class<? extends ContainedXmlView>> defaultXmlViewMap;
+
+	/**
+	 * For each viewable category, the list of ContainedXmlViews that will be
+	 * displayed.
+	 */
+	protected Map<String, Class<ContainedXmlView>[]> toggleXmlViewLists;
+
+	/**
 	 * Physical parameters to use for this study model.
 	 */
 	protected PhysicalParameters params;
@@ -91,6 +102,8 @@ public abstract class StudyModel implements CategoryType
 		categories = new ArrayList<Category>();
 		categories.add(new Category(INSTRUMENT_CATEGORY_ID));
 		categories.add(new Category(TUNING_CATEGORY_ID));
+		setDefaultViewClassMap();
+		setToggleViewClassesMap();
 	}
 
 	/**
@@ -798,7 +811,7 @@ public abstract class StudyModel implements CategoryType
 	 */
 	public String optimizeInstrument() throws Exception
 	{
-		if (! validHoleCount())
+		if (!validHoleCount())
 		{
 			return null;
 		}
@@ -905,8 +918,10 @@ public abstract class StudyModel implements CategoryType
 
 	/**
 	 * Return the instrument currently selected in the study model.
+	 * 
 	 * @return a valid Instrument
-	 * @throws Exception if no valid instrument is selected.
+	 * @throws Exception
+	 *             if no valid instrument is selected.
 	 */
 	protected Instrument getInstrument() throws Exception
 	{
@@ -919,11 +934,12 @@ public abstract class StudyModel implements CategoryType
 		return instrument;
 	}
 
-	
 	/**
-	 * Extract an instrument from an XML string, if possible.
-	 * The instrument is not checked for validity.
-	 * @param xmlString - String containing XML for an instrument definition.
+	 * Extract an instrument from an XML string, if possible. The instrument is
+	 * not checked for validity.
+	 * 
+	 * @param xmlString
+	 *            - String containing XML for an instrument definition.
 	 * @return an Instrument, or null
 	 */
 	public static Instrument getInstrument(String xmlString)
@@ -1083,6 +1099,22 @@ public abstract class StudyModel implements CategoryType
 		return finalNorm / initialNorm;
 	}
 
+	protected Class<? extends ContainedXmlView> getDefaultViewClass(
+			String categoryName)
+	{
+		Class<? extends ContainedXmlView> defaultClass = defaultXmlViewMap
+				.get(categoryName);
+		defaultClass = defaultClass == null ? ContainedXmlTextView.class
+				: defaultClass;
+
+		return defaultClass;
+	}
+
+	protected Class<ContainedXmlView>[] getToggleViewClasses(String categoryName)
+	{
+		return toggleXmlViewLists.get(categoryName);
+	}
+
 	/**
 	 * Create the default view for and XML dataModel for each type represented
 	 * in the XML.
@@ -1137,8 +1169,7 @@ public abstract class StudyModel implements CategoryType
 		String xmlData = (String) dataModel.getData().toString();
 		String categoryName = getCategoryName(xmlData);
 
-		Map<String, Class<ContainedXmlView>[]> toggleLists = getToggleViewClasses();
-		Class<ContainedXmlView>[] toggleViews = toggleLists.get(categoryName);
+		Class<ContainedXmlView>[] toggleViews = getToggleViewClasses(categoryName);
 
 		Class<ContainedXmlView> nextViewClass = null;
 		int numberOfToggles = toggleViews == null ? 0 : toggleViews.length;
@@ -1197,8 +1228,7 @@ public abstract class StudyModel implements CategoryType
 		String xmlData = (String) dataModel.getData().toString();
 		String categoryName = getCategoryName(xmlData);
 
-		Map<String, Class<ContainedXmlView>[]> toggleLists = getToggleViewClasses();
-		Class<ContainedXmlView>[] toggleViews = toggleLists.get(categoryName);
+		Class<ContainedXmlView>[] toggleViews = getToggleViewClasses(categoryName);
 
 		int numberOfViews = 0;
 		if (toggleViews != null)
@@ -1248,7 +1278,7 @@ public abstract class StudyModel implements CategoryType
 	 * @return A Map in which the keys a the data types, and the values are
 	 *         arrays of ContainedXmlView classes.
 	 */
-	protected abstract Map<String, Class<ContainedXmlView>[]> getToggleViewClasses();
+	protected abstract void setToggleViewClassesMap();
 
 	/**
 	 * Configures the default ContainedXmlView to be used for each supported
@@ -1258,7 +1288,6 @@ public abstract class StudyModel implements CategoryType
 	 * @return The Class of the default view. The base StudyModel uses
 	 *         reflection to create the instance.
 	 */
-	protected abstract Class<? extends ContainedXmlView> getDefaultViewClass(
-			String categoryName);
+	protected abstract void setDefaultViewClassMap();
 
 }

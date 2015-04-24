@@ -707,37 +707,28 @@ public class NafStudyModel extends StudyModel
 	}
 
 	@Override
-	protected Class<? extends ContainedXmlView> getDefaultViewClass(
-			String categoryName)
+	protected void setDefaultViewClassMap()
 	{
-		Map<String, Class<? extends ContainedXmlView>> defaultMap = new HashMap<String, Class<? extends ContainedXmlView>>();
+		defaultXmlViewMap = new HashMap<String, Class<? extends ContainedXmlView>>();
 
-		defaultMap.put(INSTRUMENT_CATEGORY_ID, ContainedNafView.class);
-		defaultMap.put(TUNING_CATEGORY_ID, ContainedNafTuningView.class);
-		defaultMap.put(CONSTRAINTS_CATEGORY_ID, ConstraintsEditorView.class);
-
-		Class<? extends ContainedXmlView> defaultClass = defaultMap
-				.get(categoryName);
-		defaultClass = defaultClass == null ? ContainedXmlTextView.class
-				: defaultClass;
-
-		return defaultClass;
+		defaultXmlViewMap.put(INSTRUMENT_CATEGORY_ID, ContainedNafView.class);
+		defaultXmlViewMap.put(TUNING_CATEGORY_ID, ContainedNafTuningView.class);
+		defaultXmlViewMap.put(CONSTRAINTS_CATEGORY_ID,
+				ConstraintsEditorView.class);
 	}
 
 	@Override
 	@SuppressWarnings("unchecked")
-	protected Map<String, Class<ContainedXmlView>[]> getToggleViewClasses()
+	protected void setToggleViewClassesMap()
 	{
-		Map<String, Class<ContainedXmlView>[]> toggleLists = new HashMap<String, Class<ContainedXmlView>[]>();
+		toggleXmlViewLists = new HashMap<String, Class<ContainedXmlView>[]>();
 
-		toggleLists.put(CONSTRAINTS_CATEGORY_ID, new Class[] {
+		toggleXmlViewLists.put(CONSTRAINTS_CATEGORY_ID, new Class[] {
 				ContainedXmlTextView.class, ConstraintsEditorView.class });
-		toggleLists.put(TUNING_CATEGORY_ID, new Class[] {
+		toggleXmlViewLists.put(TUNING_CATEGORY_ID, new Class[] {
 				ContainedNafTuningView.class, ContainedXmlTextView.class });
-		toggleLists.put(INSTRUMENT_CATEGORY_ID, new Class[] {
+		toggleXmlViewLists.put(INSTRUMENT_CATEGORY_ID, new Class[] {
 				ContainedNafView.class, ContainedXmlTextView.class });
-
-		return toggleLists;
 	}
 
 	@Override

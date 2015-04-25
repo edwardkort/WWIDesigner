@@ -107,6 +107,10 @@ public class FileOpenDialogPreviewPane extends DialogAdapter
 			{
 				String fileContents = getFileContents(file);
 				String category = StudyModel.getCategoryName(fileContents);
+				if (category == null)
+				{
+					category = "Unknown";
+				}
 				StringBuilder sb = new StringBuilder();
 				switch (category)
 				{

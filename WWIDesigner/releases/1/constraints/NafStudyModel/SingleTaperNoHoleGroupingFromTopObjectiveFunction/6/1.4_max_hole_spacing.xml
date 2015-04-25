@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns2:constraints xmlns:ns2="http://www.wwidesigner.com/Constraints">
+    <constraintsName>1.4 max spacing, unconstrained taper</constraintsName>
+    <objectiveDisplayName>Single taper, no hole grouping</objectiveDisplayName>
+    <objectiveFunctionName>SingleTaperNoHoleGroupingFromTopObjectiveFunction</objectiveFunctionName>
+    <numberOfHoles>6</numberOfHoles>
+    <constraint>
+        <displayName>Bore length</displayName>
+        <category>Hole position</category>
+        <type>DIMENSIONAL</type>
+        <lowerBound>0.2</lowerBound>
+        <upperBound>0.7</upperBound>
+    </constraint>
+    <constraint>
+        <displayName>Bore top to Hole 6 (top), bore-length fraction</displayName>
+        <category>Hole position</category>
+        <type>DIMENSIONLESS</type>
+        <lowerBound>0.25</lowerBound>
+        <upperBound>0.5</upperBound>
+    </constraint>
+    <constraint>
+        <displayName>Hole 6 (top) to Hole 5 distance</displayName>
+        <category>Hole position</category>
+        <type>DIMENSIONAL</type>
+        <lowerBound>0.0203</lowerBound>
+        <upperBound>0.035559999999999994</upperBound>
+    </constraint>
+    <constraint>
+        <displayName>Hole 5 to Hole 4 distance</displayName>
+        <category>Hole position</category>
+        <type>DIMENSIONAL</type>
+        <lowerBound>0.0203</lowerBound>
+        <upperBound>0.035559999999999994</upperBound>
+    </constraint>
+    <constraint>
+        <displayName>Hole 4 to Hole 3, angled up distance</displayName>
+        <category>Hole position</category>
+        <type>DIMENSIONAL</type>
+        <lowerBound>0.0203</lowerBound>
+        <upperBound>0.07</upperBound>
+    </constraint>
+    <constraint>
+        <displayName>Hole 3, angled up to Hole 2 distance</displayName>
+        <category>Hole position</category>
+        <type>DIMENSIONAL</type>
+        <lowerBound>0.0203</lowerBound>
+        <upperBound>0.035559999999999994</upperBound>
+    </constraint>
+    <constraint>
+        <displayName>Hole 2 to Hole 1 (bottom) distance</displayName>
+        <category>Hole position</category>
+        <type>DIMENSIONAL</type>
+        <lowerBound>0.0203</lowerBound>
+        <upperBound>0.035559999999999994</upperBound>
+    </constraint>
+    <constraint>
+        <displayName>Hole 6 (top) diameter</displayName>
+        <category>Hole size</category>
+        <type>DIMENSIONAL</type>
+        <lowerBound>0.002</lowerBound>
+        <upperBound>0.01016</upperBound>
+    </constraint>
+    <constraint>
+        <displayName>Hole 5 diameter</displayName>
+        <category>Hole size</category>
+        <type>DIMENSIONAL</type>
+        <lowerBound>0.003</lowerBound>
+        <upperBound>0.01016</upperBound>
+    </constraint>
+    <constraint>
+        <displayName>Hole 4 diameter</displayName>
+        <category>Hole size</category>
+        <type>DIMENSIONAL</type>
+        <lowerBound>0.003</lowerBound>
+        <upperBound>0.01016</upperBound>
+    </constraint>
+    <constraint>
+        <displayName>Hole 3, angled up diameter</displayName>
+        <category>Hole size</category>
+        <type>DIMENSIONAL</type>
+        <lowerBound>0.003</lowerBound>
+        <upperBound>0.01016</upperBound>
+    </constraint>
+    <constraint>
+        <displayName>Hole 2 diameter</displayName>
+        <category>Hole size</category>
+        <type>DIMENSIONAL</type>
+        <lowerBound>0.003</lowerBound>
+        <upperBound>0.01016</upperBound>
+    </constraint>
+    <constraint>
+        <displayName>Hole 1 (bottom) diameter</displayName>
+        <category>Hole size</category>
+        <type>DIMENSIONAL</type>
+        <lowerBound>0.003</lowerBound>
+        <upperBound>0.01016</upperBound>
+    </constraint>
+    <constraint>
+        <displayName>Bore diameter ratio (top/bottom)</displayName>
+        <category>Single bore taper</category>
+        <type>DIMENSIONLESS</type>
+        <lowerBound>0.8</lowerBound>
+        <upperBound>1.2</upperBound>
+    </constraint>
+    <constraint>
+        <displayName>Taper start (from top), fraction of bore length</displayName>
+        <category>Single bore taper</category>
+        <type>DIMENSIONLESS</type>
+        <lowerBound>0.0</lowerBound>
+        <upperBound>1.0</upperBound>
+    </constraint>
+    <constraint>
+        <displayName>Taper length, fraction of bore below start</displayName>
+        <category>Single bore taper</category>
+        <type>DIMENSIONLESS</type>
+        <lowerBound>0.0</lowerBound>
+        <upperBound>1.0</upperBound>
+    </constraint>
+</ns2:constraints>

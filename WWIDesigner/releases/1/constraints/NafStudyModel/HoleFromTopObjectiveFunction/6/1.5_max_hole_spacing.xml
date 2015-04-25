@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns2:constraints xmlns:ns2="http://www.wwidesigner.com/Constraints">
+    <constraintsName>1-1/2" max spacing</constraintsName>
+    <objectiveDisplayName>Hole size &amp; position</objectiveDisplayName>
+    <objectiveFunctionName>HoleFromTopObjectiveFunction</objectiveFunctionName>
+    <numberOfHoles>6</numberOfHoles>
+    <constraint>
+        <displayName>Bore length</displayName>
+        <category>Hole position</category>
+        <type>DIMENSIONAL</type>
+        <lowerBound>0.1905</lowerBound>
+        <upperBound>0.6985</upperBound>
+    </constraint>
+    <constraint>
+        <displayName>Bore top to Hole 6 (top), bore-length fraction</displayName>
+        <category>Hole position</category>
+        <type>DIMENSIONLESS</type>
+        <lowerBound>0.25</lowerBound>
+        <upperBound>0.5</upperBound>
+    </constraint>
+    <constraint>
+        <displayName>Hole 6 (top) to Hole 5 distance</displayName>
+        <category>Hole position</category>
+        <type>DIMENSIONAL</type>
+        <lowerBound>0.02032</lowerBound>
+        <upperBound>0.038099999999999995</upperBound>
+    </constraint>
+    <constraint>
+        <displayName>Hole 5 to Hole 4 distance</displayName>
+        <category>Hole position</category>
+        <type>DIMENSIONAL</type>
+        <lowerBound>0.02032</lowerBound>
+        <upperBound>0.038099999999999995</upperBound>
+    </constraint>
+    <constraint>
+        <displayName>Hole 4 to Hole 3 distance</displayName>
+        <category>Hole position</category>
+        <type>DIMENSIONAL</type>
+        <lowerBound>0.02032</lowerBound>
+        <upperBound>0.06985</upperBound>
+    </constraint>
+    <constraint>
+        <displayName>Hole 3 to Hole 2 distance</displayName>
+        <category>Hole position</category>
+        <type>DIMENSIONAL</type>
+        <lowerBound>0.02032</lowerBound>
+        <upperBound>0.038099999999999995</upperBound>
+    </constraint>
+    <constraint>
+        <displayName>Hole 2 to Hole 1 (bottom) distance</displayName>
+        <category>Hole position</category>
+        <type>DIMENSIONAL</type>
+        <lowerBound>0.02032</lowerBound>
+        <upperBound>0.038099999999999995</upperBound>
+    </constraint>
+    <constraint>
+        <displayName>Hole 6 (top) diameter</displayName>
+        <category>Hole size</category>
+        <type>DIMENSIONAL</type>
+        <lowerBound>0.0015875</lowerBound>
+        <upperBound>0.0127</upperBound>
+    </constraint>
+    <constraint>
+        <displayName>Hole 5 diameter</displayName>
+        <category>Hole size</category>
+        <type>DIMENSIONAL</type>
+        <lowerBound>0.003175</lowerBound>
+        <upperBound>0.0127</upperBound>
+    </constraint>
+    <constraint>
+        <displayName>Hole 4 diameter</displayName>
+        <category>Hole size</category>
+        <type>DIMENSIONAL</type>
+        <lowerBound>0.003175</lowerBound>
+        <upperBound>0.0127</upperBound>
+    </constraint>
+    <constraint>
+        <displayName>Hole 3 diameter</displayName>
+        <category>Hole size</category>
+        <type>DIMENSIONAL</type>
+        <lowerBound>0.003175</lowerBound>
+        <upperBound>0.0127</upperBound>
+    </constraint>
+    <constraint>
+        <displayName>Hole 2 diameter</displayName>
+        <category>Hole size</category>
+        <type>DIMENSIONAL</type>
+        <lowerBound>0.003175</lowerBound>
+        <upperBound>0.0127</upperBound>
+    </constraint>
+    <constraint>
+        <displayName>Hole 1 (bottom) diameter</displayName>
+        <category>Hole size</category>
+        <type>DIMENSIONAL</type>
+        <lowerBound>0.003175</lowerBound>
+        <upperBound>0.0127</upperBound>
+    </constraint>
+</ns2:constraints>

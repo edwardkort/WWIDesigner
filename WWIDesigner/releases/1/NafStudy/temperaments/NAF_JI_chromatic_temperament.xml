@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns2:temperament xmlns:ns2="http://www.wwidesigner.com/Tuning">
+    <name>NAF 12-Tone Just Intonation</name>
+    <comment>Chromatic, 12-tone, just intonation with 7-limit tritone in NAF range.</comment>
+    <ratio>1.0</ratio>
+    <ratio>1.0666666666666667</ratio>
+    <ratio>1.125</ratio>
+    <ratio>1.2</ratio>
+    <ratio>1.25</ratio>
+    <ratio>1.3333333333333333</ratio>
+    <ratio>1.4</ratio>
+    <ratio>1.5</ratio>
+    <ratio>1.6</ratio>
+    <ratio>1.6666666666666667</ratio>
+    <ratio>1.8</ratio>
+    <ratio>1.875</ratio>
+    <ratio>2.0</ratio>
+    <ratio>2.1333333333333333</ratio>
+    <ratio>2.25</ratio>
+    <ratio>2.4</ratio>
+</ns2:temperament>

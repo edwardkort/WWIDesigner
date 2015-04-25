@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns2:temperament xmlns:ns2="http://www.wwidesigner.com/Tuning">
+    <name>NAF 12-Tone Equal Temperament</name>
+    <comment>Chromatic, 12-tone, equal temperament in NAF range.</comment>
+    <ratio>1.0</ratio>
+    <ratio>1.0594630943592953</ratio>
+    <ratio>1.122462048309373</ratio>
+    <ratio>1.189207115002721</ratio>
+    <ratio>1.2599210498948732</ratio>
+    <ratio>1.3348398541700344</ratio>
+    <ratio>1.4142135623730951</ratio>
+    <ratio>1.4983070768766815</ratio>
+    <ratio>1.5874010519681994</ratio>
+    <ratio>1.6817928305074292</ratio>
+    <ratio>1.7817974362806788</ratio>
+    <ratio>1.887748625363387</ratio>
+    <ratio>2.0</ratio>
+    <ratio>2.1189261887185906</ratio>
+    <ratio>2.244924096618746</ratio>
+    <ratio>2.378414230005442</ratio>
+</ns2:temperament>

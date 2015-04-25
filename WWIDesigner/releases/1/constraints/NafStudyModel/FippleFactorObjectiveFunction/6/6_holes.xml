@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns2:constraints xmlns:ns2="http://www.wwidesigner.com/Constraints">
+    <constraintsName>6 holes</constraintsName>
+    <objectiveDisplayName>Fipple factor</objectiveDisplayName>
+    <objectiveFunctionName>FippleFactorObjectiveFunction</objectiveFunctionName>
+    <numberOfHoles>6</numberOfHoles>
+    <constraint>
+        <displayName>Fipple factor</displayName>
+        <category>Mouthpiece fipple</category>
+        <type>DIMENSIONLESS</type>
+        <lowerBound>0.2</lowerBound>
+        <upperBound>1.5</upperBound>
+    </constraint>
+</ns2:constraints>

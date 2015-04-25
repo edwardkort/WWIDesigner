@@ -118,13 +118,6 @@ public class WIDesigner extends FileBasedApplication implements EventSubscriber
 	static final String CREATE_DEFAULT_CONSTRAINTS_ACTION_ID = "Create default constraints";
 	static final String CREATE_BLANK_CONSTRAINTS_ACTION_ID = "Create blank constraints";
 
-	static final String LICENSE_TEXT = "NAF Optimization Runner\n\n"
-			+ "Copyright (C) 2014, Edward Kort, Antoine Lefebvre, Burton Patkau.\n\n"
-			+ "This program comes with ABSOLUTELY NO WARRANTY.\n"
-			+ "This is free software, and you are welcome to redistribute it\n"
-			+ "under the terms of the GNU General Public License, version 3 or later,\n"
-			+ "available at http://www.gnu.org/licenses/gpl.html.";
-
 	protected boolean isWarnOnDirtyClose = false;
 
 	public static void main(String[] args)
@@ -278,7 +271,8 @@ public class WIDesigner extends FileBasedApplication implements EventSubscriber
 				Action action;
 				if (menuID == FILE_MENU_ID)
 				{
-					MenuGroup group = menuBarsUI.getMenuGroup(FILE_NEW_GROUP_ID, menu);
+					MenuGroup group = menuBarsUI.getMenuGroup(
+							FILE_NEW_GROUP_ID, menu);
 					action = menuBarsUI.getAction(CREATE_TUNING_FILE_ACTION_ID);
 					menuItem = group.addMenuItem(action);
 					menuItem.setMnemonic('T');
@@ -333,9 +327,12 @@ public class WIDesigner extends FileBasedApplication implements EventSubscriber
 				DataView view = getFocusedView();
 				if (view instanceof XmlToggleView)
 				{
-					try {
+					try
+					{
 						((XmlToggleView) view).toggleView();
-					} catch (DataModelException ex) {
+					}
+					catch (DataModelException ex)
+					{
 						getStudyView().showException(ex);
 					}
 				}
@@ -1017,7 +1014,14 @@ public class WIDesigner extends FileBasedApplication implements EventSubscriber
 	protected void customizeAboutBox()
 	{
 		JTextPane aboutText = new JTextPane();
-		aboutText.setText(LICENSE_TEXT);
+		try
+		{
+			aboutText.setPage(WIDesigner.class.getResource("images/about.html"));
+		}
+		catch (Exception e)
+		{
+			System.out.println(e.getMessage());
+		}
 		aboutText.setEditable(false);
 
 		StandardDialogRequest.setQueuedDialogRequestComponent(this,

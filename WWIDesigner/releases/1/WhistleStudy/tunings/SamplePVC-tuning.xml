@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <ns2:tuning xmlns:ns2="http://www.wwidesigner.com/Tuning">
-    <name>High D Whistle Tuning</name>
-    <comment>6-hole whistle, high D, Just Intonation tuning.</comment>
+    <name>PVC Whistle Tuning</name>
+    <comment>Target tuning for 6-hole PVC whistle, high D, Just Intonation, with measured min/max tuning of a sample PVC whistle.</comment>
     <numberOfHoles>6</numberOfHoles>
     <fingering>
         <note>
             <name>D</name>
             <frequency>587.33</frequency>
+            <frequencyMin>560.0</frequencyMin>
+            <frequencyMax>589.0</frequencyMax>
         </note>
         <openHole>false</openHole>
         <openHole>false</openHole>
@@ -19,7 +21,9 @@
     <fingering>
         <note>
             <name>E</name>
-            <frequency>660.75</frequency>
+            <frequency>660.74</frequency>
+            <frequencyMin>624.0</frequencyMin>
+            <frequencyMax>663.0</frequencyMax>
         </note>
         <openHole>false</openHole>
         <openHole>false</openHole>
@@ -33,6 +37,8 @@
         <note>
             <name>F#</name>
             <frequency>734.16</frequency>
+            <frequencyMin>691.0</frequencyMin>
+            <frequencyMax>740.0</frequencyMax>
         </note>
         <openHole>false</openHole>
         <openHole>false</openHole>
@@ -46,6 +52,8 @@
         <note>
             <name>G</name>
             <frequency>783.1</frequency>
+            <frequencyMin>736.0</frequencyMin>
+            <frequencyMax>791.0</frequencyMax>
         </note>
         <openHole>false</openHole>
         <openHole>false</openHole>
@@ -59,6 +67,8 @@
         <note>
             <name>A</name>
             <frequency>880.99</frequency>
+            <frequencyMin>830.0</frequencyMin>
+            <frequencyMax>895.0</frequencyMax>
         </note>
         <openHole>false</openHole>
         <openHole>false</openHole>
@@ -72,6 +82,8 @@
         <note>
             <name>B</name>
             <frequency>978.88</frequency>
+            <frequencyMin>900.0</frequencyMin>
+            <frequencyMax>1001.0</frequencyMax>
         </note>
         <openHole>false</openHole>
         <openHole>true</openHole>
@@ -85,6 +97,8 @@
         <note>
             <name>C-nat</name>
             <frequency>1044.1</frequency>
+            <frequencyMin>980.0</frequencyMin>
+            <frequencyMax>1086.0</frequencyMax>
         </note>
         <openHole>true</openHole>
         <openHole>false</openHole>
@@ -98,6 +112,8 @@
         <note>
             <name>C#</name>
             <frequency>1101.2</frequency>
+            <frequencyMin>1030.0</frequencyMin>
+            <frequencyMax>1149.0</frequencyMax>
         </note>
         <openHole>true</openHole>
         <openHole>true</openHole>
@@ -111,6 +127,8 @@
         <note>
             <name>D</name>
             <frequency>1174.7</frequency>
+            <frequencyMin>1130.0</frequencyMin>
+            <frequencyMax>1207.0</frequencyMax>
         </note>
         <openHole>true</openHole>
         <openHole>false</openHole>
@@ -124,6 +142,8 @@
         <note>
             <name>E</name>
             <frequency>1321.5</frequency>
+            <frequencyMin>1265.0</frequencyMin>
+            <frequencyMax>1334.0</frequencyMax>
         </note>
         <openHole>false</openHole>
         <openHole>false</openHole>
@@ -137,6 +157,8 @@
         <note>
             <name>F#</name>
             <frequency>1468.3</frequency>
+            <frequencyMin>1417.0</frequencyMin>
+            <frequencyMax>1493.0</frequencyMax>
         </note>
         <openHole>false</openHole>
         <openHole>false</openHole>
@@ -150,6 +172,8 @@
         <note>
             <name>G</name>
             <frequency>1566.2</frequency>
+            <frequencyMin>1512.0</frequencyMin>
+            <frequencyMax>1595.0</frequencyMax>
         </note>
         <openHole>false</openHole>
         <openHole>false</openHole>
@@ -163,6 +187,8 @@
         <note>
             <name>A</name>
             <frequency>1762.0</frequency>
+            <frequencyMin>1698.0</frequencyMin>
+            <frequencyMax>1803.0</frequencyMax>
         </note>
         <openHole>false</openHole>
         <openHole>false</openHole>
@@ -176,6 +202,8 @@
         <note>
             <name>B</name>
             <frequency>1957.8</frequency>
+            <frequencyMin>1897.0</frequencyMin>
+            <frequencyMax>2009.0</frequencyMax>
         </note>
         <openHole>false</openHole>
         <openHole>true</openHole>
@@ -189,6 +217,8 @@
         <note>
             <name>C-nat</name>
             <frequency>2088.3</frequency>
+            <frequencyMin>2029.0</frequencyMin>
+            <frequencyMax>2097.0</frequencyMax>
         </note>
         <openHole>true</openHole>
         <openHole>false</openHole>
@@ -202,6 +232,8 @@
         <note>
             <name>C#</name>
             <frequency>2202.5</frequency>
+            <frequencyMin>2142.0</frequencyMin>
+            <frequencyMax>2246.0</frequencyMax>
         </note>
         <openHole>true</openHole>
         <openHole>true</openHole>
@@ -215,6 +247,8 @@
         <note>
             <name>D</name>
             <frequency>2349.3</frequency>
+            <frequencyMin>2333.0</frequencyMin>
+            <frequencyMax>2470.0</frequencyMax>
         </note>
         <openHole>true</openHole>
         <openHole>false</openHole>

@@ -36,8 +36,8 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
-import javax.xml.bind.UnmarshalException;
 import javax.xml.bind.MarshalException;
+import javax.xml.bind.UnmarshalException;
 
 import org.xml.sax.SAXParseException;
 
@@ -50,6 +50,8 @@ import com.jidesoft.app.framework.file.FileDataModel;
 import com.jidesoft.app.framework.gui.DataViewPane;
 import com.jidesoft.app.framework.gui.MessageDialogRequest;
 import com.jidesoft.app.framework.gui.filebased.FileBasedApplication;
+import com.jidesoft.app.framework.gui.framed.DockingApplicationFeature;
+import com.jidesoft.docking.DockableFrame;
 import com.jidesoft.tooltip.ExpandedTipUtils;
 import com.jidesoft.tree.TreeUtils;
 import com.wwidesigner.geometry.Instrument;
@@ -205,6 +207,7 @@ public class StudyView extends DataViewPane implements EventSubscriber
 		tree.setModel(model);
 		TreeUtils.expandAll(tree);
 		tree.setSelectionPaths(selectionPaths.toArray(new TreePath[0]));
+		setStudyViewName();
 		// Update on the appropriate thread
 		SwingUtilities.invokeLater(new Runnable()
 		{
@@ -213,6 +216,15 @@ public class StudyView extends DataViewPane implements EventSubscriber
 				updateActions();
 			}
 		});
+	}
+
+	protected void setStudyViewName()
+	{
+		DockingApplicationFeature docking = (DockingApplicationFeature) getApplication()
+				.getApplicationFeature(DockingApplicationFeature.class);
+		DockableFrame frame = docking.getDockableFrame(this);
+		frame.setTitle(study.getDisplayName());
+
 	}
 
 	protected void updateActions()
@@ -468,23 +480,27 @@ public class StudyView extends DataViewPane implements EventSubscriber
 
 	/**
 	 * Display a message box reporting a processing exception.
-	 * @param ex - the exception encountered.
+	 * 
+	 * @param ex
+	 *            - the exception encountered.
 	 */
 	public void showException(Exception ex)
 	{
 		Exception exception = ex;
 		Throwable cause = exception.getCause();
 		if (exception instanceof DataModelException
-			&& cause instanceof Exception)
+				&& cause instanceof Exception)
 		{
-			// We use DataModelExceptions as a wrapper for more specific cause exception.
+			// We use DataModelExceptions as a wrapper for more specific cause
+			// exception.
 			exception = (Exception) cause;
 			cause = exception.getCause();
 		}
-		int messageType = MessageDialogRequest.ERROR_STYLE;	// Message box style.
-		String exceptionType;	// Message box title.
-		String exceptionMessage = exception.getMessage();	// Message box text.
-		boolean withTrace = false;	// true to print on console log.
+		int messageType = MessageDialogRequest.ERROR_STYLE; // Message box
+															// style.
+		String exceptionType; // Message box title.
+		String exceptionMessage = exception.getMessage(); // Message box text.
+		boolean withTrace = false; // true to print on console log.
 
 		if (exception instanceof DataOpenException)
 		{
@@ -531,7 +547,8 @@ public class StudyView extends DataViewPane implements EventSubscriber
 				exceptionMessage, exceptionType, messageType);
 		if (withTrace)
 		{
-			System.out.println(exception.getClass().getName() + " Exception: " +  exceptionMessage);
+			System.out.println(exception.getClass().getName() + " Exception: "
+					+ exceptionMessage);
 			exception.printStackTrace();
 		}
 	}

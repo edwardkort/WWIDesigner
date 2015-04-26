@@ -100,11 +100,19 @@ public class NafStudyModel extends StudyModel
 	protected Frame parentFrame; // for displaying dialogs not appropriate to
 									// pass to the StudyView.
 
+	// Display name for this study
+	private static final String DISPLAY_NAME = "Native American Flute Study";
+
 	public NafStudyModel(Frame parentFrame)
 	{
 		super();
 		this.parentFrame = parentFrame;
 		setLocalCategories();
+	}
+
+	public String getDisplayName()
+	{
+		return DISPLAY_NAME;
 	}
 
 	protected void setLocalCategories()

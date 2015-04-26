@@ -1002,7 +1002,7 @@ public class WIDesigner extends FileBasedApplication implements EventSubscriber
 					DockingManager manager, DockableFrame dockable,
 					DataView dataView)
 			{
-				if (dockable.getSideTitle().equals("Study"))
+				if (dataView instanceof StudyView)
 				{
 					dockable.setDockedWidth(230);
 				}
@@ -1016,7 +1016,8 @@ public class WIDesigner extends FileBasedApplication implements EventSubscriber
 		JTextPane aboutText = new JTextPane();
 		try
 		{
-			aboutText.setPage(WIDesigner.class.getResource("images/about.html"));
+			aboutText
+					.setPage(WIDesigner.class.getResource("images/about.html"));
 		}
 		catch (Exception e)
 		{

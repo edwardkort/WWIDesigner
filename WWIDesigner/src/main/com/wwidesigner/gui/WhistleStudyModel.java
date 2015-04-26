@@ -82,11 +82,19 @@ public class WhistleStudyModel extends StudyModel
 	// Map names in the optimizer category to objective function class names.
 	protected Map<String, String> objectiveFunctionNames = new HashMap<String, String>();
 
+	// Display name for this study
+	private static final String DISPLAY_NAME = "Whistle Study";
+
 	public WhistleStudyModel()
 	{
 		super();
 		setLocalCategories();
 		setBlowingLevel(5);
+	}
+
+	public String getDisplayName()
+	{
+		return DISPLAY_NAME;
 	}
 
 	protected void setLocalCategories()

@@ -1290,4 +1290,10 @@ public abstract class StudyModel implements CategoryType
 	 */
 	protected abstract void setDefaultViewClassMap();
 
+	/**
+	 * 
+	 * @return The name to be displayed in the StudyView title.
+	 */
+	public abstract String getDisplayName();
+
 }

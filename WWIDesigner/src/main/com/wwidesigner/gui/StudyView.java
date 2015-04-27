@@ -397,7 +397,7 @@ public class StudyView extends DataViewPane implements EventSubscriber
 		try
 		{
 			SketchInstrument sketch = new SketchInstrument();
-			sketch.draw(study.getInstrument(), false);
+			sketch.draw(study.getInstrument(), study.getSelectedInstrumentName(), false);
 		}
 		catch (Exception ex)
 		{

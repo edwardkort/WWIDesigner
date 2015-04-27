@@ -24,9 +24,6 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -199,56 +196,44 @@ public class TuningPanel extends FingeringPatternPanel
 		add(panel, gbc);
 		model.addTableModelListener(this);
 	}
-
+	
 	@Override
-	protected List<Fingering> getTableData()
+	protected Fingering getRowData(DefaultTableModel model, int row)
 	{
-		stopTableEditing();
-		DefaultTableModel model = (DefaultTableModel) fingeringList.getModel();
-		ArrayList<Fingering> data = new ArrayList<Fingering>();
-
-		for (int i = 0; i < model.getRowCount(); i++)
+		Note note = new Note();
+		String name = (String) model.getValueAt(row, 0);
+		if (name == null || name.trim().length() == 0)
 		{
-			Note note = new Note();
-			String name = (String) model.getValueAt(i, 0);
-			if (name == null || name.trim().length() == 0)
-			{
-				// Skip lines with no name.
-				continue;
-			}
-			note.setName(name.trim());
-			Double freq = (Double) model.getValueAt(i, 1);
-			note.setFrequency(freq);
-			Fingering value = (Fingering) model.getValueAt(i,
-					fingeringColumnIdx);
-			if (value != null)
-			{
-				value.setNote(note);
-				data.add(value);
-			}
+			// Skip lines with no name.
+			return null;
 		}
-		return data;
+		note.setName(name.trim());
+		Double freq = (Double) model.getValueAt(row, 1);
+		note.setFrequency(freq);
+		Fingering value = (Fingering) model.getValueAt(row,
+				fingeringColumnIdx);
+		if (value != null)
+		{
+			value.setNote(note);
+		}
+		return value;
 	}
-
+	
 	@Override
-	protected void areFingeringsPopulated()
+	protected boolean isFingeringPopulated(Fingering fingering)
 	{
-		DefaultTableModel model = (DefaultTableModel) fingeringList.getModel();
-		fingeringsPopulated = false;
-
-		for (int i = 0; i < model.getRowCount(); i++)
+		if (fingering == null)
 		{
-			String noteName = (String) model.getValueAt(i, 0);
-			Double freq = (Double) model.getValueAt(i, 1);
-			Fingering fingering = (Fingering) model.getValueAt(i,
-					fingeringColumnIdx);
-			if (noteName != null && noteName.trim().length() > 0
-					&& fingering != null && freq != null)
-			{
-				fingeringsPopulated = true;
-				break;
-			}
+			return false;
 		}
+		Note note = fingering.getNote();
+		if (note.getName() == null
+			|| note.getName().trim().length() <= 0
+			|| note.getFrequency() == null)
+		{
+			return false;
+		}
+		return true;
 	}
 
 	protected void configureDragAndDrop()

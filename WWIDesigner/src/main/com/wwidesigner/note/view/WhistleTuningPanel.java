@@ -1,9 +1,9 @@
 package com.wwidesigner.note.view;
 
-import java.util.List;
-
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumn;
 
+import com.wwidesigner.gui.util.DoubleCellRenderer;
 import com.wwidesigner.note.Fingering;
 import com.wwidesigner.note.FingeringPattern;
 import com.wwidesigner.note.Note;
@@ -102,34 +102,67 @@ public class WhistleTuningPanel extends TuningPanel
 	}
 
 	@Override
-	protected List<Fingering> getTableData()
+	protected Fingering getRowData(DefaultTableModel model, int row)
 	{
-		List<Fingering> data = super.getTableData();
-		if (numberOfColumns != 5)
+		Fingering value = super.getRowData(model, row);
+		if (value == null || numberOfColumns != 5)
 		{
-			return data;
+			return value;
 		}
-		
+
 		// Table also contains min and max columns.
 		// Add min and max to the data returned.
-		DefaultTableModel model = (DefaultTableModel) fingeringList.getModel();
-
-		for (int i = 0; i < model.getRowCount(); i++)
+		Note note = value.getNote();
+		Double freq = (Double) model.getValueAt(row, 2);
+		note.setFrequencyMin(freq);
+		freq = (Double) model.getValueAt(row, 3);
+		note.setFrequencyMax(freq);
+		return value;
+	}
+	
+	@Override
+	protected boolean isFingeringPopulated(Fingering fingering)
+	{
+		// Row must have a fingering.
+		if (fingering == null)
 		{
-			Fingering value = (Fingering) model.getValueAt(i,
-					fingeringColumnIdx);
-			if (value != null)
-			{
-				Fingering fingering = data.get(i);
-				Note note = fingering.getNote();
-				Double freq = (Double) model.getValueAt(i, 2);
-				note.setFrequencyMin(freq);
-				freq = (Double) model.getValueAt(i, 3);
-				note.setFrequencyMax(freq);
-			}
+			return false;
 		}
-		
-		return data;
+		// Row must have a note name.
+		Note note = fingering.getNote();
+		if (note.getName() == null
+			|| note.getName().trim().length() <= 0)
+		{
+			return false;
+		}
+		// Row must have at least one frequency.
+		if (note.getFrequency() == null
+			&& note.getFrequencyMin() == null
+			&& note.getFrequencyMax() == null)
+		{
+			return false;
+		}
+		return true;
+	}
+
+	@Override
+	public void resetTableData(int numRows)
+	{
+		super.resetTableData(numRows);
+		if (numberOfColumns != 5)
+		{
+			return;
+		}
+		TableColumn column = fingeringList.getColumn("Min Freq");
+		if (column != null)
+		{
+			column.setCellRenderer(new DoubleCellRenderer(2));
+		}
+		column = fingeringList.getColumn("Max Freq");
+		if (column != null)
+		{
+			column.setCellRenderer(new DoubleCellRenderer(2));
+		}
 	}
 
 	/* (non-Javadoc)

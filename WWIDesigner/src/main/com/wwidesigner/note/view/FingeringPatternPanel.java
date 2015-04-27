@@ -309,23 +309,35 @@ public class FingeringPatternPanel extends JPanel implements FocusListener,
 		resetTableData(1);
 		return true;
 	}
+	
+	protected boolean isFingeringPopulated(Fingering fingering)
+	{
+		return fingering != null;
+	}
 
 	/**
-	 * Test whether the fingeringList table contains valid fingerings, and set
-	 * fingeringsPopulated accordingly.
+	 * Test whether the fingeringList table contains fingerings, and all
+	 * fingerings it contains are valid, and set fingeringsPopulated
+	 * accordingly.
 	 */
 	protected void areFingeringsPopulated()
 	{
 		DefaultTableModel model = (DefaultTableModel) fingeringList.getModel();
-		fingeringsPopulated = false;
+		if (model.getRowCount() == 0)
+		{
+			// No fingerings.
+			fingeringsPopulated = false;
+			return;
+		}
 
+		fingeringsPopulated = true;
 		for (int i = 0; i < model.getRowCount(); i++)
 		{
-			Fingering value = (Fingering) model.getValueAt(i, 0);
-			if (value != null)
+			Fingering value = getRowData(model, i);
+			if (! isFingeringPopulated(value))
 			{
-				fingeringsPopulated = true;
-				break;
+				fingeringsPopulated = false;
+				return;
 			}
 		}
 	}
@@ -642,6 +654,11 @@ public class FingeringPatternPanel extends JPanel implements FocusListener,
 		areFingeringsPopulated();
 	}
 
+	protected Fingering getRowData(DefaultTableModel model, int row)
+	{
+		return (Fingering) model.getValueAt(row, 0);
+	}
+
 	protected List<Fingering> getTableData()
 	{
 		stopTableEditing();
@@ -650,7 +667,7 @@ public class FingeringPatternPanel extends JPanel implements FocusListener,
 
 		for (int i = 0; i < model.getRowCount(); i++)
 		{
-			Fingering value = (Fingering) model.getValueAt(i, 0);
+			Fingering value = getRowData(model, i);
 			if (value != null)
 			{
 				data.add(value);

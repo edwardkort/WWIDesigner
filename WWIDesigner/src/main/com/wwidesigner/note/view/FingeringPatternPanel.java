@@ -25,6 +25,8 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -61,7 +63,7 @@ import com.wwidesigner.util.BindFactory;
 
 public class FingeringPatternPanel extends JPanel implements FocusListener,
 		TableModelListener, DataPopulatedProvider, DataChangedProvider,
-		DataChangedListener
+		DataChangedListener, KeyListener
 {
 	public static final String NEW_EVENT_ID = "newData";
 	public static final String SAVE_EVENT_ID = "saveData";
@@ -250,6 +252,7 @@ public class FingeringPatternPanel extends JPanel implements FocusListener,
 		String newName = nameWidget.getText();
 
 		namePopulated = (newName != null && newName.trim().length() > 0);
+		fireDataStateChanged();
 		if (newName != null && !newName.equals(name))
 		{
 			name = newName;
@@ -309,7 +312,7 @@ public class FingeringPatternPanel extends JPanel implements FocusListener,
 		resetTableData(1);
 		return true;
 	}
-	
+
 	protected boolean isFingeringPopulated(Fingering fingering)
 	{
 		return fingering != null;
@@ -334,7 +337,7 @@ public class FingeringPatternPanel extends JPanel implements FocusListener,
 		for (int i = 0; i < model.getRowCount(); i++)
 		{
 			Fingering value = getRowData(model, i);
-			if (! isFingeringPopulated(value))
+			if (!isFingeringPopulated(value))
 			{
 				fingeringsPopulated = false;
 				return;
@@ -487,6 +490,7 @@ public class FingeringPatternPanel extends JPanel implements FocusListener,
 
 		nameWidget = new JTextField();
 		nameWidget.addFocusListener(this);
+		nameWidget.addKeyListener(this);
 		nameWidget.setPreferredSize(new Dimension(componentWidth, 20));
 		nameWidget.setMinimumSize(new Dimension(200, 20));
 		nameWidget.setMargin(new Insets(2, 4, 2, 4));
@@ -752,6 +756,22 @@ public class FingeringPatternPanel extends JPanel implements FocusListener,
 		{
 			fireDataStateChanged();
 		}
+	}
+
+	@Override
+	public void keyTyped(KeyEvent e)
+	{
+	}
+
+	@Override
+	public void keyPressed(KeyEvent e)
+	{
+	}
+
+	@Override
+	public void keyReleased(KeyEvent e)
+	{
+		isNamePopulated();
 	}
 
 }

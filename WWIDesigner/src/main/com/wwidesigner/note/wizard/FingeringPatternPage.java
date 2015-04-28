@@ -289,10 +289,9 @@ public class FingeringPatternPage extends AbstractWizardPage implements
 	@Override
 	public void dataStateChanged(DataPopulatedEvent event)
 	{
-		if (event.getSource() instanceof FingeringPatternPanel)
+		if (event.getSource().equals(fingeringPanel))
 		{
-			Boolean dataPopulated = null;
-			dataPopulated = event
+			Boolean dataPopulated = event
 					.isPopulated(FingeringPatternPanel.SAVE_EVENT_ID);
 			if (dataPopulated != null)
 			{

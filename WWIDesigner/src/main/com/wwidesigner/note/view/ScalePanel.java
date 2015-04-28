@@ -66,6 +66,7 @@ public class ScalePanel extends JPanel implements KeyListener,
 	private List<DataPopulatedListener> populatedListeners;
 
 	public static final String LOAD_PAGE_ID = "loadData";
+	public static final String SCALE_POPULATED_ID = "scalePopulated";
 	public static final int DEFAULT_WIDTH = 190;
 
 	public ScalePanel()
@@ -438,8 +439,8 @@ public class ScalePanel extends JPanel implements KeyListener,
 		}
 
 		List<DataPopulatedEvent> events = new ArrayList<DataPopulatedEvent>();
-		DataPopulatedEvent event = new DataPopulatedEvent(this, namePopulated
-				&& notesPopulated);
+		DataPopulatedEvent event = new DataPopulatedEvent(this,
+				SCALE_POPULATED_ID, namePopulated && notesPopulated);
 		events.add(event);
 		event = new DataPopulatedEvent(this, LOAD_PAGE_ID, notesPopulated);
 		events.add(event);

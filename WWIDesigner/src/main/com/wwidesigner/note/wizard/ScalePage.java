@@ -90,7 +90,12 @@ public class ScalePage extends AbstractWizardPage implements DataProvider,
 		}
 		else if (source.equals(scalePanel))
 		{
-			saveButton.setEnabled(event.isPopulated());
+			Boolean isPopulated = event
+					.isPopulated(ScalePanel.SCALE_POPULATED_ID);
+			if (isPopulated != null)
+			{
+				saveButton.setEnabled(isPopulated);
+			}
 		}
 
 	}

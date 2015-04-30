@@ -234,7 +234,7 @@ public class WhistleStudyModel extends StudyModel
 				objective = new BetaObjectiveFunction(calculator, tuning,
 						evaluator);
 				lowerBound = new double[] { 0.2 };
-				upperBound = new double[] { 0.5 };
+				upperBound = new double[] { 1.0 };
 				break;
 
 			case "LengthObjectiveFunction":

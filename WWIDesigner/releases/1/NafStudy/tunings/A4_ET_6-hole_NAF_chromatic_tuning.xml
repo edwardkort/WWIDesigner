@@ -18,7 +18,7 @@
     </fingering>
     <fingering>
         <note>
-            <name>C4</name>
+            <name>C5</name>
             <frequency>523.25</frequency>
         </note>
         <openHole>false</openHole>
@@ -31,7 +31,7 @@
     </fingering>
     <fingering>
         <note>
-            <name>C#4</name>
+            <name>C#5</name>
             <frequency>554.37</frequency>
         </note>
         <openHole>false</openHole>
@@ -44,7 +44,7 @@
     </fingering>
     <fingering>
         <note>
-            <name>D4</name>
+            <name>D5</name>
             <frequency>587.33</frequency>
         </note>
         <openHole>false</openHole>
@@ -57,7 +57,7 @@
     </fingering>
     <fingering>
         <note>
-            <name>D#4</name>
+            <name>D#5</name>
             <frequency>622.25</frequency>
         </note>
         <openHole>false</openHole>
@@ -70,7 +70,7 @@
     </fingering>
     <fingering>
         <note>
-            <name>E4</name>
+            <name>E5</name>
             <frequency>659.26</frequency>
         </note>
         <openHole>false</openHole>
@@ -83,7 +83,7 @@
     </fingering>
     <fingering>
         <note>
-            <name>F4</name>
+            <name>F5</name>
             <frequency>698.46</frequency>
         </note>
         <openHole>false</openHole>
@@ -96,7 +96,7 @@
     </fingering>
     <fingering>
         <note>
-            <name>F#4</name>
+            <name>F#5</name>
             <frequency>739.99</frequency>
         </note>
         <openHole>false</openHole>

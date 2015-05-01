@@ -18,8 +18,10 @@
  */
 package com.wwidesigner.util;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.StringReader;
 import java.io.Writer;
@@ -117,22 +119,8 @@ public abstract class BindFactory
 	public Object unmarshalXml(File inputFile, boolean toDomainObject)
 			throws Exception
 	{
-		JAXBContext jc = JAXBContext.newInstance(packagePath);
-		Unmarshaller unmarshaller = jc.createUnmarshaller();
-
-		// Do validation
-		unmarshaller.setSchema(getSchema());
-
-		Object bindObject = ((JAXBElement<?>) unmarshaller.unmarshal(inputFile))
-				.getValue();
-
-		if (!toDomainObject)
-		{
-			return bindObject;
-		}
-
-		Object domainObject = mapObject(bindObject, bindToDomainMap);
-		return domainObject;
+		String xmlString = readFile(inputFile);
+		return unmarshalXml(xmlString, toDomainObject);
 	}
 
 	public void marshalToXml(Object input, String outputXmlName)
@@ -194,44 +182,66 @@ public abstract class BindFactory
 		}
 	}
 
-	public static String getPathFromName(String name) throws FileNotFoundException
+	public static String getPathFromName(String name)
+			throws FileNotFoundException
 	{
 		java.net.URL fileUrl = ClassLoader.getSystemResource(name);
 		if (fileUrl == null)
 		{
 			throw new FileNotFoundException(name + " not found.");
 		}
-		try 
+		try
 		{
 			return fileUrl.toURI().getPath();
-		} 
-	    catch (URISyntaxException e) 
-	    {
-		    return fileUrl.getPath();
+		}
+		catch (URISyntaxException e)
+		{
+			return fileUrl.getPath();
 		}
 	}
 
-	public static File getFileFromName(String name) throws FileNotFoundException
+	public static File getFileFromName(String name)
+			throws FileNotFoundException
 	{
 		String filePath = getPathFromName(name);
 
 		return new File(filePath);
 	}
-	
-	public boolean isValidXml(String xmlString, String rootElementName, boolean isDomainObject) {
-		try {
+
+	public boolean isValidXml(String xmlString, String rootElementName,
+			boolean isDomainObject)
+	{
+		try
+		{
 			Object root = unmarshalXml(xmlString, isDomainObject);
 			String rootPath = packagePath;
-			if (isDomainObject) {
+			if (isDomainObject)
+			{
 				rootPath = rootPath.substring(0, rootPath.lastIndexOf('.'));
 			}
-			Class<?> rootElement = Class.forName(rootPath + "." + rootElementName);
+			Class<?> rootElement = Class.forName(rootPath + "."
+					+ rootElementName);
 			rootElement.cast(root);
 			return true;
 		}
-		catch (Exception e) {
+		catch (Exception e)
+		{
 			return false;
 		}
+	}
+
+	public static String readFile(File inputFile) throws Exception
+	{
+		BufferedReader reader = new BufferedReader(new FileReader(inputFile));
+		String str;
+		StringBuilder strBuilder = new StringBuilder();
+		while ((str = reader.readLine()) != null)
+		{
+			strBuilder.append(str + "\n");
+		}
+		reader.close();
+
+		return strBuilder.toString();
 	}
 
 }

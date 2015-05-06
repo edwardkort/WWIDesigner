@@ -17,6 +17,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JTextPane;
+import javax.swing.UIManager;
 
 import com.jidesoft.app.framework.ApplicationVetoException;
 import com.jidesoft.app.framework.BasicDataModel;
@@ -122,10 +123,21 @@ public class WIDesigner extends FileBasedApplication implements EventSubscriber
 
 	public static void main(String[] args)
 	{
+		try
+		{
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		}
+		catch (Exception e)
+		{
+			System.err.println(e.getMessage());
+		}
+		FileBasedApplication app = new WIDesigner();
+		app.getApplicationUIManager().setSetsLookAndFeel(false);
+
 		com.jidesoft.utils.Lm.verifyLicense("Edward Kort", "WWIDesigner",
 				"DfuwPRAUR5KQYgePf:CH0LWIp63V8cs2");
 
-		new WIDesigner().run(args);
+		app.run(args);
 	}
 
 	public WIDesigner()
@@ -399,7 +411,7 @@ public class WIDesigner extends FileBasedApplication implements EventSubscriber
 			{
 				JCheckBoxMenuItem source = (JCheckBoxMenuItem) event
 						.getSource();
-				isWarnOnDirtyClose = source.getState();
+				isWarnOnDirtyClose = source.isSelected();
 			}
 		};
 		getActionMap().put(WARN_ON_DIRTY_CLOSE_ACTION_ID, action);

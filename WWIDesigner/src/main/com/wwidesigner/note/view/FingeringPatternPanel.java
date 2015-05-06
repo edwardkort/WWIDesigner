@@ -256,6 +256,7 @@ public class FingeringPatternPanel extends JPanel implements FocusListener,
 		if (newName != null && !newName.equals(name))
 		{
 			name = newName;
+			fireDataChanged();
 			return true;
 		}
 		return false;
@@ -273,6 +274,7 @@ public class FingeringPatternPanel extends JPanel implements FocusListener,
 		if (newDescription != null && !newDescription.equals(description))
 		{
 			description = newDescription;
+			fireDataChanged();
 			return true;
 		}
 		return false;
@@ -491,8 +493,9 @@ public class FingeringPatternPanel extends JPanel implements FocusListener,
 		nameWidget = new JTextField();
 		nameWidget.addFocusListener(this);
 		nameWidget.addKeyListener(this);
-		nameWidget.setPreferredSize(new Dimension(componentWidth, 20));
-		nameWidget.setMinimumSize(new Dimension(200, 20));
+		int height = (int) Math.ceil(nameWidget.getPreferredSize().getHeight());
+		nameWidget.setPreferredSize(new Dimension(componentWidth, height));
+		nameWidget.setMinimumSize(new Dimension(200, height));
 		nameWidget.setMargin(new Insets(2, 4, 2, 4));
 		nameWidget.setText(name);
 		gbc.gridy = 1;
@@ -519,6 +522,7 @@ public class FingeringPatternPanel extends JPanel implements FocusListener,
 
 		descriptionWidget = new JTextPane();
 		descriptionWidget.addFocusListener(this);
+		descriptionWidget.addKeyListener(this);
 		descriptionWidget.setMargin(new Insets(2, 4, 2, 4));
 		descriptionWidget.setBorder(new LineBorder(Color.BLUE));
 		descriptionWidget.setPreferredSize(new Dimension(componentWidth, 65));
@@ -685,6 +689,7 @@ public class FingeringPatternPanel extends JPanel implements FocusListener,
 	{
 		areFingeringsPopulated();
 		fireDataStateChanged();
+		fireDataChanged();
 	}
 
 	public void addDataPopulatedListener(DataPopulatedListener listener)
@@ -731,7 +736,10 @@ public class FingeringPatternPanel extends JPanel implements FocusListener,
 				}
 			}
 		}
+	}
 
+	protected void fireDataChanged()
+	{
 		if (dataChangedListeners != null)
 		{
 			for (DataChangedListener listener : dataChangedListeners)
@@ -772,6 +780,7 @@ public class FingeringPatternPanel extends JPanel implements FocusListener,
 	public void keyReleased(KeyEvent e)
 	{
 		isNamePopulated();
+		isDescriptionChanged();
 	}
 
 }

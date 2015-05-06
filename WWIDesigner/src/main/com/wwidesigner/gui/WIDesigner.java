@@ -131,12 +131,12 @@ public class WIDesigner extends FileBasedApplication implements EventSubscriber
 		{
 			System.err.println(e.getMessage());
 		}
-		FileBasedApplication app = new WIDesigner();
-		app.getApplicationUIManager().setSetsLookAndFeel(false);
 
 		com.jidesoft.utils.Lm.verifyLicense("Edward Kort", "WWIDesigner",
 				"DfuwPRAUR5KQYgePf:CH0LWIp63V8cs2");
+		FileBasedApplication app = new WIDesigner();
 
+		app.getApplicationUIManager().setSetsLookAndFeel(false);
 		app.run(args);
 	}
 
@@ -356,6 +356,7 @@ public class WIDesigner extends FileBasedApplication implements EventSubscriber
 		if (imageUrl != null)
 		{
 			action.putValue(Action.SMALL_ICON, new ImageIcon(imageUrl));
+			action.putValue(Action.LARGE_ICON_KEY, new ImageIcon(imageUrl));
 		}
 		action.setEnabled(false);
 		getActionMap().put(TOGGLE_VIEW_ACTION_ID, action);
@@ -609,6 +610,7 @@ public class WIDesigner extends FileBasedApplication implements EventSubscriber
 		if (imageUrl != null)
 		{
 			action.putValue(Action.SMALL_ICON, new ImageIcon(imageUrl));
+			action.putValue(Action.LARGE_ICON_KEY, new ImageIcon(imageUrl));
 		}
 		action.setEnabled(false);
 		getActionMap().put(COMPARE_INSTRUMENT_ACTION_ID, action);
@@ -637,6 +639,7 @@ public class WIDesigner extends FileBasedApplication implements EventSubscriber
 		if (imageUrl != null)
 		{
 			action.putValue(Action.SMALL_ICON, new ImageIcon(imageUrl));
+			action.putValue(Action.LARGE_ICON_KEY, new ImageIcon(imageUrl));
 		}
 		getActionMap().put(CREATE_TUNING_FILE_ACTION_ID, action);
 	}
@@ -664,6 +667,7 @@ public class WIDesigner extends FileBasedApplication implements EventSubscriber
 		if (imageUrl != null)
 		{
 			action.putValue(Action.SMALL_ICON, new ImageIcon(imageUrl));
+			action.putValue(Action.LARGE_ICON_KEY, new ImageIcon(imageUrl));
 		}
 		action.setEnabled(false);
 		getActionMap().put(SKETCH_INSTRUMENT_ACTION_ID, action);
@@ -706,6 +710,7 @@ public class WIDesigner extends FileBasedApplication implements EventSubscriber
 		if (imageUrl != null)
 		{
 			action.putValue(Action.SMALL_ICON, new ImageIcon(imageUrl));
+			action.putValue(Action.LARGE_ICON_KEY, new ImageIcon(imageUrl));
 		}
 		action.setEnabled(false);
 		getActionMap().put(OPTIMIZE_INSTRUMENT_ACTION_ID, action);
@@ -747,6 +752,7 @@ public class WIDesigner extends FileBasedApplication implements EventSubscriber
 		if (imageUrl != null)
 		{
 			action.putValue(Action.SMALL_ICON, new ImageIcon(imageUrl));
+			action.putValue(Action.LARGE_ICON_KEY, new ImageIcon(imageUrl));
 		}
 		action.setEnabled(false);
 		getActionMap().put(GRAPH_TUNING_ACTION_ID, action);
@@ -791,6 +797,7 @@ public class WIDesigner extends FileBasedApplication implements EventSubscriber
 		if (imageUrl != null)
 		{
 			action.putValue(Action.SMALL_ICON, new ImageIcon(imageUrl));
+			action.putValue(Action.LARGE_ICON_KEY, new ImageIcon(imageUrl));
 		}
 		action.setEnabled(false);
 		getActionMap().put(CALCULATE_TUNING_ACTION_ID, action);

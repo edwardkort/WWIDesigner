@@ -210,7 +210,8 @@ public class ScaleSymbolListPanel extends JPanel implements KeyListener,
 		nameWidget = new JTextField();
 		nameWidget.addKeyListener(this);
 		nameWidget.setBorder(new LineBorder(Color.BLACK));
-		nameWidget.setPreferredSize(new Dimension(150, 25));
+		int height = (int) Math.ceil(nameWidget.getPreferredSize().getHeight());
+		nameWidget.setPreferredSize(new Dimension(150, height));
 		gbc.gridy = 1;
 		gbc.insets = new Insets(0, 15, 0, 0);
 		panel.add(nameWidget, gbc);

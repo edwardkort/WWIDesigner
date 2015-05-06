@@ -1,6 +1,7 @@
 package com.wwidesigner.gui.util;
 
 import java.awt.BorderLayout;
+import java.awt.Container;
 import java.awt.Dimension;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -33,6 +34,7 @@ public class FileOpenDialogPreviewPane extends DialogAdapter
 {
 	private XmlPreview preview = new XmlPreview();
 	private PreviewPanel previewPanel = new PreviewPanel();
+	private final int previewWidth = 200;
 
 	@Override
 	public void dialogShowing(DialogEvent event)
@@ -45,6 +47,14 @@ public class FileOpenDialogPreviewPane extends DialogAdapter
 				Object source = event.getSource();
 				if (source instanceof JDialog)
 				{
+					// Expand dialog size to accommodate the preview pane.
+					JDialog dialog = (JDialog) source;
+					Dimension originalSize = dialog.getPreferredSize();
+					dialog.setPreferredSize(new Dimension(originalSize.width
+							+ previewWidth, originalSize.height));
+					dialog.setMinimumSize(new Dimension(originalSize.width
+							+ previewWidth, originalSize.height));
+
 					JFileChooser chooser = (JFileChooser) ((JDialog) source)
 							.getContentPane().getComponent(0);
 					chooser.addPropertyChangeListener(new PropertyChangeListener()
@@ -78,7 +88,7 @@ public class FileOpenDialogPreviewPane extends DialogAdapter
 		public PreviewPanel()
 		{
 			JLabel label = new JLabel("XML Contents", SwingConstants.CENTER);
-			setPreferredSize(new Dimension(200, 0));
+			setPreferredSize(new Dimension(previewWidth, 0));
 			setLayout(new BorderLayout());
 			setBorder(BorderFactory.createEtchedBorder());
 			label.setBorder(BorderFactory.createEtchedBorder());

@@ -93,8 +93,9 @@ public class ScalePanel extends JPanel implements KeyListener,
 		nameWidget = new JTextField();
 		nameWidget.addKeyListener(this);
 		nameWidget.setBorder(new LineBorder(Color.BLACK));
-		nameWidget.setPreferredSize(new Dimension(DEFAULT_WIDTH, 20));
-		nameWidget.setMinimumSize(new Dimension(100, 20));
+		int height = (int) Math.ceil(nameWidget.getPreferredSize().getHeight());
+		nameWidget.setPreferredSize(new Dimension(DEFAULT_WIDTH, height));
+		nameWidget.setMinimumSize(new Dimension(100, height));
 		gbc.gridy = 1;
 		gbc.insets = new Insets(0, 15, 0, 0);
 		panel.add(nameWidget, gbc);

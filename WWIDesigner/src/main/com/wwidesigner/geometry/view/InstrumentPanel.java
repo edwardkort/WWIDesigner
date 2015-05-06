@@ -516,8 +516,9 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 	}
 
 	/**
-	 * Build an Instrument from the data entered on the panel.
-	 * Does not check the instrument for validity.
+	 * Build an Instrument from the data entered on the panel. Does not check
+	 * the instrument for validity.
+	 * 
 	 * @return an Instrument, or null
 	 */
 	public Instrument getData()
@@ -592,14 +593,16 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 			value = (Double) windowLength.getValue();
 			if (value == null || value <= 0.0)
 			{
-				// Value is required. Assume zero, which fails validity checking.
+				// Value is required. Assume zero, which fails validity
+				// checking.
 				value = 0.0;
 			}
 			fipple.setWindowLength(value);
 			value = (Double) windowWidth.getValue();
 			if (value == null || value <= 0.0)
 			{
-				// Value is required. Assume zero, which fails validity checking.
+				// Value is required. Assume zero, which fails validity
+				// checking.
 				value = 0.0;
 			}
 			fipple.setWindowWidth(value);
@@ -620,21 +623,24 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 			value = (Double) outerDiameter.getValue();
 			if (value == null || value <= 0.0)
 			{
-				// Value is required. Assume zero, which fails validity checking.
+				// Value is required. Assume zero, which fails validity
+				// checking.
 				value = 0.0;
 			}
 			hole.setOuterDiameter(value);
 			value = (Double) innerDiameter.getValue();
 			if (value == null || value <= 0.0)
 			{
-				// Value is required. Assume zero, which fails validity checking.
+				// Value is required. Assume zero, which fails validity
+				// checking.
 				value = 0.0;
 			}
 			hole.setInnerDiameter(value);
 			value = (Double) embHoleHeight.getValue();
 			if (value == null || value <= 0.0)
 			{
-				// Value is required. Assume zero, which fails validity checking.
+				// Value is required. Assume zero, which fails validity
+				// checking.
 				value = 0.0;
 			}
 			hole.setHeight(value);
@@ -679,8 +685,9 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 
 		nameField = new JTextField();
 		nameField.addFocusListener(this);
-		nameField.setPreferredSize(new Dimension(HOLE_TABLE_WIDTH, 20));
-		nameField.setMinimumSize(new Dimension(HOLE_TABLE_WIDTH - 30, 20));
+		int height = (int) Math.ceil(nameField.getPreferredSize().getHeight());
+		nameField.setPreferredSize(new Dimension(HOLE_TABLE_WIDTH, height));
+		nameField.setMinimumSize(new Dimension(HOLE_TABLE_WIDTH - 30, height));
 		nameField.setMargin(new Insets(2, 4, 2, 4));
 		nameField.setText("");
 		nameIsPopulated = false;
@@ -789,8 +796,9 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 
 		lengthTypeField = new JTextField();
 		lengthTypeField.setEnabled(false);
-		lengthTypeField.setPreferredSize(new Dimension(30, 18));
-		lengthTypeField.setMinimumSize(new Dimension(30, 18));
+		int height = (int) Math.ceil(lengthTypeField.getPreferredSize().getHeight());
+		lengthTypeField.setPreferredSize(new Dimension(30, height));
+		lengthTypeField.setMinimumSize(new Dimension(30, height));
 		lengthTypeField.setMargin(new Insets(2, 4, 2, 4));
 		lengthTypeField.setText("");
 		gbc.gridx = 1;
@@ -1314,12 +1322,14 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 			}
 			if (diameter == null || diameter <= 0.0)
 			{
-				// Value is required. Assume zero, which fails validity checking.
+				// Value is required. Assume zero, which fails validity
+				// checking.
 				diameter = 0.0;
 			}
 			if (height == null || height <= 0.0)
 			{
-				// Value is required. Assume zero, which fails validity checking.
+				// Value is required. Assume zero, which fails validity
+				// checking.
 				height = 0.0;
 			}
 			Hole hole = new Hole(position, diameter, height);
@@ -1346,7 +1356,8 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 			}
 			if (diameter == null || diameter <= 0.0)
 			{
-				// Value is required. Assume zero, which fails validity checking.
+				// Value is required. Assume zero, which fails validity
+				// checking.
 				diameter = 0.0;
 			}
 			data.add(new BorePoint(position, diameter));

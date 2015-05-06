@@ -342,7 +342,8 @@ public class ScalePage extends AbstractWizardPage implements DataProvider,
 			}
 
 		});
-		noteSelector.setPreferredSize(new Dimension(90, 20));
+		int height = (int) Math.ceil(noteSelector.getPreferredSize().getHeight());
+		noteSelector.setPreferredSize(new Dimension(90, height));
 		gbc.gridx = 0;
 		gbc.gridy = 2;
 		gbc.insets = new Insets(0, 15, 0, 0);

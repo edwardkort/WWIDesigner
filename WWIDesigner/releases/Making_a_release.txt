@@ -1,0 +1,48 @@
+Making A Release
+
+Versions use semantic versioning numbers in the form:
+<Major#>.<Minor#>.<Patch#>
+A patch version is a backwards-compatible bug fix
+A minor version is a backwards-compatible functional enhancement
+A major version includes changes incompatible with prior versions.
+
+Patch versions within a minor version use the same library jars.
+These libraries are stored in a lib-<Major#>.<Minor#> directory.
+
+Steps in making a release:
+1. Edit WIDesigner.MF
+	a. Change the Class-Path root for the jar files to the
+		naming above
+	b. Change the Implementation-Version to the release version
+2. If this is a minor version release, create the 
+	lib-<Major#>.<Minor#> directory with the necessary jars. I
+	use the Export->runnable jar wizard with the Copy option to
+	do this.
+3. Copy to a temp directory called WIDesigner-<Major#>.<Minor#>
+	a. The lib directory from step 2
+	b. constraints directory
+	c. NafStudy directory
+	d. WhistleStudy directory, etc.
+	e. UNIX_README.txt
+	f. Release notes and other text files, as appropriate
+	g. WIDesigner-<Major#>.<Minor#>.<Patch#>.jar, created by
+		WIDesigner.jardesc using the manifest from step 1
+4. Zip the directory created in step 3 using normal compression.
+	Call this zip file WIDesigner-<Major#>.<Minor#>.<Patch#>.zip
+5. Create a Checksums--<Major#>.<Minor#>.<Patch#>.txt file. Using
+	your favorite hash tool, calculate MD5, SHA-1, and SHA-256 
+	hashes and copy them to this file. If this is not the first
+	release of this minor version, also include the hashes for
+	the jar created in step 3-g
+6. Copy the files created in steps 2, 3-f, 3-g (if not the first
+	minor version release), any other newly created files in step 3),
+	4, and 5 to the Releases/<Major#> directory in the project 
+	for version control.
+7. Do a commit/push with the annotated tag v<Major#>.<Minor#>.<Patch#>
+8. Create a release, adding binaries:
+	a. Any READMEs and release notes
+	b. Checksums file
+	c. Zip file (step 4)
+	d. If not the first minor release, the jar file (step 3-g).
+
+Smile!

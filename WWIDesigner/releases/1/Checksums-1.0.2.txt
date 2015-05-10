@@ -1,0 +1,13 @@
+Checksums for WIDesigner-1.0.2.zip
+
+MD5:		2a0222e6dadc54b1402535a50dfbd4cb
+SHA-1:	47a0887dcdcb0eab770a974aa688634d32081f46
+SHA-256:	1991136192eb1f97ebc5e54a55f4d03a9b54ce65844d8fec4883cb4a4569734c
+
+
+Checksums for WIDesigner-1.0.2.jar
+
+MD5:		28f5deda41263857f47cf295f20808ac
+SHA-1:	cc6a897d975df1962781e2bdc223a1149fe7d1bd
+SHA-256:	e39cb7bda5e9dae1b869f436b467ef1897ecf686c4fe59d91b572c1266c8b18e
+

@@ -104,8 +104,10 @@ public class DefaultFippleMouthpieceCalculator extends MouthpieceCalculator
 			volume += getSectionVolume(section);
 		}
 
-		return volume * 1.5; // Multiplier set by eye to fit LightG6HoleNaf
-								// tuning: 1.5 and subsequent NAFs.
+		return volume * 2.0; // Multiplier reset using a more accurate headspace
+								// representation, and verified with a
+								// square-end flute with better intonation than
+								// the Ken Light flute that was originally used.
 	}
 
 	protected double getSectionVolume(BoreSection section)

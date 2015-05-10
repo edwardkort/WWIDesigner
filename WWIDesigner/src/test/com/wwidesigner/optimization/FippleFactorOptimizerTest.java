@@ -40,7 +40,7 @@ public class FippleFactorOptimizerTest extends AbstractOptimizationTest
 			// Test fipple factor
 			double fippleFactor = optimizedInstrument.getMouthpiece()
 					.getFipple().getFippleFactor();
-			assertEquals("Fipple factor incorrect", 0.80, fippleFactor, 0.01);
+			assertEquals("Fipple factor incorrect", 0.82, fippleFactor, 0.01);
 
 		}
 		catch (Exception e)

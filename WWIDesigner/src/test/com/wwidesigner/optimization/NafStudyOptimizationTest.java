@@ -21,7 +21,7 @@ public class NafStudyOptimizationTest extends PerturbedInstrumentOptimization
 		// Set up the study model to be tested.
 
 		NafStudyModel myStudy = new NafStudyModel(null);
-		myStudy.getParams().setProperties(22.2, 101.0, 45, 0.000400);
+		myStudy.getParams().setProperties(22.2, 101.325, 45, 0.000390);
 		myStudy.setCategorySelection(NafStudyModel.OPTIMIZER_CATEGORY_ID,
 				NafStudyModel.GROUP_OPT_SUB_CATEGORY_ID);
 

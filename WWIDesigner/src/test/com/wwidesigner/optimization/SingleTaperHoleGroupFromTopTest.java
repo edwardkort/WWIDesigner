@@ -231,7 +231,7 @@ public class SingleTaperHoleGroupFromTopTest extends AbstractOptimizationTest
 					topHolePosition1, topHolePosition2, 0.05);
 			assertEquals(
 					"SingleTaperHoleGroupFromTop (top 0.3) and SingleTaperHoleGroupFromTop (top 0.0) and HoleGroupFromTop yield different bore lengths",
-					boreLength3, boreLength2, 0.2);
+					boreLength3, boreLength2, 0.4);
 			assertNotEquals(
 					"SingleTaperHoleGroupFromTop (top 0.3) and SingleTaperHoleGroupFromTop (top 0.0) yield different Hole 1 positions",
 					topHolePosition3, topHolePosition2, 0.05);

@@ -4,67 +4,67 @@
     <description>Flat flue, G#4 but not D#5 in optimization</description>
     <lengthType>in</lengthType>
     <mouthpiece>
-        <position>0.200</position>
+        <position>0.20000021600005832</position>
         <fipple>
-            <windowLength>0.170</windowLength>
-            <windowWidth>0.680</windowWidth>
+            <windowLength>0.17000018360004956</windowLength>
+            <windowWidth>0.6800007344001983</windowWidth>
             <fippleFactor>0.79</fippleFactor>
-            <windwayHeight>0.031</windwayHeight>
+            <windwayHeight>0.031000033480009036</windwayHeight>
         </fipple>
     </mouthpiece>
     <borePoint>
         <borePosition>0.0</borePosition>
-        <boreDiameter>1.208</boreDiameter>
+        <boreDiameter>1.2080013046403522</boreDiameter>
     </borePoint>
     <borePoint>
-        <borePosition>7.763</borePosition>
-        <boreDiameter>1.208</boreDiameter>
+        <borePosition>7.763008384042264</borePosition>
+        <boreDiameter>1.2080013046403522</boreDiameter>
     </borePoint>
     <borePoint>
-        <borePosition>12.787</borePosition>
-        <boreDiameter>1.070</boreDiameter>
+        <borePosition>12.78701380996373</borePosition>
+        <boreDiameter>1.070001155600312</boreDiameter>
     </borePoint>
     <borePoint>
-        <borePosition>18.040</borePosition>
-        <boreDiameter>1.070</boreDiameter>
+        <borePosition>17.991265046465102</borePosition>
+        <boreDiameter>1.0700011556003126</boreDiameter>
     </borePoint>
     <hole>
         <name>Hole 6</name>
-        <borePosition>5.577</borePosition>
-        <diameter>0.360</diameter>
-        <height>0.188</height>
+        <borePosition>5.350701622206135</borePosition>
+        <diameter>0.35145229731822336</diameter>
+        <height>0.1880002030400548</height>
     </hole>
     <hole>
         <name>Hole 5</name>
-        <borePosition>6.515</borePosition>
-        <diameter>0.392</diameter>
-        <height>0.188</height>
+        <borePosition>6.361983281320179</borePosition>
+        <diameter>0.38831708677834204</diameter>
+        <height>0.1880002030400548</height>
     </hole>
     <hole>
         <name>Hole 4</name>
-        <borePosition>7.452</borePosition>
-        <diameter>0.343</diameter>
-        <height>0.188</height>
+        <borePosition>7.373264940434224</borePosition>
+        <diameter>0.3451018670053733</diameter>
+        <height>0.1880002030400548</height>
     </hole>
     <hole>
         <name>Hole 3</name>
-        <borePosition>9.233</borePosition>
-        <diameter>0.364</diameter>
-        <height>0.188</height>
+        <borePosition>9.211736900517202</borePosition>
+        <diameter>0.370646428570558</diameter>
+        <height>0.1880002030400548</height>
     </hole>
     <hole>
         <name>Hole 2</name>
-        <borePosition>10.493</borePosition>
-        <diameter>0.352</diameter>
-        <height>0.188</height>
+        <borePosition>10.461737575517203</borePosition>
+        <diameter>0.3551127947685945</diameter>
+        <height>0.1880002030400548</height>
     </hole>
     <hole>
         <name>Hole 1</name>
-        <borePosition>11.753</borePosition>
-        <diameter>0.326</diameter>
-        <height>0.188</height>
+        <borePosition>11.711738250517204</borePosition>
+        <diameter>0.3278859198191653</diameter>
+        <height>0.1880002030400548</height>
     </hole>
     <termination>
-        <flangeDiameter>1.070</flangeDiameter>
+        <flangeDiameter>1.070001155600312</flangeDiameter>
     </termination>
 </ns2:instrument>

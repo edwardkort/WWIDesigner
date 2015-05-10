@@ -317,7 +317,7 @@ public class WIDesigner extends FileBasedApplication implements EventSubscriber
 					menuItem.setMnemonic('T');
 					JCheckBoxMenuItem cbItem = new JCheckBoxMenuItem(
 							menuBarsUI.getAction(WARN_ON_DIRTY_CLOSE_ACTION_ID));
-					cbItem.setSelected(isWarnOnDirtyClose);
+					cbItem.setSelected(getApplicationWarnOnDirtyClose());
 					cbItem.setMnemonic('W');
 					group.addMenuItem(cbItem);
 					group.insertSeparator(3);
@@ -413,6 +413,7 @@ public class WIDesigner extends FileBasedApplication implements EventSubscriber
 				JCheckBoxMenuItem source = (JCheckBoxMenuItem) event
 						.getSource();
 				isWarnOnDirtyClose = source.isSelected();
+				setApplicationWarnOnDirtyClose();
 			}
 		};
 		getActionMap().put(WARN_ON_DIRTY_CLOSE_ACTION_ID, action);
@@ -945,6 +946,7 @@ public class WIDesigner extends FileBasedApplication implements EventSubscriber
 			}
 
 		});
+
 	}
 
 	protected void setCompareInstrumentAction(String modelName,
@@ -1241,4 +1243,22 @@ public class WIDesigner extends FileBasedApplication implements EventSubscriber
 
 		return LengthType.valueOf(lengthTypeName);
 	}
+
+	public boolean getApplicationWarnOnDirtyClose()
+	{
+		Preferences preferences = getPreferences();
+		isWarnOnDirtyClose = preferences.getBoolean(
+				OptimizationPreferences.WARN_ON_DIRTY_CLOSE_OPT,
+				OptimizationPreferences.WARN_ON_DIRTY_CLOSE_DEFAULT);
+
+		return isWarnOnDirtyClose;
+	}
+
+	public void setApplicationWarnOnDirtyClose()
+	{
+		Preferences preferences = getPreferences();
+		preferences.putBoolean(OptimizationPreferences.WARN_ON_DIRTY_CLOSE_OPT,
+				isWarnOnDirtyClose);
+	}
+
 }

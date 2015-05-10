@@ -62,6 +62,9 @@ public class OptimizationPreferences extends PreferencesPane
 
 	public static final String LENGTH_TYPE_OPT = "Length Type";
 	public static final String LENGTH_TYPE_DEFAULT = "IN";
+	
+	public static final String WARN_ON_DIRTY_CLOSE_OPT = "Warn on dirty close";
+	public static final boolean WARN_ON_DIRTY_CLOSE_DEFAULT = false;
 
 	JRadioButton nafButton;
 	JRadioButton whistleButton;

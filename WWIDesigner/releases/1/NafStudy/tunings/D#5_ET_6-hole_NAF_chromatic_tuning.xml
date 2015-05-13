@@ -164,7 +164,7 @@
             <name>E6 closed</name>
             <frequency>1318.5102276514797</frequency>
         </note>
-        <openHole>true</openHole>
+        <openHole>false</openHole>
         <openHole>true</openHole>
         <openHole>false</openHole>
         <openHole>false</openHole>
@@ -182,7 +182,7 @@
         <openHole>false</openHole>
         <openHole>false</openHole>
         <openHole>false</openHole>
-        <openHole>true</openHole>
+        <openHole>false</openHole>
         <optimizationWeight>1</optimizationWeight>
     </fingering>
     <fingering>
@@ -192,9 +192,9 @@
         </note>
         <openHole>true</openHole>
         <openHole>true</openHole>
-        <openHole>true</openHole>
-        <openHole>true</openHole>
-        <openHole>true</openHole>
+        <openHole>false</openHole>
+        <openHole>false</openHole>
+        <openHole>false</openHole>
         <openHole>true</openHole>
         <optimizationWeight>1</optimizationWeight>
     </fingering>

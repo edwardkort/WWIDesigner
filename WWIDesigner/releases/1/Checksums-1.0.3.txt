@@ -1,0 +1,12 @@
+Checksums for WIDesigner-1.0.3.zip
+
+MD5:		7abee6e6bccceee24e26ef7bbe737269
+SHA-1:		fd75aba02e402bfcac89822e06ee1da049b46826
+SHA-256:	585b99606078ff9a443ef4b3a7374cbde4dd1e8e2cb4201043a0dc7575ced246
+
+
+Checksums for Samples-1.0.3.zip
+
+MD5:		48ff232ef8fd52694577eae8fd98ebda
+SHA-1:		bcfd7f85c3ceb065064e6c9816eab3b2b3e92502
+SHA-256:	2cc4635462afe3b6a70bea8550d2bb3f7937197897315aae3befe758815ad4ad

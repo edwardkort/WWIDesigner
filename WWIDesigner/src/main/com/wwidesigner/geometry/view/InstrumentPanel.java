@@ -18,21 +18,27 @@
  */
 package com.wwidesigner.geometry.view;
 
+import java.awt.AWTKeyStroke;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
+import java.awt.KeyboardFocusManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
@@ -145,6 +151,7 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 		setTerminationWidget(1, 3, 1);
 		setHoleTableWidget(0, 3, GridBagConstraints.REMAINDER);
 		setBoreTableWidget(1, 4, 1);
+		setFocusTraversalKeys();
 	}
 
 	/**
@@ -515,6 +522,24 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 		bindery.marshalToXml(instrument, file);
 	}
 
+	public void stopTextEditing()
+	{
+		Component focusedComponent = KeyboardFocusManager
+				.getCurrentKeyboardFocusManager().getFocusOwner();
+		if (focusedComponent != null
+				& focusedComponent instanceof JFormattedTextField)
+		{
+			JFormattedTextField focusedField = (JFormattedTextField) focusedComponent;
+			try
+			{
+				focusedField.commitEdit();
+			}
+			catch (Exception e)
+			{
+			}
+		}
+	}
+
 	/**
 	 * Build an Instrument from the data entered on the panel. Does not check
 	 * the instrument for validity.
@@ -529,6 +554,7 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 		}
 		stopTableEditing(holeList);
 		stopTableEditing(boreList);
+		stopTextEditing();
 		Instrument instrument = new Instrument();
 		instrument.setName(nameField.getText());
 		instrument.setDescription(descriptionField.getText());
@@ -796,7 +822,8 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 
 		lengthTypeField = new JTextField();
 		lengthTypeField.setEnabled(false);
-		int height = (int) Math.ceil(lengthTypeField.getPreferredSize().getHeight());
+		int height = (int) Math.ceil(lengthTypeField.getPreferredSize()
+				.getHeight());
 		lengthTypeField.setPreferredSize(new Dimension(30, height));
 		lengthTypeField.setMinimumSize(new Dimension(30, height));
 		lengthTypeField.setMargin(new Insets(2, 4, 2, 4));
@@ -1491,6 +1518,38 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 				listener.dataStateChanged(thisEvent);
 			}
 		}
+	}
+
+	protected void setFocusTraversalKeys()
+	{
+		KeyboardFocusManager kfManager = KeyboardFocusManager
+				.getCurrentKeyboardFocusManager();
+		Set<AWTKeyStroke> forwardKeys = new HashSet<AWTKeyStroke>();
+		forwardKeys.add(AWTKeyStroke.getAWTKeyStroke(KeyEvent.VK_TAB, 0));
+		forwardKeys.add(AWTKeyStroke.getAWTKeyStroke(KeyEvent.VK_TAB,
+				InputEvent.CTRL_MASK));
+		forwardKeys.add(AWTKeyStroke.getAWTKeyStroke(KeyEvent.VK_ENTER, 0));
+		forwardKeys.add(AWTKeyStroke.getAWTKeyStroke(KeyEvent.VK_ENTER,
+				InputEvent.CTRL_MASK));
+		forwardKeys.add(AWTKeyStroke.getAWTKeyStroke(KeyEvent.VK_DOWN, 0));
+		forwardKeys.add(AWTKeyStroke.getAWTKeyStroke(KeyEvent.VK_DOWN,
+				InputEvent.CTRL_MASK));
+		kfManager.setDefaultFocusTraversalKeys(
+				KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS, forwardKeys);
+		Set<AWTKeyStroke> backKeys = new HashSet<AWTKeyStroke>();
+		backKeys.add(AWTKeyStroke.getAWTKeyStroke(KeyEvent.VK_TAB,
+				InputEvent.SHIFT_MASK));
+		backKeys.add(AWTKeyStroke.getAWTKeyStroke(KeyEvent.VK_TAB,
+				InputEvent.CTRL_MASK | InputEvent.SHIFT_MASK));
+		backKeys.add(AWTKeyStroke.getAWTKeyStroke(KeyEvent.VK_ENTER,
+				InputEvent.SHIFT_MASK));
+		backKeys.add(AWTKeyStroke.getAWTKeyStroke(KeyEvent.VK_ENTER,
+				InputEvent.CTRL_MASK | InputEvent.SHIFT_MASK));
+		backKeys.add(AWTKeyStroke.getAWTKeyStroke(KeyEvent.VK_UP, 0));
+		backKeys.add(AWTKeyStroke.getAWTKeyStroke(KeyEvent.VK_UP,
+				InputEvent.CTRL_MASK));
+		kfManager.setDefaultFocusTraversalKeys(
+				KeyboardFocusManager.BACKWARD_TRAVERSAL_KEYS, backKeys);
 	}
 
 	class TextFieldChangeListener implements DocumentListener

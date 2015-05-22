@@ -1,0 +1,31 @@
+Release notes for v1.0.4
+
+This is an update to v1.0.3. Please read UPDATE_README for
+installation details.
+
+v1.0.4 changes
+Bugs fixed:
+Issue #9: In Instrument view, mouthpiece values have a 
+  different L&F than table values.
+Issue #13: Tuning File Wizard, tuning page does not allow
+  fingering page load unless fingering has a name.
+Enhancements: none
+
+v1.0.3 changes
+Bugs fixed:
+Modified the NafStudy sample instruments to more
+  accurately reflect tuning calculation changes in
+  v1.0.2.
+Deleted legacy constraints for NafStudyModel in
+  single-taper, hole-grouping optimizer. 
+Enhancements: none
+
+v1.0.2 changes
+Bugs fixed:
+Issue #10: Warn on dirty flag is not persisted between sessions.
+  The flag state is now store in the application preferences.
+Issue #12: NAF headspace calculation gives incorrect results.
+  The calculation parameters have been tweeked to more
+  accurately calculate the tuning for common bore profiles.
+  
+Enhancements:

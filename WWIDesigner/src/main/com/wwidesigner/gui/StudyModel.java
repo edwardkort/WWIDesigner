@@ -963,6 +963,7 @@ public abstract class StudyModel implements CategoryType
 		BindFactory noteBindFactory = NoteBindFactory.getInstance();
 		String xmlString = getSelectedXmlString(TUNING_CATEGORY_ID);
 		Tuning tuning = (Tuning) noteBindFactory.unmarshalXml(xmlString, true);
+		tuning.checkValidity();
 
 		return tuning;
 	}

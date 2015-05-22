@@ -50,6 +50,7 @@ public class PerturbedInstrumentOptimization
 	{
 		// Read the tuning from the tuning file.
 		Tuning tuning = StudyModel.getTuningFromFile(tuningFile);
+		tuning.checkValidity();
 		// Extract the XML for the tuning, and load it into the study model.
 		FileDataModel fileData = new FileDataModel();
 		fileData.setData(StudyModel.marshal(tuning));

@@ -31,16 +31,15 @@ import javax.swing.JPanel;
 
 import com.jidesoft.app.framework.DataModelException;
 import com.jidesoft.app.framework.gui.DataViewPane;
-import com.wwidesigner.gui.util.DataPopulatedEvent;
-import com.wwidesigner.gui.util.DataPopulatedListener;
+import com.wwidesigner.gui.util.DataChangedEvent;
+import com.wwidesigner.gui.util.DataChangedListener;
 import com.wwidesigner.note.Tuning;
 import com.wwidesigner.note.bind.NoteBindFactory;
-import com.wwidesigner.note.view.FingeringPatternPanel;
 import com.wwidesigner.note.view.TuningPanel;
 import com.wwidesigner.note.view.WhistleTuningPanel;
 import com.wwidesigner.util.BindFactory;
 
-public class ContainedTuningView extends ContainedXmlView implements DataPopulatedListener
+public class ContainedTuningView extends ContainedXmlView implements DataChangedListener
 {
 	protected TuningPanel tuningPanel;	// For raw tuning data.
 	protected JPanel myPanel;			// For tuningPanel and editing buttons.
@@ -50,7 +49,7 @@ public class ContainedTuningView extends ContainedXmlView implements DataPopulat
 		super(parent);
 
 		tuningPanel = new WhistleTuningPanel( 490 );
-		tuningPanel.addDataPopulatedListener(this);
+		tuningPanel.addDataChangedListener(this);
 		myPanel = new JPanel();
 		myPanel.setLayout(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
@@ -123,17 +122,14 @@ public class ContainedTuningView extends ContainedXmlView implements DataPopulat
 		try
 		{
 			Tuning tuning = tuningPanel.getData();
-			if (tuning != null)
-			{
-				binder.marshalToXml(tuning, writer);
-				return writer.toString();
-			}
+			tuning.checkValidity();
+			binder.marshalToXml(tuning, writer);
+			return writer.toString();
 		}
-		catch (Exception e)
+		catch (Exception ex)
 		{
-			throw new DataModelException(null, e);
+			throw new DataModelException(null, ex);
 		}
-		return null;
 	}
 
 	@Override
@@ -161,18 +157,13 @@ public class ContainedTuningView extends ContainedXmlView implements DataPopulat
 	}
 
 	@Override
-	public void dataStateChanged(DataPopulatedEvent event)
+	public void dataChanged(DataChangedEvent event)
 	{
 		Object source = event.getSource();
 		if (source.equals(tuningPanel))
 		{
-			Boolean dataPopulated = event
-						.isPopulated(FingeringPatternPanel.SAVE_EVENT_ID);
-			if (dataPopulated != null)
-			{
-				// Data has changed.  Enable saving if data is valid.
-				parent.makeDirty(dataPopulated);
-			}
+			// Data has changed.  Enable saving if data is valid.
+			parent.makeDirty(true);
 		}
 	}
 }

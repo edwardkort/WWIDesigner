@@ -142,10 +142,6 @@ public class TuningPanel extends FingeringPatternPanel
 	public Tuning getData()
 	{
 		stopTableEditing();
-		if (!namePopulated || !fingeringsPopulated)
-		{
-			return null;
-		}
 		Tuning fingerings = new Tuning();
 		fingerings.setName(nameWidget.getText());
 		fingerings.setComment(descriptionWidget.getText());

@@ -49,6 +49,7 @@ public class ContainedNafTuningView extends ContainedXmlView implements
 		String xmlText = null;
 		try
 		{
+			tuning.checkValidity();
 			xmlText = StudyModel.marshal(tuning);
 		}
 		catch (Exception e)

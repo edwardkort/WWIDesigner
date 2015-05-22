@@ -1105,6 +1105,19 @@ public class WIDesigner extends FileBasedApplication implements EventSubscriber
 			SecondaryBasicDataModel
 	{
 	}
+	
+	@Override
+	public void saveData(DataModel dataModel)
+	{
+		try
+		{
+			super.saveData(dataModel);
+		}
+		catch (DataModelException ex)
+		{
+			getStudyView().showException(ex);
+		}
+	}
 
 	@Override
 	public void doEvent(SubscriberEvent e)

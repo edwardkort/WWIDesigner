@@ -464,7 +464,7 @@ public class FingeringPatternPanel extends JPanel implements FocusListener,
 	public FingeringPattern getData()
 	{
 		stopTableEditing();
-		if (!namePopulated || !fingeringsPopulated)
+		if (!fingeringsPopulated)
 		{
 			return null;
 		}
@@ -727,6 +727,8 @@ public class FingeringPatternPanel extends JPanel implements FocusListener,
 			List<DataPopulatedEvent> events = new ArrayList<DataPopulatedEvent>();
 			DataPopulatedEvent event = new DataPopulatedEvent(this,
 					SAVE_EVENT_ID, namePopulated && fingeringsPopulated);
+			events.add(event);
+			event = new DataPopulatedEvent(this, fingeringsPopulated);
 			events.add(event);
 			for (DataPopulatedEvent thisEvent : events)
 			{

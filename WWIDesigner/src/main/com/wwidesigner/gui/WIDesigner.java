@@ -201,6 +201,9 @@ public class WIDesigner extends FileBasedApplication implements EventSubscriber
 		addConstraintsSaveAs();
 		addConstraintsCreateDefault();
 		addConstraintsCreateBlank();
+		
+		// Remove New in File menu and toolbar: it just creates a blank text file - of no current use.
+		getActionMap().remove(ActionKeys.NEW);
 	}
 
 	protected void addToolBar()

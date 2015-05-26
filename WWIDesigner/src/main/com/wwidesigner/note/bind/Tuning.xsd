@@ -118,7 +118,8 @@
 				<xsd:element name="openHole" type="xsd:boolean"
 					maxOccurs="unbounded" minOccurs="0" />
 			</xsd:sequence>
-			<xsd:element name="optimizationWeight" type="xsd:integer" minOccurs="0"/>
+			<xsd:element name="optimizationWeight" type="xsd:integer"
+				minOccurs="0" />
 		</xsd:sequence>
 	</xsd:complexType>
 
@@ -140,6 +141,11 @@
 												<xsd:complexType>
 													<xsd:complexContent>
 														<xsd:restriction base="wit:Note">
+															<xsd:annotation>
+																<xsd:documentation>This Note representation must have at
+																	least one instance of a frequency type, although this
+																	is not captured in the schema.</xsd:documentation>
+															</xsd:annotation>
 															<xsd:sequence>
 																<xsd:element name="name" type="xsd:string" />
 																<xsd:element name="frequency" type="xsd:double"
@@ -157,7 +163,8 @@
 												<xsd:element name="openHole" type="xsd:boolean"
 													maxOccurs="unbounded" minOccurs="0" />
 											</xsd:sequence>
-											<xsd:element name="optimizationWeight" type="xsd:integer" minOccurs="0"/>
+											<xsd:element name="optimizationWeight" type="xsd:integer"
+												minOccurs="0" />
 										</xsd:sequence>
 									</xsd:restriction>
 								</xsd:complexContent>

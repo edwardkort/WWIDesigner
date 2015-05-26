@@ -1528,7 +1528,7 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 		forwardKeys.add(AWTKeyStroke.getAWTKeyStroke(KeyEvent.VK_TAB, 0));
 		forwardKeys.add(AWTKeyStroke.getAWTKeyStroke(KeyEvent.VK_TAB,
 				InputEvent.CTRL_MASK));
-		forwardKeys.add(AWTKeyStroke.getAWTKeyStroke(KeyEvent.VK_ENTER, 0));
+		// Do not include Enter key: conflicts with default button action
 		forwardKeys.add(AWTKeyStroke.getAWTKeyStroke(KeyEvent.VK_ENTER,
 				InputEvent.CTRL_MASK));
 		forwardKeys.add(AWTKeyStroke.getAWTKeyStroke(KeyEvent.VK_DOWN, 0));

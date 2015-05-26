@@ -609,27 +609,22 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 		value = (Double) mouthpiecePosition.getValue();
 		if (value == null)
 		{
-			// Position is required. Assume zero.
-			value = 0.0;
+			value = Double.NaN;
 		}
 		mouthpiece.setPosition(value);
 		if (fippleButton.isSelected())
 		{
 			Mouthpiece.Fipple fipple = new Mouthpiece.Fipple();
 			value = (Double) windowLength.getValue();
-			if (value == null || value <= 0.0)
+			if (value == null)
 			{
-				// Value is required. Assume zero, which fails validity
-				// checking.
-				value = 0.0;
+				value = Double.NaN;
 			}
 			fipple.setWindowLength(value);
 			value = (Double) windowWidth.getValue();
-			if (value == null || value <= 0.0)
+			if (value == null)
 			{
-				// Value is required. Assume zero, which fails validity
-				// checking.
-				value = 0.0;
+				value = Double.NaN;
 			}
 			fipple.setWindowWidth(value);
 			value = (Double) windowHeight.getValue();
@@ -647,27 +642,21 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 		{
 			Mouthpiece.EmbouchureHole hole = new Mouthpiece.EmbouchureHole();
 			value = (Double) outerDiameter.getValue();
-			if (value == null || value <= 0.0)
+			if (value == null)
 			{
-				// Value is required. Assume zero, which fails validity
-				// checking.
-				value = 0.0;
+				value = Double.NaN;
 			}
 			hole.setOuterDiameter(value);
 			value = (Double) innerDiameter.getValue();
-			if (value == null || value <= 0.0)
+			if (value == null)
 			{
-				// Value is required. Assume zero, which fails validity
-				// checking.
-				value = 0.0;
+				value = Double.NaN;
 			}
 			hole.setInnerDiameter(value);
 			value = (Double) embHoleHeight.getValue();
-			if (value == null || value <= 0.0)
+			if (value == null)
 			{
-				// Value is required. Assume zero, which fails validity
-				// checking.
-				value = 0.0;
+				value = Double.NaN;
 			}
 			hole.setHeight(value);
 			mouthpiece.setEmbouchureHole(hole);
@@ -688,10 +677,9 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 		Termination termination = new Termination();
 		Double value;
 		value = (Double) terminationFlange.getValue();
-		if (value == null || value <= 0.0)
+		if (value == null)
 		{
-			// Value is required. Assume zero, which fails validity checking.
-			value = 0.0;
+			value = Double.NaN;
 		}
 		termination.setFlangeDiameter(value);
 		return termination;
@@ -1344,20 +1332,15 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 			Double height = (Double) model.getValueAt(i, 4);
 			if (position == null)
 			{
-				// Value is required. Assume zero.
-				position = 0.0;
+				position = Double.NaN;
 			}
-			if (diameter == null || diameter <= 0.0)
+			if (diameter == null)
 			{
-				// Value is required. Assume zero, which fails validity
-				// checking.
-				diameter = 0.0;
+				diameter = Double.NaN;
 			}
-			if (height == null || height <= 0.0)
+			if (height == null)
 			{
-				// Value is required. Assume zero, which fails validity
-				// checking.
-				height = 0.0;
+				height = Double.NaN;
 			}
 			Hole hole = new Hole(position, diameter, height);
 			hole.setName(holeName);
@@ -1378,14 +1361,11 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 			Double diameter = (Double) model.getValueAt(i, 1);
 			if (position == null)
 			{
-				// Value is required. Assume zero.
-				position = 0.0;
+				position = Double.NaN;
 			}
-			if (diameter == null || diameter <= 0.0)
+			if (diameter == null)
 			{
-				// Value is required. Assume zero, which fails validity
-				// checking.
-				diameter = 0.0;
+				diameter = Double.NaN;
 			}
 			data.add(new BorePoint(position, diameter));
 		}

@@ -56,8 +56,8 @@ public class Mouthpiece implements ComponentInterface, MouthpieceInterface,
 
 	/**
 	 * Set the jet amplification factor, and the instrument-specific loop gain
-	 * factor, after Auvray, 2012. 
-	 * Loop gain G = gainFactor * freq * rho / abs(Z).
+	 * factor, after Auvray, 2012. Loop gain G = gainFactor * freq * rho /
+	 * abs(Z).
 	 * 
 	 * @param beta
 	 *            the jet amplification factor to set
@@ -65,15 +65,15 @@ public class Mouthpiece implements ComponentInterface, MouthpieceInterface,
 	public void setBeta(Double beta)
 	{
 		this.beta = beta;
-		if (this.fipple != null && this.fipple.windwayHeight != null && beta != null)
+		if (this.fipple != null && this.fipple.windwayHeight != null
+				&& beta != null)
 		{
 			this.gainFactor = (8.0
 					* this.fipple.windwayHeight
 					* Math.sqrt(2.0 * this.fipple.windwayHeight
 							/ this.fipple.windowLength)
 					* Math.exp(this.beta * this.fipple.windowLength
-							/ this.fipple.windwayHeight)
-					/ (this.fipple.windowLength * this.fipple.windowWidth));
+							/ this.fipple.windwayHeight) / (this.fipple.windowLength * this.fipple.windowWidth));
 		}
 		else
 		{
@@ -91,8 +91,8 @@ public class Mouthpiece implements ComponentInterface, MouthpieceInterface,
 
 	/**
 	 * Set the jet amplification factor, and the instrument-specific loop gain
-	 * factor, after Auvray, 2012.
-	 * Loop gain G = gainFactor * freq * rho / abs(Z).
+	 * factor, after Auvray, 2012. Loop gain G = gainFactor * freq * rho /
+	 * abs(Z).
 	 * 
 	 * @param gainFactor
 	 *            the gain factor to set
@@ -100,7 +100,7 @@ public class Mouthpiece implements ComponentInterface, MouthpieceInterface,
 	public void setGainFactor(Double gainFactor)
 	{
 		this.gainFactor = gainFactor;
-		if (this.fipple.windwayHeight != null && this.gainFactor != null )
+		if (this.fipple.windwayHeight != null && this.gainFactor != null)
 		{
 			this.beta = this.fipple.windwayHeight
 					/ this.fipple.windowLength
@@ -186,6 +186,10 @@ public class Mouthpiece implements ComponentInterface, MouthpieceInterface,
 
 	public void checkValidity(InvalidFieldHandler handler)
 	{
+		if (Double.isNaN(position))
+		{
+			handler.logError("The mouthpiece/splitting-edge position must be specified");
+		}
 		if (fipple != null)
 		{
 			fipple.checkValidity(handler);
@@ -194,7 +198,7 @@ public class Mouthpiece implements ComponentInterface, MouthpieceInterface,
 		{
 			embouchureHole.checkValidity(handler);
 		}
-		else 
+		else
 		{
 			handler.logError("The type of mouthpiece is not specified");
 		}
@@ -203,6 +207,7 @@ public class Mouthpiece implements ComponentInterface, MouthpieceInterface,
 			handler.logError("Beta, if specified, must be positive and less than 1.");
 		}
 	}
+
 	/**
 	 * <p>
 	 * Java class for anonymous complex type.
@@ -277,15 +282,27 @@ public class Mouthpiece implements ComponentInterface, MouthpieceInterface,
 
 		public void checkValidity(InvalidFieldHandler handler)
 		{
-			if (innerDiameter <= 0.0)
+			if (Double.isNaN(innerDiameter))
+			{
+				handler.logError("Embouchure hole inner diameter must be specified.");
+			}
+			else if (innerDiameter <= 0.0)
 			{
 				handler.logError("Embouchure hole inner diameter must be positive.");
 			}
-			if (outerDiameter <= 0.0)
+			if (Double.isNaN(outerDiameter))
+			{
+				handler.logError("Embouchure hole outer diameter must be specified.");
+			}
+			else if (outerDiameter <= 0.0)
 			{
 				handler.logError("Embouchure hole outer diameter must be positive.");
 			}
-			if (height <= 0.0)
+			if (Double.isNaN(height))
+			{
+				handler.logError("Embouchure hole height must be specified.");
+			}
+			else if (height <= 0.0)
 			{
 				handler.logError("Embouchure hole height must be positive.");
 			}
@@ -429,11 +446,19 @@ public class Mouthpiece implements ComponentInterface, MouthpieceInterface,
 
 		public void checkValidity(InvalidFieldHandler handler)
 		{
-			if (windowLength <= 0.0)
+			if (Double.isNaN(windowLength))
+			{
+				handler.logError("Window or TSH length must specified.");
+			}
+			else if (windowLength <= 0.0)
 			{
 				handler.logError("Window or TSH length must be positive.");
 			}
-			if (windowWidth <= 0.0)
+			if (Double.isNaN(windowWidth))
+			{
+				handler.logError("Window or TSH width must be specified.");
+			}
+			else if (windowWidth <= 0.0)
 			{
 				handler.logError("Window or TSH width must be positive.");
 			}

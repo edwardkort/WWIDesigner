@@ -2,7 +2,6 @@ package com.wwidesigner.geometry;
 
 import com.wwidesigner.util.InvalidFieldHandler;
 
-
 public class Hole implements ComponentInterface, BorePointInterface
 {
 	protected String name;
@@ -176,19 +175,31 @@ public class Hole implements ComponentInterface, BorePointInterface
 	{
 		diameter = alpha * boreDiameter;
 	}
-	
+
 	public void checkValidity(InvalidFieldHandler handler)
 	{
 		String holeName = "Hole";
-		if (this.name != null && ! this.name.isEmpty())
+		if (this.name != null && !this.name.isEmpty())
 		{
 			holeName += " " + this.name;
 		}
-		if (diameter <= 0.0)
+		if (Double.isNaN(position))
+		{
+			handler.logError(holeName + " position must be specified.");
+		}
+		if (Double.isNaN(diameter))
+		{
+			handler.logError(holeName + " diameter must be specified.");
+		}
+		else if (diameter <= 0.0)
 		{
 			handler.logError(holeName + " diameter must be positive.");
 		}
-		if (height <= 0.0)
+		if (Double.isNaN(height))
+		{
+			handler.logError(holeName + " height must be specified.");
+		}
+		else if (height <= 0.0)
 		{
 			handler.logError(holeName + " height must be positive.");
 		}

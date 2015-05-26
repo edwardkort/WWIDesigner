@@ -66,10 +66,18 @@ public class BorePoint implements BorePointInterface
 		borePosition *= multiplier;
 		boreDiameter *= multiplier;
 	}
-	
+
 	public void checkValidity(InvalidFieldHandler handler)
 	{
-		if (boreDiameter <= 0.0)
+		if (Double.isNaN(borePosition))
+		{
+			handler.logError("Bore point position must be specified.");
+		}
+		if (Double.isNaN(boreDiameter))
+		{
+			handler.logError("Bore point diameter must be specified.");
+		}
+		else if (boreDiameter <= 0.0)
 		{
 			handler.logError("Bore point must have a positive diameter.");
 		}

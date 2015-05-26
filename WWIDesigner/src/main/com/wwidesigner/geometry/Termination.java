@@ -38,7 +38,11 @@ public class Termination extends BorePoint implements TerminationInterface
 	@Override
 	public void checkValidity(InvalidFieldHandler handler)
 	{
-		if (flangeDiameter <= 0.0)
+		if (Double.isNaN(flangeDiameter))
+		{
+			handler.logError("Termination flange diameter must be specified.");
+		}
+		else if (flangeDiameter <= 0.0)
 		{
 			handler.logError("Termination flange diameter must be positive.");
 		}

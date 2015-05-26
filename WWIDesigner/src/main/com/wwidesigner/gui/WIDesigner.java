@@ -874,13 +874,10 @@ public class WIDesigner extends FileBasedApplication implements EventSubscriber
 					throws ApplicationVetoException
 			{
 				DataModel dataModel = dataModelEvent.getDataModel();
-				if (dataModel.isDirty())
+				if (!isWarnOnDirtyClose)
 				{
-					if (!isWarnOnDirtyClose)
-					{
-						dataModel.setDirty(false);
-						return;
-					}
+					dataModel.setDirty(false);
+					return;
 				}
 			}
 

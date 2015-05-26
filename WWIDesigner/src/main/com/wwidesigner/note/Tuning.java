@@ -21,6 +21,7 @@ package com.wwidesigner.note;
 import java.util.List;
 
 import com.wwidesigner.util.InvalidFieldException;
+import com.wwidesigner.util.InvalidFieldHandler;
 
 /**
  * @author kort
@@ -30,66 +31,58 @@ public class Tuning extends FingeringPattern implements TuningInterface
 {
 	public void checkValidity() throws InvalidFieldException
 	{
+		InvalidFieldHandler handler = new InvalidFieldHandler("Tuning");
 		if (name.isEmpty())
 		{
-			throw new InvalidFieldException("Tuning",
-					"Enter a name for the tuning.");
+			handler.logError("Enter a name for the tuning.");
 		}
 		if (fingering.size() == 0)
 		{
-			throw new InvalidFieldException("Tuning",
-					"Enter one or more notes for the tuning.");
+			handler.logError("Enter one or more notes for the tuning.");
 		}
 		for (int i = 0; i < fingering.size(); ++i)
 		{
 			Note note = fingering.get(i).getNote();
 			if (note == null)
 			{
-				throw new InvalidFieldException("Tuning",
-						"Missing note in row " + (i + 1) + ".");
+				handler.logError("Missing note in row " + (i + 1) + ".");
 			}
-			String name = note.getName();
-			if (name == null || name.isEmpty())
-			{
-				throw new InvalidFieldException("Tuning",
-						"Enter a note name for row " + (i + 1) + ".");
-			}
-			List<Boolean> holes = fingering.get(i).getOpenHole();
-			if (holes == null)
-			{
-				throw new InvalidFieldException("Tuning",
-						"Missing fingering for " + name + " in row " + (i + 1)
-								+ ".");
-			}
-			if (holes.size() != numberOfHoles)
-			{
-				throw new InvalidFieldException("Tuning", "Fingering for "
-						+ name + " in row " + (i + 1)
-						+ " has wrong number of holes.");
-			}
-			Integer weight = fingering.get(i).getOptimizationWeight();
-			if (weight != null && weight < 0)
-			{
-				throw new InvalidFieldException("Tuning",
-						"Optimization weight for " + name + " in row "
-								+ (i + 1) + " must not be negative.");
-			}
-			if (note.getFrequency() == null && note.getFrequencyMax() == null
-					&& note.getFrequencyMin() == null)
-			{
-				throw new InvalidFieldException("Tuning",
-						"Enter at least one frequency for " + name + " in row "
-								+ (i + 1) + ".");
-			}
-			if (note.getFrequency() != null && note.getFrequency() <= 0
-					|| note.getFrequencyMax() != null
-					&& note.getFrequencyMax() <= 0
-					|| note.getFrequencyMin() != null
-					&& note.getFrequencyMin() <= 0)
-			{
-				throw new InvalidFieldException("Tuning", "Frequency for "
-						+ name + " in row " + (i + 1) + " must be positive.");
+			else {
+				String name = note.getName();
+				if (name == null || name.isEmpty())
+				{
+					handler.logError("Enter a note name for row " + (i + 1) + ".");
+					name = "note";
+				}
+				List<Boolean> holes = fingering.get(i).getOpenHole();
+				if (holes == null)
+				{
+					handler.logError("Missing fingering for " + name + " in row "
+							+ (i + 1) + ".");
+				}
+				if (holes.size() != numberOfHoles)
+				{
+					handler.logError( "Fingering for "
+							+ name + " in row " + (i + 1)
+							+ " has wrong number of holes.");
+				}
+				if (note.getFrequency() == null && note.getFrequencyMax() == null
+						&& note.getFrequencyMin() == null)
+				{
+					handler.logError("Enter at least one frequency for " + name
+							+ " in row " + (i + 1) + ".");
+				}
+				if (note.getFrequency() != null && note.getFrequency() <= 0
+						|| note.getFrequencyMax() != null
+						&& note.getFrequencyMax() <= 0
+						|| note.getFrequencyMin() != null
+						&& note.getFrequencyMin() <= 0)
+				{
+					handler.logError("Frequency for " + name + " in row " + (i + 1)
+							+ " must be positive.");
+				}
 			}
 		}
+		handler.reportErrors(false);
 	}
 }

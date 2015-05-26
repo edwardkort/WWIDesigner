@@ -5,7 +5,7 @@ package com.wwidesigner.geometry;
 
 import java.util.List;
 
-import com.wwidesigner.util.InvalidFieldException;
+import com.wwidesigner.util.InvalidFieldHandler;
 
 /**
  * @author kort
@@ -184,23 +184,23 @@ public class Mouthpiece implements ComponentInterface, MouthpieceInterface,
 		}
 	}
 
-	public void checkValidity() throws InvalidFieldException
+	public void checkValidity(InvalidFieldHandler handler)
 	{
 		if (fipple != null)
 		{
-			fipple.checkValidity();
+			fipple.checkValidity(handler);
 		}
 		else if (embouchureHole != null)
 		{
-			embouchureHole.checkValidity();
+			embouchureHole.checkValidity(handler);
 		}
 		else 
 		{
-			throw new InvalidFieldException("Instrument", "The type of mouthpiece is not specified");
+			handler.logError("The type of mouthpiece is not specified");
 		}
 		if (beta != null && (beta <= 0.0 || beta >= 1.0))
 		{
-			throw new InvalidFieldException("Instrument", "Beta, if specified, must be positive and less than 1.");
+			handler.logError("Beta, if specified, must be positive and less than 1.");
 		}
 	}
 	/**
@@ -275,19 +275,19 @@ public class Mouthpiece implements ComponentInterface, MouthpieceInterface,
 			height *= multiplier;
 		}
 
-		public void checkValidity() throws InvalidFieldException
+		public void checkValidity(InvalidFieldHandler handler)
 		{
 			if (innerDiameter <= 0.0)
 			{
-				throw new InvalidFieldException("Instrument", "Embouchure hole inner diameter must be positive.");
+				handler.logError("Embouchure hole inner diameter must be positive.");
 			}
 			if (outerDiameter <= 0.0)
 			{
-				throw new InvalidFieldException("Instrument", "Embouchure hole outer diameter must be positive.");
+				handler.logError("Embouchure hole outer diameter must be positive.");
 			}
 			if (height <= 0.0)
 			{
-				throw new InvalidFieldException("Instrument", "Embouchure hole height must be positive.");
+				handler.logError("Embouchure hole height must be positive.");
 			}
 		}
 	}
@@ -427,31 +427,31 @@ public class Mouthpiece implements ComponentInterface, MouthpieceInterface,
 			}
 		}
 
-		public void checkValidity() throws InvalidFieldException
+		public void checkValidity(InvalidFieldHandler handler)
 		{
 			if (windowLength <= 0.0)
 			{
-				throw new InvalidFieldException("Instrument", "Window or TSH length must be positive.");
+				handler.logError("Window or TSH length must be positive.");
 			}
 			if (windowWidth <= 0.0)
 			{
-				throw new InvalidFieldException("Instrument", "Window or TSH width must be positive.");
+				handler.logError("Window or TSH width must be positive.");
 			}
 			if (windowHeight != null && windowHeight <= 0.0)
 			{
-				throw new InvalidFieldException("Instrument", "Window height, if specified, must be positive.");
+				handler.logError("Window height, if specified, must be positive.");
 			}
 			if (windwayHeight != null && windwayHeight <= 0.0)
 			{
-				throw new InvalidFieldException("Instrument", "Windway height or flue depth, if specified, must be positive.");
+				handler.logError("Windway height or flue depth, if specified, must be positive.");
 			}
 			if (windwayLength != null && windwayLength <= 0.0)
 			{
-				throw new InvalidFieldException("Instrument", "Windway length, if specified, must be positive.");
+				handler.logError("Windway length, if specified, must be positive.");
 			}
 			if (fippleFactor != null && fippleFactor <= 0.0)
 			{
-				throw new InvalidFieldException("Instrument", "Fipple factor, if specified, must be positive.");
+				handler.logError("Fipple factor, if specified, must be positive.");
 			}
 		}
 	}

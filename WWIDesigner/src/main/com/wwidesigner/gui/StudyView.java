@@ -513,6 +513,7 @@ public class StudyView extends DataViewPane implements EventSubscriber
 		{
 			InvalidFieldException fldException = (InvalidFieldException) exception;
 			exceptionType = fldException.getLabel();
+			fldException.printMessages();
 		}
 		else if (exception instanceof HoleNumberMismatchException)
 		{

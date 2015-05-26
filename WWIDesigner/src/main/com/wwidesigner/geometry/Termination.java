@@ -3,7 +3,7 @@
  */
 package com.wwidesigner.geometry;
 
-import com.wwidesigner.util.InvalidFieldException;
+import com.wwidesigner.util.InvalidFieldHandler;
 
 /**
  * @author kort
@@ -36,11 +36,11 @@ public class Termination extends BorePoint implements TerminationInterface
 	}
 
 	@Override
-	public void checkValidity() throws InvalidFieldException
+	public void checkValidity(InvalidFieldHandler handler)
 	{
 		if (flangeDiameter <= 0.0)
 		{
-			throw new InvalidFieldException("Instrument", "Termination flange diameter must be positive.");
+			handler.logError("Termination flange diameter must be positive.");
 		}
 	}
 }

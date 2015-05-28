@@ -33,6 +33,8 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.prefs.Preferences;
 
+import org.apache.commons.math3.exception.ZeroException;
+
 import com.jidesoft.app.framework.BasicDataModel;
 import com.jidesoft.app.framework.file.FileDataModel;
 import com.jidesoft.app.framework.gui.DataViewPane;
@@ -816,6 +818,14 @@ public abstract class StudyModel implements CategoryType
 			return null;
 		}
 		BaseObjectiveFunction objective = getObjectiveFunction(BaseObjectiveFunction.OPTIMIZATION_INTENT);
+
+		// Check to see whether there are 0 variables: an infinite loop
+		// situation.
+		if (objective.getNrDimensions() < 1)
+		{
+			throw new ZeroException();
+		}
+
 		BaseObjectiveFunction.OptimizerType optimizerType = objective
 				.getOptimizerType();
 		if (preferredOptimizerType != null

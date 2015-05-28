@@ -39,6 +39,7 @@ import javax.swing.tree.TreeSelectionModel;
 import javax.xml.bind.MarshalException;
 import javax.xml.bind.UnmarshalException;
 
+import org.apache.commons.math3.exception.ZeroException;
 import org.xml.sax.SAXParseException;
 
 import com.jidesoft.app.framework.DataModel;
@@ -387,8 +388,8 @@ public class StudyView extends DataViewPane implements EventSubscriber
 			FileDataModel data = (FileDataModel) app.newData("xml");
 			data.setData(xmlData);
 			data.setDirty(true);
-			study.addDataModel(data, true);
-			updateView();
+			// study.addDataModel(data, true);
+			// updateView();
 		}
 	}
 
@@ -397,7 +398,8 @@ public class StudyView extends DataViewPane implements EventSubscriber
 		try
 		{
 			SketchInstrument sketch = new SketchInstrument();
-			sketch.draw(study.getInstrument(), study.getSelectedInstrumentName(), false);
+			sketch.draw(study.getInstrument(),
+					study.getSelectedInstrumentName(), false);
 		}
 		catch (Exception ex)
 		{
@@ -537,6 +539,12 @@ public class StudyView extends DataViewPane implements EventSubscriber
 		{
 			withTrace = true;
 			exceptionType = "Error in data model";
+		}
+		else if (exception instanceof ZeroException)
+		{
+			exceptionType = "Operation cannot be performed";
+			exceptionMessage = "Optimization requires at least 1 variable.";
+			messageType = MessageDialogRequest.ERROR_STYLE;
 		}
 		else
 		{

@@ -85,6 +85,7 @@ public class FingeringRenderer extends JPanel implements TableCellRenderer,
 
 	protected void createHoles(int numHoles)
 	{
+		setHoleSize();
 		mHoles = new JRadioButton[numHoles];
 		for (int i = 0; i < numHoles; i++)
 		{
@@ -105,6 +106,14 @@ public class FingeringRenderer extends JPanel implements TableCellRenderer,
 			add(mHoles[i], gbc);
 			gbc.insets = new Insets(0, 0, 0, 0);
 		}
+	}
+
+	protected void setHoleSize()
+	{
+		JRadioButton button = new JRadioButton();
+		Dimension size = button.getPreferredSize();
+		mHoleLength = (int) Math.ceil(size.getWidth());
+		mHoleHeight = (int) Math.ceil(size.getHeight());
 	}
 
 	protected void initializeComponents(int numHoles, boolean isSelected,

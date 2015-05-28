@@ -19,9 +19,9 @@ public class NafPanel extends InstrumentPanel
 		setDescriptionWidget(0, 1, 1);
 		setLengthTypeWidget(0, 2, 1);
 		setMouthpieceWidget(1, 0, 3);
-		setTerminationWidget(1, 3, 1);
+		setTerminationWidget(1, 2, 1);
 		setHoleTableWidget(0, 3, GridBagConstraints.REMAINDER);
-		setBoreTableWidget(1, 4, 1);
+		setBoreTableWidget(1, 3, 1);
 	}
 
 	@Override
@@ -75,7 +75,7 @@ public class NafPanel extends InstrumentPanel
 
 		gbc.anchor = GridBagConstraints.NORTHWEST;
 		gbc.gridx = gridx;
-		gbc.gridy = gridy + 1;
+		gbc.gridy = gridy;
 		gbc.gridheight = gridheight;
 		gbc.insets = new Insets(0, 0, 10, 10);
 		add(panel, gbc);

@@ -1062,8 +1062,8 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 		boreList.setAutoscrolls(true);
 		JScrollPane scrollPane = new JScrollPane(boreList);
 		scrollPane.setBorder(new LineBorder(Color.BLACK));
-		scrollPane.setPreferredSize(new Dimension(BORE_TABLE_WIDTH, 140));
-		scrollPane.setMinimumSize(new Dimension(BORE_TABLE_WIDTH, 100));
+		scrollPane.setPreferredSize(new Dimension(BORE_TABLE_WIDTH, 160));
+		scrollPane.setMinimumSize(new Dimension(BORE_TABLE_WIDTH, 120));
 		gbc.gridy = 1;
 		gbc.weighty = 1.0;
 		gbc.insets = new Insets(0, 15, 0, 0);

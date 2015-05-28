@@ -19,6 +19,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JTextPane;
 import javax.swing.UIManager;
 
+import com.jidesoft.app.framework.ApplicationLifecycleAdapter;
+import com.jidesoft.app.framework.ApplicationLifecycleEvent;
 import com.jidesoft.app.framework.ApplicationVetoException;
 import com.jidesoft.app.framework.BasicDataModel;
 import com.jidesoft.app.framework.DataModel;
@@ -165,13 +167,13 @@ public class WIDesigner extends FileBasedApplication implements EventSubscriber
 
 		addFileMapping(new TextFileFormat("xml", "XML"), XmlToggleView.class);
 
-		addActions();
+		// addActions();
 		addDockedViews();
 		addEvents();
 		addListeners();
-		addWindowMenuToggles();
-		customizeMenus();
-		addToolBar();
+		// addWindowMenuToggles();
+		// customizeMenus();
+		// addToolBar();
 		customizeAboutBox();
 
 		// The stock JDAF UndoAction and RedoAction are focused on the state of
@@ -201,8 +203,9 @@ public class WIDesigner extends FileBasedApplication implements EventSubscriber
 		addConstraintsSaveAs();
 		addConstraintsCreateDefault();
 		addConstraintsCreateBlank();
-		
-		// Remove New in File menu and toolbar: it just creates a blank text file - of no current use.
+
+		// Remove New in File menu and toolbar: it just creates a blank text
+		// file - of no current use.
 		getActionMap().remove(ActionKeys.NEW);
 	}
 
@@ -884,6 +887,24 @@ public class WIDesigner extends FileBasedApplication implements EventSubscriber
 				}
 			}
 
+			@Override
+			public void dataModelSaving(DataModelEvent dataModelEvent)
+					throws ApplicationVetoException
+			{
+				FileDataModel dataModel = (FileDataModel) dataModelEvent
+						.getDataModel();
+				DataView view = WIDesigner.this.getDataView(dataModel);
+				try
+				{
+					view.updateModel(dataModel);
+				}
+				catch (DataModelException ex)
+				{
+					getStudyView().showException(ex);
+					throw new ApplicationVetoException("Invalid data content.");
+				}
+			}
+
 		});
 
 		addDataViewListener(new DataViewAdapter()
@@ -945,6 +966,17 @@ public class WIDesigner extends FileBasedApplication implements EventSubscriber
 				checkConstraintsFocused();
 			}
 
+		});
+
+		addLifecycleListener(new ApplicationLifecycleAdapter()
+		{
+			public void applicationOpening(ApplicationLifecycleEvent event)
+			{
+				addActions();
+				addWindowMenuToggles();
+				customizeMenus();
+				addToolBar();
+			}
 		});
 
 	}
@@ -1105,19 +1137,19 @@ public class WIDesigner extends FileBasedApplication implements EventSubscriber
 			SecondaryBasicDataModel
 	{
 	}
-	
-	@Override
-	public void saveData(DataModel dataModel)
-	{
-		try
-		{
-			super.saveData(dataModel);
-		}
-		catch (DataModelException ex)
-		{
-			getStudyView().showException(ex);
-		}
-	}
+
+	// @Override
+	// public void saveData(DataModel dataModel)
+	// {
+	// try
+	// {
+	// super.saveData(dataModel);
+	// }
+	// catch (DataModelException ex)
+	// {
+	// getStudyView().showException(ex);
+	// }
+	// }
 
 	@Override
 	public void doEvent(SubscriberEvent e)

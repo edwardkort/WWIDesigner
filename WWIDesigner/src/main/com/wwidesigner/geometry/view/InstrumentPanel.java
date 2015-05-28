@@ -130,6 +130,12 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 	public InstrumentPanel()
 	{
 		this.priorValue = "";
+		layoutWidgets();
+		setFocusTraversalKeys();
+	}
+
+	protected void layoutWidgets()
+	{
 		setLayout(new GridBagLayout());
 		setNameWidget(0, 0, 1);
 		setDescriptionWidget(0, 1, 1);
@@ -138,7 +144,6 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 		setTerminationWidget(1, 2, 1);
 		setHoleTableWidget(0, 3, GridBagConstraints.REMAINDER);
 		setBoreTableWidget(1, 3, 1);
-		setFocusTraversalKeys();
 	}
 
 	/**
@@ -673,7 +678,7 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 		add(panel, gbc);
 	}
 
-	private void setLengthTypeWidget(int gridx, int gridy, int gridheight)
+	protected void setLengthTypeWidget(int gridx, int gridy, int gridheight)
 	{
 		JPanel panel = new JPanel();
 		panel.setLayout(new GridBagLayout());
@@ -900,7 +905,7 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 		add(panel, gbc);
 	}
 
-	private void setTerminationWidget(int gridx, int gridy, int gridheight)
+	protected void setTerminationWidget(int gridx, int gridy, int gridheight)
 	{
 		JPanel panel = new JPanel();
 		panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));

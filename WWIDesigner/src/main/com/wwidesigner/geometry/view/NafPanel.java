@@ -12,6 +12,19 @@ import com.wwidesigner.geometry.Mouthpiece;
 public class NafPanel extends InstrumentPanel
 {
 	@Override
+	protected void layoutWidgets()
+	{
+		setLayout(new GridBagLayout());
+		setNameWidget(0, 0, 1);
+		setDescriptionWidget(0, 1, 1);
+		setLengthTypeWidget(0, 2, 1);
+		setMouthpieceWidget(1, 0, 3);
+		setTerminationWidget(1, 3, 1);
+		setHoleTableWidget(0, 3, GridBagConstraints.REMAINDER);
+		setBoreTableWidget(1, 4, 1);
+	}
+
+	@Override
 	protected void layoutMouthpieceComponents(int gridx, int gridy,
 			int gridheight)
 	{
@@ -78,10 +91,6 @@ public class NafPanel extends InstrumentPanel
 		{
 			// Position is required. Assume zero.
 			value = 0.0;
-//			JOptionPane.showMessageDialog(this,
-//					"Splitting-edge position is required.");
-//			mouthpiecePosition.requestFocusInWindow();
-//			return null;
 		}
 		mouthpiece.setPosition(value);
 		Mouthpiece.Fipple fipple = new Mouthpiece.Fipple();
@@ -90,9 +99,6 @@ public class NafPanel extends InstrumentPanel
 		{
 			// Value is required. Assume zero, which fails validity checking.
 			value = 0.0;
-//			JOptionPane.showMessageDialog(this, "TSH length must be positive.");
-//			windowLength.requestFocusInWindow();
-//			return null;
 		}
 		fipple.setWindowLength(value);
 		value = (Double) windowWidth.getValue();
@@ -100,9 +106,6 @@ public class NafPanel extends InstrumentPanel
 		{
 			// Value is required. Assume zero, which fails validity checking.
 			value = 0.0;
-//			JOptionPane.showMessageDialog(this, "TSH width must be positive.");
-//			windowWidth.requestFocusInWindow();
-//			return null;
 		}
 		fipple.setWindowWidth(value);
 		value = (Double) windowHeight.getValue();
@@ -112,23 +115,17 @@ public class NafPanel extends InstrumentPanel
 		value = (Double) windwayHeight.getValue();
 		if (value == null || value <= 0.0)
 		{
-			// For NAF model, a value is required.  Assume zero, which fails validity checking.
+			// For NAF model, a value is required. Assume zero, which fails
+			// validity checking.
 			value = 0.0;
-//			JOptionPane
-//					.showMessageDialog(this, "Flue height must be positive.");
-//			windwayHeight.requestFocusInWindow();
-//			return null;
 		}
 		fipple.setWindwayHeight(value);
 		value = (Double) fippleFactor.getValue();
 		if (value == null || value <= 0.0)
 		{
-			// For NAF model, a value is required.  Assume zero, which fails validity checking.
+			// For NAF model, a value is required. Assume zero, which fails
+			// validity checking.
 			value = 0.0;
-//			JOptionPane.showMessageDialog(this,
-//					"Fipple factor must be positive.");
-//			fippleFactor.requestFocusInWindow();
-//			return null;
 		}
 		fipple.setFippleFactor(value);
 		mouthpiece.setFipple(fipple);

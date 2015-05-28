@@ -162,7 +162,9 @@ public class ContainedTuningView extends ContainedXmlView implements DataChanged
 		Object source = event.getSource();
 		if (source.equals(tuningPanel))
 		{
-			// Data has changed.  Enable saving if data is valid.
+			// Data has changed.
+			// Enable saving regardless of data validity;
+			// validity will be checked on Save.
 			parent.makeDirty(true);
 		}
 	}

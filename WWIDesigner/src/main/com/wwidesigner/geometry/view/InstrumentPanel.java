@@ -76,8 +76,9 @@ import com.wwidesigner.geometry.Instrument;
 import com.wwidesigner.geometry.Mouthpiece;
 import com.wwidesigner.geometry.Termination;
 import com.wwidesigner.geometry.bind.GeometryBindFactory;
-import com.wwidesigner.gui.util.DataPopulatedEvent;
-import com.wwidesigner.gui.util.DataPopulatedListener;
+import com.wwidesigner.gui.util.DataChangedEvent;
+import com.wwidesigner.gui.util.DataChangedListener;
+import com.wwidesigner.gui.util.DataChangedProvider;
 import com.wwidesigner.gui.util.NumberFormatTableCellRenderer;
 import com.wwidesigner.gui.util.NumericTableModel;
 import com.wwidesigner.util.BindFactory;
@@ -85,10 +86,8 @@ import com.wwidesigner.util.Constants.LengthType;
 import com.wwidesigner.util.DoubleFormatter;
 
 public class InstrumentPanel extends JPanel implements FocusListener,
-		TableModelListener, ActionListener
+		TableModelListener, ActionListener, DataChangedProvider
 {
-	public static final String NEW_EVENT_ID = "newData";
-	public static final String SAVE_EVENT_ID = "saveData";
 	public static final int HOLE_TABLE_WIDTH = 310;
 	public static final int BORE_TABLE_WIDTH = 175;
 
@@ -123,34 +122,22 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 	// but do not test whether data is valid.
 
 	protected String priorValue; // Value a field had when it gained focus.
-	protected boolean nameIsPopulated;
-	protected boolean mouthpieceIsPopulated;
-	protected boolean holesArePopulated;
-	protected boolean boreIsPopulated;
-	protected boolean terminationIsPopulated;
-	protected boolean dataIsLoaded;
-	protected List<DataPopulatedListener> populatedListeners;
+	protected List<DataChangedListener> changeListeners;
 
 	/**
 	 * Create a panel to display and edit an instrument definition.
 	 */
 	public InstrumentPanel()
 	{
-		this.nameIsPopulated = false;
-		this.holesArePopulated = true;
-		this.boreIsPopulated = false;
-		this.mouthpieceIsPopulated = false;
-		this.terminationIsPopulated = false;
-		this.dataIsLoaded = false;
 		this.priorValue = "";
 		setLayout(new GridBagLayout());
 		setNameWidget(0, 0, 1);
 		setDescriptionWidget(0, 1, 1);
 		setLengthTypeWidget(0, 2, 1);
 		setMouthpieceWidget(1, 0, 3);
-		setTerminationWidget(1, 3, 1);
+		setTerminationWidget(1, 2, 1);
 		setHoleTableWidget(0, 3, GridBagConstraints.REMAINDER);
-		setBoreTableWidget(1, 4, 1);
+		setBoreTableWidget(1, 3, 1);
 		setFocusTraversalKeys();
 	}
 
@@ -174,7 +161,7 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 				instrument = (Instrument) bindery.unmarshalXml(file, true);
 				if (instrument != null)
 				{
-					loadData(instrument, false);
+					loadData(instrument);
 					return true;
 				}
 			}
@@ -205,10 +192,8 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 	 * 
 	 * @param instrument
 	 *            - instrument definition to load.
-	 * @param suppressChangeEvent
-	 *            - if true, don't fire the DataPopulated event.
 	 */
-	public void loadData(Instrument instrument, boolean suppressChangeEvent)
+	public void loadData(Instrument instrument)
 	{
 		if (instrument != null)
 		{
@@ -310,108 +295,7 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 				terminationFlange.setValue(null);
 			}
 			lengthTypeField.setText(instrument.getLengthType().name());
-			isNamePopulated();
-			isMouthpiecePopulated();
-			holesArePopulated = isTablePopulated(holeList, 0);
-			boreIsPopulated = isTablePopulated(boreList, 2);
-			isTerminationPopulated();
-			dataIsLoaded = true;
-			if (!suppressChangeEvent)
-			{
-				fireDataStateChanged();
-			}
 		}
-	}
-
-	static protected boolean isPopulated(JTextComponent field)
-	{
-		String text = field.getText();
-		return (text != null && text.trim().length() > 0);
-	}
-
-	/**
-	 * Test whether there is a name in the name field, and set nameIsPopulated
-	 * accordingly.
-	 */
-	protected void isNamePopulated()
-	{
-		nameIsPopulated = isPopulated(nameField);
-	}
-
-	/**
-	 * Test whether the required mouthpiece fields are populated, and set
-	 * mouthpieceIsPopulated accordingly.
-	 */
-	protected void isMouthpiecePopulated()
-	{
-		mouthpieceIsPopulated = false;
-		if (!isPopulated(mouthpiecePosition))
-		{
-			// Not populated.
-			return;
-		}
-		if (fippleButton.isSelected())
-		{
-			if (!isPopulated(windowLength) || !isPopulated(windowWidth))
-			{
-				return;
-			}
-		}
-		else if (embouchureHoleButton.isSelected())
-		{
-			if (!isPopulated(outerDiameter) || !isPopulated(innerDiameter)
-					|| !isPopulated(embHoleHeight))
-			{
-				return;
-			}
-		}
-		else
-		{
-			// Should not occur.
-			return;
-		}
-		mouthpieceIsPopulated = true;
-	}
-
-	/**
-	 * Test whether the required termination field is populated, and set
-	 * terminationIsPopulated accordingly.
-	 */
-	protected void isTerminationPopulated()
-	{
-		terminationIsPopulated = isPopulated(terminationFlange);
-	}
-
-	/**
-	 * Test whether all entries in the hole or bore table contain valid data,
-	 * and the table contains the minimum number of rows.
-	 */
-	protected boolean isTablePopulated(JideTable table, int minimumRows)
-	{
-		DefaultTableModel model = (DefaultTableModel) table.getModel();
-		if (model == null || model.getRowCount() < minimumRows)
-		{
-			return false;
-		}
-
-		for (int i = 0; i < model.getRowCount(); i++)
-		{
-			for (int j = 0; j < model.getColumnCount(); j++)
-			{
-				// For holeList, first column is name, which is optional,
-				// and third column is spacing, which is read-only,
-				// and always null for the first row.
-				if (table.equals(holeList) && (j == 0 || j == 2))
-				{
-					continue;
-				}
-				if (model.getValueAt(i, j) == null)
-				{
-					return false;
-				}
-			}
-		}
-		return true;
 	}
 
 	static protected void stopTableEditing(JideTable table)
@@ -548,10 +432,6 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 	 */
 	public Instrument getData()
 	{
-		if (!dataIsLoaded)
-		{
-			return null;
-		}
 		stopTableEditing(holeList);
 		stopTableEditing(boreList);
 		stopTextEditing();
@@ -704,7 +584,6 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 		nameField.setMinimumSize(new Dimension(HOLE_TABLE_WIDTH - 30, height));
 		nameField.setMargin(new Insets(2, 4, 2, 4));
 		nameField.setText("");
-		nameIsPopulated = false;
 		nameField.getKeymap().removeKeyStrokeBinding(
 				KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0));
 		nameField.getDocument().addDocumentListener(new DocumentListener()
@@ -736,15 +615,13 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 				if (docLength == 0)
 				{
 					nameField.setBackground(Color.PINK);
-					nameIsPopulated = false;
 				}
 				else
 				{
 					nameField.setBackground(Color.WHITE);
-					nameIsPopulated = true;
 				}
 
-				fireDataStateChanged();
+				fireDataChanged();
 			}
 
 		});
@@ -1095,7 +972,6 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 		};
 		holeList = new JideTable(model);
 		resetTableData(holeList, 0, 5);
-		holesArePopulated = true; // No holes is acceptable.
 		holeList.setAutoscrolls(true);
 		JScrollPane scrollPane = new JScrollPane(holeList);
 		scrollPane.setBorder(new LineBorder(Color.BLACK));
@@ -1178,7 +1054,6 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 				Double.class);
 		boreList = new JideTable(model);
 		resetTableData(boreList, 2, 2);
-		boreIsPopulated = false; // Bore points not entered.
 		boreList.setAutoscrolls(true);
 		JScrollPane scrollPane = new JScrollPane(boreList);
 		scrollPane.setBorder(new LineBorder(Color.BLACK));
@@ -1249,10 +1124,9 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 	{
 		String oldValue = nameField.getText();
 		nameField.setText(name);
-		isNamePopulated();
 		if (!oldValue.equals(name))
 		{
-			fireDataStateChanged();
+			fireDataChanged();
 		}
 	}
 
@@ -1262,7 +1136,7 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 		descriptionField.setText(description);
 		if (!oldValue.equals(description))
 		{
-			fireDataStateChanged();
+			fireDataChanged();
 		}
 	}
 
@@ -1394,22 +1268,10 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 			{
 				isDataChanged = true;
 			}
-			if (event.getSource().equals(nameField))
-			{
-				isNamePopulated();
-			}
-			else if (event.getSource().equals(terminationFlange))
-			{
-				isTerminationPopulated();
-			}
-			else
-			{
-				isMouthpiecePopulated();
-			}
 		}
 		if (isDataChanged)
 		{
-			fireDataStateChanged();
+			fireDataChanged();
 		}
 	}
 
@@ -1420,18 +1282,15 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 				|| event.getSource().equals(embouchureHoleButton))
 		{
 			enableMouthpieceFields();
-			isMouthpiecePopulated();
 		}
-		fireDataStateChanged();
+		fireDataChanged();
 	}
 
 	@Override
 	public void tableChanged(TableModelEvent event)
 	{
-		holesArePopulated = isTablePopulated(holeList, 0);
-		boreIsPopulated = isTablePopulated(boreList, 2);
 		updateHoleSpacing(event.getSource());
-		fireDataStateChanged();
+		fireDataChanged();
 	}
 
 	private void updateHoleSpacing(Object source)
@@ -1470,33 +1329,35 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 		}
 	}
 
-	public void addDataPopulatedListener(DataPopulatedListener listener)
+	@Override
+	public void addDataChangedListener(DataChangedListener listener)
 	{
-		if (populatedListeners == null)
+		if (changeListeners == null)
 		{
-			populatedListeners = new ArrayList<DataPopulatedListener>();
+			changeListeners = new ArrayList<DataChangedListener>();
 		}
-		populatedListeners.add(listener);
+		changeListeners.add(listener);
 	}
 
-	protected void fireDataStateChanged()
+	@Override
+	public void removeDataChangedListener(DataChangedListener listener)
 	{
-		if (populatedListeners == null)
+		if (changeListeners != null)
+		{
+			changeListeners.remove(listener);
+		}
+	}
+
+	protected void fireDataChanged()
+	{
+		if (changeListeners == null)
 		{
 			return;
 		}
 
-		List<DataPopulatedEvent> events = new ArrayList<DataPopulatedEvent>();
-		DataPopulatedEvent event = new DataPopulatedEvent(this, SAVE_EVENT_ID,
-				nameIsPopulated && mouthpieceIsPopulated && holesArePopulated
-						&& boreIsPopulated && terminationIsPopulated);
-		events.add(event);
-		for (DataPopulatedEvent thisEvent : events)
+		for (DataChangedListener listener : changeListeners)
 		{
-			for (DataPopulatedListener listener : populatedListeners)
-			{
-				listener.dataStateChanged(thisEvent);
-			}
+			listener.dataChanged(new DataChangedEvent(this));
 		}
 	}
 
@@ -1554,7 +1415,7 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 
 		private void processDocumentChange(DocumentEvent docEvent)
 		{
-			fireDataStateChanged();
+			fireDataChanged();
 		}
 
 	}

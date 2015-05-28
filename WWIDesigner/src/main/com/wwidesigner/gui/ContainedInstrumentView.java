@@ -27,13 +27,12 @@ import com.jidesoft.app.framework.gui.DataViewPane;
 import com.wwidesigner.geometry.Instrument;
 import com.wwidesigner.geometry.bind.GeometryBindFactory;
 import com.wwidesigner.geometry.view.InstrumentPanel;
-import com.wwidesigner.gui.util.DataPopulatedEvent;
-import com.wwidesigner.gui.util.DataPopulatedListener;
-import com.wwidesigner.note.view.FingeringPatternPanel;
+import com.wwidesigner.gui.util.DataChangedEvent;
+import com.wwidesigner.gui.util.DataChangedListener;
 import com.wwidesigner.util.BindFactory;
 import com.wwidesigner.util.Constants.LengthType;
 
-public class ContainedInstrumentView extends ContainedXmlView
+public class ContainedInstrumentView extends ContainedXmlView implements DataChangedListener
 {
 	protected InstrumentPanel instrumentPanel;
 	private JScrollPane scrollPane;
@@ -47,7 +46,7 @@ public class ContainedInstrumentView extends ContainedXmlView
 		scrollPane.setBorder(null);
 		scrollPane.setOpaque(false);
 
-		setDataDirty();
+		instrumentPanel.addDataChangedListener(this);
 	}
 
 	protected void setInstrumentPanel()
@@ -58,32 +57,27 @@ public class ContainedInstrumentView extends ContainedXmlView
 	@Override
 	protected void setDataDirty()
 	{
-		instrumentPanel.addDataPopulatedListener(new DataPopulatedListener()
+	}
+
+	@Override
+	public void dataChanged(DataChangedEvent event)
+	{
+		Object source = event.getSource();
+		if (source.equals(instrumentPanel))
 		{
-			@Override
-			public void dataStateChanged(DataPopulatedEvent event)
+			// In JDAF, a "new" tab will be deleted, when opening a
+			// file-based tab, if it is not dirty. Currently, we
+			// don't know when a tab is "new", but it is set dirty
+			// on creation. Therefore, for now, do not make a tab
+			// not-dirty, if it is dirty.
+			if (!parent.isDirty())
 			{
-				Object source = event.getSource();
-				if (source.equals(instrumentPanel))
-				{
-					Boolean dataPopulated = event
-							.isPopulated(FingeringPatternPanel.SAVE_EVENT_ID);
-					if (dataPopulated != null)
-					{
-						// In JDAF, a "new" tab will be deleted, when opening a
-						// file-based tab, if it is not dirty. Currently, we
-						// don't know when a tab is "new", but it is set dirty
-						// on creation. Therefore, for now, do not make a tab
-						// not-dirty, if it is dirty.
-						if (!parent.isDirty())
-						{
-							// Data has changed. Enable saving if data is valid.
-							parent.makeDirty(dataPopulated);
-						}
-					}
-				}
+				// Data has changed.
+				// Enable saving regardless of data validity;
+				// validity will be checked on Save.
+				parent.makeDirty(true);
 			}
-		});
+		}
 	}
 
 	@Override
@@ -112,6 +106,8 @@ public class ContainedInstrumentView extends ContainedXmlView
 	public void setText(String text) throws DataModelException
 	{
 		BindFactory geometryBindFactory = GeometryBindFactory.getInstance();
+		// We don't want data change notifications until instrumentPanel is loaded.
+		instrumentPanel.removeDataChangedListener(this);
 		try
 		{
 			if (text != null && !text.isEmpty())
@@ -119,14 +115,16 @@ public class ContainedInstrumentView extends ContainedXmlView
 				Instrument instrument = (Instrument) geometryBindFactory
 						.unmarshalXml(text, true);
 				LengthType dimensionType = getApplicationLengthType();
-				boolean changed = instrument.convertToLengthType(dimensionType);
-				instrumentPanel.loadData(instrument, !changed);
+				instrument.convertToLengthType(dimensionType);
+				instrumentPanel.loadData(instrument);
 			}
 		}
 		catch (Exception e)
 		{
+			instrumentPanel.addDataChangedListener(this);
 			throw new DataModelException(null, e);
 		}
+		instrumentPanel.addDataChangedListener(this);
 	}
 
 	@Override

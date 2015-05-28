@@ -49,7 +49,7 @@ public abstract class MergedObjectiveFunction extends BaseObjectiveFunction
 		if (nrDimensions == 1 && optimizerType == OptimizerType.BOBYQAOptimizer)
 		{
 			// BOBYQA doesn't support single dimension.
-			optimizerType = OptimizerType.CMAESOptimizer;
+			optimizerType = OptimizerType.BrentOptimizer;
 		}
 
 		setConstraints();

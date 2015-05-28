@@ -194,8 +194,8 @@ public class ObjectiveFunctionOptimizer
 				MultivariateOptimizer optimizer;
 				PointValuePair outcome;
 				optimizer = new CMAESOptimizer(objective.getMaxEvaluations(),
-						0.01 * initialNorm, true, 0, 0, new MersenneTwister(),
-						false, convergenceChecker);
+						0.0001 * initialNorm, true, 0, 0,
+						new MersenneTwister(), false, convergenceChecker);
 				outcome = optimizer.optimize(
 						GoalType.MINIMIZE,
 						new ObjectiveFunction(objective),
@@ -282,7 +282,8 @@ public class ObjectiveFunctionOptimizer
 	/**
 	 * Use a multi-start BOBYQA optimization to optimize a specified objective
 	 * function. Use range processor and number of starts from {@code objective}
-	 * if available; otherwise use a RandomRangeProcessor with 30 starts.
+	 * if available; otherwise use a RandomRangeProcessor with 30 starts. If a
+	 * single variable, use BrentOptimizer.
 	 * 
 	 * @param objective
 	 *            - objective function to optimize
@@ -316,21 +317,47 @@ public class ObjectiveFunctionOptimizer
 		{
 			if (totalEvaluations < maxEvaluations)
 			{
-				double trustRegion = objective.getInitialTrustRegionRadius(nextStart);
-				double stoppingTrustRegion = objective
-						.getStoppingTrustRegionRadius();
-				BOBYQAOptimizer optimizer = new BOBYQAOptimizer(
-						objective.getNrInterpolations(), trustRegion,
-						stoppingTrustRegion);
+				int runEvaluations = 0;
+				System.out.print("Start " + (int) (startNr + 1) + ": ");
 				try
 				{
-					System.out.print("Start " + (int) (startNr + 1) + ": ");
-					optima[startNr] = optimizer.optimize(GoalType.MINIMIZE,
-							new ObjectiveFunction(objective), new MaxEval(
-									maxEvaluations - totalEvaluations), MaxIter
-									.unlimited(), new InitialGuess(nextStart),
-							new SimpleBounds(objective.getLowerBounds(),
-									objective.getUpperBounds()));
+					int numVariables = objective.getNrDimensions();
+					if (numVariables > 1) // Use BOBYQA
+					{
+						double trustRegion = objective
+								.getInitialTrustRegionRadius(nextStart);
+						double stoppingTrustRegion = objective
+								.getStoppingTrustRegionRadius();
+						BOBYQAOptimizer optimizer = new BOBYQAOptimizer(
+								objective.getNrInterpolations(), trustRegion,
+								stoppingTrustRegion);
+						optima[startNr] = optimizer.optimize(GoalType.MINIMIZE,
+								new ObjectiveFunction(objective), new MaxEval(
+										maxEvaluations - totalEvaluations),
+								MaxIter.unlimited(),
+								new InitialGuess(nextStart),
+								new SimpleBounds(objective.getLowerBounds(),
+										objective.getUpperBounds()));
+						runEvaluations = optimizer.getEvaluations();
+					}
+					else
+					// Use Brent
+					{
+						BrentOptimizer optimizer = new BrentOptimizer(1.e-6,
+								1.e-14);
+						UnivariatePointValuePair outcome = optimizer.optimize(
+								GoalType.MINIMIZE,
+								new UnivariateObjectiveFunction(objective),
+								new MaxEval(objective.getMaxEvaluations()),
+								MaxIter.unlimited(), new SearchInterval(
+										objective.getLowerBounds()[0],
+										objective.getUpperBounds()[0],
+										startPoint[0]));
+						optima[startNr] = new PointValuePair(
+								new double[] { outcome.getPoint() },
+								outcome.getValue());
+						runEvaluations = optimizer.getEvaluations();
+					}
 					double value = optima[startNr].getValue();
 					if (value == Double.POSITIVE_INFINITY)
 					{
@@ -362,7 +389,7 @@ public class ObjectiveFunctionOptimizer
 							+ Arrays.toString(nextStart));
 				}
 
-				totalEvaluations += optimizer.getEvaluations();
+				totalEvaluations += runEvaluations;
 				nextStart = rangeProcessor.nextVector();
 			}
 		}

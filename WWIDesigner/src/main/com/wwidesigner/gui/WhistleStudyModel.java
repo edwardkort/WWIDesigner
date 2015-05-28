@@ -35,6 +35,7 @@ import com.wwidesigner.modelling.FminEvaluator;
 import com.wwidesigner.modelling.InstrumentCalculator;
 import com.wwidesigner.modelling.InstrumentTuner;
 import com.wwidesigner.modelling.LinearVInstrumentTuner;
+import com.wwidesigner.modelling.ReactanceEvaluator;
 import com.wwidesigner.modelling.WhistleCalculator;
 import com.wwidesigner.note.Tuning;
 import com.wwidesigner.optimization.BaseObjectiveFunction;
@@ -258,8 +259,18 @@ public class WhistleStudyModel extends StudyModel
 				break;
 
 			case "HolePositionObjectiveFunction":
-				evaluator = new CentDeviationEvaluator(calculator,
-						getInstrumentTuner());
+				if (optimizer == ROUGH_CUT_OPT_SUB_CATEGORY_ID)
+				{
+					// For a rough-cut optimization, optimize reactance.
+					// Although this is inaccurate, since it seeks fmax rather
+					// than nominal playing frequency, it is much faster.
+					evaluator = new ReactanceEvaluator(calculator);
+				}
+				else
+				{
+					evaluator = new CentDeviationEvaluator(calculator,
+							getInstrumentTuner());
+				}
 				objective = new HolePositionObjectiveFunction(calculator,
 						tuning, evaluator);
 				// Bounds are hole separations, expressed in meters.

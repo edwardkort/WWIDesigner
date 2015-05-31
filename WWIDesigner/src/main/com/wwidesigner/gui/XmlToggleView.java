@@ -57,6 +57,7 @@ public class XmlToggleView extends DataViewPane
 			currentView = studyModel.getDefaultXmlView(model, this);
 			String xmlData = model.getData().toString();
 			currentView.setText(xmlData);
+			removeAll();
 			add(currentView.getViewComponent());
 		}
 	}
@@ -71,7 +72,9 @@ public class XmlToggleView extends DataViewPane
 		if (dataModel instanceof BasicDataModel)
 		{
 			String text = currentView.getText();
-			if (text != null)
+			// Empty text is never appropriate for XML, and probably indicates
+			// a data view that has not yet been loaded.
+			if (text != null && ! text.isEmpty())
 			{
 				((BasicDataModel) dataModel).setData(text);
 			}

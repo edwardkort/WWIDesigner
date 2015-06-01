@@ -391,10 +391,14 @@ public class StudyView extends DataViewPane implements EventSubscriber
 			// data view from the data model.
 			data.setData(xmlData);
 			data.setDirty(true);
-			// Update the study's data models.
-			app.getDataView(data).updateView(data);
-			study.addDataModel(data, true);
-			updateView();
+			// If a view has been assigned, update the study's data models.
+			DataView view = app.getDataView(data);
+			if (view != null)
+			{
+				view.updateView(data);
+				study.addDataModel(data, true);
+				updateView();
+			}
 		}
 	}
 

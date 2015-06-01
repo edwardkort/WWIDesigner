@@ -259,11 +259,14 @@ public class StudyView extends DataViewPane implements EventSubscriber
 		getApplication().getEventManager().publish(
 				WIDesigner.CONSTRAINTS_ACTIVE_EVENT_ID,
 				study.isOptimizerFullySpecified(constraintsDirectory));
+		getApplication().getEventManager().publish(
+				WIDesigner.CONSTRAINTS_CAN_CREATE_EVENT_ID,
+				study.isOptimizerCreateSpecified());
 		getApplication().getEventManager()
 				.publish(WIDesigner.INSTRUMENT_SELECTED_EVENT_ID,
 						selectedInstrumentName);
 	}
-
+	
 	@Override
 	public void doEvent(SubscriberEvent event)
 	{
@@ -387,7 +390,7 @@ public class StudyView extends DataViewPane implements EventSubscriber
 			FileBasedApplication app = (FileBasedApplication) getApplication();
 			FileDataModel data = (FileDataModel) app.newData("xml");
 			// At this point, we have a data model and data view that are still
-			// empty.  Load the data into the data model, then re-load the
+			// empty. Load the data into the data model, then re-load the
 			// data view from the data model.
 			data.setData(xmlData);
 			data.setDirty(true);

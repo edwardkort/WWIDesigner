@@ -162,23 +162,6 @@ public class NafStudyModel extends StudyModel
 		return optimizeReady;
 	}
 
-	@Override
-	public boolean isOptimizerFullySpecified(String constraintsDirectory)
-	{
-		boolean isSpecified;
-		if (constraintsDirectory == null
-				|| constraintsDirectory.trim().length() == 0)
-		{
-			return false;
-		}
-		Integer dataNumberOfHoles = getNumberOfHolesFromInstrument();
-		String optimizerSelected = getSelectedSub(OPTIMIZER_CATEGORY_ID);
-		// Constraints set is fully specified.
-		isSpecified = dataNumberOfHoles != null && optimizerSelected != null;
-
-		return isSpecified;
-	}
-
 	/**
 	 * Ignores preferences for pressure, co2, and optimizer type, using the
 	 * defaults instead.
@@ -743,15 +726,6 @@ public class NafStudyModel extends StudyModel
 	public boolean addDataModel(FileDataModel dataModel, boolean isNew)
 			throws Exception
 	{
-		// When invoked by an Activity with a new dataModel, this methods is
-		// called twice, first with a bogus "Untitled" dataModel name, then with
-		// the correctly sequenced dataModel.
-		// This if statement short circuits the bogus call.
-		if ("Untitled".equals(dataModel.getName()))
-		{
-			return false;
-		}
-
 		// Process Instrument and Tuning
 		if (super.addDataModel(dataModel, isNew))
 		{

@@ -19,8 +19,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JTextPane;
 import javax.swing.UIManager;
 
-import com.jidesoft.app.framework.ApplicationLifecycleAdapter;
-import com.jidesoft.app.framework.ApplicationLifecycleEvent;
 import com.jidesoft.app.framework.ApplicationVetoException;
 import com.jidesoft.app.framework.BasicDataModel;
 import com.jidesoft.app.framework.DataModel;
@@ -98,6 +96,7 @@ public class WIDesigner extends FileBasedApplication implements EventSubscriber
 	static final String OPTIMIZATION_ACTIVE_EVENT_ID = "OptimizationActive";
 	static final String WINDOW_RENAMED_EVENT_ID = "WindowRenamed";
 	static final String CONSTRAINTS_ACTIVE_EVENT_ID = "ConstraintsActive";
+	static final String CONSTRAINTS_CAN_CREATE_EVENT_ID = "ConstraintsCanCreate";
 	static final String CONSTRAINTS_SAVE_AS_ACTIVE_EVENT_ID = "ConstraintsSaveAsActive";
 	static final String INSTRUMENT_IN_FOCUS_EVENT_ID = "InstrumentInFocus";
 	static final String INSTRUMENT_SELECTED_EVENT_ID = "InstrumentSelected";
@@ -127,7 +126,8 @@ public class WIDesigner extends FileBasedApplication implements EventSubscriber
 	{
 		try
 		{
-			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+			UIManager.setLookAndFeel(UIManager
+					.getCrossPlatformLookAndFeelClassName());
 		}
 		catch (Exception e)
 		{
@@ -138,7 +138,7 @@ public class WIDesigner extends FileBasedApplication implements EventSubscriber
 				"DfuwPRAUR5KQYgePf:CH0LWIp63V8cs2");
 		FileBasedApplication app = new WIDesigner();
 
-		app.getApplicationUIManager().setSetsLookAndFeel(false);
+		app.getApplicationUIManager().setSetsLookAndFeel(true);
 		app.run(args);
 	}
 
@@ -149,6 +149,7 @@ public class WIDesigner extends FileBasedApplication implements EventSubscriber
 		// Set behaviour
 		getApplicationUIManager().setUseJideDockingFramework(true);
 		getApplicationUIManager().setUseJideActionFramework(true);
+		getApplicationUIManager().getToolBarsUI().setUsesToolBars(true);
 		addApplicationFeature(new AutoInstallActionsFeature());
 		setExitApplicationOnLastDataView(false);
 		setNewDataOnRun(false);
@@ -167,13 +168,13 @@ public class WIDesigner extends FileBasedApplication implements EventSubscriber
 
 		addFileMapping(new TextFileFormat("xml", "XML"), XmlToggleView.class);
 
-		// addActions();
+		addActions();
 		addDockedViews();
 		addEvents();
 		addListeners();
-		// addWindowMenuToggles();
-		// customizeMenus();
-		// addToolBar();
+		addWindowMenuToggles();
+		customizeMenus();
+		addToolBar();
 		customizeAboutBox();
 
 		// The stock JDAF UndoAction and RedoAction are focused on the state of
@@ -831,6 +832,7 @@ public class WIDesigner extends FileBasedApplication implements EventSubscriber
 		eventManager.addEvent(FILE_SAVED_EVENT_ID);
 		eventManager.addEvent(TUNING_ACTIVE_EVENT_ID);
 		eventManager.addEvent(OPTIMIZATION_ACTIVE_EVENT_ID);
+		eventManager.addEvent(CONSTRAINTS_CAN_CREATE_EVENT_ID);
 		eventManager.addEvent(WINDOW_RENAMED_EVENT_ID);
 		eventManager.addEvent(CONSTRAINTS_ACTIVE_EVENT_ID);
 		eventManager.addEvent(CONSTRAINTS_SAVE_AS_ACTIVE_EVENT_ID);
@@ -839,6 +841,7 @@ public class WIDesigner extends FileBasedApplication implements EventSubscriber
 		eventManager.subscribe(TUNING_ACTIVE_EVENT_ID, this);
 		eventManager.subscribe(OPTIMIZATION_ACTIVE_EVENT_ID, this);
 		eventManager.subscribe(CONSTRAINTS_ACTIVE_EVENT_ID, this);
+		eventManager.subscribe(CONSTRAINTS_CAN_CREATE_EVENT_ID, this);
 		eventManager.subscribe(CONSTRAINTS_SAVE_AS_ACTIVE_EVENT_ID, this);
 		eventManager.subscribe(INSTRUMENT_SELECTED_EVENT_ID, this);
 	}
@@ -966,17 +969,6 @@ public class WIDesigner extends FileBasedApplication implements EventSubscriber
 				checkConstraintsFocused();
 			}
 
-		});
-
-		addLifecycleListener(new ApplicationLifecycleAdapter()
-		{
-			public void applicationOpening(ApplicationLifecycleEvent event)
-			{
-				addActions();
-				addWindowMenuToggles();
-				customizeMenus();
-				addToolBar();
-			}
 		});
 
 	}
@@ -1138,19 +1130,6 @@ public class WIDesigner extends FileBasedApplication implements EventSubscriber
 	{
 	}
 
-	// @Override
-	// public void saveData(DataModel dataModel)
-	// {
-	// try
-	// {
-	// super.saveData(dataModel);
-	// }
-	// catch (DataModelException ex)
-	// {
-	// getStudyView().showException(ex);
-	// }
-	// }
-
 	@Override
 	public void doEvent(SubscriberEvent e)
 	{
@@ -1183,7 +1162,11 @@ public class WIDesigner extends FileBasedApplication implements EventSubscriber
 			{
 				action.setEnabled((Boolean) e.getSource());
 			}
-			action = getActionMap().get(CREATE_DEFAULT_CONSTRAINTS_ACTION_ID);
+		}
+		else if (CONSTRAINTS_CAN_CREATE_EVENT_ID.equals(eventName))
+		{
+			Action action = getActionMap().get(
+					CREATE_DEFAULT_CONSTRAINTS_ACTION_ID);
 			if (action != null)
 			{
 				action.setEnabled((Boolean) e.getSource());
@@ -1222,8 +1205,11 @@ public class WIDesigner extends FileBasedApplication implements EventSubscriber
 			Constraints constraints = StudyModel.getConstraints(xmlString);
 			if (constraints != null)
 			{
-				getEventManager().publish(CONSTRAINTS_SAVE_AS_ACTIVE_EVENT_ID,
-						true);
+				getEventManager().publish(
+						CONSTRAINTS_SAVE_AS_ACTIVE_EVENT_ID,
+						getStudyView().getStudyModel()
+								.isOptimizerConstraintsDirectorySpecified(
+										getConstraintsRootDirectoryPath()));
 			}
 			else
 			{

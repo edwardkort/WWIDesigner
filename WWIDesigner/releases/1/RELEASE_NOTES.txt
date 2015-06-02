@@ -1,7 +1,50 @@
-Release notes for v1.0.4
+Release notes for v1.0.5
 
-This is an update to v1.0.3. Please read UPDATE_README for
+This is an update to v1.0.4. Please read UPDATE_README for
 installation details.
+
+v1.0.5 changes
+Bugs fixed:
+Issue #20: The Enter key no longer activates the default
+  button in dialog boxes.
+Issue #21: Instrument and tuning validation report only first
+  error found.
+Issue #23: New menu item and toolbar button create a blank
+  text file of no current use
+Issue #24: Mac functionality and Look and Feel. Caveats:
+  1. The Look and Feel for Macs has been set to cross-platform
+     in order to display cell lines in tables, make the Hole
+     Group Creation dialog usable, and the warning/information
+     dialogs readable.
+  2. The standard toolbar components (Open, Save, etc.) are not
+     displayed, only the custom toolbar. Since toolbars are not
+     part of the standard Mac interface, this issue is not
+     considered important.
+  3. The naming of new, unsaved files (from an optimization run
+     or from Create default/blank constraints) is a bit
+     inconsistent, starting with "Untitled" and then skipping
+     to "Untitled5" or "Untitled3" respectively.
+Issue #25: Save button disabled without explanation when
+  instrument or tuning not fully populated.
+Issue #27: There is no trap in StudyModel for a no-variable
+  optimization.
+Issue #28: Multi-start optimization does not respect optimizer
+  choice.
+Issue #29: Cannot see Termination Flange Diameter in NAF
+  Instrument view after latest check-ins.
+Issue #30: For the NAF, incorrect activation of Constraints
+  menu items. Activation strategy:
+  1. Open constraints - active if instrument and optimizer are
+     selected in Study, and Constraints directory is set.
+  2. Save-as constraints - active if constraints have focus in
+     data view and Constraints directory is set.
+  3. Create default - active is instrument and optimizer are
+     selected in Study; no requirement that Constraints directory
+     is set.
+  4. Create blank - as Create default above.
+Enhancements:
+  For the NAF, univariate optimizer has been change to the Brent
+    optimizer: faster, and converges better.
 
 v1.0.4 changes
 Bugs fixed:

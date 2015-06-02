@@ -2,6 +2,7 @@ package com.wwidesigner.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Container;
+import java.awt.Dimension;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.io.File;
@@ -1063,6 +1064,7 @@ public class WIDesigner extends FileBasedApplication implements EventSubscriber
 		{
 			aboutText
 					.setPage(WIDesigner.class.getResource("images/about.html"));
+			aboutText.setPreferredSize(new Dimension(400, 600));
 		}
 		catch (Exception e)
 		{
@@ -1089,6 +1091,7 @@ public class WIDesigner extends FileBasedApplication implements EventSubscriber
 			textPane.setText(message);
 			textPane.setEditable(false);
 			textPane.setMargin(new Insets(20, 20, 20, 20));
+			textPane.setPreferredSize(new Dimension(300, 100));
 			contentPane.add(textPane, BorderLayout.CENTER);
 			dialog.pack();
 			dialog.setLocationRelativeTo(windowsUI.getDialogParent());

@@ -196,11 +196,15 @@ public class WhistleStudyModel extends StudyModel
 			int objectiveFunctionIntent) throws Exception
 	{
 		Instrument instrument = getInstrument();
-		Tuning tuning = getTuning();
-		if (tuning == null
-				&& objectiveFunctionIntent != BaseObjectiveFunction.OPTIMIZATION_INTENT)
+		Tuning tuning;
+		if (objectiveFunctionIntent == BaseObjectiveFunction.OPTIMIZATION_INTENT)
 		{
-			// Tuning is not required for creating constraints.
+			tuning = getTuning();
+		}
+		else
+		{
+			// Tuning is not required for creating constraints, and may not be
+			// selected.
 			tuning = new Tuning();
 		}
 		WhistleCalculator calculator = new WhistleCalculator();

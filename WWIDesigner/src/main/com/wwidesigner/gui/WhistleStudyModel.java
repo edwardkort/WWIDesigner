@@ -544,23 +544,6 @@ public class WhistleStudyModel extends StudyModel
 	}
 
 	@Override
-	public boolean isOptimizerFullySpecified(String constraintsDirectory)
-	{
-		boolean isSpecified;
-		if (constraintsDirectory == null
-				|| constraintsDirectory.trim().length() == 0)
-		{
-			return false;
-		}
-		Integer dataNumberOfHoles = getNumberOfHolesFromInstrument();
-		String optimizerSelected = getSelectedSub(OPTIMIZER_CATEGORY_ID);
-		// Constraints set is fully specified.
-		isSpecified = dataNumberOfHoles != null && optimizerSelected != null;
-
-		return isSpecified;
-	}
-
-	@Override
 	public File getConstraintsLeafDirectory(String rootDirectoryPath)
 	{
 		String studyModelName = getClass().getSimpleName();

@@ -736,7 +736,32 @@ public abstract class StudyModel implements CategoryType
 	 */
 	public boolean isOptimizerFullySpecified(String constraintsDirectory)
 	{
-		return false;
+		return isOptimizerConstraintsDirectorySpecified(constraintsDirectory)
+				&& isOptimizerCreateSpecified();
+	}
+
+	public boolean isOptimizerConstraintsDirectorySpecified(
+			String constraintsDirectory)
+	{
+		if (constraintsDirectory == null
+				|| constraintsDirectory.trim().length() == 0)
+		{
+			return false;
+		}
+
+		return true;
+	}
+
+	public boolean isOptimizerCreateSpecified()
+	{
+		boolean isSpecified;
+		Integer dataNumberOfHoles = getNumberOfHolesFromInstrument();
+		String optimizerSelected = getSelectedSub(OPTIMIZER_CATEGORY_ID);
+		// Constraints set is fully specified.
+		isSpecified = dataNumberOfHoles != null && optimizerSelected != null;
+
+		return isSpecified;
+
 	}
 
 	public void calculateTuning(String title) throws Exception

@@ -184,11 +184,22 @@ public class Mouthpiece implements ComponentInterface, MouthpieceInterface,
 		}
 	}
 
-	public void checkValidity(InvalidFieldHandler handler)
+	public void checkValidity(InvalidFieldHandler handler, Double minPosition, Double maxPosition)
 	{
 		if (Double.isNaN(position))
 		{
 			handler.logError("The mouthpiece/splitting-edge position must be specified");
+		}
+		else 
+		{
+			if (minPosition != null && minPosition > position)
+			{
+				handler.logError("The mouthpiece/splitting-edge position must be greater than lowest bore position.");
+			}
+			if (maxPosition != null && maxPosition <= position)
+			{
+				handler.logError("The mouthpiece/splitting-edge position must be less than highest bore position.");
+			}
 		}
 		if (fipple != null)
 		{

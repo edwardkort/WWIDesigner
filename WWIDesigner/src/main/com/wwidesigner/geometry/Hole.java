@@ -176,7 +176,7 @@ public class Hole implements ComponentInterface, BorePointInterface
 		diameter = alpha * boreDiameter;
 	}
 
-	public void checkValidity(InvalidFieldHandler handler)
+	public void checkValidity(InvalidFieldHandler handler, Double minPosition, Double maxPosition)
 	{
 		String holeName = "Hole";
 		if (this.name != null && !this.name.isEmpty())
@@ -186,6 +186,17 @@ public class Hole implements ComponentInterface, BorePointInterface
 		if (Double.isNaN(position))
 		{
 			handler.logError(holeName + " position must be specified.");
+		}
+		else 
+		{
+			if (minPosition != null && minPosition >= position)
+			{
+				handler.logError(holeName + " position must be greater than lowest bore position.");
+			}
+			if (maxPosition != null && maxPosition <= position)
+			{
+				handler.logError(holeName + " position must be less than highest bore position.");
+			}
 		}
 		if (Double.isNaN(diameter))
 		{

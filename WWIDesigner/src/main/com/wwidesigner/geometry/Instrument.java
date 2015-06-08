@@ -314,55 +314,72 @@ public class Instrument implements InstrumentInterface
 		{
 			handler.logError("Enter a name for the instrument.");
 		}
+		if (borePoint.size() < 2)
+		{
+			handler.logError("Instrument must have at least two bore points.");
+		}
+		Double minimumPosition = null;
+		Double maximumPosition = null;
+		for (BorePoint bore : borePoint)
+		{
+			bore.checkValidity(handler);
+			if (minimumPosition == null || minimumPosition > bore.getBorePosition())
+			{
+				minimumPosition = bore.getBorePosition();
+			}
+			if (maximumPosition == null || maximumPosition < bore.getBorePosition())
+			{
+				maximumPosition = bore.getBorePosition();
+			}
+		}
+		if (minimumPosition != null && maximumPosition != null && minimumPosition >= maximumPosition)
+		{
+			handler.logError("Bore length must not be zero.");
+		}
 		if (mouthpiece == null)
 		{
 			handler.logError("A mouthpiece description is required.");
 		}
 		else
 		{
-			mouthpiece.checkValidity(handler);
+			mouthpiece.checkValidity(handler, minimumPosition, maximumPosition);
 		}
 		for (Hole currentHole : hole)
 		{
-			currentHole.checkValidity(handler);
-		}
-		if (borePoint.size() < 2)
-		{
-			handler.logError("Instrument must have at least two bore points.");
-		}
-		for (BorePoint bore : borePoint)
-		{
-			bore.checkValidity(handler);
+			currentHole.checkValidity(handler, minimumPosition, maximumPosition);
 		}
 		termination.checkValidity(handler);
 		handler.reportErrors(false);
 	}
 
-	@Override
+	/**
+	 * Creates the instrument Components (BoreSection and filled-out Holes) from
+	 * the raw BorePoints and Holes. <br/>
+	 * Pre: this instrument is valid. <br/>
+	 * Post: getComponents returns a list of bore sections, holes and the
+	 * mouthpiece, sorted by increasing position.
+	 */
 	public void updateComponents()
 	{
-		// TODO Write recursive validation method and call it here.
-		// Then take out the error checking in all the other methods.
 		components = new ArrayList<ComponentInterface>();
 
 		if (borePoint != null && !borePoint.isEmpty())
 		{
+			// Sort the bore points from lowest (left-most) to highest (right-most)
+			// position.
 			SortedPositionList<BorePoint> borePointList = makePositionList(borePoint);
-			// Add the mouthpiece reference position to the map.
-			// I don't believe the optimization routines should care that this
-			// offset
-			// is not subtracted, since the calculations are performed on the
-			// components, which are offset agnostic.
-			// borePointMap.put(mouthpieceOrigin.getBorePosition(),
 
+			// Add the mouthpiece reference position to the map first.
+			// Put any bore sections to the left of the mouthpiece position
+			// into the mouthpiece headspace.
 			processMouthpiece(borePointList);
 			components.add(mouthpiece);
 
+			// Set the termination to be at the end of the bore.
 			processTermination(borePointList);
 
+			// Sort the holes from lowest to highest.
 			SortedPositionList<Hole> holeList = makePositionList(hole);
-
-			// TODO Deal with the Mouthpiece and the start of the bore:
 
 			// Process the holes, making sections as needed to include the hole
 			// on the right
@@ -385,6 +402,11 @@ public class Instrument implements InstrumentInterface
 	}
 
 	/**
+	 * Pre: this instrument is valid and updateComponents has been called since
+	 * the last change to the geometry. <br/>
+	 * Post: getComponents returns a list of bore sections, holes and the
+	 * mouthpiece, sorted by increasing position.
+	 * 
 	 * @return the components
 	 */
 	public List<ComponentInterface> getComponents()
@@ -410,6 +432,9 @@ public class Instrument implements InstrumentInterface
 		// Make bore section that ends with mouthpiece
 		// Set mouthpiece boreDiameter
 		processPosition(borePointList, mouthpiece);
+
+		// Move the bore sections above the mouthpiece into the mouthpiece
+		// headspace.
 
 		List<BoreSection> headspace = new ArrayList<BoreSection>();
 		for (Iterator<ComponentInterface> it = components.iterator(); it
@@ -447,18 +472,32 @@ public class Instrument implements InstrumentInterface
 		BorePoint rightPoint = points.next();
 
 		double leftPosition = leftPoint.getBorePosition();
-		double rightPosition = rightPoint.getBorePosition();
-		double thisPosition = currentPosition.getBorePosition();
-		double holeRelativePosition = (thisPosition - leftPosition)
-				/ (rightPosition - leftPosition);
-
 		double leftDiameter = leftPoint.getBoreDiameter();
+		double rightPosition = rightPoint.getBorePosition();
 		double rightDiameter = rightPoint.getBoreDiameter();
-		double holeBoreDiameter = leftDiameter + (rightDiameter - leftDiameter)
-				* holeRelativePosition;
+		double thisPosition = currentPosition.getBorePosition();
+
+		double holeBoreDiameter;
+		if (rightDiameter == leftDiameter || thisPosition == leftPosition)
+		{
+			// Bore is cylindrical, or hole is at left end.
+			holeBoreDiameter = leftDiameter;
+		}
+		else if (rightPosition > leftPosition)
+		{
+			// Interpolate bore diameter at the hole.
+			holeBoreDiameter = leftDiameter + (thisPosition - leftPosition)
+					* (rightDiameter - leftDiameter)
+					/ (rightPosition - leftPosition);
+		}
+		else
+		{
+			// Bore section has zero length.  Use average bore diameter.
+			holeBoreDiameter = 0.5 * (leftDiameter + rightDiameter);
+		}
 		currentPosition.setBoreDiameter(holeBoreDiameter);
 
-		// Make new bore section
+		// Make new bore section up to the hole.
 		if (rightPosition > thisPosition)
 		{
 			rightPoint = new BorePoint();
@@ -470,7 +509,13 @@ public class Instrument implements InstrumentInterface
 		borePointList.remove(leftPoint);
 	}
 
-	protected double makeSections(SortedPositionList<BorePoint> borePointList,
+	/**
+	 * Add bore sections to components from the first point in borePointList
+	 * through rightPosition.
+	 * @param borePointList
+	 * @param rightPosition
+	 */
+	protected void makeSections(SortedPositionList<BorePoint> borePointList,
 			double rightPosition)
 	{
 		SortedPositionList<BorePoint> unprocessedPoints = borePointList
@@ -487,8 +532,6 @@ public class Instrument implements InstrumentInterface
 				leftPoint = rightPoint;
 			}
 		}
-
-		return rightPosition;
 	}
 
 	protected void addSection(BorePoint leftPoint, BorePoint rightPoint)
@@ -504,6 +547,14 @@ public class Instrument implements InstrumentInterface
 		components.add(section);
 	}
 
+	/**
+	 * Sort positioned components.
+	 * 
+	 * @param positions
+	 *            - Collection of positioned components
+	 * @return List containing the supplied positions, sorted by increasing
+	 *         position.
+	 */
 	public static <P extends PositionInterface> SortedPositionList<P> makePositionList(
 			Collection<P> positions)
 	{

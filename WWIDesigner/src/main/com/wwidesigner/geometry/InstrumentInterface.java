@@ -143,11 +143,4 @@ public interface InstrumentInterface
 	 * 
 	 */
 	public void setTermination(Termination value);
-
-	/**
-	 * Creates the instrument Components (BoreSection and filled-out Holes) from
-	 * the raw BorePoints and Holes.
-	 */
-	public void updateComponents();
-
 }

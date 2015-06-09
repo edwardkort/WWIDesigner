@@ -91,18 +91,12 @@ public class DefaultInstrumentCalculator extends InstrumentCalculator
 				tm = boreSectionCalculator.calcTransferMatrix(
 						(BoreSection) component, waveNumber, params);
 			}
-			else // if (component instanceof Hole)
+			else
 			{
 				assert component instanceof Hole;
 				tm = holeCalculator.calcTransferMatrix((Hole) component,
 						waveNumber, params);
 			}
-//			else
-//			{
-//				assert component instanceof Mouthpiece;
-//				tm = mouthpieceCalculator.calcTransferMatrix(
-//						(Mouthpiece) component, waveNumber, params);
-//			}
 			sv = tm.multiply(sv);
 		}
 		sv = mouthpieceCalculator.calcStateVector(sv, instrument.getMouthpiece(), waveNumber, params);

@@ -388,7 +388,6 @@ public class Instrument implements InstrumentInterface
 			// Put any bore sections to the left of the mouthpiece position
 			// into the mouthpiece headspace.
 			processMouthpiece(borePointList);
-			// components.add(mouthpiece);
 
 			// Set the termination to be at the end of the bore.
 			processTermination(borePointList);

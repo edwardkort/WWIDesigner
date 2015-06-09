@@ -3,8 +3,6 @@
  */
 package com.wwidesigner.geometry.calculation;
 
-import org.apache.commons.math3.complex.Complex;
-
 import com.wwidesigner.geometry.Termination;
 import com.wwidesigner.math.StateVector;
 import com.wwidesigner.util.PhysicalParameters;
@@ -23,7 +21,7 @@ public class IdealOpenEndCalculator extends TerminationCalculator
 	public StateVector calcStateVector(Termination termination, double wave_number,
 			PhysicalParameters params)
 	{
-		return new StateVector(Complex.ZERO, Complex.ONE);
+		return StateVector.OpenEnd();
 	}
 
 }

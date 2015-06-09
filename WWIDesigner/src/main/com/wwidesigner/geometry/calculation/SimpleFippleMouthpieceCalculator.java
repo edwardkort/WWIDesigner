@@ -124,7 +124,7 @@ public class SimpleFippleMouthpieceCalculator extends MouthpieceCalculator
 				mouthpiece.getFipple().getWindowHeight(), 
 				effRadius, physicalParams );
 		sv = tm.multiply( sv );
-		return sv.Impedance();
+		return sv.getImpedance();
 	}
 
 	@Override

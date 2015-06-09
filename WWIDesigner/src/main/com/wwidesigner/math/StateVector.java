@@ -51,14 +51,74 @@ public class StateVector
         mP = TransferMatrix.copyComplex( from.mP );
         mU = TransferMatrix.copyComplex( from.mU );
     }
-    
-    public Complex Impedance()
+
+    /**
+     * @return a state vector representing an ideal open end.
+     */
+    public static StateVector OpenEnd()
+    {
+    	// At an open end, pressure is zero.
+    	return new StateVector(Complex.ZERO, Complex.ONE);
+    }
+
+    /**
+     * @return a state vector representing an ideal closed end.
+     */
+    public static StateVector ClosedEnd()
+    {
+    	// At a closed end, acoustic flow is zero.
+    	return new StateVector(Complex.ONE, Complex.ZERO);
+    }
+
+	/**
+	 * @return the impedance (Z) that a component with this state vector is
+	 *         presenting
+	 */
+    public Complex getImpedance()
     {
     	return mP.divide(mU);
     }
-    
-    public Complex Reflectance(double Z0)
+
+	/**
+	 * @return the admittance (Y) that a component with this state vector is
+	 *         presenting
+	 */
+    public Complex getAdmittance()
     {
-    	return mP.subtract(mU.multiply(Z0)).divide( mP.add(mU.multiply(Z0)));
+    	return mU.divide(mP);
+    }
+
+	/**
+	 * @return the reflectance that a component with this state vector is
+	 *         presenting
+	 */
+    public Complex getReflectance(double Z0)
+    {
+    	return mP.subtract(mU.multiply(Z0))
+    			.divide(mP.add(mU.multiply(Z0)));
+    }
+
+    /**
+     * Add another state vector in series with this.
+     * @param other
+     * @return sv that satisfies sv.getImpedance() = this.getImpedance() + other.getImpedance().
+     */
+    public StateVector series(StateVector other)
+    {
+    	Complex newP = this.mP.multiply(other.mU).add(other.mP.multiply(this.mU));
+    	Complex newU = this.mU.multiply(other.mU);
+    	return new StateVector(newP, newU);
+    }
+
+    /**
+     * Add another state vector in parallel with this.
+     * @param other
+     * @return sv that satisfies 1/sv.getImpedance() = 1/this.getImpedance() + 1/other.getImpedance().
+     */
+    public StateVector parallel(StateVector other)
+    {
+    	Complex newU = this.mP.multiply(other.mU).add(other.mP.multiply(this.mU));
+    	Complex newP = this.mP.multiply(other.mP);
+    	return new StateVector(newP, newU);
     }
 }

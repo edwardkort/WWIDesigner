@@ -62,7 +62,7 @@ public class CalculationTest
 			TransferMatrix tm = Tube.calcCylinderMatrix(waveNumber, BaseLength, BaseRadius, parameters);
 			assertEquals("Determinant incorrect", 1.0, tm.determinant().getReal(), 0.0001);
 			assertEquals("Determinant.imag incorrect", 0.0, tm.determinant().getImaginary(), 0.0001);
-			Complex zLoad = tm.multiply(sv).Impedance().divide(z0);
+			Complex zLoad = tm.multiply(sv).getImpedance().divide(z0);
 
 			assertEquals("Re(Z) incorrect",  0.03696, zLoad.getReal(), 0.00001);
 			assertEquals("Im(Z) incorrect", -0.48516, zLoad.getImaginary(), 0.00001);
@@ -72,7 +72,7 @@ public class CalculationTest
 			TransferMatrix tm2 = boreCalc.calcTransferMatrix(bore, waveNumber, parameters);
 			assertEquals("Determinant 2 incorrect", 1.0, tm2.determinant().getReal(), 0.0001);
 			assertEquals("Determinant.imag 2 incorrect", 0.0, tm2.determinant().getImaginary(), 0.0001);
-			Complex zLoad2 = tm2.multiply(sv).Impedance().divide(z0);
+			Complex zLoad2 = tm2.multiply(sv).getImpedance().divide(z0);
 
 			assertEquals("Re(Z2) incorrect",  0.03696, zLoad2.getReal(), 0.00001);
 			assertEquals("Im(Z2) incorrect", -0.48516, zLoad2.getImaginary(), 0.00001);
@@ -99,7 +99,7 @@ public class CalculationTest
 			TransferMatrix tm = Tube.calcConeMatrix(waveNumber, BaseLength, BaseRadius, 0.75 * BaseRadius, parameters);
 			assertEquals("Determinant incorrect", 1.0, tm.determinant().getReal(), 0.0001);
 			assertEquals("Determinant.imag incorrect", 0.0, tm.determinant().getImaginary(), 0.0001);
-			Complex zLoad = tm.multiply(sv).Impedance().divide(z0);
+			Complex zLoad = tm.multiply(sv).getImpedance().divide(z0);
 
 			assertEquals("Re(Z) incorrect",  0.03856, zLoad.getReal(), 0.00001);
 			assertEquals("Im(Z) incorrect", -0.45920, zLoad.getImaginary(), 0.00001);
@@ -109,7 +109,7 @@ public class CalculationTest
 			TransferMatrix tm2 = boreCalc.calcTransferMatrix(bore, waveNumber, parameters);
 			assertEquals("Determinant 2 incorrect", 1.0, tm2.determinant().getReal(), 0.0001);
 			assertEquals("Determinant.imag 2 incorrect", 0.0, tm2.determinant().getImaginary(), 0.0001);
-			Complex zLoad2 = tm2.multiply(sv).Impedance().divide(z0);
+			Complex zLoad2 = tm2.multiply(sv).getImpedance().divide(z0);
 
 			assertEquals("Re(Z2) incorrect",  0.03856, zLoad2.getReal(), 0.00001);
 			assertEquals("Im(Z2) incorrect", -0.45920, zLoad2.getImaginary(), 0.00001);

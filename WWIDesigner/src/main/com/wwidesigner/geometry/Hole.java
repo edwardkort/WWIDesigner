@@ -191,7 +191,7 @@ public class Hole implements ComponentInterface, BorePointInterface
 		{
 			if (minPosition != null && minPosition >= position)
 			{
-				handler.logError(holeName + " position must be greater than lowest bore position.");
+				handler.logError(holeName + " position must be greater than mouthpiece position.");
 			}
 			if (maxPosition != null && maxPosition <= position)
 			{

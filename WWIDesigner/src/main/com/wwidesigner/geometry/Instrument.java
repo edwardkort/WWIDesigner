@@ -38,14 +38,25 @@ import com.wwidesigner.util.SortedPositionList;
 public class Instrument implements InstrumentInterface
 {
 
+	// Fundamental properties of the instrument.
+
 	protected String name;
 	protected LengthType lengthType;
 	protected Mouthpiece mouthpiece;
 	protected List<BorePoint> borePoint;
 	protected String description;
 	protected List<Hole> hole;
-	protected List<ComponentInterface> components;
 	protected Termination termination;
+	
+	// Derived properties.
+
+	// List of components, holes and bore sections, with positions greater
+	// than the mouthpiece (below the mouthpiece), from smallest position to
+	// largest position.  Does not include the mouthpiece.
+	protected List<ComponentInterface> components;
+
+	// mouthpiece.headspace contains the list of bore sections with positions
+	// less than the mouthpiece (above the mouthpiece).
 
 	private boolean convertedToMetres = false;
 
@@ -343,6 +354,11 @@ public class Instrument implements InstrumentInterface
 		else
 		{
 			mouthpiece.checkValidity(handler, minimumPosition, maximumPosition);
+			if (minimumPosition < mouthpiece.getPosition())
+			{
+				// Holes cannot be above the mouthpiece position, in the headspace.
+				minimumPosition = mouthpiece.getPosition();
+			}
 		}
 		for (Hole currentHole : hole)
 		{
@@ -369,11 +385,10 @@ public class Instrument implements InstrumentInterface
 			// position.
 			SortedPositionList<BorePoint> borePointList = makePositionList(borePoint);
 
-			// Add the mouthpiece reference position to the map first.
 			// Put any bore sections to the left of the mouthpiece position
 			// into the mouthpiece headspace.
 			processMouthpiece(borePointList);
-			components.add(mouthpiece);
+			// components.add(mouthpiece);
 
 			// Set the termination to be at the end of the bore.
 			processTermination(borePointList);

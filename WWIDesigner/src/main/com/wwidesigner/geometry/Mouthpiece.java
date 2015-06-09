@@ -21,7 +21,8 @@ public class Mouthpiece implements ComponentInterface, MouthpieceInterface,
 
 	// Values not part of the binding framework
 	protected Double gainFactor;
-	// List of bore sections whose right position <= mouthpiece position
+	// List of bore sections with positions less than the mouthpiece
+	// (above the mouthpiece), from smallest position to largest position.
 	protected List<BoreSection> headspace;
 	protected double boreDiameter;
 
@@ -194,7 +195,7 @@ public class Mouthpiece implements ComponentInterface, MouthpieceInterface,
 		{
 			if (minPosition != null && minPosition > position)
 			{
-				handler.logError("The mouthpiece/splitting-edge position must be greater than lowest bore position.");
+				handler.logError("The mouthpiece/splitting-edge position must not be less than lowest bore position.");
 			}
 			if (maxPosition != null && maxPosition <= position)
 			{

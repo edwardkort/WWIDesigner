@@ -24,7 +24,6 @@ import com.wwidesigner.geometry.ComponentInterface;
 import com.wwidesigner.geometry.Instrument;
 import com.wwidesigner.geometry.Hole;
 import com.wwidesigner.geometry.BoreSection;
-import com.wwidesigner.geometry.Mouthpiece;
 import com.wwidesigner.geometry.calculation.BoreSectionCalculator;
 import com.wwidesigner.geometry.calculation.HoleCalculator;
 import com.wwidesigner.geometry.calculation.MouthpieceCalculator;
@@ -92,19 +91,21 @@ public class DefaultInstrumentCalculator extends InstrumentCalculator
 				tm = boreSectionCalculator.calcTransferMatrix(
 						(BoreSection) component, waveNumber, params);
 			}
-			else if (component instanceof Hole)
+			else // if (component instanceof Hole)
 			{
+				assert component instanceof Hole;
 				tm = holeCalculator.calcTransferMatrix((Hole) component,
 						waveNumber, params);
 			}
-			else
-			{
-				assert component instanceof Mouthpiece;
-				tm = mouthpieceCalculator.calcTransferMatrix(
-						(Mouthpiece) component, waveNumber, params);
-			}
+//			else
+//			{
+//				assert component instanceof Mouthpiece;
+//				tm = mouthpieceCalculator.calcTransferMatrix(
+//						(Mouthpiece) component, waveNumber, params);
+//			}
 			sv = tm.multiply(sv);
 		}
+		sv = mouthpieceCalculator.calcStateVector(sv, instrument.getMouthpiece(), waveNumber, params);
 
 		return sv;
 		
@@ -118,7 +119,7 @@ public class DefaultInstrumentCalculator extends InstrumentCalculator
 		// TODO This mouthpiece calculation will change
 		double headRadius = instrument.getMouthpiece().getBoreDiameter() / 2.;
 		
-		Complex reflectance = sv.Reflectance( params.calcZ0(headRadius) );
+		Complex reflectance = sv.getReflectance( params.calcZ0(headRadius) );
 		
 		int reflectanceMultiplier = mouthpieceCalculator.calcReflectanceMultiplier();
 
@@ -136,7 +137,7 @@ public class DefaultInstrumentCalculator extends InstrumentCalculator
 	@Override
 	public Complex calcZ(double freq)
 	{
-		return calcInputStateVector(freq).Impedance();
+		return calcInputStateVector(freq).getImpedance();
 	}
 
 	@Override

@@ -1069,6 +1069,24 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 		gbc.insets = new Insets(0, 15, 0, 0);
 		panel.add(scrollPane, gbc);
 
+		JPanel buttonPanel = createBoreButtons();
+
+		gbc.anchor = GridBagConstraints.NORTHEAST;
+		gbc.gridx = 0;
+		gbc.gridy = 2;
+		panel.add(buttonPanel, gbc);
+
+		gbc.anchor = GridBagConstraints.NORTHWEST;
+		gbc.gridx = gridx;
+		gbc.gridy = gridy;
+		gbc.gridheight = gridheight;
+		gbc.insets = new Insets(0, 0, 0, 0);
+		add(panel, gbc);
+		model.addTableModelListener(this);
+	}
+
+	protected JPanel createBoreButtons()
+	{
 		JPanel buttonPanel = new JPanel();
 		buttonPanel.setLayout(new GridLayout(3, 1));
 		JButton button;
@@ -1110,19 +1128,7 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 
 		});
 		buttonPanel.add(button);
-
-		gbc.anchor = GridBagConstraints.NORTHEAST;
-		gbc.gridx = 0;
-		gbc.gridy = 2;
-		panel.add(buttonPanel, gbc);
-
-		gbc.anchor = GridBagConstraints.NORTHWEST;
-		gbc.gridx = gridx;
-		gbc.gridy = gridy;
-		gbc.gridheight = gridheight;
-		gbc.insets = new Insets(0, 0, 0, 0);
-		add(panel, gbc);
-		model.addTableModelListener(this);
+		return buttonPanel;
 	}
 
 	public void setName(String name)

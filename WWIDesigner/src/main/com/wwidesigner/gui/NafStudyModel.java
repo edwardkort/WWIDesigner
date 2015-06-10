@@ -45,7 +45,9 @@ import com.wwidesigner.optimization.HoleFromTopObjectiveFunction;
 import com.wwidesigner.optimization.HoleGroupFromTopObjectiveFunction;
 import com.wwidesigner.optimization.HoleSizeObjectiveFunction;
 import com.wwidesigner.optimization.NafHoleSizeObjectiveFunction;
+import com.wwidesigner.optimization.SingleTaperHoleGroupFromTopHemiHeadObjectiveFunction;
 import com.wwidesigner.optimization.SingleTaperHoleGroupFromTopObjectiveFunction;
+import com.wwidesigner.optimization.SingleTaperNoHoleGroupingFromTopHemiHeadObjectiveFunction;
 import com.wwidesigner.optimization.SingleTaperNoHoleGroupingFromTopObjectiveFunction;
 import com.wwidesigner.optimization.multistart.GridRangeProcessor;
 import com.wwidesigner.util.Constants.LengthType;
@@ -76,13 +78,17 @@ public class NafStudyModel extends StudyModel
 	public static final String TAPER_NO_GROUP_TOOL_TIP = "<html>Determine the hole sizes and positions, and bore length, that minimize tuning error.<br/>"
 			+ "Creates a linear taper in the bore, with constrained start, end, and bore-diameter<br/>"
 			+ "changes. The diameter at the bore end is not changed</html>";
-
-	public static final String HOLE_0_CONS_SUB_CATEGORY_ID = "0 holes";
-	public static final String HOLE_6_1_125_SPACING_CONS_SUB_CATEGORY_ID = "6 holes, 1-1/8\" max spacing";
-	public static final String HOLE_6_1_25_SPACING_CONS_SUB_CATEGORY_ID = "6 holes, 1-1/4\" max spacing";
-	public static final String HOLE_6_40_SPACING_CONS_SUB_CATEGORY_ID = "6 holes, 1.40\" max spacing";
-	public static final String HOLE_6_1_5_SPACING_CONS_SUB_CATEGORY_ID = "6 holes, 1-1/2\" max spacing";
-	public static final String HOLE_7_CONS_SUB_CATEGORY_ID = "7 holes";
+	public static final String TAPER_HEMI_HEAD_NO_GROUP_OPT_SUB_CATEGORY_ID = SingleTaperNoHoleGroupingFromTopHemiHeadObjectiveFunction.DISPLAY_NAME;
+	public static final String TAPER_HEMI_HEAD_NO_GROUP_TOOL_TIP = "<html>Determine the hole sizes and positions, and bore length, that minimize tuning error.<br/>"
+			+ "Creates a linear taper in the bore, with constrained start, end, and bore-diameter<br/>"
+			+ "changes. The diameter at the bore end is not changed. Introduces a hemispherical<br/>"
+			+ "profile at the top of the bore.</html>";
+	public static final String TAPER_HEMI_HEAD_GROUP_OPT_SUB_CATEGORY_ID = SingleTaperHoleGroupFromTopHemiHeadObjectiveFunction.DISPLAY_NAME;
+	public static final String TAPER_HEMI_HEAD_GROUP_TOOL_TIP = "<html>Determine the hole sizes and positions, and bore length, that minimize tuning error.<br/>"
+			+ "Supports grouping sets of adjacent holes to have the same inter-hole spacing.<br/>"
+			+ "Creates a linear taper in the bore, with constrained start, end, and bore-diameter<br/>"
+			+ "changes. The diameter at the bore end is not changed. Introduces a hemispherical<br/>"
+			+ "profile at the top of the bore.</html>";
 
 	public static final String NO_MULTI_START_SUB_CATEGORY_ID = "No multi-start optimization";
 	public static final String NO_MULTI_START_TOOL_TIP = "Run optimizer once";
@@ -140,6 +146,12 @@ public class NafStudyModel extends StudyModel
 		optimizers.addSub(TAPER_NO_GROUP_OPT_SUB_CATEGORY_ID,
 				SingleTaperNoHoleGroupingFromTopObjectiveFunction.NAME,
 				TAPER_NO_GROUP_TOOL_TIP);
+		optimizers.addSub(TAPER_HEMI_HEAD_NO_GROUP_OPT_SUB_CATEGORY_ID,
+				SingleTaperNoHoleGroupingFromTopHemiHeadObjectiveFunction.NAME,
+				TAPER_HEMI_HEAD_NO_GROUP_TOOL_TIP);
+		optimizers.addSub(TAPER_HEMI_HEAD_GROUP_OPT_SUB_CATEGORY_ID,
+				SingleTaperHoleGroupFromTopHemiHeadObjectiveFunction.NAME,
+				TAPER_HEMI_HEAD_GROUP_TOOL_TIP);
 		optimizers.addSub(TAPER_GROUP_OPT_SUB_CATEGORY_ID,
 				SingleTaperHoleGroupFromTopObjectiveFunction.NAME,
 				TAPER_GROUP_TOOL_TIP);
@@ -577,6 +589,48 @@ public class NafStudyModel extends StudyModel
 					}
 				}
 				break;
+			case TAPER_HEMI_HEAD_NO_GROUP_OPT_SUB_CATEGORY_ID:
+				objective = new SingleTaperNoHoleGroupingFromTopHemiHeadObjectiveFunction(
+						calculator, tuning, evaluator);
+				if (objectiveFunctionIntent == BaseObjectiveFunction.DEFAULT_CONSTRAINTS_INTENT)
+				{
+					// Length bounds are expressed in meters, diameter bounds as
+					// ratios,
+					// taper bounds as ratios.
+					if (numberOfHoles == 0)
+					{
+						lowerBound = new double[] { 0.1905, 0.8, 0.0, 0.0 };
+						upperBound = new double[] { 0.6985, 1.2, 1.0, 1.0 };
+					}
+					else if (numberOfHoles == 7)
+					{
+						lowerBound = new double[] { 0.1905, 0.25, 0.02032,
+								0.02032, 0.02032, 0.02032, 0.02032, 0.0,
+								0.002032, 0.003175, 0.003175, 0.003175,
+								0.003175, 0.002032, 0.002032, 0.8, 0.0, 0.0 };
+						upperBound = new double[] { 0.6985, 0.50, 0.03175,
+								0.03175, 0.0762, 0.03175, 0.03175, 0.003175,
+								0.0127, 0.0127, 0.0127, 0.0127, 0.0127,
+								0.00635, 0.00635, 1.2, 1.0, 1.0 };
+					}
+					else if (numberOfHoles == 6)
+					{
+						lowerBound = new double[] { 0.1905, 0.25, 0.02032,
+								0.02032, 0.02032, 0.02032, 0.02032, 0.002032,
+								0.003175, 0.003175, 0.003175, 0.003175,
+								0.003175, 0.8, 0.0, 0.0 };
+						upperBound = new double[] { 0.6985, 0.50, 0.03175,
+								0.03175, 0.0762, 0.03175, 0.03175, 0.0127,
+								0.0127, 0.0127, 0.0127, 0.0127, 0.0127, 1.2,
+								1.0, 1.0 };
+					}
+					else
+					// Create blank constraints for the no-default scenario
+					{
+						objectiveFunctionIntent = BaseObjectiveFunction.BLANK_CONSTRAINTS_INTENT;
+					}
+				}
+				break;
 			case TAPER_GROUP_OPT_SUB_CATEGORY_ID:
 				// Length bounds are expressed in meters, diameter bounds as
 				// ratios,
@@ -643,6 +697,74 @@ public class NafStudyModel extends StudyModel
 					}
 				}
 				objective = new SingleTaperHoleGroupFromTopObjectiveFunction(
+						calculator, tuning, evaluator, holeGroups);
+				break;
+			case TAPER_HEMI_HEAD_GROUP_OPT_SUB_CATEGORY_ID:
+				// Length bounds are expressed in meters, diameter bounds as
+				// ratios,
+				// taper bounds as ratios.
+				if (objectiveFunctionIntent == BaseObjectiveFunction.BLANK_CONSTRAINTS_INTENT)
+				{
+					if (numberOfHoles == 0)
+					{
+						holeGroups = new int[][] { {} };
+					}
+					else
+					{
+						holeGroups = getUserHoleGroups(numberOfHoles);
+						if (holeGroups == null)
+						{
+							return null;
+						}
+					}
+				}
+				else if (objectiveFunctionIntent == BaseObjectiveFunction.OPTIMIZATION_INTENT)
+				{
+					holeGroups = constraints.getHoleGroupsArray();
+				}
+				else if (objectiveFunctionIntent == BaseObjectiveFunction.DEFAULT_CONSTRAINTS_INTENT)
+				{
+					if (numberOfHoles == 0)
+					{
+						holeGroups = new int[][] { {} };
+						lowerBound = new double[] { 0.1905, 0.8, 0.0, 0.0 };
+						upperBound = new double[] { 0.6985, 1.2, 1.0, 1.0 };
+					}
+					else if (numberOfHoles == 7)
+					{
+						holeGroups = new int[][] { { 0, 1, 2 }, { 3, 4, 5 },
+								{ 6 } };
+						lowerBound = new double[] { 0.1905, 0.25, 0.02032,
+								0.02032, 0.02032, 0.0, 0.002032, 0.003175,
+								0.003175, 0.003175, 0.003175, 0.002032,
+								0.002032, 0.8, 0.0, 0.0 };
+						upperBound = new double[] { 0.6985, 0.5, 0.03175,
+								0.0762, 0.03175, 0.003175, 0.0127, 0.0127,
+								0.0127, 0.0127, 0.0127, 0.00635, 0.00635, 1.2,
+								1.0, 1.0 };
+					}
+					else if (numberOfHoles == 6)
+					{
+						holeGroups = new int[][] { { 0, 1, 2 }, { 3, 4, 5 } };
+						lowerBound = new double[] { 0.1905, 0.25, 0.02032,
+								0.02032, 0.02032, 0.002032, 0.003175, 0.003175,
+								0.003175, 0.003175, 0.003175, 0.8, 0.0, 0.0 };
+						upperBound = new double[] { 0.6985, 0.5, 0.03175,
+								0.0762, 0.03175, 0.0127, 0.0127, 0.0127,
+								0.0127, 0.0127, 0.0127, 1.2, 1.0, 1.0 };
+					}
+					else
+					// Create blank constraints for the no-default scenario
+					{
+						objectiveFunctionIntent = BaseObjectiveFunction.BLANK_CONSTRAINTS_INTENT;
+						holeGroups = getUserHoleGroups(numberOfHoles);
+						if (holeGroups == null)
+						{
+							return null;
+						}
+					}
+				}
+				objective = new SingleTaperHoleGroupFromTopHemiHeadObjectiveFunction(
 						calculator, tuning, evaluator, holeGroups);
 				break;
 		}

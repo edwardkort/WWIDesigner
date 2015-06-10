@@ -1,13 +1,24 @@
 package com.wwidesigner.geometry.view;
 
+import java.awt.BorderLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
 
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.table.DefaultTableModel;
 
+import com.jidesoft.grid.JideTable;
+import com.wwidesigner.geometry.BorePoint;
 import com.wwidesigner.geometry.Mouthpiece;
+import com.wwidesigner.geometry.calculation.HemisphericalBoreHead;
+import com.wwidesigner.util.SortedPositionList;
 
 public class NafPanel extends InstrumentPanel
 {
@@ -134,6 +145,71 @@ public class NafPanel extends InstrumentPanel
 		mouthpiece.setBeta(value);
 
 		return mouthpiece;
+	}
+
+	@Override
+	protected JPanel createBoreButtons()
+	{
+		JPanel buttonPanel = super.createBoreButtons();
+		JPanel newPanel = new JPanel();
+		newPanel.setLayout(new BorderLayout());
+		newPanel.add(buttonPanel, BorderLayout.NORTH);
+
+		JButton button = new JButton("Create hemi head");
+		button.addActionListener(new ActionListener()
+		{
+
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				addHemiHead(boreList);
+			}
+
+		});
+		newPanel.add(button, BorderLayout.SOUTH);
+
+		return newPanel;
+	}
+
+	protected void addHemiHead(JideTable boreList)
+	{
+		List<BorePoint> borePoints = getBoreTableData();
+		SortedPositionList<BorePoint> sortedPoints = new SortedPositionList<BorePoint>(
+				borePoints);
+		BorePoint topPoint = sortedPoints.getFirst();
+		BorePoint hemiTopPoint = HemisphericalBoreHead
+				.getHemiTopPoint(sortedPoints.toArray(new BorePoint[0]));
+		if (topPoint != null && hemiTopPoint != null)
+		{
+			double origin = topPoint.getBorePosition();
+			double headDiameter = hemiTopPoint.getBoreDiameter();
+			if (!Double.isNaN(origin) && !Double.isNaN(headDiameter))
+			{
+				List<BorePoint> newPoints = new ArrayList<BorePoint>();
+				HemisphericalBoreHead.addHemiHead(origin, headDiameter,
+						newPoints);
+				double hemiPosition = hemiTopPoint.getBorePosition();
+				for (BorePoint point : sortedPoints)
+				{
+					if (point.getBorePosition() > hemiPosition)
+					{
+						newPoints.add(point);
+					}
+				}
+				DefaultTableModel model = (DefaultTableModel) boreList
+						.getModel();
+				int lastRow = model.getRowCount() - 1;
+				for (int i = lastRow; i >= 0; i--)
+				{
+					model.removeRow(i);
+				}
+				for (BorePoint point : newPoints)
+				{
+					model.addRow(new Double[] { point.getBorePosition(),
+							point.getBoreDiameter() });
+				}
+			}
+		}
 	}
 
 }

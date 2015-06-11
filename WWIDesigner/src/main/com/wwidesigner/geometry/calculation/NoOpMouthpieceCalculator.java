@@ -23,7 +23,7 @@ public class NoOpMouthpieceCalculator extends MouthpieceCalculator
 	 * com.wwidesigner.util.PhysicalParameters)
 	 */
 	@Override
-	protected TransferMatrix calcTransferMatrix(Mouthpiece mouthpiece,
+	public TransferMatrix calcTransferMatrix(Mouthpiece mouthpiece,
 			double waveNumber, PhysicalParameters parameters)
 	{
 		return TransferMatrix.makeIdentity();

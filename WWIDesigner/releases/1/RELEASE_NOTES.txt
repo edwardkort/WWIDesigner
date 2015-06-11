@@ -1,7 +1,18 @@
-Release notes for v1.0.5
+Release notes for v1.0.6
 
-This is an update to v1.0.4. Please read UPDATE_README for
+This is an update to v1.0.5. Please read UPDATE_README for
 installation details.
+
+v1.0.6 changes
+Bugs fixed:
+Issue #26: Added checking to Instrument.checkValidity to
+  enforce physical limitations on instrument geometry.
+Enhancements
+Issue #31: Explicit support for a hemispherical bore top.
+  Added a button in the NAF instrument view that creates the
+  bore points for a hemispherical bore top. Created two new
+  taper optimizers (hole grouping and no grouping) that create
+  a hemispherical bore top as part of the optimization process.
 
 v1.0.5 changes
 Bugs fixed:

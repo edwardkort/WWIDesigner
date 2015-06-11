@@ -33,7 +33,7 @@ public class DefaultFippleMouthpieceCalculator extends MouthpieceCalculator
 	private static final double AIR_GAMMA = 1.4018297351222222d;
 
 	@Override
-	protected TransferMatrix calcTransferMatrix(Mouthpiece mouthpiece,
+	public TransferMatrix calcTransferMatrix(Mouthpiece mouthpiece,
 			double waveNumber, PhysicalParameters parameters)
 	{
 		// Use a simplified version of PhysicalParameters: no editable pressure

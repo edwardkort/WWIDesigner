@@ -18,12 +18,8 @@
  */
 package com.wwidesigner.geometry.calculation;
 
-import java.util.List;
-
 import org.apache.commons.math3.complex.Complex;
 
-import com.wwidesigner.geometry.BoreSection;
-import com.wwidesigner.geometry.ComponentInterface;
 import com.wwidesigner.geometry.Mouthpiece;
 import com.wwidesigner.math.StateVector;
 import com.wwidesigner.math.TransferMatrix;
@@ -46,7 +42,7 @@ public class SimpleFippleMouthpieceCalculator extends MouthpieceCalculator
 	 * com.wwidesigner.util.PhysicalParameters)
 	 */
 	@Override
-	protected TransferMatrix calcTransferMatrix(Mouthpiece mouthpiece,
+	public TransferMatrix calcTransferMatrix(Mouthpiece mouthpiece,
 			double waveNumber, PhysicalParameters parameters)
 	{
 		double freq = parameters.calcFrequency(waveNumber);
@@ -54,37 +50,6 @@ public class SimpleFippleMouthpieceCalculator extends MouthpieceCalculator
 		Complex Zwindow = calcZ(mouthpiece, freq, parameters);
 		
 		return new TransferMatrix(Complex.ONE, Zwindow, Complex.ZERO, Complex.ONE);		
-	}
-	
-	@Override
-	public StateVector calcStateVector(StateVector boreState,
-			Mouthpiece mouthpiece, double waveNumber,
-			PhysicalParameters parameters)
-	{
-		// Assume a closed upper end, and multiply by transfer matrices of each
-		// bore segment in the headspace.
-
-		List<BoreSection> headspace = mouthpiece.getHeadspace();
-		StateVector headspaceState = StateVector.ClosedEnd();
-		TransferMatrix tm;
-		for (int componentNr = 0; componentNr < headspace.size(); ++componentNr)
-		{
-			ComponentInterface component = headspace.get(componentNr);
-			assert component instanceof BoreSection;
-			BoreSection section = (BoreSection) component;
-			double leftRadius = section.getLeftRadius();
-			double rightRadius = section.getRightRadius();
-			double length = section.getLength();
-			
-			tm = Tube.calcConeMatrix(waveNumber, length, rightRadius, leftRadius, parameters);
-			headspaceState = tm.multiply(headspaceState);
-		}
-		
-		// Assume the mouthpiece sees the bore impedance in parallel with
-		// the headspace impedance.
-		StateVector sv = boreState.parallel(headspaceState); 
-		sv = calcTransferMatrix(mouthpiece, waveNumber, parameters).multiply(sv);
-		return sv;
 	}
 
 	/*

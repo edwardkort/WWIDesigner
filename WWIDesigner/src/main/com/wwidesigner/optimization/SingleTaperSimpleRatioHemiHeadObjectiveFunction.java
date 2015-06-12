@@ -7,9 +7,11 @@ import com.wwidesigner.geometry.BorePoint;
 import com.wwidesigner.geometry.Instrument;
 import com.wwidesigner.geometry.PositionInterface;
 import com.wwidesigner.geometry.calculation.HemisphericalBoreHead;
+import com.wwidesigner.geometry.calculation.Tube;
 import com.wwidesigner.modelling.EvaluatorInterface;
 import com.wwidesigner.modelling.InstrumentCalculator;
 import com.wwidesigner.note.TuningInterface;
+import com.wwidesigner.optimization.Constraint.ConstraintType;
 
 /**
  * Optimization objective function for a simple three-section bore with a single
@@ -40,7 +42,17 @@ public class SingleTaperSimpleRatioHemiHeadObjectiveFunction extends
 
 	protected void setConstraints()
 	{
-		super.setConstraints();
+		constraints.addConstraint(new Constraint(CONSTR_CAT,
+				"Bore diameter ratio (top/bottom)",
+				ConstraintType.DIMENSIONLESS));
+		constraints.addConstraint(new Constraint(CONSTR_CAT,
+				"Taper start (from hemi top), fraction of bore length",
+				ConstraintType.DIMENSIONLESS));
+		constraints.addConstraint(new Constraint(CONSTR_CAT,
+				"Taper length, fraction of bore below start",
+				ConstraintType.DIMENSIONLESS));
+		constraints.setNumberOfHoles(calculator.getInstrument().getHole()
+				.size());
 		constraints
 				.setObjectiveDisplayName("Single taper (simple ratios), hemi-head, optimizer");
 	}
@@ -74,7 +86,7 @@ public class SingleTaperSimpleRatioHemiHeadObjectiveFunction extends
 				- bottomPoint.getBoreDiameter()) < 0.0001)
 		{
 			// Bore doesn't really taper.
-			taperStart = topPoint.getBorePosition();
+			taperStart = hemiTopPoint.getBorePosition();
 			taperEnd = bottomPoint.getBorePosition();
 		}
 		else
@@ -88,7 +100,7 @@ public class SingleTaperSimpleRatioHemiHeadObjectiveFunction extends
 			else
 			{
 				// Taper starts on first point.
-				taperStart = topPoint.getBorePosition();
+				taperStart = hemiTopPoint.getBorePosition();
 			}
 			if (Math.abs(bottomPoint.getBoreDiameter()
 					- penultimatePoint.getBoreDiameter()) < 0.0001)
@@ -145,9 +157,12 @@ public class SingleTaperSimpleRatioHemiHeadObjectiveFunction extends
 		double topPosition = topPoint.getBorePosition();
 		HemisphericalBoreHead
 				.addHemiHead(topPosition, headDiameter, borePoints);
-		double boreLength = bottomPoint.getBorePosition() - topPosition;
+		double hemiTopPosition = borePoints.get(borePoints.size() - 1)
+				.getBorePosition();
+		double boreLength = bottomPoint.getBorePosition() - hemiTopPosition;
 		double taperStart = point[1] * boreLength;
-		double taperLength = point[2] * (boreLength - taperStart);
+		double taperLength = Math.max(point[2] * (boreLength - taperStart),
+				Tube.MINIMUM_CONE_LENGTH);
 
 		BorePoint newPoint;
 		if (taperStart > 0)
@@ -156,7 +171,7 @@ public class SingleTaperSimpleRatioHemiHeadObjectiveFunction extends
 			newPoint = new BorePoint();
 			newPoint.setBoreDiameter(headDiameter);
 			taperStart = taperStart > boreLength ? boreLength : taperStart;
-			newPoint.setBorePosition(topPosition + taperStart);
+			newPoint.setBorePosition(hemiTopPosition + taperStart);
 			borePoints.add(newPoint);
 		}
 		// Add point for end of taper.
@@ -164,14 +179,14 @@ public class SingleTaperSimpleRatioHemiHeadObjectiveFunction extends
 		newPoint.setBoreDiameter(footDiameter);
 		double taperEnd = taperStart + taperLength;
 		taperEnd = taperEnd > boreLength ? boreLength : taperEnd;
-		newPoint.setBorePosition(topPosition + taperEnd);
+		newPoint.setBorePosition(hemiTopPosition + taperEnd);
 		borePoints.add(newPoint);
 		if (taperStart + taperLength < boreLength)
 		{
 			// Taper ends on second last point rather than last.
 			newPoint = new BorePoint();
 			newPoint.setBoreDiameter(footDiameter);
-			newPoint.setBorePosition(topPosition + boreLength);
+			newPoint.setBorePosition(hemiTopPosition + boreLength);
 			borePoints.add(newPoint);
 		}
 		calculator.getInstrument().setBorePoint(borePoints);

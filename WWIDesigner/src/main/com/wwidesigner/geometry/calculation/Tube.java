@@ -30,7 +30,7 @@ import com.wwidesigner.util.PhysicalParameters;
  */
 public class Tube
 {
-	protected static final double MINIMUM_CONE_LENGTH = 0.00001;
+	public static final double MINIMUM_CONE_LENGTH = 0.00001;
 	
 	public Tube()
 	{

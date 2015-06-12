@@ -25,6 +25,7 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
+import com.wwidesigner.geometry.calculation.Tube;
 import com.wwidesigner.note.Fingering;
 import com.wwidesigner.util.Constants.LengthType;
 import com.wwidesigner.util.InvalidFieldException;
@@ -47,12 +48,12 @@ public class Instrument implements InstrumentInterface
 	protected String description;
 	protected List<Hole> hole;
 	protected Termination termination;
-	
+
 	// Derived properties.
 
 	// List of components, holes and bore sections, with positions greater
 	// than the mouthpiece (below the mouthpiece), from smallest position to
-	// largest position.  Does not include the mouthpiece.
+	// largest position. Does not include the mouthpiece.
 	protected List<ComponentInterface> components;
 
 	// mouthpiece.headspace contains the list of bore sections with positions
@@ -334,16 +335,19 @@ public class Instrument implements InstrumentInterface
 		for (BorePoint bore : borePoint)
 		{
 			bore.checkValidity(handler);
-			if (minimumPosition == null || minimumPosition > bore.getBorePosition())
+			if (minimumPosition == null
+					|| minimumPosition > bore.getBorePosition())
 			{
 				minimumPosition = bore.getBorePosition();
 			}
-			if (maximumPosition == null || maximumPosition < bore.getBorePosition())
+			if (maximumPosition == null
+					|| maximumPosition < bore.getBorePosition())
 			{
 				maximumPosition = bore.getBorePosition();
 			}
 		}
-		if (minimumPosition != null && maximumPosition != null && minimumPosition >= maximumPosition)
+		if (minimumPosition != null && maximumPosition != null
+				&& minimumPosition >= maximumPosition)
 		{
 			handler.logError("Bore length must not be zero.");
 		}
@@ -356,13 +360,15 @@ public class Instrument implements InstrumentInterface
 			mouthpiece.checkValidity(handler, minimumPosition, maximumPosition);
 			if (minimumPosition < mouthpiece.getPosition())
 			{
-				// Holes cannot be above the mouthpiece position, in the headspace.
+				// Holes cannot be above the mouthpiece position, in the
+				// headspace.
 				minimumPosition = mouthpiece.getPosition();
 			}
 		}
 		for (Hole currentHole : hole)
 		{
-			currentHole.checkValidity(handler, minimumPosition, maximumPosition);
+			currentHole
+					.checkValidity(handler, minimumPosition, maximumPosition);
 		}
 		termination.checkValidity(handler);
 		handler.reportErrors(false);
@@ -381,7 +387,8 @@ public class Instrument implements InstrumentInterface
 
 		if (borePoint != null && !borePoint.isEmpty())
 		{
-			// Sort the bore points from lowest (left-most) to highest (right-most)
+			// Sort the bore points from lowest (left-most) to highest
+			// (right-most)
 			// position.
 			SortedPositionList<BorePoint> borePointList = makePositionList(borePoint);
 
@@ -506,7 +513,7 @@ public class Instrument implements InstrumentInterface
 		}
 		else
 		{
-			// Bore section has zero length.  Use average bore diameter.
+			// Bore section has zero length. Use average bore diameter.
 			holeBoreDiameter = 0.5 * (leftDiameter + rightDiameter);
 		}
 		currentPosition.setBoreDiameter(holeBoreDiameter);
@@ -526,6 +533,7 @@ public class Instrument implements InstrumentInterface
 	/**
 	 * Add bore sections to components from the first point in borePointList
 	 * through rightPosition.
+	 * 
 	 * @param borePointList
 	 * @param rightPosition
 	 */
@@ -552,11 +560,20 @@ public class Instrument implements InstrumentInterface
 
 	{
 		BoreSection section = new BoreSection();
-		section.setLength(rightPoint.getBorePosition()
-				- leftPoint.getBorePosition());
+		double length = rightPoint.getBorePosition()
+				- leftPoint.getBorePosition();
+		double rightPosition = rightPoint.getBorePosition();
+		// Ensure that the section length > 0
+		if (length == 0.)
+		{
+			length = Tube.MINIMUM_CONE_LENGTH;
+			rightPosition += Tube.MINIMUM_CONE_LENGTH;
+			rightPoint.setBorePosition(rightPosition);
+		}
+		section.setLength(length);
 		section.setLeftRadius(leftPoint.getBoreDiameter() / 2);
 		section.setRightRadius(rightPoint.getBoreDiameter() / 2);
-		section.setRightBorePosition(rightPoint.getBorePosition());
+		section.setRightBorePosition(rightPosition);
 
 		components.add(section);
 	}

@@ -6,6 +6,7 @@ import java.util.List;
 import com.wwidesigner.geometry.BorePoint;
 import com.wwidesigner.geometry.Instrument;
 import com.wwidesigner.geometry.PositionInterface;
+import com.wwidesigner.geometry.calculation.Tube;
 import com.wwidesigner.modelling.EvaluatorInterface;
 import com.wwidesigner.modelling.InstrumentCalculator;
 import com.wwidesigner.note.TuningInterface;
@@ -129,7 +130,8 @@ public class SingleTaperSimpleRatioObjectiveFunction extends
 		double boreLength = bottomPoint.getBorePosition()
 				- topPoint.getBorePosition();
 		double taperStart = point[1] * boreLength;
-		double taperLength = point[2] * (boreLength - taperStart);
+		double taperLength = Math.max(point[2] * (boreLength - taperStart),
+				Tube.MINIMUM_CONE_LENGTH);
 
 		BorePoint newPoint = new BorePoint();
 		newPoint.setBoreDiameter(headDiameter);

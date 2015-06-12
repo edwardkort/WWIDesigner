@@ -30,6 +30,8 @@ import com.wwidesigner.util.PhysicalParameters;
  */
 public class Tube
 {
+	protected static final double MINIMUM_CONE_LENGTH = 0.00001;
+	
 	public Tube()
 	{
 	}
@@ -114,7 +116,17 @@ public class Tube
 			epsilon = alpha_0/(loadRadius - sourceRadius) * Math.log(loadRadius/sourceRadius);
 		}
 		Complex mean = new Complex( 1.0 + epsilon, - epsilon );
-		Complex kMeanL = mean.multiply(waveNumber * length);
+		Complex kMeanL;
+		if (length >= MINIMUM_CONE_LENGTH)
+		{
+			kMeanL = mean.multiply(waveNumber * length);
+		}
+		else
+		{
+			// Limit how short the cone can be.
+			// Length of zero leads to a divide-by-zero below.
+			kMeanL = mean.multiply(waveNumber * MINIMUM_CONE_LENGTH);
+		}
 		
 		// Cotangents of theta_in and theta_out. 
 		Complex cot_in  = new Complex((loadRadius-sourceRadius)/sourceRadius)

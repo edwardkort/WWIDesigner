@@ -68,7 +68,6 @@ public class SingleTaperSimpleRatioHemiHeadObjectiveFunction extends
 		// and ends on either the last or second last.
 		// The position of the hemisphere is the bore top, the diameter is at
 		// its equator.
-		BorePoint topPoint = (BorePoint) sortedPoints[0];
 		BorePoint hemiTopPoint = HemisphericalBoreHead
 				.getHemiTopPoint(sortedPoints);
 		BorePoint nextPoint = getNextPoint(hemiTopPoint.getBorePosition(),
@@ -76,7 +75,7 @@ public class SingleTaperSimpleRatioHemiHeadObjectiveFunction extends
 		BorePoint penultimatePoint = (BorePoint) sortedPoints[sortedPoints.length - 2];
 		BorePoint bottomPoint = (BorePoint) sortedPoints[sortedPoints.length - 1];
 		double boreLength = bottomPoint.getBorePosition()
-				- topPoint.getBorePosition();
+				- hemiTopPoint.getBorePosition();
 		double taperStart;
 		double taperEnd;
 
@@ -115,8 +114,9 @@ public class SingleTaperSimpleRatioHemiHeadObjectiveFunction extends
 			}
 		}
 
-		geometry[1] = (taperStart / boreLength);
-		geometry[2] = ((taperEnd - taperStart) / (boreLength - taperStart));
+		geometry[1] = ((taperStart - hemiTopPoint.getBorePosition()) / boreLength);
+		geometry[2] = ((taperEnd - taperStart) / (boreLength - taperStart + hemiTopPoint
+				.getBorePosition()));
 
 		return geometry;
 	}

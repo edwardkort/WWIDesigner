@@ -109,8 +109,9 @@ public class SingleTaperSimpleRatioObjectiveFunction extends
 			}
 		}
 
-		geometry[1] = (taperStart / boreLength);
-		geometry[2] = ((taperEnd - taperStart) / (boreLength - taperStart));
+		geometry[1] = ((taperStart - topPoint.getBorePosition()) / boreLength);
+		geometry[2] = ((taperEnd - taperStart) / (boreLength - taperStart + topPoint
+				.getBorePosition()));
 
 		return geometry;
 	}
@@ -142,8 +143,8 @@ public class SingleTaperSimpleRatioObjectiveFunction extends
 			// Taper begins on second point rather than first.
 			newPoint = new BorePoint();
 			newPoint.setBoreDiameter(headDiameter);
-			newPoint.setBorePosition(topPoint.getBorePosition() + taperStart > boreLength ? boreLength
-					: taperStart);
+			taperStart = taperStart > boreLength ? boreLength : taperStart;
+			newPoint.setBorePosition(topPoint.getBorePosition() + taperStart);
 			borePoints.add(newPoint);
 		}
 		// Add point for end of taper.

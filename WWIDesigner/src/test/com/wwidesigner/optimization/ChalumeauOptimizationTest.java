@@ -111,18 +111,18 @@ public class ChalumeauOptimizationTest
 			}
 
 			// System.out.print("last point = " + lastPoint.getBorePosition());
-			assertEquals("Bore length incorrect", 337.5,
+			assertEquals("Bore length incorrect", 338.,
 					lastPoint.getBorePosition(), 0.2);
 
-			assertEquals("Hole 1 position incorrect", 111.2, sortedHoles.get(0)
+			assertEquals("Hole 1 position incorrect", 102., sortedHoles.get(0)
 					.getBorePosition(), 1.5);
-			assertEquals("Hole 2 position incorrect", 112.3, sortedHoles.get(1)
+			assertEquals("Hole 2 position incorrect", 103., sortedHoles.get(1)
 					.getBorePosition(), 1.5);
-			assertEquals("Hole 3 position incorrect", 129.6, sortedHoles.get(2)
+			assertEquals("Hole 3 position incorrect", 128., sortedHoles.get(2)
 					.getBorePosition(), 1.5);
-			assertEquals("Hole 4 position incorrect", 135.0, sortedHoles.get(3)
+			assertEquals("Hole 4 position incorrect", 138., sortedHoles.get(3)
 					.getBorePosition(), 2.5);
-			assertEquals("Hole 5 position incorrect", 159.0, sortedHoles.get(4)
+			assertEquals("Hole 5 position incorrect", 158., sortedHoles.get(4)
 					.getBorePosition(), 2.5);
 			assertEquals("Hole 6 position incorrect", 184.7, sortedHoles.get(5)
 					.getBorePosition(), 2.5);
@@ -130,18 +130,18 @@ public class ChalumeauOptimizationTest
 					.getBorePosition(), 2.5);
 			assertEquals("Hole 8 position incorrect", 225.7, sortedHoles.get(7)
 					.getBorePosition(), 2.5);
-			assertEquals("Hole 9 position incorrect", 249.4, sortedHoles.get(8)
+			assertEquals("Hole 9 position incorrect", 247., sortedHoles.get(8)
 					.getBorePosition(), 2.5);
-			assertEquals("Hole 10 position incorrect", 277.2, sortedHoles
+			assertEquals("Hole 10 position incorrect", 277., sortedHoles
 					.get(9).getBorePosition(), 1.5);
 
-			assertEquals("Hole 1 diameter incorrect", 6.0, sortedHoles.get(0)
+			assertEquals("Hole 1 diameter incorrect", 4.0, sortedHoles.get(0)
 					.getDiameter(), 0.2);
-			assertEquals("Hole 2 diameter incorrect", 5.4, sortedHoles.get(1)
+			assertEquals("Hole 2 diameter incorrect", 4.0, sortedHoles.get(1)
 					.getDiameter(), 0.2);
 			assertEquals("Hole 3 diameter incorrect", 5.2, sortedHoles.get(2)
 					.getDiameter(), 0.4);
-			assertEquals("Hole 4 diameter incorrect", 5.3, sortedHoles.get(3)
+			assertEquals("Hole 4 diameter incorrect", 5.7, sortedHoles.get(3)
 					.getDiameter(), 0.4);
 			assertEquals("Hole 5 diameter incorrect", 6.4, sortedHoles.get(4)
 					.getDiameter(), 0.4);
@@ -151,7 +151,7 @@ public class ChalumeauOptimizationTest
 					.getDiameter(), 0.4);
 			assertEquals("Hole 8 diameter incorrect", 6.4, sortedHoles.get(7)
 					.getDiameter(), 0.4);
-			assertEquals("Hole 9 diameter incorrect", 6.9, sortedHoles.get(8)
+			assertEquals("Hole 9 diameter incorrect", 6.4, sortedHoles.get(8)
 					.getDiameter(), 0.5);
 			assertEquals("Hole 10 diameter incorrect", 6.8, sortedHoles.get(9)
 					.getDiameter(), 0.5);

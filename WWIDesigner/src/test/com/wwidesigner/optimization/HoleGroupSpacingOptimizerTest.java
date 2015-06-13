@@ -15,6 +15,7 @@ import com.wwidesigner.geometry.Instrument;
 import com.wwidesigner.geometry.PositionInterface;
 import com.wwidesigner.modelling.NAFCalculator;
 import com.wwidesigner.modelling.ReactanceEvaluator;
+import com.wwidesigner.modelling.ReflectionEvaluator;
 import com.wwidesigner.util.Constants.TemperatureType;
 import com.wwidesigner.util.PhysicalParameters;
 
@@ -80,7 +81,7 @@ public class HoleGroupSpacingOptimizerTest extends AbstractOptimizationTest
 			upperBound = new double[] { 0.7, 0.05,  0.05,  0.1,   0.003,  0.20,
 					0.017, 0.017, 0.017, 0.017, 0.017, 0.010, 0.010 };
 			holeGroups = new int[][] { { 0, 1, 2 }, { 3, 4, 5 }, { 6 } };
-			evaluator = new ReactanceEvaluator(calculator);
+			evaluator = new ReflectionEvaluator(calculator);
 			objective = new HoleGroupObjectiveFunction(calculator, tuning, evaluator, holeGroups);
 			objective.setMaxEvaluations(20000);
 			objective.setOptimizerType(BaseObjectiveFunction.OptimizerType.CMAESOptimizer);

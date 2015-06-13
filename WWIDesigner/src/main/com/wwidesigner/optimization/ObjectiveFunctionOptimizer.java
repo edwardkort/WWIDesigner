@@ -57,6 +57,9 @@ public class ObjectiveFunctionOptimizer
 	protected static double finalNorm; // Final value of objective function.
 	protected static final boolean DEBUG_MODE = false;
 
+	// Number of evaluations in a single multi-start run.
+	private static int singleRunEvaluations;
+
 	/**
 	 * Print a vector of error values during optimization.
 	 * 
@@ -283,7 +286,10 @@ public class ObjectiveFunctionOptimizer
 	 * Use a multi-start BOBYQA optimization to optimize a specified objective
 	 * function. Use range processor and number of starts from {@code objective}
 	 * if available; otherwise use a RandomRangeProcessor with 30 starts. If a
-	 * single variable, use BrentOptimizer.
+	 * single variable, use BrentOptimizer. Multi-start recognizes
+	 * objective.isRunTwoStageOptimization (if set true), doing the 30 starts
+	 * with the first stage evaluator, and then doing a final run with the
+	 * original evaluator - starting with the best result from the 30 starts.
 	 * 
 	 * @param objective
 	 *            - objective function to optimize
@@ -312,85 +318,25 @@ public class ObjectiveFunctionOptimizer
 
 		// Multi-start loop.
 		double[] nextStart = startPoint.clone();
+		EvaluatorInterface originalEvaluator = objective.getEvaluator();
+		if (objective.isRunTwoStageOptimization())
+		{
+			EvaluatorInterface firstStageEvaluator = objective
+					.getFirstStageEvaluator();
+			System.out.println("Evaluator: "
+					+ firstStageEvaluator.getClass().getSimpleName());
+			objective.setEvaluator(firstStageEvaluator);
+		}
 
 		for (int startNr = 0; startNr < nrStarts; ++startNr)
 		{
 			if (totalEvaluations < maxEvaluations)
 			{
-				int runEvaluations = 0;
 				System.out.print("Start " + (int) (startNr + 1) + ": ");
-				try
-				{
-					int numVariables = objective.getNrDimensions();
-					if (numVariables > 1) // Use BOBYQA
-					{
-						double trustRegion = objective
-								.getInitialTrustRegionRadius(nextStart);
-						double stoppingTrustRegion = objective
-								.getStoppingTrustRegionRadius();
-						BOBYQAOptimizer optimizer = new BOBYQAOptimizer(
-								objective.getNrInterpolations(), trustRegion,
-								stoppingTrustRegion);
-						optima[startNr] = optimizer.optimize(GoalType.MINIMIZE,
-								new ObjectiveFunction(objective), new MaxEval(
-										maxEvaluations - totalEvaluations),
-								MaxIter.unlimited(),
-								new InitialGuess(nextStart),
-								new SimpleBounds(objective.getLowerBounds(),
-										objective.getUpperBounds()));
-						runEvaluations = optimizer.getEvaluations();
-					}
-					else
-					// Use Brent
-					{
-						BrentOptimizer optimizer = new BrentOptimizer(1.e-6,
-								1.e-14);
-						UnivariatePointValuePair outcome = optimizer.optimize(
-								GoalType.MINIMIZE,
-								new UnivariateObjectiveFunction(objective),
-								new MaxEval(objective.getMaxEvaluations()),
-								MaxIter.unlimited(), new SearchInterval(
-										objective.getLowerBounds()[0],
-										objective.getUpperBounds()[0],
-										startPoint[0]));
-						optima[startNr] = new PointValuePair(
-								new double[] { outcome.getPoint() },
-								outcome.getValue());
-						runEvaluations = optimizer.getEvaluations();
-					}
-					double value = optima[startNr].getValue();
-					if (value == Double.POSITIVE_INFINITY)
-					{
-						System.out.print("no valid solution found");
-					}
-					else
-					{
-						System.out.print("optimum "
-								+ optima[startNr].getValue());
-					}
-				}
-				catch (TooManyEvaluationsException e)
-				{
-					System.out.print("Exception: " + e.getMessage());
-				}
-				// Thrown by BOBYQA for no apparent reason: a bug?
-				catch (NoSuchElementException e)
-				{
-					System.out.print("no valid solution found");
-				}
-				catch (Exception e)
-				{
-					System.out.print("Exception: " + e.getMessage());
-					// e.printStackTrace();
-				}
-				finally
-				{
-					System.out.println(" at start point "
-							+ Arrays.toString(nextStart));
-				}
-
-				totalEvaluations += runEvaluations;
+				optima[startNr] = doSingleStart(objective, startPoint,
+						maxEvaluations - totalEvaluations, nextStart);
 				nextStart = rangeProcessor.nextVector();
+				totalEvaluations += singleRunEvaluations;
 			}
 		}
 
@@ -400,9 +346,93 @@ public class ObjectiveFunctionOptimizer
 		{
 			// Return the found point given the best objective function value.
 			System.out.println("Best optimum: " + optima[0].getValue());
+			if (objective.isRunTwoStageOptimization())
+			{
+				System.out.println("Final run with evaluator: "
+						+ originalEvaluator.getClass().getSimpleName());
+				objective.setEvaluator(originalEvaluator);
+				optima[0] = doSingleStart(objective, startPoint,
+						objective.getMaxEvaluations() / 30,
+						optima[0].getPoint());
+			}
 		}
 
 		return optima[0];
+	}
+
+	protected static PointValuePair doSingleStart(
+			BaseObjectiveFunction objective, double[] startPoint,
+			int maxEvaluations, double[] nextStart)
+	{
+		singleRunEvaluations = 0;
+		PointValuePair result = null;
+		try
+		{
+			int numVariables = objective.getNrDimensions();
+			if (numVariables > 1) // Use BOBYQA
+			{
+				double trustRegion = objective
+						.getInitialTrustRegionRadius(nextStart);
+				double stoppingTrustRegion = objective
+						.getStoppingTrustRegionRadius();
+				BOBYQAOptimizer optimizer = new BOBYQAOptimizer(
+						objective.getNrInterpolations(), trustRegion,
+						stoppingTrustRegion);
+				result = optimizer.optimize(
+						GoalType.MINIMIZE,
+						new ObjectiveFunction(objective),
+						new MaxEval(maxEvaluations),
+						MaxIter.unlimited(),
+						new InitialGuess(nextStart),
+						new SimpleBounds(objective.getLowerBounds(), objective
+								.getUpperBounds()));
+				singleRunEvaluations = optimizer.getEvaluations();
+			}
+			else
+			// Use Brent
+			{
+				BrentOptimizer optimizer = new BrentOptimizer(1.e-6, 1.e-14);
+				UnivariatePointValuePair outcome = optimizer.optimize(
+						GoalType.MINIMIZE, new UnivariateObjectiveFunction(
+								objective),
+						new MaxEval(objective.getMaxEvaluations()), MaxIter
+								.unlimited(),
+						new SearchInterval(objective.getLowerBounds()[0],
+								objective.getUpperBounds()[0], startPoint[0]));
+				result = new PointValuePair(
+						new double[] { outcome.getPoint() }, outcome.getValue());
+				singleRunEvaluations = optimizer.getEvaluations();
+			}
+			double value = result.getValue();
+			if (value == Double.POSITIVE_INFINITY)
+			{
+				System.out.print("no valid solution found");
+			}
+			else
+			{
+				System.out.print("optimum " + result.getValue());
+			}
+		}
+		catch (TooManyEvaluationsException e)
+		{
+			System.out.print("Exception: " + e.getMessage());
+		}
+		// Thrown by BOBYQA for no apparent reason: a bug?
+		catch (NoSuchElementException e)
+		{
+			System.out.print("no valid solution found");
+		}
+		catch (Exception e)
+		{
+			System.out.print("Exception: " + e.getMessage());
+			// e.printStackTrace();
+		}
+		finally
+		{
+			System.out.println(" at start point " + Arrays.toString(nextStart));
+		}
+
+		return result;
 	}
 
 	/**

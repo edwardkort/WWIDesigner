@@ -7,12 +7,23 @@ v1.0.6 changes
 Bugs fixed:
 Issue #26: Added checking to Instrument.checkValidity to
   enforce physical limitations on instrument geometry.
+Issue #33: Step changes in bore profile throw divide-by-zero
+  exceptions. At several levels, step changes are trapped and
+  converted to very small-length tapers.	
+Issue #35: NAF taper optimizers do not behave well in
+  multi-start optimizations. Headspace was not being handles
+  correctly during the optimization.
 Enhancements
 Issue #31: Explicit support for a hemispherical bore top.
   Added a button in the NAF instrument view that creates the
   bore points for a hemispherical bore top. Created two new
   taper optimizers (hole grouping and no grouping) that create
   a hemispherical bore top as part of the optimization process.
+Issue #36: Multi-start optimization is too slow for NAF taper
+  optimizers. Set multi-start to use a less accurate but much
+  faster evaluation method for each start, doing a final
+  optimization, with the best start, using the accurate
+  evaluation method.  
 
 v1.0.5 changes
 Bugs fixed:

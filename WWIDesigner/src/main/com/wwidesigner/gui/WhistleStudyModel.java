@@ -263,18 +263,8 @@ public class WhistleStudyModel extends StudyModel
 				break;
 
 			case "HolePositionObjectiveFunction":
-				if (optimizer == ROUGH_CUT_OPT_SUB_CATEGORY_ID)
-				{
-					// For a rough-cut optimization, optimize reactance.
-					// Although this is inaccurate, since it seeks fmax rather
-					// than nominal playing frequency, it is much faster.
-					evaluator = new ReactanceEvaluator(calculator);
-				}
-				else
-				{
-					evaluator = new CentDeviationEvaluator(calculator,
-							getInstrumentTuner());
-				}
+				evaluator = new CentDeviationEvaluator(calculator,
+						getInstrumentTuner());
 				objective = new HolePositionObjectiveFunction(calculator,
 						tuning, evaluator);
 				// Bounds are hole separations, expressed in meters.
@@ -292,9 +282,15 @@ public class WhistleStudyModel extends StudyModel
 				}
 
 				// For a rough-cut optimization, use multi-start optimization.
+				// Optimize reactance in the first stage. Although this is
+				// inaccurate, since it seeks fmax rather than nominal playing
+				// frequency, it is much faster.
 
 				if (optimizer == ROUGH_CUT_OPT_SUB_CATEGORY_ID)
 				{
+					objective.setRunTwoStageOptimization(true);
+					objective.setFirstStageEvaluator(
+							new ReactanceEvaluator(calculator));
 					int nrOfStarts = 4 * numberOfHoles;
 					GridRangeProcessor rangeProcessor = new GridRangeProcessor(
 							lowerBound, upperBound, null, nrOfStarts);

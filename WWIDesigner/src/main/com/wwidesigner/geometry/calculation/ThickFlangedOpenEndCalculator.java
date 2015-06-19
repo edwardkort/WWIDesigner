@@ -1,6 +1,7 @@
 package com.wwidesigner.geometry.calculation;
 
 import org.apache.commons.math3.complex.Complex;
+import org.apache.commons.math3.util.FastMath;
 
 import com.wwidesigner.geometry.Termination;
 import com.wwidesigner.math.StateVector;
@@ -32,7 +33,7 @@ public class ThickFlangedOpenEndCalculator extends TerminationCalculator
 		double delta_0 = 0.6133;
 
 		double delta_circ = delta_inf + a_b * (delta_0 - delta_inf) + 0.057
-				* a_b * (1 - Math.pow(a_b, 5));
+				* a_b * (1 - FastMath.pow(a_b, 5));
 		double R0 = (1 + 0.2 * ka - 0.084 * ka * ka)
 				/ (1 + 0.2 * ka + (0.5 - 0.084) * ka * ka);
 

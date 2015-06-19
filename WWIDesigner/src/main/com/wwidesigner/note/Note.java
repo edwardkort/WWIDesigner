@@ -5,6 +5,8 @@ package com.wwidesigner.note;
 
 import java.io.Serializable;
 
+import org.apache.commons.math3.util.FastMath;
+
 import com.wwidesigner.util.Constants;
 
 /**
@@ -115,7 +117,7 @@ public class Note implements Serializable
 
 	public static double cents(double f1, double f2)
 	{
-		return Math.log(f2 / f1) / Constants.LOG2 * Constants.CENTS_IN_OCTAVE;
+		return FastMath.log(f2 / f1) / Constants.LOG2 * Constants.CENTS_IN_OCTAVE;
 	}
 
 }

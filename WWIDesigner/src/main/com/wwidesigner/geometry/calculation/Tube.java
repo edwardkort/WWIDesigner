@@ -19,6 +19,7 @@
 package com.wwidesigner.geometry.calculation;
 
 import org.apache.commons.math3.complex.Complex;
+import org.apache.commons.math3.util.FastMath;
 
 import com.wwidesigner.math.TransferMatrix;
 import com.wwidesigner.util.PhysicalParameters;
@@ -75,7 +76,7 @@ public class Tube
 			double length, double radius, PhysicalParameters params)
 	{
 		double Zc = params.calcZ0(radius);
-		double epsilon = params.getAlphaConstant()/(radius * Math.sqrt(waveNumber));
+		double epsilon = params.getAlphaConstant()/(radius * FastMath.sqrt(waveNumber));
 		Complex gammaL = new Complex( epsilon, 1.0+epsilon ).multiply( waveNumber * length );
 		Complex coshL = gammaL.cosh();
 		Complex sinhL = gammaL.sinh();
@@ -104,16 +105,17 @@ public class Tube
 		}
 
 		// Mean complex wave vector along the whole cone, from Lefebvre and Kergomard.
-		double alpha_0 = params.getAlphaConstant()/Math.sqrt(waveNumber);
+		double alpha_0 = params.getAlphaConstant()/FastMath.sqrt(waveNumber);
 		double epsilon;
-		if (Math.abs(loadRadius - sourceRadius) <= 0.00001 * sourceRadius)
+		if (FastMath.abs(loadRadius - sourceRadius) <= 0.00001 * sourceRadius)
 		{
 			// Use limiting value as loadRadius approaches sourceRadius.
 			epsilon = alpha_0/loadRadius;
 		}
 		else
 		{
-			epsilon = alpha_0/(loadRadius - sourceRadius) * Math.log(loadRadius/sourceRadius);
+			epsilon = alpha_0 / (loadRadius - sourceRadius)
+					* FastMath.log(loadRadius / sourceRadius);
 		}
 		Complex mean = new Complex( 1.0 + epsilon, - epsilon );
 		Complex kMeanL;

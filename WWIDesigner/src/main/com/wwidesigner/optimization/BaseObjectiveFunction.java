@@ -23,6 +23,7 @@ import java.util.List;
 import org.apache.commons.math3.analysis.MultivariateFunction;
 import org.apache.commons.math3.analysis.UnivariateFunction;
 import org.apache.commons.math3.exception.DimensionMismatchException;
+import org.apache.commons.math3.util.FastMath;
 
 import com.wwidesigner.geometry.Instrument;
 import com.wwidesigner.modelling.EvaluatorInterface;
@@ -283,7 +284,7 @@ public abstract class BaseObjectiveFunction implements MultivariateFunction,
 		{
 			// Typical population size used for CMAES.
 			// return 4 + (int) (3 * Math.log(nrDimensions));
-			return 5 + (int) (5 * Math.log(nrDimensions));
+			return 5 + (int) (5 * FastMath.log(nrDimensions));
 		}
 
 		if (optimizerType.equals(OptimizerType.BOBYQAOptimizer)

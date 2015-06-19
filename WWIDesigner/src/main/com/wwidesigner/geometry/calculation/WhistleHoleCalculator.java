@@ -19,6 +19,7 @@
 package com.wwidesigner.geometry.calculation;
 
 import org.apache.commons.math3.complex.Complex;
+import org.apache.commons.math3.util.FastMath;
 
 import com.wwidesigner.geometry.Hole;
 import com.wwidesigner.math.TransferMatrix;
@@ -71,17 +72,17 @@ public class WhistleHoleCalculator extends HoleCalculator
 		if (hole.isOpenHole()) // open
 		{
 			double fx = -0.044+delta*(0.269+delta*(-1.519+delta*(2.332+delta*(-1.897+delta*0.560))));
-			double gx = 1 - Math.tanh(0.788*hole.getHeight()/radius);
+			double gx = 1 - FastMath.tanh(0.788*hole.getHeight()/radius);
 			double hx = 1.643+delta*(-0.684+delta*(0.182+delta*(-0.394+delta*(0.295-delta*0.063))));
 			double te = hole.getHeight() + radius * ( 1 + fx*gx ) * hx;
 			double kb = waveNumber * radius;
 			double xhi = 0.25 * kb * kb;
 
-			fx = 1 + (0.261-delta*0.022)*(1-Math.tanh(2.364*hole.getHeight()/radius));
+			fx = 1 + (0.261-delta*0.022)*(1-FastMath.tanh(2.364*hole.getHeight()/radius));
 			gx = 0.302+delta*(-0.010-delta*0.006);
 			ta = - fx * gx * radius * delta * delta * delta * delta;
 
-			Ys = Complex.ONE.divide( Complex.I.multiply(Math.tan(waveNumber * te)).add(xhi).multiply(Z0h) );
+			Ys = Complex.ONE.divide( Complex.I.multiply(FastMath.tan(waveNumber * te)).add(xhi).multiply(Z0h) );
 
 		}
 		else
@@ -99,11 +100,11 @@ public class WhistleHoleCalculator extends HoleCalculator
 				Ys = Complex.ZERO;
 			}
 			else {
-				double fx = 1 - (0.956 - 0.104*delta)*(1-Math.tanh(2.390*hole.getHeight()/radius));
+				double fx = 1 - (0.956 - 0.104*delta)*(1-FastMath.tanh(2.390*hole.getHeight()/radius));
 				double gx = 0.299 + delta*(-0.018 + 0.006*delta);
 				ta = (-fx*gx) * radius * delta*delta*delta*delta;
 				Ys = Complex.valueOf( 0, 
-						Math.tan(waveNumber * (te-AssumedFingerSize)) / Z0h );
+						FastMath.tan(waveNumber * (te-AssumedFingerSize)) / Z0h );
 			}
 		}
 
@@ -158,16 +159,16 @@ public class WhistleHoleCalculator extends HoleCalculator
 			double ka = waveNumber * boreRadius;
 			double xhi = 0.25 * kb * kb;
 
-			ta = (-0.35 + 0.06 * Math.tanh(2.7 * hole.getHeight() / radius))
+			ta = (-0.35 + 0.06 * FastMath.tanh(2.7 * hole.getHeight() / radius))
 					* radius * delta * delta * delta * delta;
 
 			Complex Zr = Complex.I.multiply(waveNumber * RadiationEndCorrection * radius)
 					.add(xhi);
 
-			Complex Zo = (Zr.multiply(Math.cos(waveNumber * te)).add(Complex.I
-					.multiply(Math.sin(waveNumber * te)))).divide(Complex.I
-					.multiply(Zr).multiply(Math.sin(waveNumber * te))
-					.add(Math.cos(waveNumber * te)));
+			Complex Zo = (Zr.multiply(FastMath.cos(waveNumber * te)).add(Complex.I
+					.multiply(FastMath.sin(waveNumber * te)))).divide(Complex.I
+					.multiply(Zr).multiply(FastMath.sin(waveNumber * te))
+					.add(FastMath.cos(waveNumber * te)));
 
 			double ti = radius
 					* (0.822 - 0.10 * delta - 1.57 * delta * delta + 2.14
@@ -191,18 +192,18 @@ public class WhistleHoleCalculator extends HoleCalculator
 				Ys = Complex.ZERO;
 			}
 			else {
-				ta = (-0.12 - 0.17 * Math.tanh(2.4 * ( hole.getHeight() - AssumedFingerSize ) / radius))
+				ta = (-0.12 - 0.17 * FastMath.tanh(2.4 * ( hole.getHeight() - AssumedFingerSize ) / radius))
 						* radius * delta * delta * delta * delta;
 				Ys = Complex.valueOf( 0, 
-						Math.tan(waveNumber * (te-AssumedFingerSize)) / Z0h );
+						FastMath.tan(waveNumber * (te-AssumedFingerSize)) / Z0h );
 			}
 		}
 		else
 		{
 			// Tonehole closed by key.
-			ta = (-0.12 - 0.17 * Math.tanh(2.4 * hole.getHeight() / radius))
+			ta = (-0.12 - 0.17 * FastMath.tanh(2.4 * hole.getHeight() / radius))
 					* radius * delta * delta * delta * delta;
-			Ys = Complex.valueOf( 0, Math.tan(waveNumber * te) / Z0h );
+			Ys = Complex.valueOf( 0, FastMath.tan(waveNumber * te) / Z0h );
 		}
 
 		Za = Complex.I.multiply(Z0h * waveNumber * ta);

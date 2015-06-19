@@ -18,8 +18,13 @@
  */
 package com.wwidesigner.geometry.calculation;
 
-import org.apache.commons.math3.complex.Complex;
+import java.util.List;
 
+import org.apache.commons.math3.complex.Complex;
+import org.apache.commons.math3.util.FastMath;
+
+import com.wwidesigner.geometry.BoreSection;
+import com.wwidesigner.geometry.ComponentInterface;
 import com.wwidesigner.geometry.Mouthpiece;
 import com.wwidesigner.math.StateVector;
 import com.wwidesigner.math.TransferMatrix;
@@ -42,7 +47,7 @@ public class SimpleFippleMouthpieceCalculator extends MouthpieceCalculator
 	 * com.wwidesigner.util.PhysicalParameters)
 	 */
 	@Override
-	public TransferMatrix calcTransferMatrix(Mouthpiece mouthpiece,
+	protected TransferMatrix calcTransferMatrix(Mouthpiece mouthpiece,
 			double waveNumber, PhysicalParameters parameters)
 	{
 		double freq = parameters.calcFrequency(waveNumber);
@@ -50,6 +55,41 @@ public class SimpleFippleMouthpieceCalculator extends MouthpieceCalculator
 		Complex Zwindow = calcZ(mouthpiece, freq, parameters);
 		
 		return new TransferMatrix(Complex.ONE, Zwindow, Complex.ZERO, Complex.ONE);		
+	}
+	
+	@Override
+	public StateVector calcStateVector(StateVector boreState,
+			Mouthpiece mouthpiece, double waveNumber,
+			PhysicalParameters parameters)
+	{
+		StateVector sv = boreState;
+		List<BoreSection> headspace = mouthpiece.getHeadspace();
+		if (headspace.size() > 0)
+		{
+			// If we have headspace, assume a closed upper end,
+			// and multiply by transfer matrices of each
+			// bore segment in the headspace.
+
+			StateVector headspaceState = StateVector.ClosedEnd();
+			TransferMatrix tm;
+			for (int componentNr = 0; componentNr < headspace.size(); ++componentNr)
+			{
+				ComponentInterface component = headspace.get(componentNr);
+				assert component instanceof BoreSection;
+				BoreSection section = (BoreSection) component;
+				tm = Tube.calcConeMatrix(waveNumber, section.getLength(),
+						section.getRightRadius(), section.getLeftRadius(),
+						parameters);
+				headspaceState = tm.multiply(headspaceState);
+			}
+
+			// Assume the mouthpiece sees the bore impedance in parallel with
+			// the headspace impedance.
+			sv = boreState.parallel(headspaceState);
+		}
+		sv = calcTransferMatrix(mouthpiece, waveNumber, parameters)
+				.multiply(sv);
+		return sv;
 	}
 
 	/*
@@ -75,7 +115,7 @@ public class SimpleFippleMouthpieceCalculator extends MouthpieceCalculator
 			double freq, PhysicalParameters physicalParams)
 	{
 		// Reactance modeled from measurements of real whistles.
-		double effSize = Math.sqrt(mouthpiece.getFipple().getWindowLength()
+		double effSize = FastMath.sqrt(mouthpiece.getFipple().getWindowLength()
 				* mouthpiece.getFipple().getWindowWidth() );
 		// Model for use in absence of blade height measurement.
 		double windowHeight;
@@ -103,7 +143,7 @@ public class SimpleFippleMouthpieceCalculator extends MouthpieceCalculator
 		// Resistance modeled as short cylindrical tube with same area as window.
 		double Rw = physicalParams.getRho()
 				* ( 6.42 * freq*freq/physicalParams.getSpeedOfSound()
-						+ 0.0184 * Math.sqrt(freq)*windowHeight
+						+ 0.0184 * FastMath.sqrt(freq)*windowHeight
 							/ (effSize*effSize*effSize));
 		return new Complex(Rw,Xw);
 	}
@@ -113,8 +153,8 @@ public class SimpleFippleMouthpieceCalculator extends MouthpieceCalculator
 	{
 		// Assume the open window acts as a flanged tube with an effective radius
 		// that corresponds to the window area.
-		double effRadius = Math.sqrt(mouthpiece.getFipple().getWindowLength()
-				* mouthpiece.getFipple().getWindowWidth() / Math.PI );
+		double effRadius = FastMath.sqrt(mouthpiece.getFipple().getWindowLength()
+				* mouthpiece.getFipple().getWindowWidth() / FastMath.PI );
 		double waveNumber = physicalParams.calcWaveNumber(freq);
 
 		StateVector sv = new StateVector(

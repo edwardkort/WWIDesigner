@@ -33,6 +33,7 @@ import com.jidesoft.app.framework.DataModelException;
 import com.jidesoft.app.framework.gui.DataViewPane;
 import com.wwidesigner.gui.util.DataChangedEvent;
 import com.wwidesigner.gui.util.DataChangedListener;
+import com.wwidesigner.note.Fingering;
 import com.wwidesigner.note.Tuning;
 import com.wwidesigner.note.bind.NoteBindFactory;
 import com.wwidesigner.note.view.TuningPanel;
@@ -154,6 +155,15 @@ public class ContainedTuningView extends ContainedXmlView implements DataChanged
 	public Component getViewComponent()
 	{
 		return myPanel;
+	}
+	
+	/**
+	 * @return	The fingering from the first selected row of the fingering table,
+	 * 		 	or from the first row, if no rows are selected.
+	 */
+	public Fingering getSelectedFingering()
+	{
+		return tuningPanel.getSelectedFingering();
 	}
 
 	@Override

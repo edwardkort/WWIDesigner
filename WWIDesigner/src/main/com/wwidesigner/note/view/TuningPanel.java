@@ -24,6 +24,8 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.io.File;
+import java.util.Arrays;
+
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -150,6 +152,30 @@ public class TuningPanel extends FingeringPatternPanel
 		fingerings.setFingering(getTableData());
 
 		return fingerings;
+	}
+	
+	/**
+	 * @return	The fingering from the first selected row of the fingering table,
+	 * 		 	or from the first row, if no rows are selected.
+	 */
+	public Fingering getSelectedFingering()
+	{
+		int row;
+		int[] selectedRows = fingeringList.getSelectedRows();
+		if (selectedRows.length == 0)
+		{
+			row = 0;
+		}
+		else
+		{
+			if (selectedRows.length > 1)
+			{
+				Arrays.sort(selectedRows);
+			}
+			row = selectedRows[0];
+		}
+		DefaultTableModel model = (DefaultTableModel) fingeringList.getModel();
+		return getRowData(model, row);
 	}
 
 	protected DefaultTableModel getTableModel()

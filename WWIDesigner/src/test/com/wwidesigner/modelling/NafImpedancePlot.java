@@ -48,7 +48,7 @@ public class NafImpedancePlot
 			for ( int noteIndex : NoteIndexList )
 			{
 				PlayingRangeSpectrum spectrum = new PlayingRangeSpectrum();
-				spectrum.plot(calculator, tuning.getFingering().get(noteIndex), FreqRange);
+				spectrum.plot(calculator, tuning.getFingering().get(noteIndex), FreqRange, 600, true);
 			}
 		}
 		catch (Exception e)

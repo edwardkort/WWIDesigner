@@ -107,4 +107,8 @@ public class XmlToggleView extends DataViewPane
 		return currentView.getText();
 	}
 
+	public ContainedXmlView getCurrentView()
+	{
+		return currentView;
+	}
 }

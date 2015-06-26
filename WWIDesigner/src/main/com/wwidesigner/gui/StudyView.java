@@ -59,6 +59,7 @@ import com.wwidesigner.geometry.Instrument;
 import com.wwidesigner.gui.util.DataOpenException;
 import com.wwidesigner.gui.util.HoleNumberMismatchException;
 import com.wwidesigner.modelling.SketchInstrument;
+import com.wwidesigner.note.Fingering;
 import com.wwidesigner.optimization.Constraints;
 import com.wwidesigner.util.Constants.LengthType;
 import com.wwidesigner.util.InvalidFieldException;
@@ -233,6 +234,7 @@ public class StudyView extends DataViewPane implements EventSubscriber
 		boolean isInstrumentSelected = false;
 		boolean canDoTuning = false;
 		boolean canDoOptimization = false;
+		boolean canGraphNote = false;
 		String selectedInstrumentName;
 		selectedInstrumentName = study.getSelectedInstrumentName();
 		isInstrumentSelected = selectedInstrumentName != null;
@@ -243,6 +245,7 @@ public class StudyView extends DataViewPane implements EventSubscriber
 			{
 				canDoOptimization = study.canOptimize();
 			}
+			canGraphNote = getSelectedFingering() != null;
 		}
 		else
 		{
@@ -265,6 +268,8 @@ public class StudyView extends DataViewPane implements EventSubscriber
 		getApplication().getEventManager()
 				.publish(WIDesigner.INSTRUMENT_SELECTED_EVENT_ID,
 						selectedInstrumentName);
+		getApplication().getEventManager().publish(
+				WIDesigner.NOTE_SELECTED_EVENT_ID, canGraphNote);
 	}
 	
 	@Override
@@ -432,6 +437,48 @@ public class StudyView extends DataViewPane implements EventSubscriber
 					.getApplicationLengthType();
 			study.compareInstrument(data.getName(), instrument2,
 					defaultLengthType);
+		}
+		catch (Exception e)
+		{
+			showException(e);
+		}
+	}
+	
+	public Fingering getSelectedFingering()
+	{
+		FileBasedApplication app = (FileBasedApplication) getApplication();
+		if (app == null)
+		{
+			return null;
+		}
+		DataModel data = app.getFocusedModel();
+		if (data == null)
+		{
+			return null;
+		}
+		DataView view = app.getDataView(data);
+		if (view == null)
+		{
+			return null;
+		}
+		ContainedXmlView contained = ((XmlToggleView) view).getCurrentView();
+		if (contained instanceof ContainedTuningView)
+		{
+			return ((ContainedTuningView) contained).getSelectedFingering();
+		}
+		else if (contained instanceof ContainedNafTuningView)
+		{
+			return ((ContainedNafTuningView) contained).getSelectedFingering();
+		}
+		return null;
+	}
+
+	public void graphNote()
+	{
+		try
+		{
+			Fingering fingering = getSelectedFingering();
+			study.graphNote(fingering);
 		}
 		catch (Exception e)
 		{

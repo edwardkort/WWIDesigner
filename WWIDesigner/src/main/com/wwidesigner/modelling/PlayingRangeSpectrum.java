@@ -104,14 +104,17 @@ public class PlayingRangeSpectrum
 		mImpedance = spectrum;
 	}
 
-	protected void plotImpedanceSpectrum()
+	protected void plotImpedanceSpectrum(final boolean exitOnClose)
 	{
 		SwingUtilities.invokeLater(new Runnable()
 		{
 			public void run()
 			{
 				JFrame frame = new JFrame("Impedance Spectrum for " + mName);
-				frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+				if (exitOnClose)
+				{
+					frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+				}
 				frame.setSize(800, 600);
 				DefaultChartModel modelReal = new DefaultChartModel("Real");
 				DefaultChartModel modelImag = new DefaultChartModel("Imaginary");
@@ -141,23 +144,26 @@ public class PlayingRangeSpectrum
 		});
 	}
 
-	protected void plotPlayingRange()
+	protected void plotPlayingRange(final boolean exitOnClose)
 	{
 		SwingUtilities.invokeLater(new Runnable()
 		{
 			public void run()
 			{
 				JFrame frame = new JFrame("Playing Ranges for " + mName);
-				frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+				if (exitOnClose)
+				{
+					frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+				}
 				frame.setSize(800, 600);
 				DefaultChartModel modelRatio = new DefaultChartModel(
-						"Impedance Im/Re");
+						"Impedance Imag/Real");
 				DefaultChartModel modelGain = new DefaultChartModel(
 						"Loop Gain >= 1");
 				DefaultChartModel modelGainLow = new DefaultChartModel(
 						"Loop Gain < 1");
 				DefaultChartModel modelActuals = new DefaultChartModel(
-						"Actual Freq");
+						"Actual Frequency");
 				for (Map.Entry<Double, Complex> point : mImpedance.entrySet())
 				{
 					double x = point.getKey();
@@ -180,7 +186,7 @@ public class PlayingRangeSpectrum
 				}
 				for ( Double freq : actuals )
 				{
-					modelActuals.addPoint(freq,-1.0);
+					modelActuals.addPoint(freq,-0.4);
 				}
 
 				Chart chart = new Chart();
@@ -197,8 +203,8 @@ public class PlayingRangeSpectrum
 					chart.addModel(modelActuals,styleActuals);
 				}
 				chart.getXAxis().setLabel("Frequency");
-				chart.getYAxis().setLabel("Impedance Ratio/Gain");
-				chart.setTitle("Playing Ranges");
+				chart.getYAxis().setLabel("Impedance Ratio, Gain");
+				chart.setTitle("Note Spectrum");
 				Legend legend = new Legend(chart);
 				chart.addDrawable(legend);
 				legend.setLocation(200, 50);
@@ -214,9 +220,9 @@ public class PlayingRangeSpectrum
 	 * @param calculator
 	 * @param fingering
 	 */
-	public void plot(InstrumentCalculator calculator, Fingering fingering )
+	public void plot(InstrumentCalculator calculator, Fingering fingering)
 	{
-		plot(calculator, fingering, 4./3., 600);
+		plot(calculator, fingering, 4./3., 600, true);
 	}
 
 	/**
@@ -227,9 +233,9 @@ public class PlayingRangeSpectrum
 	 * @param freqRange - Relative range of frequencies to plot above and below fingering.
 	 */
 	public void plot(InstrumentCalculator calculator, Fingering fingering, 
-			double freqRange )
+			double freqRange)
 	{
-		plot(calculator, fingering, freqRange, 600);
+		plot(calculator, fingering, freqRange, 600, true);
 	}
 
 	/**
@@ -240,7 +246,7 @@ public class PlayingRangeSpectrum
 	 * @param numberPoints - number of points to calculate for plotting.
 	 */
 	public void plot(InstrumentCalculator calculator, Fingering fingering, 
-			double freqRange, int numberPoints )
+			double freqRange, int numberPoints, final boolean exitOnClose)
 	{
 		double targetFreq;
 		if ( fingering.getNote().getFrequency() != null )
@@ -263,7 +269,7 @@ public class PlayingRangeSpectrum
 		calcImpedance(calculator, fingering, freqStart, freqEnd,
 				numberPoints);
 		// plotImpedanceSpectrum();
-		plotPlayingRange();
+		plotPlayingRange(exitOnClose);
 
 	}
 	

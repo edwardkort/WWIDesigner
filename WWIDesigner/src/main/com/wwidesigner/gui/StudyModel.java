@@ -45,6 +45,8 @@ import com.wwidesigner.gui.util.DataOpenException;
 import com.wwidesigner.gui.util.HoleNumberMismatchException;
 import com.wwidesigner.modelling.InstrumentCalculator;
 import com.wwidesigner.modelling.InstrumentTuner;
+import com.wwidesigner.modelling.PlayingRangeSpectrum;
+import com.wwidesigner.note.Fingering;
 import com.wwidesigner.note.Tuning;
 import com.wwidesigner.note.bind.NoteBindFactory;
 import com.wwidesigner.optimization.BaseObjectiveFunction;
@@ -64,6 +66,10 @@ import com.wwidesigner.util.PhysicalParameters;
  */
 public abstract class StudyModel implements CategoryType
 {
+	// Parameters for plotting impedance spectrum.
+	protected static final double SPECTRUM_FREQUENCY_RANGE = 2.0;		// Plot one octave above and below.
+	protected static final int SPECTRUM_NUMBER_OF_POINTS = 600;	// Number of points to plot.
+	
 	// Preferences.
 	protected BaseObjectiveFunction.OptimizerType preferredOptimizerType;
 
@@ -798,6 +804,21 @@ public abstract class StudyModel implements CategoryType
 
 		tuner.plotTuning(title + ": " + instrumentName + "/" + tuningName,
 				false);
+	}
+	
+	public void graphNote(Fingering fingering) throws Exception
+	{
+		Instrument instrument = getInstrument();
+		if (instrument.getHole().size() != fingering.getNumberOfHoles())
+		{
+			throw new HoleNumberMismatchException("Tuning file has "
+					+ fingering.getNumberOfHoles() + " holes, Instrument has "
+					+ instrument.getHole().size() + " holes.");
+		}
+		InstrumentCalculator calculator = getCalculator();
+		calculator.setInstrument(instrument);
+		PlayingRangeSpectrum spectrum = new PlayingRangeSpectrum();
+		spectrum.plot(calculator, fingering, SPECTRUM_FREQUENCY_RANGE, SPECTRUM_NUMBER_OF_POINTS, false);
 	}
 
 	public String getDefaultConstraints(Object... parentFrame) throws Exception

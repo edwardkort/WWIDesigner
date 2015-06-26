@@ -101,11 +101,13 @@ public class WIDesigner extends FileBasedApplication implements EventSubscriber
 	static final String CONSTRAINTS_SAVE_AS_ACTIVE_EVENT_ID = "ConstraintsSaveAsActive";
 	static final String INSTRUMENT_IN_FOCUS_EVENT_ID = "InstrumentInFocus";
 	static final String INSTRUMENT_SELECTED_EVENT_ID = "InstrumentSelected";
+	static final String NOTE_SELECTED_EVENT_ID = "NoteSelected";
 
 	static final String CONSOLE_ACTION_ID = "Console";
 	static final String STUDY_ACTION_ID = "Study";
 	static final String CALCULATE_TUNING_ACTION_ID = "Calculate tuning";
 	static final String GRAPH_TUNING_ACTION_ID = "Graph tuning";
+	static final String GRAPH_NOTE_ACTION_ID = "Graph note spectrum";
 	static final String OPTIMIZE_INSTRUMENT_ACTION_ID = "Optimize instrument";
 	static final String SKETCH_INSTRUMENT_ACTION_ID = "Sketch instrument";
 	static final String CREATE_INSTRUMENT_FILE_ACTION_ID = "New Instrument";
@@ -194,6 +196,7 @@ public class WIDesigner extends FileBasedApplication implements EventSubscriber
 		addCalculateTuningAction();
 		addGraphTuningAction();
 		addOptimizeInstrumentAction();
+		addGraphNoteAction();
 		addSketchInstrumentAction();
 		addCreatingTuningFileAction();
 		addCompareInstrumentsAction();
@@ -233,6 +236,8 @@ public class WIDesigner extends FileBasedApplication implements EventSubscriber
 							SKETCH_INSTRUMENT_ACTION_ID);
 					button = toolbarsUI.addToolBarButton(toolbar,
 							COMPARE_INSTRUMENT_ACTION_ID);
+					button = toolbarsUI.addToolBarButton(toolbar,
+							GRAPH_NOTE_ACTION_ID);
 					toolbarsUI.addToolBarSeparator(toolbar);
 					button = toolbarsUI.addToolBarButton(toolbar,
 							TOGGLE_VIEW_ACTION_ID);
@@ -270,6 +275,9 @@ public class WIDesigner extends FileBasedApplication implements EventSubscriber
 				menuItem = menu
 						.add(menuBarUI.getAction(GRAPH_TUNING_ACTION_ID));
 				menuItem.setMnemonic('G');
+				menuItem = menu
+						.add(menuBarUI.getAction(GRAPH_NOTE_ACTION_ID));
+				menuItem.setMnemonic('n');
 				menuItem = menu.add(menuBarUI
 						.getAction(OPTIMIZE_INSTRUMENT_ACTION_ID));
 				menuItem.setMnemonic('O');
@@ -812,6 +820,48 @@ public class WIDesigner extends FileBasedApplication implements EventSubscriber
 		getActionMap().put(CALCULATE_TUNING_ACTION_ID, action);
 	}
 
+	protected void addGraphNoteAction()
+	{
+		Action action;
+		String message;
+		URL imageUrl;
+		final Activity graphActivity = new Activity(GRAPH_NOTE_ACTION_ID)
+		{
+
+			@Override
+			public void activityPerformed() throws Exception
+			{
+				StudyView studyView = getStudyView();
+				if (studyView != null)
+				{
+					studyView.graphNote();
+				}
+			}
+		};
+		message = "Calculating instrument tuning.\nThis may take several seconds.";
+		graphActivity.addProgressListener(new BlockingProgressListener(
+				getApplicationUIManager().getWindowsUI(),
+				GRAPH_NOTE_ACTION_ID, message));
+		action = new ActivityAction(graphActivity)
+		{
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				getActivityManager().run(graphActivity);
+			}
+		};
+		action.putValue(Action.SHORT_DESCRIPTION,
+				"Graph the spectrum of selected note in the current tuning tab");
+		imageUrl = WIDesigner.class.getResource("images/spectrum.png");
+		if (imageUrl != null)
+		{
+			action.putValue(Action.SMALL_ICON, new ImageIcon(imageUrl));
+			action.putValue(Action.LARGE_ICON_KEY, new ImageIcon(imageUrl));
+		}
+		action.setEnabled(false);
+		getActionMap().put(GRAPH_NOTE_ACTION_ID, action);
+	}
+
 	protected void addWindowMenuToggles()
 	{
 		Action action = new ToggleFrameAction(CONSOLE_ACTION_ID, true);
@@ -838,6 +888,7 @@ public class WIDesigner extends FileBasedApplication implements EventSubscriber
 		eventManager.addEvent(CONSTRAINTS_ACTIVE_EVENT_ID);
 		eventManager.addEvent(CONSTRAINTS_SAVE_AS_ACTIVE_EVENT_ID);
 		eventManager.addEvent(INSTRUMENT_SELECTED_EVENT_ID);
+		eventManager.addEvent(NOTE_SELECTED_EVENT_ID);
 
 		eventManager.subscribe(TUNING_ACTIVE_EVENT_ID, this);
 		eventManager.subscribe(OPTIMIZATION_ACTIVE_EVENT_ID, this);
@@ -845,6 +896,7 @@ public class WIDesigner extends FileBasedApplication implements EventSubscriber
 		eventManager.subscribe(CONSTRAINTS_CAN_CREATE_EVENT_ID, this);
 		eventManager.subscribe(CONSTRAINTS_SAVE_AS_ACTIVE_EVENT_ID, this);
 		eventManager.subscribe(INSTRUMENT_SELECTED_EVENT_ID, this);
+		eventManager.subscribe(NOTE_SELECTED_EVENT_ID, this);
 	}
 
 	protected void addListeners()
@@ -946,14 +998,25 @@ public class WIDesigner extends FileBasedApplication implements EventSubscriber
 						action.setEnabled(false);
 					}
 
+					action = getActionMap().get(GRAPH_NOTE_ACTION_ID);
 					if (StudyModel.INSTRUMENT_CATEGORY_ID.equals(model
 							.getSemanticName()))
 					{
 						setCompareInstrumentAction(model.getName(), true);
+						action.setEnabled(false);
 					}
 					else
 					{
 						setCompareInstrumentAction(null, true);
+						if (getStudyView().getStudyModel().getSelectedInstrumentName().isEmpty()
+							|| getStudyView().getSelectedFingering() == null)
+						{
+							action.setEnabled(false);
+						}
+						else
+						{
+							action.setEnabled(true);
+						}
 					}
 				}
 			}
@@ -1195,6 +1258,14 @@ public class WIDesigner extends FileBasedApplication implements EventSubscriber
 			if (action != null)
 			{
 				action.setEnabled(((String) e.getSource()).length() > 0);
+			}
+		}
+		else if (NOTE_SELECTED_EVENT_ID.equals(eventName))
+		{
+			Action action = getActionMap().get(GRAPH_NOTE_ACTION_ID);
+			if (action != null)
+			{
+				action.setEnabled((Boolean) e.getSource());
 			}
 		}
 	}

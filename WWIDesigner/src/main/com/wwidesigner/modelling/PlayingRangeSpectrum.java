@@ -150,7 +150,7 @@ public class PlayingRangeSpectrum
 		{
 			public void run()
 			{
-				JFrame frame = new JFrame("Playing Ranges for " + mName);
+				JFrame frame = new JFrame("Note Spectrum for " + mName);
 				if (exitOnClose)
 				{
 					frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

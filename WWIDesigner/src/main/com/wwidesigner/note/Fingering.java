@@ -88,6 +88,23 @@ public class Fingering implements Serializable
 			addOpenHole(newOpenHole);
 		}
 	}
+	
+	public String toString()
+	{
+		String holeString = "";
+		for (boolean holeOpen : openHole)
+		{
+			if (holeOpen)
+			{
+				holeString += "O";
+			}
+			else
+			{
+				holeString += "X";
+			}
+		}
+		return holeString;
+	}
 
 	public void addOpenHole(Boolean newOpenHole)
 	{

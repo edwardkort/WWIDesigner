@@ -17,6 +17,9 @@ import org.apache.commons.math3.complex.Complex;
 import com.jidesoft.chart.Chart;
 import com.jidesoft.chart.Legend;
 import com.jidesoft.chart.PointShape;
+import com.jidesoft.chart.ZeroAlignedAutoRanger;
+import com.jidesoft.chart.axis.Axis;
+import com.jidesoft.chart.axis.AxisPlacement;
 import com.jidesoft.chart.model.DefaultChartModel;
 import com.jidesoft.chart.style.ChartStyle;
 import com.wwidesigner.note.Fingering;
@@ -55,17 +58,23 @@ public class PlayingRangeSpectrum
 			double freqStart, double freqEnd, int nfreq)
 	{
 		Note myNote = fingering.getNote();
-		if ( myNote.getName() != null )
+		mName = "Note";
+		String holeString = fingering.toString();
+		if (myNote.getName() != null && ! myNote.getName().isEmpty())
 		{
-			mName = myNote.getName();
+			mName += " " + myNote.getName();
+			if (holeString != null && ! holeString.isEmpty())
+			{
+				mName += " (" + holeString + ")";
+			}
 		}
-		else if ( calculator.instrument.getName() != null )
-		{
-			mName = calculator.instrument.getName();
+		else {
+			mName += holeString;				
 		}
-		else 
+		String instrName = calculator.instrument.getName();
+		if (instrName != null && ! instrName.isEmpty())
 		{
-			mName = "Instrument";
+			mName += " on " + instrName;
 		}
 		actuals = new ArrayList<Double>();
 
@@ -137,7 +146,7 @@ public class PlayingRangeSpectrum
 				chart.setTitle("Impedance Spectrum");
 				Legend legend = new Legend(chart);
 				chart.addDrawable(legend);
-				legend.setLocation(200, 50);
+				legend.setLocation(540, 420);
 				frame.setContentPane(chart);
 				frame.setVisible(true);
 			}
@@ -191,23 +200,29 @@ public class PlayingRangeSpectrum
 
 				Chart chart = new Chart();
 				chart.setAutoRanging(true);
+				chart.setAutoRanger(new ZeroAlignedAutoRanger());
+				Axis impedanceAxis = chart.getYAxis();
+				impedanceAxis.setLabel("Impedance Ratio");
+				Axis gainAxis = new Axis("Loop Gain");
+				gainAxis.setPlacement(AxisPlacement.TRAILING);
+				chart.addYAxis(gainAxis);
 				ChartStyle styleRatio = new ChartStyle(Color.black, false, true);
 				ChartStyle styleGain  = new ChartStyle(Color.green, PointShape.CIRCLE);
 				ChartStyle styleGainLow  = new ChartStyle(Color.red, PointShape.CIRCLE);
-				chart.addModel(modelRatio, styleRatio);
-				chart.addModel(modelGain, styleGain);
-				chart.addModel(modelGainLow, styleGainLow);
+				chart.addModel(modelRatio, impedanceAxis, styleRatio);
+				chart.addModel(modelGain, gainAxis, styleGain);
+				chart.addModel(modelGainLow, gainAxis, styleGainLow);
 				if ( actuals.size() > 0 )
 				{
-					ChartStyle styleActuals  = new ChartStyle(Color.yellow, PointShape.DIAMOND, Color.yellow);
-					chart.addModel(modelActuals,styleActuals);
+					ChartStyle styleActuals  = new ChartStyle(Color.gray, PointShape.DIAMOND, Color.gray);
+					styleActuals.setPointSize(8);
+					chart.addModel(modelActuals, impedanceAxis, styleActuals);
 				}
 				chart.getXAxis().setLabel("Frequency");
-				chart.getYAxis().setLabel("Impedance Ratio, Gain");
 				chart.setTitle("Note Spectrum");
 				Legend legend = new Legend(chart);
 				chart.addDrawable(legend);
-				legend.setLocation(200, 50);
+				legend.setLocation(540, 420);
 				frame.setContentPane(chart);
 				frame.setVisible(true);
 			}

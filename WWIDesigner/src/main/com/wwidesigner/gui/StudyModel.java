@@ -67,7 +67,7 @@ import com.wwidesigner.util.PhysicalParameters;
 public abstract class StudyModel implements CategoryType
 {
 	// Parameters for plotting impedance spectrum.
-	protected static final double SPECTRUM_FREQUENCY_RANGE = 2.0;		// Plot one octave above and below.
+	protected static final double SPECTRUM_FREQUENCY_RANGE = 2.25;		// Plot a major 9th above and below.
 	protected static final int SPECTRUM_NUMBER_OF_POINTS = 600;	// Number of points to plot.
 	
 	// Preferences.

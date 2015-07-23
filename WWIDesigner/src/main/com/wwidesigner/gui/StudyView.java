@@ -323,6 +323,18 @@ public class StudyView extends DataViewPane implements EventSubscriber
 		}
 	}
 
+	public void getSupplementaryInfo()
+	{
+		try
+		{
+			study.calculateSupplementaryInfo("Supplementary Information");
+		}
+		catch (Exception ex)
+		{
+			showException(ex);
+		}
+	}
+
 	public void graphTuning()
 	{
 		try

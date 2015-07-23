@@ -46,6 +46,7 @@ import com.wwidesigner.gui.util.HoleNumberMismatchException;
 import com.wwidesigner.modelling.InstrumentCalculator;
 import com.wwidesigner.modelling.InstrumentTuner;
 import com.wwidesigner.modelling.PlayingRangeSpectrum;
+import com.wwidesigner.modelling.SupplementaryInfoTable;
 import com.wwidesigner.note.Fingering;
 import com.wwidesigner.note.Tuning;
 import com.wwidesigner.note.bind.NoteBindFactory;
@@ -786,6 +787,20 @@ public abstract class StudyModel implements CategoryType
 
 		tuner.showTuning(title + ": " + instrumentName + "/" + tuningName,
 				false);
+	}
+	
+	public void calculateSupplementaryInfo(String title) throws Exception
+	{
+		InstrumentCalculator calculator = getCalculator();
+		Category category = this.getCategory(INSTRUMENT_CATEGORY_ID);
+		String instrumentName = category.getSelectedSub();
+		calculator.setInstrument(getInstrument());
+
+		category = getCategory(TUNING_CATEGORY_ID);
+		String tuningName = category.getSelectedSub();
+		SupplementaryInfoTable table = new SupplementaryInfoTable(title + ": " + instrumentName + "/" + tuningName);
+		table.buildTable(getTuning(), calculator);
+		table.showTable(false);
 	}
 
 	public void graphTuning(String title) throws Exception

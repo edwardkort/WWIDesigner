@@ -110,6 +110,7 @@ public class WIDesigner extends FileBasedApplication implements EventSubscriber
 	static final String GRAPH_NOTE_ACTION_ID = "Graph note spectrum";
 	static final String OPTIMIZE_INSTRUMENT_ACTION_ID = "Optimize instrument";
 	static final String SKETCH_INSTRUMENT_ACTION_ID = "Sketch instrument";
+	static final String CALCULATE_SUPPLEMENTARY_INFO_ACTION_ID = "Supplementary Info";
 	static final String CREATE_INSTRUMENT_FILE_ACTION_ID = "New Instrument";
 	static final String CREATE_TUNING_FILE_ACTION_ID = "New Tuning ...";
 	static final String COMPARE_INSTRUMENT_ACTION_ID = "Compare instruments";
@@ -198,6 +199,7 @@ public class WIDesigner extends FileBasedApplication implements EventSubscriber
 		addOptimizeInstrumentAction();
 		addGraphNoteAction();
 		addSketchInstrumentAction();
+		addSupplementaryInfoAction();
 		addCreatingTuningFileAction();
 		addCompareInstrumentsAction();
 		addClearConsoleAction();
@@ -287,6 +289,9 @@ public class WIDesigner extends FileBasedApplication implements EventSubscriber
 				menuItem = menu.add(menuBarUI
 						.getAction(COMPARE_INSTRUMENT_ACTION_ID));
 				menuItem.setMnemonic('m');
+				menuItem = menu.add(menuBarUI
+						.getAction(CALCULATE_SUPPLEMENTARY_INFO_ACTION_ID));
+				menuItem.setMnemonic('u');
 				menu.setMnemonic('T');
 				return new JMenu[] { menu };
 			}
@@ -862,6 +867,51 @@ public class WIDesigner extends FileBasedApplication implements EventSubscriber
 		getActionMap().put(GRAPH_NOTE_ACTION_ID, action);
 	}
 
+	protected void addSupplementaryInfoAction()
+	{
+		Action action;
+		String message;
+		URL imageUrl;
+		// The complexity in this method is due to the poor way that JDAF
+		// threads Actions and Activities.
+		// Anything simpler just didn't work right!
+		final Activity activity = new Activity(CALCULATE_SUPPLEMENTARY_INFO_ACTION_ID)
+		{
+
+			@Override
+			public void activityPerformed() throws Exception
+			{
+				StudyView studyView = getStudyView();
+				if (studyView != null)
+				{
+					studyView.getSupplementaryInfo();
+				}
+			}
+		};
+		message = "Calculating instrument data.\nThis may take several seconds.";
+		activity.addProgressListener(new BlockingProgressListener(
+				getApplicationUIManager().getWindowsUI(),
+				CALCULATE_SUPPLEMENTARY_INFO_ACTION_ID, message));
+		action = new ActivityAction(activity)
+		{
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				getActivityManager().run(activity);
+			}
+		};
+		action.putValue(Action.SHORT_DESCRIPTION,
+				"Calculate table of supplementary information about instrument performance");
+		imageUrl = WIDesigner.class.getResource("images/supplementary.png");
+		if (imageUrl != null)
+		{
+			action.putValue(Action.SMALL_ICON, new ImageIcon(imageUrl));
+			action.putValue(Action.LARGE_ICON_KEY, new ImageIcon(imageUrl));
+		}
+		action.setEnabled(false);
+		getActionMap().put(CALCULATE_SUPPLEMENTARY_INFO_ACTION_ID, action);
+	}
+
 	protected void addWindowMenuToggles()
 	{
 		Action action = new ToggleFrameAction(CONSOLE_ACTION_ID, true);
@@ -1208,6 +1258,11 @@ public class WIDesigner extends FileBasedApplication implements EventSubscriber
 				action.setEnabled((Boolean) e.getSource());
 			}
 			action = getActionMap().get(GRAPH_TUNING_ACTION_ID);
+			if (action != null)
+			{
+				action.setEnabled((Boolean) e.getSource());
+			}
+			action = getActionMap().get(CALCULATE_SUPPLEMENTARY_INFO_ACTION_ID);
 			if (action != null)
 			{
 				action.setEnabled((Boolean) e.getSource());

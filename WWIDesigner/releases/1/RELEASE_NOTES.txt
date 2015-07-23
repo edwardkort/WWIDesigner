@@ -1,7 +1,14 @@
-Release notes for v1.0.6
+Release notes for v1.0.7
 
-This is an update to v1.0.5. Please read UPDATE_README for
+This is an update to v1.0.6. Please read UPDATE_README for
 installation details.
+
+v1.0.7 changes
+Bugs fixed: none
+Enhancements:
+  Added note spectrum graphing capabilities. See
+  https://github.com/edwardkort/WWIDesigner/wiki/Reading-the-Note-Spectrum-Graph
+  for details.
 
 v1.0.6 changes
 Bugs fixed:

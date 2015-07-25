@@ -66,19 +66,31 @@ public class Mouthpiece implements ComponentInterface, MouthpieceInterface,
 	public void setBeta(Double beta)
 	{
 		this.beta = beta;
-		if (this.fipple != null && this.fipple.windwayHeight != null
-				&& beta != null)
+		if (this.fipple != null && this.fipple.windwayHeight != null)
 		{
+			double nominalBeta;
+			if (this.beta == null)
+			{
+				// For instruments without beta,
+				// calculate a gain factor with a default beta.
+				nominalBeta = 0.35;
+			}
+			else
+			{
+				nominalBeta = this.beta;
+			}
 			this.gainFactor = (8.0
 					* this.fipple.windwayHeight
 					* Math.sqrt(2.0 * this.fipple.windwayHeight
 							/ this.fipple.windowLength)
-					* Math.exp(this.beta * this.fipple.windowLength
-							/ this.fipple.windwayHeight) / (this.fipple.windowLength * this.fipple.windowWidth));
+					* Math.exp(nominalBeta * this.fipple.windowLength
+							/ this.fipple.windwayHeight)
+					/ (this.fipple.windowLength * this.fipple.windowWidth));
 		}
 		else
 		{
-			this.gainFactor = 1.0;
+			// Cannot calculate gain.
+			this.gainFactor = null;
 		}
 	}
 
@@ -113,7 +125,7 @@ public class Mouthpiece implements ComponentInterface, MouthpieceInterface,
 		}
 		else
 		{
-			this.beta = 0.3;
+			this.beta = null;
 		}
 	}
 

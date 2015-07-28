@@ -85,7 +85,7 @@ public class WhistleOptimizationTest extends PerturbedInstrumentOptimization
 		Instrument optimizedInstrument = StudyModel.getInstrument(study.optimizeInstrument());
 		
 		// Test final error norm.
-		assertEquals("Final error norm incorrect", 836.8, study.getFinalNorm(), 1.0);
+		assertEquals("Final error norm incorrect", 834.8, study.getFinalNorm(), 1.0);
 
 		// Test bore length
 

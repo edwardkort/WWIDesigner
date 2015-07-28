@@ -140,11 +140,12 @@ public class SimpleFippleMouthpieceCalculator extends MouthpieceCalculator
 		//				+ 2.04 * mouthpiece.getFipple().getWindowHeight()/effSize
 		//				- 3.36 * mouthpiece.getFipple().getBladeHeight()/mouthpiece.getFipple().getWindwayHeight());
 		
-		// Resistance modeled as short cylindrical tube with same area as window.
-		double Rw = physicalParams.getRho()
-				* ( 6.42 * freq*freq/physicalParams.getSpeedOfSound()
-						+ 0.0184 * FastMath.sqrt(freq)*windowHeight
-							/ (effSize*effSize*effSize));
+		// Resistance modeled as radiation resistance from end of bore,
+		// plus short cylindrical tube with same area as window.
+		double radius = 0.5 * mouthpiece.getBoreDiameter();
+		double Rw = Tube.calcR(freq, radius, physicalParams)
+			  + physicalParams.getRho() * 0.0184 * FastMath.sqrt(freq)*windowHeight
+				/ (effSize*effSize*effSize);
 		return new Complex(Rw,Xw);
 	}
 

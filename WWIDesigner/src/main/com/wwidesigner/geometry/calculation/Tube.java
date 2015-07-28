@@ -39,11 +39,12 @@ public class Tube
 
     /**
      * Calculate the impedance of an unflanged open end of a real pipe.
-     * @param freq: fundamental frequency of the waveform.
-     * @param radius: radius of pipe, in metres.
+     * @param freq - fundamental frequency of the waveform.
+     * @param radius - radius of pipe, in metres.
+	 * @param params - physical parameters
      * @return impedance as seen by pipe.
      */
-    public static Complex calcZload( double freq, double radius, PhysicalParameters params )
+    public static Complex calcZload_old( double freq, double radius, PhysicalParameters params )
     {
     	Complex zRel = new Complex(9.87 * freq * radius / params.getSpeedOfSound(), 3.84 )
     						.multiply( freq * radius / params.getSpeedOfSound() );
@@ -51,25 +52,108 @@ public class Tube
     }
 
     /**
-     * Calculate the impedance of an open end of a real pipe,
-     * assuming an infinite flange.
-     * @param freq: fundamental frequency of the waveform.
-     * @param radius: radius of pipe, in metres.
+     * Calculate the impedance of an unflanged open end of a real pipe.
+     * From F. Silva, Ph. Guillemain, J. Kergomard, B. Mallaroni, A. N. Norris,
+     * "Approximation formulae for the acoustic radiation impedance of a cylindrical pipe,"
+     * arXiv:0811.3625v1 [physics.class-ph] 21 Nov 2008.
+     * 
+     * @param freq - fundamental frequency of the waveform.
+     * @param radius - radius of pipe, in metres.
+	 * @param params - physical parameters
      * @return impedance as seen by pipe.
      */
-    public static Complex calcZflanged( double freq, double radius, PhysicalParameters params )
+    public static Complex calcZload(double freq, double radius, PhysicalParameters params)
+    {
+    	double ka = params.calcWaveNumber(freq) * radius;
+    	double ka2 = ka*ka;
+    	double z0_denominator = params.calcZ0(radius)/(1.0 + ka2*(0.1514 + 0.05221*ka2));
+    	return new Complex(ka2*(0.2499 + 0.05221*ka2)*z0_denominator,
+    			ka*(0.6133 + 0.0381*ka2)*z0_denominator);
+    }
+
+    /**
+     * Calculate the impedance of an open end of a real pipe,
+     * assuming an infinite flange.
+     * @param freq - fundamental frequency of the waveform.
+     * @param radius - radius of pipe, in metres.
+	 * @param params - physical parameters
+     * @return impedance as seen by pipe.
+     */
+    public static Complex calcZflanged_old( double freq, double radius, PhysicalParameters params )
     {
     	Complex zRel = new Complex(19.7 * freq * radius / params.getSpeedOfSound(), 5.33 )
     					.multiply( freq * radius / params.getSpeedOfSound() );
     	return zRel.multiply( params.calcZ0(radius) );
     }
-    
+
+    /**
+     * Calculate the radiation resistance at the open end of a real pipe,
+     * assuming an infinite flange.
+     * From F. Silva, Ph. Guillemain, J. Kergomard, B. Mallaroni, A. N. Norris,
+     * "Approximation formulae for the acoustic radiation impedance of a cylindrical pipe,"
+     * arXiv:0811.3625v1 [physics.class-ph] 21 Nov 2008.
+     * 
+     * @param freq - fundamental frequency of the waveform.
+     * @param radius - radius of pipe, in metres.
+	 * @param params - physical parameters
+     * @return impedance as seen by pipe.
+     */
+    public static double calcR(double freq, double radius, PhysicalParameters params)
+    {
+    	double ka = params.calcWaveNumber(freq) * radius;
+    	double ka2 = ka*ka;
+    	return params.calcZ0(radius) * ka2*(0.5 + 0.1053*ka2)/(1.0 + ka2*(0.358 + 0.1053*ka2));
+    }
+
+    /**
+     * Calculate the impedance of an open end of a real pipe,
+     * assuming an infinite flange.
+     * From F. Silva, Ph. Guillemain, J. Kergomard, B. Mallaroni, A. N. Norris,
+     * "Approximation formulae for the acoustic radiation impedance of a cylindrical pipe,"
+     * arXiv:0811.3625v1 [physics.class-ph] 21 Nov 2008.
+     * 
+     * @param freq - fundamental frequency of the waveform.
+     * @param radius - radius of pipe, in metres.
+	 * @param params - physical parameters
+     * @return impedance as seen by pipe.
+     */
+    public static Complex calcZflanged(double freq, double radius, PhysicalParameters params)
+    {
+    	double ka = params.calcWaveNumber(freq) * radius;
+    	double ka2 = ka*ka;
+    	double z0_denominator = params.calcZ0(radius)/(1.0 + ka2*(0.358 + 0.1053*ka2));
+    	return new Complex(ka2*(0.5 + 0.1053*ka2)*z0_denominator,
+    			ka*(0.82159 + 0.059*ka2)*z0_denominator);
+    }
+
+    /**
+     * Calculate the impedance of an open end of a real pipe,
+     * assuming an infinite flange.
+     * From Jean Kergomard, Antoine Lefebvre, Gary Scavone,
+     * "Matching of fundamental modes at a junction of a cylinder and a
+     * truncated cone; application to the calculation of radiation impedances,"
+     * 2015. <hal-01134302>.  https://hal.archives-ouvertes.fr/hal-01134302.
+     * 
+     * @param freq - fundamental frequency of the waveform.
+     * @param radius - radius of pipe, in metres.
+	 * @param params - physical parameters
+     * @return impedance as seen by pipe.
+     */
+    public static Complex calcZflanged_Kergomard(double freq, double radius, PhysicalParameters params)
+    {
+    	double ka = params.calcWaveNumber(freq) * radius;
+    	double ka2 = ka*ka;
+    	Complex numerator = new Complex(0.3216*ka2, (0.82159-0.0368*ka2)*ka);
+    	Complex denominator = new Complex(1+0.3701*ka2, (1.0-0.0368*ka2)*ka);
+    	return numerator.divide(denominator).multiply(params.calcZ0(radius));
+    }
+
 	/**
 	 * Calculate the transfer matrix of a cylinder.
-	 * @param waveNumber: 2*pi*f/c, in radians per metre
-	 * @param length: length of the cylinder, in metres.
-	 * @param radius: radius of the cylinder, in metres.
-	 * @param params: physical parameters
+	 * @param waveNumber - 2*pi*f/c, in radians per metre
+	 * @param length - length of the cylinder, in metres.
+	 * @param radius - radius of the cylinder, in metres.
+	 * @param params - physical parameters
 	 * @return Transfer matrix
 	 */
 	public static TransferMatrix calcCylinderMatrix(double waveNumber, 
@@ -87,11 +171,11 @@ public class Tube
 
 	/**
 	 * Calculate the transfer matrix of a conical tube.
-	 * @param freq: frequency in Hz.
-	 * @param length: length of the tube, in metres.
-	 * @param sourceRadius: radius of source end the tube, in metres.
-	 * @param loadRadius: radius of load end the tube, in metres.
-	 * @param params: physical parameters
+	 * @param waveNumber - 2*pi*f/c, in radians per metre
+	 * @param length - length of the tube, in metres.
+	 * @param sourceRadius - radius of source end the tube, in metres.
+	 * @param loadRadius - radius of load end the tube, in metres.
+	 * @param params - physical parameters
 	 * @return Transfer matrix
 	 */
 	public static TransferMatrix calcConeMatrix(double waveNumber, 

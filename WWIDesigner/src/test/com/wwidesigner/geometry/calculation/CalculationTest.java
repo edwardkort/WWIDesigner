@@ -23,7 +23,7 @@ public class CalculationTest
 {
 	static final double BaseFrequency = 587.33;	// Reference frequency, D5.
 	static final double BaseRadius = 0.006; // Reference radius, in meters.
-	static final double BaseLength = 0.250; // Reference radius, in meters.
+	static final double BaseLength = 0.250; // Reference length of tube, in meters.
 
 	@Test
 	public final void testImpedance()
@@ -37,7 +37,7 @@ public class CalculationTest
 			
 			Complex zLoad = Tube.calcZload(BaseFrequency, BaseRadius, parameters).divide(z0);
 			assertEquals("Re(Z) incorrect", 0.00101768, zLoad.getReal(), 1.0e-6);
-			assertEquals("Im(Z) incorrect", 0.039, zLoad.getImaginary(), 0.0001);
+			assertEquals("Im(Z) incorrect", 0.039132, zLoad.getImaginary(), 0.0001);
 
 		}
 		catch (Exception e)

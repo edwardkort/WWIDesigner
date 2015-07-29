@@ -19,6 +19,7 @@
 package com.wwidesigner.geometry.calculation;
 
 import org.apache.commons.math3.complex.Complex;
+import org.apache.commons.math3.util.FastMath;
 
 import com.wwidesigner.geometry.BoreSection;
 import com.wwidesigner.geometry.Mouthpiece;
@@ -40,20 +41,23 @@ public class DefaultFippleMouthpieceCalculator extends MouthpieceCalculator
 		// nor CO2 concentration. This mouthpiece representation gives very
 		// wrong answers when they are varied.
 		// The SimplePhysicalParameters gives correct answers for varying
-		// temperature and humidity, all that a NAF make is likely to measure.
+		// temperature and humidity, all that a NAF maker is likely to measure.
 		mParams = new SimplePhysicalParameters(parameters);
 
-		double z0 = parameters.calcZ0(mouthpiece.getBoreDiameter() / 2.);
+		double radius = 0.5*mouthpiece.getBoreDiameter();
+		double z0 = parameters.calcZ0(radius);
 		double omega = waveNumber * parameters.getSpeedOfSound();
 		double k_delta_l = calcKDeltaL(mouthpiece, omega, z0);
+		// Add a series resistance for radiation loss.
+		double r_rad = Tube.calcR(omega/(2*Math.PI), radius, parameters);
+		double cos_kl = FastMath.cos(k_delta_l);
+		double sin_kl = FastMath.sin(k_delta_l);
 
-		Complex k_delta = new Complex(Math.cos(k_delta_l));
-
-		Complex B = new Complex(0., 1.).multiply(Math.sin(k_delta_l) * z0);
-
-		Complex C = new Complex(0., 1.).multiply(Math.sin(k_delta_l) / z0);
-
-		return new TransferMatrix(k_delta, B, C, k_delta);
+		Complex A = new Complex(cos_kl, r_rad * sin_kl / z0);
+		Complex B = new Complex(0., 1.).multiply(sin_kl * z0).add(r_rad * cos_kl);
+		Complex C = new Complex(0., 1.).multiply(sin_kl / z0);
+		Complex D = new Complex(cos_kl);
+		return new TransferMatrix(A, B, C, D);
 	}
 
 	/*

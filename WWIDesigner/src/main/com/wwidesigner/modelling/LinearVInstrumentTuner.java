@@ -107,7 +107,20 @@ public class LinearVInstrumentTuner extends InstrumentTuner
 	 */
 	public static double velocity(double f, double windowLength, Complex z)
 	{
-		return f * windowLength / (0.26 - 0.037 * z.getImaginary()/z.getReal());
+		double strouhal = 0.26 - 0.037 * z.getImaginary()/z.getReal();
+		// Within a playing range, z.imag should be negative,
+		// so strouhal > 0.26, and generally strouhal < 0.5.
+		// We can go a bit outside a playing range, but we clamp the value
+		// if we go too far outside the limits of reasonableness.
+		if (strouhal < 0.13)
+		{
+			strouhal = 0.13;
+		}
+		else if (strouhal > 0.75)
+		{
+			strouhal = 0.75;
+		}
+		return f * windowLength / strouhal;
 	}
 
 	/**

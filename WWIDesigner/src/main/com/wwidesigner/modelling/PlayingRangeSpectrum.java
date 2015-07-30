@@ -290,10 +290,6 @@ public class PlayingRangeSpectrum
 		}
 		double freqStart = targetFreq / freqRange;
 		double freqEnd = targetFreq * freqRange;
-		if ( freqEnd > 4000.0 )
-		{
-			freqEnd = 4000.0;
-		}
 		calcImpedance(calculator, fingering, freqStart, freqEnd,
 				numberPoints);
 		// plotImpedanceSpectrum();

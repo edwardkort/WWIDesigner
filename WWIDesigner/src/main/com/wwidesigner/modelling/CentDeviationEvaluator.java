@@ -25,7 +25,7 @@ import com.wwidesigner.note.Note;
 import com.wwidesigner.note.Tuning;
 
 /**
- * Evaluates a calculator based on deviation from expected tuning frequencies,
+ * Evaluates a calculator based on deviation from target tuning frequencies,
  * expressed in cents.
  * 
  * @author kort

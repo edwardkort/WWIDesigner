@@ -34,7 +34,8 @@ import com.wwidesigner.note.Tuning;
 public class PlayingRangeSpectrum
 {
 	protected String mName;
-	protected List<Double> actuals;
+	protected List<Double> actuals;		// min/max frequency if available, nominal frequency otherwise.
+	protected boolean hasMinMax;		// false if actuals contains min/max, true if actuals contains nominal.
 	/**
 	 * Holds impedance spectrum (created by calcImpedance()).
 	 */
@@ -77,16 +78,19 @@ public class PlayingRangeSpectrum
 			mName += " on " + instrName;
 		}
 		actuals = new ArrayList<Double>();
+		hasMinMax = false;
 
 		if ( myNote.getFrequencyMin() != null )
 		{
 			actuals.add(myNote.getFrequencyMin());
+			hasMinMax = true;
 		}
 		if ( myNote.getFrequencyMax() != null )
 		{
 			actuals.add(myNote.getFrequencyMax());
+			hasMinMax = true;
 		}
-		if ( actuals.size() < 2 && myNote.getFrequency() != null )
+		if ( ! hasMinMax && myNote.getFrequency() != null )
 		{
 			actuals.add(myNote.getFrequency());
 		}
@@ -171,8 +175,17 @@ public class PlayingRangeSpectrum
 						"Loop Gain >= 1");
 				DefaultChartModel modelGainLow = new DefaultChartModel(
 						"Loop Gain < 1");
-				DefaultChartModel modelActuals = new DefaultChartModel(
+				DefaultChartModel modelActuals;
+				if (hasMinMax)
+				{
+					modelActuals = new DefaultChartModel(
 						"Actual Frequency");
+				}
+				else
+				{
+					modelActuals = new DefaultChartModel(
+							"Target Frequency");
+				}
 				for (Map.Entry<Double, Complex> point : mImpedance.entrySet())
 				{
 					double x = point.getKey();

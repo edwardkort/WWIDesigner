@@ -121,7 +121,7 @@ public class TuningComparisonTable extends DefaultTableModel
 		addColumn("Note");
 		if (tgtHasFnom)
 		{
-			addColumn("Expected");
+			addColumn("Target");
 		}
 		if (predHasFnom)
 		{

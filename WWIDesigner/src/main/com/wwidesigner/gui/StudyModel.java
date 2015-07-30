@@ -69,7 +69,7 @@ public abstract class StudyModel implements CategoryType
 {
 	// Parameters for plotting impedance spectrum.
 	protected static final double SPECTRUM_FREQUENCY_RANGE = 2.25;		// Plot a major 9th above and below.
-	protected static final int SPECTRUM_NUMBER_OF_POINTS = 600;	// Number of points to plot.
+	protected static final int SPECTRUM_NUMBER_OF_POINTS = 2000;	// Number of points to plot.
 	
 	// Preferences.
 	protected BaseObjectiveFunction.OptimizerType preferredOptimizerType;

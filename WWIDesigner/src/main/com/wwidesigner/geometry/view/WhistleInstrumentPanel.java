@@ -134,6 +134,8 @@ public class WhistleInstrumentPanel extends InstrumentPanel
 		fipple.setWindwayLength(value);
 		value = (Double) windwayHeight.getValue();
 		fipple.setWindwayHeight(value);
+		value = (Double) fippleFactor.getValue();
+		fipple.setFippleFactor(value);
 		mouthpiece.setFipple(fipple);
 		mouthpiece.setEmbouchureHole(null);
 		value = (Double) beta.getValue();

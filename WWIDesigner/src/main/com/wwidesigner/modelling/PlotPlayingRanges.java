@@ -19,8 +19,11 @@
 package com.wwidesigner.modelling;
 
 import java.awt.Color;
+
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
+
+import org.apache.commons.math3.complex.Complex;
 
 import com.jidesoft.chart.Chart;
 import com.jidesoft.chart.PointShape;
@@ -32,7 +35,7 @@ import com.wwidesigner.note.Tuning;
 import com.wwidesigner.util.Constants;
 
 /**
- * Class to plot the reactance of an instrument when played with a specified tuning.
+ * Class to plot the impedance pattern of an instrument when played with a specified tuning.
  * Marks minimum, maximum, and nominal playing frequencies if the instrument
  * provides them, and the position of the target tuning frequency
  * within the range of a note.
@@ -80,6 +83,19 @@ public class PlotPlayingRanges
 		}
 		return x;
 	}
+	
+	protected static final String Y_VALUE_NAME = "Reactance Ratio, X/R";
+	/**
+	 * Calculate a y value for a point on the graph.
+	 * @param calculator - instrument calculator to calculate y value.
+	 * @param freq - frequency at which to calculate y value.
+	 * @return y value.
+	 */
+	protected static double yValue(InstrumentCalculator calculator, double freq)
+	{
+		Complex z = calculator.calcZ(freq);
+		return z.getImaginary()/z.getReal();
+	}
 
 	/**
 	 * Return true if f is a tonic or dominant in the key fLow.
@@ -123,10 +139,10 @@ public class PlotPlayingRanges
 			}
 		}
 		chart = new Chart();
-		chart.setTitle("Reactance Pattern");
+		chart.setTitle("Impedance Pattern");
 		chart.setAutoRanging(true);
 		chart.getXAxis().setLabel("Frequency");
-		chart.getYAxis().setLabel("Reactance");
+		chart.getYAxis().setLabel(Y_VALUE_NAME);
 //		Legend legend = new Legend(chart);
 //		chart.addDrawable(legend);
 //		legend.setLocation(200, 50);
@@ -136,13 +152,13 @@ public class PlotPlayingRanges
 		// Find bounds of graph quantities.
 
 		double lowestF = Double.POSITIVE_INFINITY;	// Frequency of lowest target note.
-		double minX = 0.0;				// Minimum value of X found.
-		double maxX = 0.0;				// Maximum value of X found.
 		Fingering predFingering;		// Predicted fingering at index idx.
 		Note tgt;						// Target note at index idx.
 		Note pred;						// Predicted note at index idx.
-		double f;
-		double x;						// Reactance at a particular frequency.
+		double f;						// Frequency.
+		double y;						// y (vertical axis) value at a particular frequency.
+		double minY = 0.0;				// Minimum y value.
+		double maxY = 0.0;				// Maximum y value.
 
 		for (idx = 0; idx < target.getFingering().size(); idx++)
 		{
@@ -156,35 +172,35 @@ public class PlotPlayingRanges
 			calculator.setFingering(predFingering);
 			if ( pred.getFrequencyMin() != null )
 			{
-				x = calculator.calcZ(pred.getFrequencyMin()).getImaginary();
-				if ( x < minX )
+				y = yValue(calculator, pred.getFrequencyMin());
+				if ( y < minY )
 				{
-					minX = x;
+					minY = y;
 				}
-				if ( x > maxX )
+				if ( y > maxY )
 				{
-					maxX = x;
+					maxY = y;
 				}
 			}
 			if ( pred.getFrequencyMax() != null )
 			{
-				x = calculator.calcZ(pred.getFrequencyMax()).getImaginary();
-				if ( x < minX )
+				y = yValue(calculator, pred.getFrequencyMax());
+				if ( y < minY )
 				{
-					minX = x;
+					minY = y;
 				}
-				if ( x > maxX )
+				if ( y > maxY )
 				{
-					maxX = x;
+					maxY = y;
 				}
 			}
 		}
-		if (maxX > minX)
+		if (maxY > minY)
 		{
 			// Add a 10% margin outside of the bounds found.
-			double range = maxX - minX;
-			maxX += 0.10 * range;
-			minX -= 0.10 * range;
+			double range = maxY - minY;
+			maxY += 0.10 * range;
+			minY -= 0.10 * range;
 		}
 
 		ChartStyle styleTarget  = new ChartStyle(darkGreen, PointShape.DISC, 7);
@@ -217,15 +233,15 @@ public class PlotPlayingRanges
 			if ( tgt.getFrequency() != null )
 			{
 				f = tgt.getFrequency();
-				x = calculator.calcZ(f).getImaginary();
-				x = clamp(x,minX,maxX);
+				y = yValue(calculator, f);
+				y = clamp(y,minY,maxY);
 				if (pred.getFrequencyMax() != null && f > pred.getFrequencyMax())
 				{
-					targetModelOver.addPoint(f, x);
+					targetModelOver.addPoint(f, y);
 				}
 				else if  (pred.getFrequencyMin() != null && f < pred.getFrequencyMin())
 				{
-					targetModelUnder.addPoint(f, x);
+					targetModelUnder.addPoint(f, y);
 				}
 				else if ( pred.getFrequencyMin() != null && pred.getFrequencyMax() != null )
 				{
@@ -233,20 +249,20 @@ public class PlotPlayingRanges
 							/ (pred.getFrequencyMax() - pred.getFrequencyMin());
 					if ( ratio > 0.9 )
 					{
-						targetModelHigh.addPoint(f, x);
+						targetModelHigh.addPoint(f, y);
 					}
 					else if ( ratio < 0.1 )
 					{
-						targetModelLow.addPoint(f, x);
+						targetModelLow.addPoint(f, y);
 					}
 					else
 					{
-						targetModel.addPoint(f, x);
+						targetModel.addPoint(f, y);
 					}
 				}
 				else
 				{
-					targetModel.addPoint(f, x);
+					targetModel.addPoint(f, y);
 				}
 				isMarkerNote = isMarker(f, lowestF);
 			}
@@ -257,36 +273,36 @@ public class PlotPlayingRanges
 			if ( pred.getFrequency() != null
 				&& ( tgt.getFrequency() == null || pred.getFrequency() != tgt.getFrequency() ) )
 			{
-				x = calculator.calcZ(pred.getFrequency()).getImaginary();
-				x = clamp(x,minX,maxX);
-				nominalModel.addPoint(pred.getFrequency(), x);
+				y = yValue(calculator, pred.getFrequency());
+				y = clamp(y,minY,maxY);
+				nominalModel.addPoint(pred.getFrequency(), y);
 			}
 			if ( pred.getFrequencyMin() != null )
 			{
 				f = pred.getFrequencyMin();
-				x = calculator.calcZ(f).getImaginary();
-				x = clamp(x,minX,maxX);
+				y = yValue(calculator, f);
+				y = clamp(y,minY,maxY);
 				if (isMarkerNote)
 				{
-					minmaxModelMarked.addPoint(f, x );
+					minmaxModelMarked.addPoint(f, y );
 				}
 				else
 				{
-					minmaxModel.addPoint(f, x );
+					minmaxModel.addPoint(f, y );
 				}
 			}
 			if ( pred.getFrequencyMax() != null )
 			{
 				f = pred.getFrequencyMax();
-				x = calculator.calcZ(f).getImaginary();
-				x = clamp(x,minX,maxX);
+				y = yValue(calculator, f);
+				y = clamp(y,minY,maxY);
 				if (isMarkerNote)
 				{
-					minmaxModelMarked.addPoint(f, x );
+					minmaxModelMarked.addPoint(f, y );
 				}
 				else
 				{
-					minmaxModel.addPoint(f, x );
+					minmaxModel.addPoint(f, y );
 				}
 			}
 			if ( pred.getFrequencyMin() != null && pred.getFrequencyMax() != null )
@@ -296,8 +312,8 @@ public class PlotPlayingRanges
 				f = pred.getFrequencyMin();
 				for (int i = 0; i <= 32; i++ )
 				{
-					x = calculator.calcZ(f).getImaginary();
-					rangeModel.addPoint(f, x);
+					y = yValue(calculator, f);
+					rangeModel.addPoint(f, y);
 					f += step;
 				}
 				if (isMarkerNote)
@@ -317,9 +333,9 @@ public class PlotPlayingRanges
 				f = pred.getFrequency();
 				for (int i = 0; i <= 32; i++ )
 				{
-					x = calculator.calcZ(f).getImaginary();
-					x = clamp(x,minX,maxX);
-					rangeModel.addPoint(f, x);
+					y = yValue(calculator, f);
+					y = clamp(y,minY,maxY);
+					rangeModel.addPoint(f, y);
 					f += step;
 				}
 				if (isMarkerNote)

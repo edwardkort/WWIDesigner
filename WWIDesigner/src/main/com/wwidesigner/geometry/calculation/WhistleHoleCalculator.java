@@ -38,12 +38,6 @@ public class WhistleHoleCalculator extends HoleCalculator
 	// For bare (key-less) toneholes, assume the player's finger
 	// occupies a fixed length of the tonehole, in meters.
 	private static double AssumedFingerSize = 0.000;
-	
-	// End-correction applied to open toneholes,
-	// typically 0.61 for unflanged holes,
-	// up to 0.85 for flanged holes.
-	
-	private static double RadiationEndCorrection = 0.61;
 
 	/*
 	 * (non-Javadoc)
@@ -55,8 +49,8 @@ public class WhistleHoleCalculator extends HoleCalculator
 	 * Antoine Lefebvre, Computational Acoustic Methods for the Design of
      * Woodwind Instruments.  Ph.D. thesis, McGill University, 2010.
 	 */
-	@Override
-	public TransferMatrix calcTransferMatrix(Hole hole,
+	//@Override
+	public TransferMatrix calcTransferMatrix_2010(Hole hole,
 			double waveNumber, PhysicalParameters parameters)
 	{
 		double radius = hole.getDiameter() / 2;
@@ -131,22 +125,23 @@ public class WhistleHoleCalculator extends HoleCalculator
 	 * Antoine Lefebvre and Gary P. Scavone, Characterization of woodwind instrument
 	 * toneholes with the finite element method, J. Acoust. Soc. Am. V. 131 (n. 4), April 2012.
 	 */
-	//@Override
-	public TransferMatrix calcTransferMatrix_2012(Hole hole,
+	@Override
+	public TransferMatrix calcTransferMatrix(Hole hole,
 			double waveNumber, PhysicalParameters parameters)
 	{
 		double radius = hole.getDiameter() / 2;
 		double boreRadius = hole.getBoreDiameter() / 2;
-		Complex Ys = Complex.ZERO;	// 1/Zs
-		Complex Za = Complex.ZERO;
+		Complex Ys = Complex.ZERO;	// Shunt admittance == 1/Zs
+		Complex Za = Complex.ZERO;  // Series impedance
 
-		// double Z0 = parameters.calcZ0(boreRadius);
 		double Z0h = parameters.calcZ0(radius);
-
 		double delta = radius / boreRadius;
+		double delta2 = delta*delta;
+		// double Z0 = parameters.calcZ0(boreRadius);
+		// Z0 == Z0h * delta*delta
 
 		double tm = (radius * delta / 8.)
-				* (1. + 0.207 * delta * delta * delta);
+				* (1. + 0.207 * delta * delta2);
 		double te = hole.getHeight() + tm;
 
 		double ta = 0.;
@@ -157,27 +152,23 @@ public class WhistleHoleCalculator extends HoleCalculator
 		{
 			double kb = waveNumber * radius;
 			double ka = waveNumber * boreRadius;
-			double xhi = 0.25 * kb * kb;
 
 			ta = (-0.35 + 0.06 * FastMath.tanh(2.7 * hole.getHeight() / radius))
-					* radius * delta * delta * delta * delta;
+					* radius * delta2;
 
-			Complex Zr = Complex.I.multiply(waveNumber * RadiationEndCorrection * radius)
-					.add(xhi);
+			Complex Zr = new Complex(0.25*kb*kb,
+					(0.822 - 0.47*FastMath.pow(delta,0.8)) * waveNumber * radius);
+			double cos = FastMath.cos(waveNumber * te);
+			Complex jsin = new Complex(0, FastMath.sin(waveNumber * te));
 
-			Complex Zo = (Zr.multiply(FastMath.cos(waveNumber * te)).add(Complex.I
-					.multiply(FastMath.sin(waveNumber * te)))).divide(Complex.I
-					.multiply(Zr).multiply(FastMath.sin(waveNumber * te))
-					.add(FastMath.cos(waveNumber * te)));
+			Complex Zo = (Zr.multiply(cos).add(jsin))
+					.divide(Zr.multiply(jsin).add(cos));
 
 			double ti = radius
-					* (0.822 - 0.10 * delta - 1.57 * delta * delta + 2.14
-							* delta * delta * delta - 1.6 * delta * delta
-							* delta * delta + 0.50 * delta * delta * delta
-							* delta * delta)
-					* (1. + (1. - 4.56 * delta + 6.55 * delta * delta)
-							* (0.17 * ka + 0.92 * ka * ka + 0.16 * ka * ka * ka - 0.29
-									* ka * ka * ka * ka));
+					// * (0.822 + delta*(-0.10 + delta*(-1.57 + delta*(2.14 + delta*(-1.6 + delta*0.50)))))
+					* (0.822 + delta*(-0.095 + delta*(-1.566 + delta*(2.138 + delta*(-1.640 + delta*0.502)))))
+					* (1. + (1. - 4.56 * delta + 6.55 * delta2)
+							* ka*(0.17 + ka*(0.92 + ka*(0.16 - 0.29*ka))));
 
 			Ys = Complex.ONE.divide( Complex.I.multiply(waveNumber * ti).add(Zo).multiply(Z0h) );
 
@@ -193,7 +184,7 @@ public class WhistleHoleCalculator extends HoleCalculator
 			}
 			else {
 				ta = (-0.12 - 0.17 * FastMath.tanh(2.4 * ( hole.getHeight() - AssumedFingerSize ) / radius))
-						* radius * delta * delta * delta * delta;
+						* radius * delta2;
 				Ys = Complex.valueOf( 0, 
 						FastMath.tan(waveNumber * (te-AssumedFingerSize)) / Z0h );
 			}
@@ -202,11 +193,11 @@ public class WhistleHoleCalculator extends HoleCalculator
 		{
 			// Tonehole closed by key.
 			ta = (-0.12 - 0.17 * FastMath.tanh(2.4 * hole.getHeight() / radius))
-					* radius * delta * delta * delta * delta;
+					* radius * delta2;
 			Ys = Complex.valueOf( 0, FastMath.tan(waveNumber * te) / Z0h );
 		}
 
-		Za = Complex.I.multiply(Z0h * waveNumber * ta);
+		Za = Complex.I.multiply(Z0h * delta2 * waveNumber * ta);
 		Complex Za_Zs = Za.multiply(Ys);
 
 		Complex A = Za_Zs.divide(2.).add(1.);

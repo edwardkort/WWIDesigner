@@ -53,7 +53,19 @@ public class SimpleFippleMouthpieceCalculator extends MouthpieceCalculator
 		double freq = parameters.calcFrequency(waveNumber);
 		
 		Complex Zwindow = calcZ(mouthpiece, freq, parameters);
-		
+		/*
+		List<BoreSection> headspace = mouthpiece.getHeadspace();
+		if (headspace.size() > 0)
+		{
+			StateVector windowState = new StateVector(Zwindow, Complex.ONE);
+			StateVector headspaceState = calcHeadspace_compliance(headspace, waveNumber, parameters);
+
+			// Assume the mouthpiece sees the bore impedance in parallel with
+			// the headspace impedance.
+			windowState = windowState.parallel(headspaceState);
+			Zwindow = windowState.getImpedance();
+		}
+		*/
 		return new TransferMatrix(Complex.ONE, Zwindow, Complex.ZERO, Complex.ONE);		
 	}
 	
@@ -62,31 +74,18 @@ public class SimpleFippleMouthpieceCalculator extends MouthpieceCalculator
 			Mouthpiece mouthpiece, double waveNumber,
 			PhysicalParameters parameters)
 	{
-		StateVector sv = boreState;
+		StateVector sv = new StateVector(boreState);
+
 		List<BoreSection> headspace = mouthpiece.getHeadspace();
 		if (headspace.size() > 0)
 		{
-			// If we have headspace, assume a closed upper end,
-			// and multiply by transfer matrices of each
-			// bore segment in the headspace.
-
-			StateVector headspaceState = StateVector.ClosedEnd();
-			TransferMatrix tm;
-			for (int componentNr = 0; componentNr < headspace.size(); ++componentNr)
-			{
-				ComponentInterface component = headspace.get(componentNr);
-				assert component instanceof BoreSection;
-				BoreSection section = (BoreSection) component;
-				tm = Tube.calcConeMatrix(waveNumber, section.getLength(),
-						section.getRightRadius(), section.getLeftRadius(),
-						parameters);
-				headspaceState = tm.multiply(headspaceState);
-			}
+			StateVector headspaceState = calcHeadspace_transmission(headspace, waveNumber, parameters);
 
 			// Assume the mouthpiece sees the bore impedance in parallel with
 			// the headspace impedance.
 			sv = boreState.parallel(headspaceState);
 		}
+
 		sv = calcTransferMatrix(mouthpiece, waveNumber, parameters)
 				.multiply(sv);
 		return sv;
@@ -132,13 +131,13 @@ public class SimpleFippleMouthpieceCalculator extends MouthpieceCalculator
 			windowHeight = 0.001;	// Default to 1 mm.
 		}
 		double Xw = physicalParams.getRho() * freq/effSize
-				* ( 7.345 - 2.18e-4 * freq
-					- 3.95e-3 / windowHeight );
+				* ( 4.42 + 2.80 * windowHeight/effSize );
 		// Model for use when blade height measurement is available.
 		// double Xw = physicalParams.getRho() * freq/effSize
-		// 		* ( 5.824 - 2.76e-4 * freq
-		//				+ 2.04 * mouthpiece.getFipple().getWindowHeight()/effSize
-		//				- 3.36 * mouthpiece.getFipple().getBladeHeight()/mouthpiece.getFipple().getWindwayHeight());
+		// 		* ( 5.34 + 2.27 * windowHeight/effSize
+		//			- 2.88 * mouthpiece.getFipple().getBladeHeight()/mouthpiece.getFipple().getWindwayHeight());
+		// Model adapted from DefaultFippleMouthpieceCalculator.
+		// Xw = 5.851 * freq/effSize * FastMath.pow(mouthpiece.getFipple().getWindwayHeight()/0.7874e-3,0.333333333);
 		
 		// Resistance modeled as radiation resistance from end of bore,
 		// plus short cylindrical tube with same area as window.
@@ -177,5 +176,69 @@ public class SimpleFippleMouthpieceCalculator extends MouthpieceCalculator
 		double waveNumber = physicalParams.calcWaveNumber(freq);
 		return mouthpiece.getGainFactor() * waveNumber * radius*radius
 				/ Z.abs();
+	}
+	
+	/**
+	 * Calculate a state vector for the headspace, assuming it is long enough
+	 * to act as a duct with a closed upper end.
+	 * @param headspace - the bore sections of the headspace
+	 * @param waveNumber - 2 pi f / c
+	 * @param physicalParams
+	 * @return state vector for the headspace
+	 */
+	protected StateVector calcHeadspace_transmission(List<BoreSection> headspace,
+			double waveNumber, PhysicalParameters physicalParams)
+	{
+		StateVector headspaceState = StateVector.ClosedEnd();
+		TransferMatrix tm;
+		for (int componentNr = 0; componentNr < headspace.size(); ++componentNr)
+		{
+			ComponentInterface component = headspace.get(componentNr);
+			assert component instanceof BoreSection;
+			BoreSection section = (BoreSection) component;
+			tm = Tube.calcConeMatrix(waveNumber, section.getLength(),
+					section.getRightRadius(), section.getLeftRadius(),
+					physicalParams);
+			headspaceState = tm.multiply(headspaceState);
+		}
+		return headspaceState;
+	}
+
+	/**
+	 * Calculate a state vector for the headspace, assuming it is small enough
+	 * to act only as an acoustic compliance.
+	 * @param headspace
+	 * @param waveNumber
+	 * @param physicalParams
+	 * @return
+	 */
+	protected StateVector calcHeadspace_compliance(List<BoreSection> headspace,
+			double waveNumber, PhysicalParameters physicalParams)
+	{
+		double freq = physicalParams.calcFrequency(waveNumber);
+		double compliance = calcHeadspaceVolume(headspace)
+				/ (physicalParams.getGamma()*physicalParams.getPressure()*1.0e3);
+		return new StateVector(Complex.ONE, new Complex(0.0, 2.0*Math.PI*freq*compliance));
+	}
+
+	protected double calcHeadspaceVolume(List<BoreSection> headspace)
+	{
+		double volume = 0.;
+		for (BoreSection section : headspace)
+		{
+			volume += getSectionVolume(section);
+		}
+		return volume;
+	}
+
+	protected double getSectionVolume(BoreSection section)
+	{
+		double leftRadius = section.getLeftRadius();
+		double rightRadius = section.getRightRadius();
+		double volume = Math.PI / 3.0
+				* section.getLength()
+				* (leftRadius * leftRadius + leftRadius * rightRadius + rightRadius
+						* rightRadius);
+		return volume;
 	}
 }

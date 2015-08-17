@@ -35,13 +35,14 @@ public class TransferMatrix
     /**
      * Simple 2x2 complex matrix. Here e.g. PU represents the component of the
      * output pressure that depends on the input volume flow, etc.
+     * The default matrix is the identity matrix.
      */
     public TransferMatrix()
     {
-        mPP = Complex.ZERO;
+        mPP = Complex.ONE;
         mPU = Complex.ZERO;
         mUP = Complex.ZERO;
-        mUU = Complex.ZERO;
+        mUU = Complex.ONE;
     }
 
     public TransferMatrix( Complex pp, Complex pu, Complex up, Complex uu )

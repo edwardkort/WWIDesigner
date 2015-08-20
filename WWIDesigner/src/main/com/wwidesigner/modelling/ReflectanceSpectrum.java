@@ -28,6 +28,10 @@ import com.wwidesigner.util.PhysicalParameters;
  */
 public class ReflectanceSpectrum
 {
+	public static final int PLOT_SQ_REFL_ANGLE_AND_MAGNITUDE = 0;
+	public static final int PLOT_SQ_REFL_ANGLE_ONLY = 1;
+	public static final int PLOT_REFL_MAGNITUDE_ONLY = 2;
+
 	/**
 	 * Holds reflectance spectrum (created by calcReflectance().
 	 */
@@ -44,6 +48,13 @@ public class ReflectanceSpectrum
 	private List<Double> mMaxima;
 
 	/**
+	 * Holds reflectance magnitude minima
+	 */
+	private List<Double> mMagnitudeMinima;
+
+	private Fingering currentFingering;
+
+	/**
 	 * Add or replace a point in the spectrum.
 	 */
 	public void setDataPoint(double frequency, Complex value)
@@ -52,17 +63,20 @@ public class ReflectanceSpectrum
 	}
 
 	public void calcReflectance(InstrumentInterface flute,
-			InstrumentCalculator calculator,
-			double freqStart, double freqEnd, int nfreq, Fingering fingering,
-			PhysicalParameters physicalParams)
+			InstrumentCalculator calculator, double freqStart, double freqEnd,
+			int nfreq, Fingering fingering, PhysicalParameters physicalParams)
 	{
+		currentFingering = fingering;
 		calculator.setFingering(fingering);
 		mSpectrum = new TreeMap<Double, Complex>();
 		mMinima = new ArrayList<Double>();
 		mMaxima = new ArrayList<Double>();
+		mMagnitudeMinima = new ArrayList<Double>();
 		double prevReflAngle = 0.;
 		double prevPrevReflAngle = 0.;
 		double prevFreq = 0.;
+		double prevRefMag = 0.;
+		double prevPrevRefMag = 0.;
 		double freqStep = (freqEnd - freqStart) / (nfreq - 1);
 		for (int i = 0; i < nfreq; ++i)
 		{
@@ -87,6 +101,16 @@ public class ReflectanceSpectrum
 				// We have found an impedance maximum.
 				getMaxima().add(prevFreq);
 			}
+
+			// Collect reflectance magnitude minimum values
+			double refMagnitude = reflectance.abs();
+			if ((i >= 2) && (prevRefMag < refMagnitude)
+					&& (prevRefMag < prevPrevRefMag))
+			{
+				mMagnitudeMinima.add(prevFreq);
+			}
+			prevPrevRefMag = prevRefMag;
+			prevRefMag = refMagnitude;
 
 			prevPrevReflAngle = prevReflAngle;
 			prevReflAngle = reflectAngle;
@@ -117,6 +141,11 @@ public class ReflectanceSpectrum
 	public Map<Double, Complex> getSpectrum()
 	{
 		return mSpectrum;
+	}
+
+	public List<Double> getMagnitudeMinima()
+	{
+		return mMagnitudeMinima;
 	}
 
 	public void setSpectrum(Map<Double, Complex> spectrum)
@@ -158,35 +187,57 @@ public class ReflectanceSpectrum
 		return closestFreq;
 	}
 
-	public void plotReflectanceSpectrum()
+	public void plotReflectanceSpectrum(final int plotType)
 	{
 		SwingUtilities.invokeLater(new Runnable()
 		{
 			public void run()
 			{
-				JFrame frame = new JFrame("Reflectance Spectrum");
+				JFrame frame = new JFrame("Reflectance Spectrum for "
+						+ currentFingering.getNote().getName() + " ("
+						+ currentFingering.toString() + ")");
 				frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 				frame.setSize(800, 600);
-				DefaultChartModel model1 = new DefaultChartModel(
-						"Absolute Value");
-				DefaultChartModel model2 = new DefaultChartModel(
-						"Reflectance angle, squared");
+				DefaultChartModel model1 = null;
+				DefaultChartModel model2 = null;
+				if (plotType == PLOT_SQ_REFL_ANGLE_AND_MAGNITUDE
+						|| plotType == PLOT_REFL_MAGNITUDE_ONLY)
+				{
+					model1 = new DefaultChartModel("Absolute Value");
+				}
+				if (plotType == PLOT_SQ_REFL_ANGLE_AND_MAGNITUDE
+						|| plotType == PLOT_SQ_REFL_ANGLE_ONLY)
+				{
+					model2 = new DefaultChartModel("Reflectance angle, squared");
+				}
 				for (Map.Entry<Double, Complex> point : mSpectrum.entrySet())
 				{
 					double x = point.getKey();
 					Complex cy = point.getValue();
-					double ra = cy.getArgument();
-					ra *= ra;
-					double y = cy.abs();
-					model1.addPoint(x, y);
-					model2.addPoint(x, ra);
+					if (model1 != null)
+					{
+						double y = cy.abs();
+						model1.addPoint(x, y);
+					}
+					if (model2 != null)
+					{
+						double ra = cy.getArgument();
+						ra *= ra;
+						model2.addPoint(x, ra);
+					}
 				}
 				Chart chart = new Chart();
 				chart.setAutoRanging(true);
-				ChartStyle style1 = new ChartStyle(Color.black, false, true);
-				ChartStyle style2 = new ChartStyle(Color.red, false, true);
-				chart.addModel(model1, style1);
-				chart.addModel(model2, style2);
+				if (model1 != null)
+				{
+					ChartStyle style1 = new ChartStyle(Color.black, false, true);
+					chart.addModel(model1, style1);
+				}
+				if (model2 != null)
+				{
+					ChartStyle style2 = new ChartStyle(Color.red, false, true);
+					chart.addModel(model2, style2);
+				}
 				chart.getXAxis().setLabel("Frequency");
 				chart.getYAxis().setLabel("Reflectance");
 				chart.setTitle("Reflectance Spectrum");

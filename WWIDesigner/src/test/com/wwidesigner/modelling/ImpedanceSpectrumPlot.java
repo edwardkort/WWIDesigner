@@ -5,6 +5,7 @@ package com.wwidesigner.modelling;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.List;
 
 import org.apache.commons.math3.complex.Complex;
 
@@ -34,8 +35,8 @@ public class ImpedanceSpectrumPlot
 		ImpedanceSpectrumPlot plot = new ImpedanceSpectrumPlot();
 		try
 		{
-			String inputInstrumentXML = "com/wwidesigner/optimization/example/NoHoleNAF1.xml";
-			String inputTuningXML = "com/wwidesigner/optimization/example/NoHoleNAF1Tuning.xml";
+			String inputInstrumentXML = "com/wwidesigner/optimization/example/E4-instrument_actual.xml";
+			String inputTuningXML = "com/wwidesigner/optimization/example/E4-tuning_actual.xml";
 
 			PhysicalParameters params = new PhysicalParameters(22.22,
 					TemperatureType.C);
@@ -45,13 +46,14 @@ public class ImpedanceSpectrumPlot
 					params);
 
 			Tuning tuning = plot.getTuningFromXml(inputTuningXML);
-			Fingering fingering = tuning.getFingering().get(0);
+			// Fingering fingering = tuning.getFingering().get(0);
+			Fingering fingering = tuning.getFingering().get(7);
 
 			instrument.convertToMetres();
 			instrument.setOpenHoles(fingering);
 
 			double freqRange = 1.1;
-			int numberOfFrequencies = 2400;
+			int numberOfFrequencies = 10000;
 			double targetFreq = fingering.getNote().getFrequency();
 			double freqStart = targetFreq / freqRange;
 			double freqEnd = targetFreq * freqRange;
@@ -67,11 +69,20 @@ public class ImpedanceSpectrumPlot
 					+ " Hz";
 			System.out.println(outStr);
 
-			// ReflectanceSpectrum reflSpectrum = new ReflectanceSpectrum();
-			// reflSpectrum.calcReflectance(instrument, calculator, freqStart,
-			// freqEnd,
-			// numberOfFrequencies, fingering, params);
-			// reflSpectrum.plotReflectanceSpectrum();
+			ReflectanceSpectrum reflSpectrum = new ReflectanceSpectrum();
+			reflSpectrum.calcReflectance(instrument, calculator, 200., 4000.,
+					numberOfFrequencies, fingering, params);
+			List<Double> magMinima = reflSpectrum.getMagnitudeMinima();
+			double predFreq = reflSpectrum
+					.getClosestMinimumFrequency(targetFreq);
+			outStr = "Flute impedance magnitude minima for "
+					+ fingering.getNote().getName() + " "
+					+ fingering.toString() + " : " + magMinima.get(0) + " "
+					+ magMinima.get(1) + " " + magMinima.get(2) + " "
+					+ magMinima.get(3) + " at target " + targetFreq
+					+ " Hz, and predicted " + predFreq + " Hz";
+			System.out.println(outStr);
+			reflSpectrum.plotReflectanceSpectrum(ReflectanceSpectrum.PLOT_REFL_MAGNITUDE_ONLY);
 		}
 		catch (Exception e)
 		{

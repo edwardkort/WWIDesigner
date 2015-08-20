@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns2:instrument xmlns:ns2="http://www.wwidesigner.com/Instrument">
+    <name>E4 6-hole NAF, prototype, 1-4-15</name>
+    <description>Full-length taper, chimney, 1" bit, F-open excluded. 
+    Constrain position of top hole to greater than 1/4 bore length.
+    L-D^2 ratio 24 at foot. 
+    Max hole spacing 1.25", 1 angled hole.</description>
+    <lengthType>in</lengthType>
+    <mouthpiece>
+        <position>0.18000174960803053</position>
+        <fipple>
+            <windowLength>0.18000174960803053</windowLength>
+            <windowWidth>0.6200006696001806</windowWidth>
+            <fippleFactor>0.7499</fippleFactor>
+            <windwayHeight>0.03200063504613878</windwayHeight>
+        </fipple>
+    </mouthpiece>
+    <borePoint>
+        <borePosition>-0.1250000675</borePosition>
+        <boreDiameter>1.0000005400000001E-5</boreDiameter>
+    </borePoint>
+    <borePoint>
+        <borePosition>-0.12221207700767474</borePosition>
+        <boreDiameter>0.11124012013923161</boreDiameter>
+    </borePoint>
+    <borePoint>
+        <borePosition>-0.11376253333787446</borePosition>
+        <boreDiameter>0.22248024027846322</boreDiameter>
+    </borePoint>
+    <borePoint>
+        <borePosition>-0.0993810236595604</borePosition>
+        <boreDiameter>0.3337203604176949</boreDiameter>
+    </borePoint>
+    <borePoint>
+        <borePosition>-0.07856573765785231</borePosition>
+        <boreDiameter>0.44496048055692644</boreDiameter>
+    </borePoint>
+    <borePoint>
+        <borePosition>-0.05048331660687954</borePosition>
+        <boreDiameter>0.556200600696158</boreDiameter>
+    </borePoint>
+    <borePoint>
+        <borePosition>-0.013759947360768372</borePosition>
+        <boreDiameter>0.6674407208353897</boreDiameter>
+    </borePoint>
+    <borePoint>
+        <borePosition>0.03399385501774272</borePosition>
+        <boreDiameter>0.7786808409746211</boreDiameter>
+    </borePoint>
+    <borePoint>
+        <borePosition>0.09748017277846324</borePosition>
+        <boreDiameter>0.8899209611138529</boreDiameter>
+    </borePoint>
+    <borePoint>
+        <borePosition>0.18875831211904098</borePosition>
+        <boreDiameter>1.0011610812530845</boreDiameter>
+    </borePoint>
+    <borePoint>
+        <borePosition>0.43120053319615803</borePosition>
+        <boreDiameter>1.112401201392316</boreDiameter>
+    </borePoint>
+    <borePoint>
+        <borePosition>2.4168352966426623</borePosition>
+        <boreDiameter>1.112401201392316</boreDiameter>
+    </borePoint>
+    <borePoint>
+        <borePosition>16.121510832777634</borePosition>
+        <boreDiameter>0.9270010011602634</boreDiameter>
+    </borePoint>
+    <borePoint>
+        <borePosition>16.196899873577927</borePosition>
+        <boreDiameter>0.9270010011602727</boreDiameter>
+    </borePoint>
+    <hole>
+        <name>Hole 6</name>
+        <borePosition>4.417705655321662</borePosition>
+        <diameter>0.31210684303530084</diameter>
+        <height>0.18000019440005247</height>
+    </hole>
+    <hole>
+        <name>Hole 5</name>
+        <borePosition>5.417706195321662</borePosition>
+        <diameter>0.3302240453417528</diameter>
+        <height>0.18000019440005247</height>
+    </hole>
+    <hole>
+        <name>Hole 4</name>
+        <borePosition>6.417706735321662</borePosition>
+        <diameter>0.3084322555244013</diameter>
+        <height>0.18000019440005247</height>
+    </hole>
+    <hole>
+        <name>Hole 3, angled up</name>
+        <borePosition>8.106955117664393</borePosition>
+        <diameter>0.3315721240341414</diameter>
+        <height>0.18000019440005247</height>
+    </hole>
+    <hole>
+        <name>Hole 2</name>
+        <borePosition>9.606955927664393</borePosition>
+        <diameter>0.3501097432630265</diameter>
+        <height>0.18000019440005247</height>
+    </hole>
+    <hole>
+        <name>Hole 1</name>
+        <borePosition>10.706956521664392</borePosition>
+        <diameter>0.3222016110086529</diameter>
+        <height>0.18000019440005247</height>
+    </hole>
+    <termination>
+        <flangeDiameter>1.200014904088529</flangeDiameter>
+    </termination>
+</ns2:instrument>

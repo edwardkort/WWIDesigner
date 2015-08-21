@@ -37,8 +37,8 @@ public class BP8NotesPlot
 		BP8NotesPlot plot = new BP8NotesPlot();
 		try
 		{
-			String inputInstrumentXML = "com/wwidesigner/optimization/example/BP8.xml";
-			String inputTuningXML = "com/wwidesigner/optimization/example/BP8-tuning.xml";
+			String inputInstrumentXML = "com/wwidesigner/optimization/example/BP8-partial.xml";
+			String inputTuningXML = "com/wwidesigner/optimization/example/BP8-partial-tuning.xml";
 
 			PhysicalParameters params = new PhysicalParameters(28.2,
 					TemperatureType.C);
@@ -49,7 +49,7 @@ public class BP8NotesPlot
 			{
 				PlayingRangeSpectrum spectrum = new PlayingRangeSpectrum();
 				spectrum.plot(calculator, tuning.getFingering().get(noteIndex),
-						FreqRange,NumberOfPoints,true);
+						1.0/FreqRange, FreqRange, NumberOfPoints, true);
 			}
 		}
 		catch (Exception e)

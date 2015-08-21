@@ -68,7 +68,9 @@ import com.wwidesigner.util.PhysicalParameters;
 public abstract class StudyModel implements CategoryType
 {
 	// Parameters for plotting impedance spectrum.
-	protected static final double SPECTRUM_FREQUENCY_RANGE = 2.25;		// Plot a major 9th above and below.
+	// Plot from a major 9th below to 3rd harmonic above.
+	protected static final double SPECTRUM_FREQUENCY_BELOW = 0.45;
+	protected static final double SPECTRUM_FREQUENCY_ABOVE = 3.17;
 	protected static final int SPECTRUM_NUMBER_OF_POINTS = 2000;	// Number of points to plot.
 	
 	// Preferences.
@@ -833,7 +835,8 @@ public abstract class StudyModel implements CategoryType
 		InstrumentCalculator calculator = getCalculator();
 		calculator.setInstrument(instrument);
 		PlayingRangeSpectrum spectrum = new PlayingRangeSpectrum();
-		spectrum.plot(calculator, fingering, SPECTRUM_FREQUENCY_RANGE, SPECTRUM_NUMBER_OF_POINTS, false);
+		spectrum.plot(calculator, fingering, SPECTRUM_FREQUENCY_BELOW, SPECTRUM_FREQUENCY_ABOVE,
+				SPECTRUM_NUMBER_OF_POINTS, false);
 	}
 
 	public String getDefaultConstraints(Object... parentFrame) throws Exception

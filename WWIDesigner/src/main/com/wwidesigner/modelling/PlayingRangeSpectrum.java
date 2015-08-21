@@ -250,31 +250,22 @@ public class PlayingRangeSpectrum
 	 */
 	public void plot(InstrumentCalculator calculator, Fingering fingering)
 	{
-		plot(calculator, fingering, 4./3., 600, true);
-	}
-
-	/**
-	 * Plot the impedance and playing ranges for a given calculator
-	 * and fingering, using default number of points.
-	 * @param calculator
-	 * @param fingering
-	 * @param freqRange - Relative range of frequencies to plot above and below fingering.
-	 */
-	public void plot(InstrumentCalculator calculator, Fingering fingering, 
-			double freqRange)
-	{
-		plot(calculator, fingering, freqRange, 600, true);
+		plot(calculator, fingering, 0.5, 2.0, 2000, true);
 	}
 
 	/**
 	 * Plot the impedance and playing ranges for a given calculator and fingering.
 	 * @param calculator
 	 * @param fingering
-	 * @param freqRange - Relative range of frequencies to plot above and below fingering.
+	 * @param freqRangeBelow - Range of frequencies to plot below fingered note,
+	 * 			as a fraction < 1 of the note.
+	 * @param freqRangeAbove - Range of frequencies to plot above fingered note,
+	 * 			as a multiple > 1 of the note.
 	 * @param numberPoints - number of points to calculate for plotting.
 	 */
-	public void plot(InstrumentCalculator calculator, Fingering fingering, 
-			double freqRange, int numberPoints, final boolean exitOnClose)
+	public void plot(InstrumentCalculator calculator, Fingering fingering,
+			double freqRangeBelow, double freqRangeAbove, int numberPoints,
+			final boolean exitOnClose)
 	{
 		double targetFreq;
 		if ( fingering.getNote().getFrequency() != null )
@@ -288,8 +279,16 @@ public class PlayingRangeSpectrum
 		else {
 			targetFreq = 1000.0;
 		}
-		double freqStart = targetFreq / freqRange;
-		double freqEnd = targetFreq * freqRange;
+		double freqStart = targetFreq * 0.5;
+		if (freqRangeBelow < 1.0)
+		{
+			freqStart = targetFreq * freqRangeBelow;
+		}
+		double freqEnd = targetFreq * 2.0;
+		if (freqRangeAbove > 1.0)
+		{
+			freqEnd = targetFreq * freqRangeAbove;
+		}
 		calcImpedance(calculator, fingering, freqStart, freqEnd,
 				numberPoints);
 		// plotImpedanceSpectrum();

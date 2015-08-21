@@ -49,7 +49,7 @@ public class BP7ImpedancePlot
 			{
 				PlayingRangeSpectrum spectrum = new PlayingRangeSpectrum();
 				spectrum.plot(calculator, tuning.getFingering().get(noteIndex),
-						FreqRange,NumberOfPoints,true);
+						1.0/FreqRange, FreqRange, NumberOfPoints, true);
 			}
 		}
 		catch (Exception e)

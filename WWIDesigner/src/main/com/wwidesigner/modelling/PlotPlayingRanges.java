@@ -43,20 +43,34 @@ import com.wwidesigner.util.Constants;
  */
 public class PlotPlayingRanges
 {
+	protected static final boolean DEFAULT_USE_ACTUALS = false;
 	protected String mName;
 	protected Chart chart;
+	/**
+	 * true to use actual min/max frequencies, if available.
+	 * false to use predicted min/max, if available.
+	 */
+	protected boolean useActuals;
 	
 	protected static final Color darkGreen = new Color(0,192,0);
 	protected static final Color darkYellow = new Color(255,192,0);
 
 	public PlotPlayingRanges()
 	{
-		mName = null;
+		this.mName = null;
+		this.useActuals = DEFAULT_USE_ACTUALS;
 	}
 
 	public PlotPlayingRanges(String title)
 	{
-		mName = title;
+		this.mName = title;
+		this.useActuals = DEFAULT_USE_ACTUALS;
+	}
+	
+	public PlotPlayingRanges(String title, boolean useActuals)
+	{
+		this.mName = title;
+		this.useActuals = useActuals;
 	}
 	
 	/**
@@ -156,6 +170,8 @@ public class PlotPlayingRanges
 		Note tgt;						// Target note at index idx.
 		Note pred;						// Predicted note at index idx.
 		double f;						// Frequency.
+		Double frequencyMax;			// Maximum frequency in current playing range.
+		Double frequencyMin;			// Minimum frequency in current playing range.
 		double y;						// y (vertical axis) value at a particular frequency.
 		double minY = 0.0;				// Minimum y value.
 		double maxY = 0.0;				// Maximum y value.
@@ -170,9 +186,25 @@ public class PlotPlayingRanges
 				lowestF = tgt.getFrequency();
 			}
 			calculator.setFingering(predFingering);
-			if ( pred.getFrequencyMin() != null )
+			if (useActuals && tgt.getFrequencyMax() != null)
 			{
-				y = yValue(calculator, pred.getFrequencyMin());
+				frequencyMax = tgt.getFrequencyMax();
+			}
+			else
+			{
+				frequencyMax = pred.getFrequencyMax();
+			}
+			if (useActuals && tgt.getFrequencyMin() != null)
+			{
+				frequencyMin = tgt.getFrequencyMin();
+			}
+			else
+			{
+				frequencyMin = pred.getFrequencyMin();
+			}
+			if ( frequencyMin != null )
+			{
+				y = yValue(calculator, frequencyMin);
 				if ( y < minY )
 				{
 					minY = y;
@@ -182,9 +214,9 @@ public class PlotPlayingRanges
 					maxY = y;
 				}
 			}
-			if ( pred.getFrequencyMax() != null )
+			if ( frequencyMax != null )
 			{
-				y = yValue(calculator, pred.getFrequencyMax());
+				y = yValue(calculator, frequencyMax);
 				if ( y < minY )
 				{
 					minY = y;
@@ -229,24 +261,40 @@ public class PlotPlayingRanges
 			tgt  = target.getFingering().get(idx).getNote();
 			predFingering = predicted.getFingering().get(idx);
 			pred = predFingering.getNote();
+			if (useActuals && tgt.getFrequencyMax() != null)
+			{
+				frequencyMax = tgt.getFrequencyMax();
+			}
+			else
+			{
+				frequencyMax = pred.getFrequencyMax();
+			}
+			if (useActuals && tgt.getFrequencyMin() != null)
+			{
+				frequencyMin = tgt.getFrequencyMin();
+			}
+			else
+			{
+				frequencyMin = pred.getFrequencyMin();
+			}
 			calculator.setFingering(predFingering);
 			if ( tgt.getFrequency() != null )
 			{
 				f = tgt.getFrequency();
 				y = yValue(calculator, f);
 				y = clamp(y,minY,maxY);
-				if (pred.getFrequencyMax() != null && f > pred.getFrequencyMax())
+				if (frequencyMax != null && f > frequencyMax)
 				{
 					targetModelOver.addPoint(f, y);
 				}
-				else if  (pred.getFrequencyMin() != null && f < pred.getFrequencyMin())
+				else if  (frequencyMin != null && f < frequencyMin)
 				{
 					targetModelUnder.addPoint(f, y);
 				}
-				else if ( pred.getFrequencyMin() != null && pred.getFrequencyMax() != null )
+				else if ( frequencyMin != null && frequencyMax != null )
 				{
-					double ratio = (f - pred.getFrequencyMin())
-							/ (pred.getFrequencyMax() - pred.getFrequencyMin());
+					double ratio = (f - frequencyMin)
+							/ (frequencyMax - frequencyMin);
 					if ( ratio > 0.9 )
 					{
 						targetModelHigh.addPoint(f, y);
@@ -277,9 +325,9 @@ public class PlotPlayingRanges
 				y = clamp(y,minY,maxY);
 				nominalModel.addPoint(pred.getFrequency(), y);
 			}
-			if ( pred.getFrequencyMin() != null )
+			if ( frequencyMin != null )
 			{
-				f = pred.getFrequencyMin();
+				f = frequencyMin;
 				y = yValue(calculator, f);
 				y = clamp(y,minY,maxY);
 				if (isMarkerNote)
@@ -291,9 +339,9 @@ public class PlotPlayingRanges
 					minmaxModel.addPoint(f, y );
 				}
 			}
-			if ( pred.getFrequencyMax() != null )
+			if ( frequencyMax != null )
 			{
-				f = pred.getFrequencyMax();
+				f = frequencyMax;
 				y = yValue(calculator, f);
 				y = clamp(y,minY,maxY);
 				if (isMarkerNote)
@@ -305,11 +353,11 @@ public class PlotPlayingRanges
 					minmaxModel.addPoint(f, y );
 				}
 			}
-			if ( pred.getFrequencyMin() != null && pred.getFrequencyMax() != null )
+			if ( frequencyMin != null && frequencyMax != null )
 			{
 				DefaultChartModel rangeModel  = new DefaultChartModel();
-				double step = (pred.getFrequencyMax() - pred.getFrequencyMin())/32.0;
-				f = pred.getFrequencyMin();
+				double step = (frequencyMax - frequencyMin)/32.0;
+				f = frequencyMin;
 				for (int i = 0; i <= 32; i++ )
 				{
 					y = yValue(calculator, f);

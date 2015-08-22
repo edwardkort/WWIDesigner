@@ -37,6 +37,7 @@ import com.wwidesigner.modelling.InstrumentTuner;
 import com.wwidesigner.modelling.NAFCalculator;
 import com.wwidesigner.modelling.ReflectionEvaluator;
 import com.wwidesigner.modelling.SimpleInstrumentTuner;
+import com.wwidesigner.modelling.SupplementaryInfoTable;
 import com.wwidesigner.note.Tuning;
 import com.wwidesigner.optimization.BaseObjectiveFunction;
 import com.wwidesigner.optimization.Constraints;
@@ -963,6 +964,28 @@ public class NafStudyModel extends StudyModel
 			String title, LengthType defaultLengthType)
 	{
 		return new NafInstrumentComparisonTable(title, defaultLengthType);
+	}
+
+	@Override
+	// For the NAF Study Model, base the supplementary info table
+	// on predicted tuning, rather than target tuning.
+	public void calculateSupplementaryInfo(String title) throws Exception
+	{
+		InstrumentTuner tuner = getInstrumentTuner();
+		InstrumentCalculator calculator = getCalculator();
+		tuner.setCalculator(calculator);
+
+		Category category = this.getCategory(INSTRUMENT_CATEGORY_ID);
+		String instrumentName = category.getSelectedSub();
+		tuner.setInstrument(getInstrument());
+
+		category = getCategory(TUNING_CATEGORY_ID);
+		String tuningName = category.getSelectedSub();
+		tuner.setTuning(getTuning());
+
+		SupplementaryInfoTable table = new SupplementaryInfoTable(title + ": " + instrumentName + "/" + tuningName);
+		table.buildTable(tuner.getPredictedTuning(), calculator);
+		table.showTable(false);
 	}
 
 }

@@ -60,7 +60,7 @@ public class SimpleFippleMouthpieceCalculator extends MouthpieceCalculator
 			StateVector windowState = new StateVector(Zwindow, Complex.ONE);
 			StateVector headspaceState = calcHeadspace_compliance(headspace, waveNumber, parameters);
 
-			// Assume the mouthpiece sees the bore impedance in parallel with
+			// Assume the bore sees the window impedance in parallel with
 			// the headspace impedance.
 			windowState = windowState.parallel(headspaceState);
 			Zwindow = windowState.getImpedance();

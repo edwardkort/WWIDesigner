@@ -231,7 +231,7 @@ public class WhistleStudyModel extends StudyModel
 				objective = new WindowHeightObjectiveFunction(calculator,
 						tuning, evaluator);
 				lowerBound = new double[] { 0.000 };
-				upperBound = new double[] { 0.010 };
+				upperBound = new double[] { 0.030 };
 				break;
 
 			case "BetaObjectiveFunction":

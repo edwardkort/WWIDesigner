@@ -131,11 +131,11 @@ public class SimpleFippleMouthpieceCalculator extends MouthpieceCalculator
 			windowHeight = 0.001;	// Default to 1 mm.
 		}
 		double Xw = physicalParams.getRho() * freq/effSize
-				* ( 4.42 + 2.80 * windowHeight/effSize );
+				* ( 4.30 + 2.87 * windowHeight/effSize );
 		// Model for use when blade height measurement is available.
 		// double Xw = physicalParams.getRho() * freq/effSize
-		// 		* ( 5.34 + 2.27 * windowHeight/effSize
-		//			- 2.88 * mouthpiece.getFipple().getBladeHeight()/mouthpiece.getFipple().getWindwayHeight());
+		// 		* ( 5.34 + 2.24 * windowHeight/effSize
+		//			- 3.13 * mouthpiece.getFipple().getBladeHeight()/mouthpiece.getFipple().getWindwayHeight());
 		// Model adapted from DefaultFippleMouthpieceCalculator.
 		// Xw = 5.851 * freq/effSize * FastMath.pow(mouthpiece.getFipple().getWindwayHeight()/0.7874e-3,0.333333333);
 		

@@ -9,11 +9,11 @@
             <windowLength>5.4</windowLength>
             <windowWidth>6.500000000000001</windowWidth>
             <fippleFactor>1.0</fippleFactor>
-            <windowHeight>2.3</windowHeight>
+            <windowHeight>2.13</windowHeight>
             <windwayLength>21.0</windwayLength>
             <windwayHeight>1.6</windwayHeight>
         </fipple>
-        <beta>0.385</beta>
+        <beta>0.384</beta>
     </mouthpiece>
     <borePoint>
         <borePosition>-5.4</borePosition>
@@ -24,37 +24,37 @@
         <boreDiameter>11.9</boreDiameter>
     </borePoint>
     <borePoint>
-        <borePosition>264.4953079530093</borePosition>
+        <borePosition>265.0</borePosition>
         <boreDiameter>11.899999999999993</boreDiameter>
     </borePoint>
     <hole>
-        <borePosition>124.5</borePosition>
-        <diameter>6.4</diameter>
+        <borePosition>125.0</borePosition>
+        <diameter>6.6</diameter>
         <height>1.9</height>
     </hole>
     <hole>
-        <borePosition>143.5</borePosition>
-        <diameter>7.5</diameter>
+        <borePosition>144.0</borePosition>
+        <diameter>7.6</diameter>
         <height>1.9</height>
     </hole>
     <hole>
         <borePosition>161.5</borePosition>
-        <diameter>7.1</diameter>
+        <diameter>7.2</diameter>
         <height>1.9</height>
     </hole>
     <hole>
-        <borePosition>188.0</borePosition>
-        <diameter>8.1</diameter>
+        <borePosition>188.5</borePosition>
+        <diameter>8.3</diameter>
         <height>1.9</height>
     </hole>
     <hole>
-        <borePosition>200.0</borePosition>
-        <diameter>7.3</diameter>
+        <borePosition>200.5</borePosition>
+        <diameter>7.5</diameter>
         <height>1.9</height>
     </hole>
     <hole>
-        <borePosition>225.5</borePosition>
-        <diameter>7.7</diameter>
+        <borePosition>226.0</borePosition>
+        <diameter>7.9</diameter>
         <height>1.9</height>
     </hole>
     <termination>

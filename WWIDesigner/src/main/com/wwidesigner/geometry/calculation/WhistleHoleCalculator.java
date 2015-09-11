@@ -157,7 +157,7 @@ public class WhistleHoleCalculator extends HoleCalculator
 					* radius * delta2;
 
 			Complex Zr = new Complex(0.25*kb*kb,
-					(0.822 - 0.47*FastMath.pow(delta,0.8)) * waveNumber * radius);
+					(0.822 - 0.47*FastMath.pow(radius / (boreRadius+hole.getHeight()),0.8)) * waveNumber * radius);
 			double cos = FastMath.cos(waveNumber * te);
 			Complex jsin = new Complex(0, FastMath.sin(waveNumber * te));
 

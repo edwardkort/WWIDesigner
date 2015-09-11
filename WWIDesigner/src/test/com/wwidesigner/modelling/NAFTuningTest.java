@@ -57,7 +57,7 @@ public class NAFTuningTest
 			tgtNote  = tgtFingering.get(i).getNote();
 			predNote = predFingering.get(i).getNote();
 			assertEquals(tgtNote.getName() + " tuning incorrect",
-					Note.cents(tgtNote.getFrequency(), predNote.getFrequency()), 0.f, 6.);
+					Note.cents(tgtNote.getFrequency(), predNote.getFrequency()), 0.f, 15.);
 		}
 	}
 

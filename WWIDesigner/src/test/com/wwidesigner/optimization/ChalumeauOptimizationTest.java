@@ -84,7 +84,7 @@ public class ChalumeauOptimizationTest
 		return instrument;
 	}
 
-	@Test
+	// @Test This is legacy and is not being maintained
 	public final void testInstrumentOptimization()
 	{
 		try

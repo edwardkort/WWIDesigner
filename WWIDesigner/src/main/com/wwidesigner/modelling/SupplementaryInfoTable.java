@@ -200,6 +200,10 @@ public class SupplementaryInfoTable extends DefaultTableModel
 				if (windowLength != null)
 				{
 					values[colNr++] = "";
+					if (windwayArea != null)
+					{
+						values[colNr++] = "";
+					}
 				}
 			}
 

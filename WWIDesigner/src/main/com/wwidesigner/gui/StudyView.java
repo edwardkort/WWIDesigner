@@ -544,6 +544,11 @@ public class StudyView extends DataViewPane implements EventSubscriber
 		{
 			setStudyModel(new WhistleStudyModel());
 		}
+		else if (studyClassName
+				.contentEquals(OptimizationPreferences.FLUTE_STUDY_NAME))
+		{
+			setStudyModel(new FluteStudyModel());
+		}
 		else
 		{
 			// Default study model.

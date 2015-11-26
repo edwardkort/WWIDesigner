@@ -36,9 +36,11 @@ import javax.xml.bind.annotation.XmlType;
  *               &lt;complexContent>
  *                 &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *                   &lt;sequence>
- *                     &lt;element name="innerDiameter" type="{http://www.wwidesigner.com/Instrument}MoreThanZero"/>
- *                     &lt;element name="outerDiameter" type="{http://www.wwidesigner.com/Instrument}MoreThanZero"/>
+ *                     &lt;element name="length" type="{http://www.wwidesigner.com/Instrument}MoreThanZero"/>
+ *                     &lt;element name="width" type="{http://www.wwidesigner.com/Instrument}MoreThanZero"/>
  *                     &lt;element name="height" type="{http://www.wwidesigner.com/Instrument}MoreThanZero"/>
+ *                     &lt;element name="airstreamLength" type="{http://www.wwidesigner.com/Instrument}MoreThanZero"/>
+ *                     &lt;element name="airstreamHeight" type="{http://www.wwidesigner.com/Instrument}MoreThanZero"/>
  *                   &lt;/sequence>
  *                 &lt;/restriction>
  *               &lt;/complexContent>
@@ -189,9 +191,11 @@ public class Mouthpiece {
      *   &lt;complexContent>
      *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
      *       &lt;sequence>
-     *         &lt;element name="innerDiameter" type="{http://www.wwidesigner.com/Instrument}MoreThanZero"/>
-     *         &lt;element name="outerDiameter" type="{http://www.wwidesigner.com/Instrument}MoreThanZero"/>
+     *         &lt;element name="length" type="{http://www.wwidesigner.com/Instrument}MoreThanZero"/>
+     *         &lt;element name="width" type="{http://www.wwidesigner.com/Instrument}MoreThanZero"/>
      *         &lt;element name="height" type="{http://www.wwidesigner.com/Instrument}MoreThanZero"/>
+     *         &lt;element name="airstreamLength" type="{http://www.wwidesigner.com/Instrument}MoreThanZero"/>
+     *         &lt;element name="airstreamHeight" type="{http://www.wwidesigner.com/Instrument}MoreThanZero"/>
      *       &lt;/sequence>
      *     &lt;/restriction>
      *   &lt;/complexContent>
@@ -202,46 +206,50 @@ public class Mouthpiece {
      */
     @XmlAccessorType(XmlAccessType.FIELD)
     @XmlType(name = "", propOrder = {
-        "innerDiameter",
-        "outerDiameter",
-        "height"
+        "length",
+        "width",
+        "height",
+        "airstreamLength",
+        "airstreamHeight"
     })
     public static class EmbouchureHole {
 
-        protected double innerDiameter;
-        protected double outerDiameter;
+        protected double length;
+        protected double width;
         protected double height;
+        protected double airstreamLength;
+        protected double airstreamHeight;
 
         /**
-         * Gets the value of the innerDiameter property.
+         * Gets the value of the length property.
          * 
          */
-        public double getInnerDiameter() {
-            return innerDiameter;
+        public double getLength() {
+            return length;
         }
 
         /**
-         * Sets the value of the innerDiameter property.
+         * Sets the value of the length property.
          * 
          */
-        public void setInnerDiameter(double value) {
-            this.innerDiameter = value;
+        public void setLength(double value) {
+            this.length = value;
         }
 
         /**
-         * Gets the value of the outerDiameter property.
+         * Gets the value of the width property.
          * 
          */
-        public double getOuterDiameter() {
-            return outerDiameter;
+        public double getWidth() {
+            return width;
         }
 
         /**
-         * Sets the value of the outerDiameter property.
+         * Sets the value of the width property.
          * 
          */
-        public void setOuterDiameter(double value) {
-            this.outerDiameter = value;
+        public void setWidth(double value) {
+            this.width = value;
         }
 
         /**
@@ -258,6 +266,38 @@ public class Mouthpiece {
          */
         public void setHeight(double value) {
             this.height = value;
+        }
+
+        /**
+         * Gets the value of the airstreamLength property.
+         * 
+         */
+        public double getAirstreamLength() {
+            return airstreamLength;
+        }
+
+        /**
+         * Sets the value of the airstreamLength property.
+         * 
+         */
+        public void setAirstreamLength(double value) {
+            this.airstreamLength = value;
+        }
+
+        /**
+         * Gets the value of the airstreamHeight property.
+         * 
+         */
+        public double getAirstreamHeight() {
+            return airstreamHeight;
+        }
+
+        /**
+         * Sets the value of the airstreamHeight property.
+         * 
+         */
+        public void setAirstreamHeight(double value) {
+            this.airstreamHeight = value;
         }
 
     }

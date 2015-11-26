@@ -153,7 +153,7 @@ public class LinearVInstrumentTuner extends InstrumentTuner
 		// Target velocity for lowest and highest notes.
 		double vLow  = 0.0;
 		double vHigh = 0.0;
-		double windowLength = calculator.getInstrument().getMouthpiece().getFipple().getWindowLength();
+		double windowLength = calculator.getInstrument().getMouthpiece().getAirstreamLength();
 
 		// Find lowest and highest target notes.
 
@@ -313,7 +313,7 @@ public class LinearVInstrumentTuner extends InstrumentTuner
 		try
 		{
 			double target = getFrequencyTarget(targetNote);
-			double windowLength = calculator.getInstrument().getMouthpiece().getFipple().getWindowLength();
+			double windowLength = calculator.getInstrument().getMouthpiece().getAirstreamLength();
 			double zRatio = zRatio(target, windowLength, getNominalV(target));
 			return range.findZRatio(target, zRatio);
 		}
@@ -355,7 +355,7 @@ public class LinearVInstrumentTuner extends InstrumentTuner
 			// Leave fmax and fmin unassigned.
 		}
 		try {
-			double windowLength = calculator.getInstrument().getMouthpiece().getFipple().getWindowLength();
+			double windowLength = calculator.getInstrument().getMouthpiece().getAirstreamLength();
 			double velocity = getNominalV(target);
 			double zRatio = zRatio(target, windowLength, velocity);
 			fnom = range.findZRatio(target, zRatio);

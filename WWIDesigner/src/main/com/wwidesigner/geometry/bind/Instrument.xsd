@@ -178,23 +178,33 @@
 				<xsd:element name="embouchureHole">
 					<xsd:complexType>
 						<xsd:sequence>
-							<xsd:element name="innerDiameter" type="wii:MoreThanZero">
+							<xsd:element name="length" type="wii:MoreThanZero">
 								<xsd:annotation>
-									<xsd:documentation>Equivalent diameter of hole inside the tube.
+									<xsd:documentation>Embouchure hole length (size in longtitudinal direction).
 									</xsd:documentation>
 								</xsd:annotation>
 							</xsd:element>
-							<xsd:element name="outerDiameter" type="wii:MoreThanZero">
+							<xsd:element name="width" type="wii:MoreThanZero">
 								<xsd:annotation>
-									<xsd:documentation>Equivalent diameter of hole outside the
-										tube.
+									<xsd:documentation>Embouchure hole width (size in transverse direction, direction of air stream).
 									</xsd:documentation>
 								</xsd:annotation>
 							</xsd:element>
 							<xsd:element name="height" type="wii:MoreThanZero">
 								<xsd:annotation>
-									<xsd:documentation>Chimney height of hole, from inside to
-										outsides.
+									<xsd:documentation>Chimney height of hole, from inside to outside.
+									</xsd:documentation>
+								</xsd:annotation>
+							</xsd:element>
+							<xsd:element name="airstreamLength" type="wii:MoreThanZero">
+								<xsd:annotation>
+									<xsd:documentation>Length of air stream from player's lips to edge of embouchure hole.
+									</xsd:documentation>
+								</xsd:annotation>
+							</xsd:element>
+							<xsd:element name="airstreamHeight" type="wii:MoreThanZero">
+								<xsd:annotation>
+									<xsd:documentation>Height of air stream from player's lips.
 									</xsd:documentation>
 								</xsd:annotation>
 							</xsd:element>

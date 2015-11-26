@@ -286,20 +286,38 @@ public class InstrumentComparisonTable extends DefaultTableModel
 	{
 		addValues("Mouthpiece Position", oldMouthpiece.getPosition(),
 				newMouthpiece.getPosition(), false);
-		addValues("Window Length", oldMouthpiece.getFipple().getWindowLength(),
-				newMouthpiece.getFipple().getWindowLength(), false);
-		addValues("Window Width", oldMouthpiece.getFipple().getWindowWidth(),
-				newMouthpiece.getFipple().getWindowWidth(), false);
-		addValues("Window Height", oldMouthpiece.getFipple().getWindowHeight(),
-				newMouthpiece.getFipple().getWindowHeight(), false);
-		addValues("Windway Height", oldMouthpiece.getFipple()
-				.getWindwayHeight(), newMouthpiece.getFipple()
-				.getWindwayHeight(), false);
-		addValues("Windway Length", oldMouthpiece.getFipple()
-				.getWindwayLength(), newMouthpiece.getFipple()
-				.getWindwayLength(), false);
-		addValues("Fipple Factor", oldMouthpiece.getFipple().getFippleFactor(),
-				newMouthpiece.getFipple().getFippleFactor(), false);
+		if (oldMouthpiece.getFipple() != null && newMouthpiece.getFipple() != null)
+		{
+			addValues("Window Length", oldMouthpiece.getFipple().getWindowLength(),
+					newMouthpiece.getFipple().getWindowLength(), false);
+			addValues("Window Width", oldMouthpiece.getFipple().getWindowWidth(),
+					newMouthpiece.getFipple().getWindowWidth(), false);
+			addValues("Window Height", oldMouthpiece.getFipple().getWindowHeight(),
+					newMouthpiece.getFipple().getWindowHeight(), false);
+			addValues("Windway Height", oldMouthpiece.getFipple()
+					.getWindwayHeight(), newMouthpiece.getFipple()
+					.getWindwayHeight(), false);
+			addValues("Windway Length", oldMouthpiece.getFipple()
+					.getWindwayLength(), newMouthpiece.getFipple()
+					.getWindwayLength(), false);
+			addValues("Fipple Factor", oldMouthpiece.getFipple().getFippleFactor(),
+					newMouthpiece.getFipple().getFippleFactor(), false);
+		}
+		if (oldMouthpiece.getEmbouchureHole() != null && newMouthpiece.getEmbouchureHole() != null)
+		{
+			addValues("Emb Hole Length", oldMouthpiece.getEmbouchureHole().getLength(),
+					newMouthpiece.getEmbouchureHole().getLength(), false);
+			addValues("Emb Hole Width", oldMouthpiece.getEmbouchureHole().getWidth(),
+					newMouthpiece.getEmbouchureHole().getWidth(), false);
+			addValues("Emb Hole Height", oldMouthpiece.getEmbouchureHole().getHeight(),
+					newMouthpiece.getEmbouchureHole().getHeight(), false);
+			addValues("Airstream Length", oldMouthpiece.getEmbouchureHole()
+					.getAirstreamLength(), newMouthpiece.getEmbouchureHole()
+					.getAirstreamLength(), false);
+			addValues("Airstream Height", oldMouthpiece.getEmbouchureHole()
+					.getAirstreamHeight(), newMouthpiece.getEmbouchureHole()
+					.getAirstreamHeight(), false);
+		}
 	}
 
 	public void printTable(OutputStream os)

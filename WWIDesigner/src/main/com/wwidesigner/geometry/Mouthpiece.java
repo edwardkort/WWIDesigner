@@ -1,5 +1,21 @@
 /**
+ * Class to encapsulate the sounding mechanism of an instrument.
+ * Includes detail classes for different types of instruments.
  * 
+ * Copyright (C) 2014, Edward Kort, Antoine Lefebvre, Burton Patkau.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package com.wwidesigner.geometry;
 
@@ -8,6 +24,7 @@ import java.util.List;
 import com.wwidesigner.util.InvalidFieldHandler;
 
 /**
+ * Main class for the sounding mechanism of an instrument.
  * @author kort
  * 
  */
@@ -66,19 +83,15 @@ public class Mouthpiece implements ComponentInterface, MouthpieceInterface,
 	public void setBeta(Double beta)
 	{
 		this.beta = beta;
+		// For instruments without beta, calculate a gain factor with a default beta.
+		double nominalBeta = 0.35;
+		if (this.beta != null)
+		{
+			nominalBeta = this.beta;
+		}
+
 		if (this.fipple != null && this.fipple.windwayHeight != null)
 		{
-			double nominalBeta;
-			if (this.beta == null)
-			{
-				// For instruments without beta,
-				// calculate a gain factor with a default beta.
-				nominalBeta = 0.35;
-			}
-			else
-			{
-				nominalBeta = this.beta;
-			}
 			this.gainFactor = (8.0
 					* this.fipple.windwayHeight
 					* Math.sqrt(2.0 * this.fipple.windwayHeight
@@ -86,6 +99,16 @@ public class Mouthpiece implements ComponentInterface, MouthpieceInterface,
 					* Math.exp(nominalBeta * this.fipple.windowLength
 							/ this.fipple.windwayHeight)
 					/ (this.fipple.windowLength * this.fipple.windowWidth));
+		}
+		else if (this.embouchureHole != null)
+		{
+			this.gainFactor = (8.0
+					* this.embouchureHole.airstreamHeight
+					* Math.sqrt(2.0 * this.embouchureHole.airstreamHeight
+							/ this.embouchureHole.airstreamLength)
+					* Math.exp(nominalBeta * this.embouchureHole.airstreamLength
+							/ this.embouchureHole.airstreamHeight)
+					/ (this.embouchureHole.length * this.embouchureHole.airstreamLength));
 		}
 		else
 		{
@@ -113,7 +136,8 @@ public class Mouthpiece implements ComponentInterface, MouthpieceInterface,
 	public void setGainFactor(Double gainFactor)
 	{
 		this.gainFactor = gainFactor;
-		if (this.fipple.windwayHeight != null && this.gainFactor != null)
+		if (this.fipple != null && this.fipple.windwayHeight != null
+			&& this.gainFactor != null)
 		{
 			this.beta = this.fipple.windwayHeight
 					/ this.fipple.windowLength
@@ -123,6 +147,17 @@ public class Mouthpiece implements ComponentInterface, MouthpieceInterface,
 									/ this.fipple.windwayHeight)
 							* (this.fipple.windowLength * this.fipple.windowWidth));
 		}
+		else if (this.embouchureHole != null
+				&& this.gainFactor != null)
+			{
+				this.beta = this.embouchureHole.airstreamHeight
+						/ this.embouchureHole.airstreamLength
+						* Math.log(this.gainFactor
+								/ (8.0 * this.embouchureHole.airstreamHeight)
+								* Math.sqrt(0.5 * this.embouchureHole.airstreamLength
+										/ this.embouchureHole.airstreamHeight)
+								* (this.embouchureHole.length * this.embouchureHole.airstreamLength));
+			}
 		else
 		{
 			this.beta = null;
@@ -150,6 +185,8 @@ public class Mouthpiece implements ComponentInterface, MouthpieceInterface,
 	public void setEmbouchureHole(Mouthpiece.EmbouchureHole value)
 	{
 		this.embouchureHole = value;
+		// Recalculate gain factor.
+		setBeta(this.beta);
 	}
 
 	/**
@@ -175,6 +212,20 @@ public class Mouthpiece implements ComponentInterface, MouthpieceInterface,
 		this.fipple = value;
 		// Re-calculate gainFactor when the fipple changes.
 		this.setBeta(this.beta);
+	}
+	
+	public double getAirstreamLength()
+	{
+		if (this.fipple != null )
+		{
+			return this.fipple.windowLength;
+		}
+		if (this.embouchureHole != null)
+		{
+			return this.embouchureHole.airstreamLength;
+		}
+		// Return an arbitrary length, of a plausible magnitude.
+		return 0.5 * this.boreDiameter;
 	}
 
 	public void convertDimensions(double multiplier)
@@ -233,55 +284,53 @@ public class Mouthpiece implements ComponentInterface, MouthpieceInterface,
 	}
 
 	/**
-	 * <p>
-	 * Java class for anonymous complex type.
+	 * Detail class for transverse flute embouchure hole.
 	 * 
 	 */
 	public static class EmbouchureHole
 	{
-
-		protected double innerDiameter;
-		protected double outerDiameter;
+		protected double length;
+		protected double width;
 		protected double height;
+		protected double airstreamLength;
+		protected double airstreamHeight;
 
 		/**
-		 * Gets the value of the innerDiameter property.
-		 * 
+		 * Gets the embouchure hole length (size in longitudinal direction).
 		 */
-		public double getInnerDiameter()
+		public double getLength()
 		{
-			return innerDiameter;
+			return length;
 		}
 
 		/**
-		 * Sets the value of the innerDiameter property.
-		 * 
+		 * Sets the embouchure hole length (size in longitudinal direction).
 		 */
-		public void setInnerDiameter(double value)
+		public void setLength(double length)
 		{
-			this.innerDiameter = value;
+			this.length = length;
 		}
 
 		/**
-		 * Gets the value of the outerDiameter property.
-		 * 
+		 * Gets the embouchure hole width (size in transverse direction,
+		 * direction of air stream).
 		 */
-		public double getOuterDiameter()
+		public double getWidth()
 		{
-			return outerDiameter;
+			return width;
 		}
 
 		/**
-		 * Sets the value of the outerDiameter property.
-		 * 
+		 * Sets the embouchure hole width (size in transverse direction,
+		 * direction of air stream).
 		 */
-		public void setOuterDiameter(double value)
+		public void setWidth(double width)
 		{
-			this.outerDiameter = value;
+			this.width = width;
 		}
 
 		/**
-		 * @return the height
+		 * @return the height of the embouchure hole
 		 */
 		public double getHeight()
 		{
@@ -289,6 +338,7 @@ public class Mouthpiece implements ComponentInterface, MouthpieceInterface,
 		}
 
 		/**
+		 * Set the height of the embouchure hole.
 		 * @param height
 		 *            the height to set
 		 */
@@ -297,30 +347,70 @@ public class Mouthpiece implements ComponentInterface, MouthpieceInterface,
 			this.height = height;
 		}
 
+		/**
+		 * @return the length of the air stream from the player's lips
+		 * to the edge of the embouchure hole
+		 */
+		public double getAirstreamLength()
+		{
+			return airstreamLength;
+		}
+
+		/**
+		 * Set the length of the air stream from the player's lips
+		 * to the edge of the embouchure hole.
+		 * @param height
+		 *            the height to set
+		 */
+		public void setAirstreamLength(double length)
+		{
+			this.airstreamLength = length;
+		}
+
+		/**
+		 * @return the height of the air stream from the player's lips
+		 */
+		public double getAirstreamHeight()
+		{
+			return airstreamHeight;
+		}
+
+		/**
+		 * Set the height of the air stream from the player's lips.
+		 * @param height
+		 *            the height to set
+		 */
+		public void setAirstreamHeight(double height)
+		{
+			this.airstreamHeight = height;
+		}
+
 		public void convertDimensions(double multiplier)
 		{
-			innerDiameter *= multiplier;
-			outerDiameter *= multiplier;
+			length *= multiplier;
+			width *= multiplier;
 			height *= multiplier;
+			airstreamLength *= multiplier;
+			airstreamHeight *= multiplier;
 		}
 
 		public void checkValidity(InvalidFieldHandler handler)
 		{
-			if (Double.isNaN(innerDiameter))
+			if (Double.isNaN(length))
 			{
-				handler.logError("Embouchure hole inner diameter must be specified.");
+				handler.logError("Embouchure hole length must be specified.");
 			}
-			else if (innerDiameter <= 0.0)
+			else if (length <= 0.0)
 			{
-				handler.logError("Embouchure hole inner diameter must be positive.");
+				handler.logError("Embouchure hole length must be positive.");
 			}
-			if (Double.isNaN(outerDiameter))
+			if (Double.isNaN(width))
 			{
-				handler.logError("Embouchure hole outer diameter must be specified.");
+				handler.logError("Embouchure hole width must be specified.");
 			}
-			else if (outerDiameter <= 0.0)
+			else if (width <= 0.0)
 			{
-				handler.logError("Embouchure hole outer diameter must be positive.");
+				handler.logError("Embouchure hole width must be positive.");
 			}
 			if (Double.isNaN(height))
 			{
@@ -330,17 +420,30 @@ public class Mouthpiece implements ComponentInterface, MouthpieceInterface,
 			{
 				handler.logError("Embouchure hole height must be positive.");
 			}
+			if (Double.isNaN(airstreamLength))
+			{
+				handler.logError("Air stream length must be specified.");
+			}
+			else if (airstreamLength <= 0.0)
+			{
+				handler.logError("Air stream length must be positive.");
+			}
+			if (Double.isNaN(airstreamHeight))
+			{
+				handler.logError("Air stream (player's embouchure) height must be specified.");
+			}
+			else if (airstreamHeight <= 0.0)
+			{
+				handler.logError("Air stream (player's embouchure) height must be positive.");
+			}
 		}
 	}
 
 	/**
-	 * <p>
-	 * Java class for anonymous complex type.
-	 * 
+	 * Detail class for the window and windway of a fipple flute.
 	 */
 	public static class Fipple
 	{
-
 		protected double windowWidth;
 		protected double windowLength;
 		protected Double fippleFactor;

@@ -112,7 +112,7 @@ public class WhistleCalculator extends DefaultInstrumentCalculator
 		{
 			return 0.0;
 		}
-		double windowLength = instrument.getMouthpiece().getFipple().getWindowLength();
+		double windowLength = instrument.getMouthpiece().getAirstreamLength();
 		double strouhal = StrouhalZero + StrouhalSlope * Z.getImaginary()/Z.getReal();
 		// If strouhal is outside the range StrouhalZero .. StrouhalMax,
 		// then we are outside a playing range.  It doesn't much matter

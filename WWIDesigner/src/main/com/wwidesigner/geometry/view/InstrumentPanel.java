@@ -100,9 +100,10 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 	protected ButtonGroup mouthpieceTypeGroup;
 	protected JRadioButton embouchureHoleButton;
 	protected JRadioButton fippleButton;
-	protected JFormattedTextField innerDiameter;
-	protected JFormattedTextField outerDiameter;
+	protected JFormattedTextField embHoleLength;
+	protected JFormattedTextField embHoleWidth;
 	protected JFormattedTextField embHoleHeight;
+	protected JFormattedTextField airstreamLength;
 	protected JFormattedTextField windowLength;
 	protected JFormattedTextField windowWidth;
 	protected JFormattedTextField windowHeight;
@@ -212,8 +213,10 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 			windwayLength.setValue(null);
 			windwayHeight.setValue(null);
 			fippleFactor.setValue(null);
-			outerDiameter.setValue(null);
-			innerDiameter.setValue(null);
+			embHoleLength.setValue(null);
+			embHoleWidth.setValue(null);
+			embHoleHeight.setValue(null);
+			airstreamLength.setValue(null);
 			if (mouthpiece != null)
 			{
 				mouthpiecePosition.setValue(mouthpiece.getPosition());
@@ -222,12 +225,16 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 				{
 					fippleButton.setSelected(false);
 					embouchureHoleButton.setSelected(true);
-					outerDiameter.setValue(mouthpiece.getEmbouchureHole()
-							.getOuterDiameter());
-					innerDiameter.setValue(mouthpiece.getEmbouchureHole()
-							.getInnerDiameter());
+					embHoleLength.setValue(mouthpiece.getEmbouchureHole()
+							.getLength());
+					embHoleWidth.setValue(mouthpiece.getEmbouchureHole()
+							.getWidth());
 					embHoleHeight.setValue(mouthpiece.getEmbouchureHole()
 							.getHeight());
+					airstreamLength.setValue(mouthpiece.getEmbouchureHole()
+							.getAirstreamLength());
+					windwayHeight.setValue(mouthpiece.getEmbouchureHole()
+							.getAirstreamHeight());
 				}
 				else
 				{
@@ -526,24 +533,36 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 		else if (embouchureHoleButton.isSelected())
 		{
 			Mouthpiece.EmbouchureHole hole = new Mouthpiece.EmbouchureHole();
-			value = (Double) outerDiameter.getValue();
+			value = (Double) embHoleLength.getValue();
 			if (value == null)
 			{
 				value = Double.NaN;
 			}
-			hole.setOuterDiameter(value);
-			value = (Double) innerDiameter.getValue();
+			hole.setLength(value);
+			value = (Double) embHoleWidth.getValue();
 			if (value == null)
 			{
 				value = Double.NaN;
 			}
-			hole.setInnerDiameter(value);
+			hole.setWidth(value);
 			value = (Double) embHoleHeight.getValue();
 			if (value == null)
 			{
 				value = Double.NaN;
 			}
 			hole.setHeight(value);
+			value = (Double) airstreamLength.getValue();
+			if (value == null)
+			{
+				value = Double.NaN;
+			}
+			hole.setAirstreamLength(value);
+			value = (Double) windwayHeight.getValue();
+			if (value == null)
+			{
+				value = Double.NaN;
+			}
+			hole.setAirstreamHeight(value);
 			mouthpiece.setEmbouchureHole(hole);
 			mouthpiece.setFipple(null);
 		}
@@ -716,8 +735,9 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 		public AbstractFormatter getFormatter(JFormattedTextField tf)
 		{
 			if (tf.equals(mouthpiecePosition) || tf.equals(windowLength)
-					|| tf.equals(outerDiameter) || tf.equals(windowWidth)
-					|| tf.equals(innerDiameter) || tf.equals(embHoleHeight))
+					|| tf.equals(embHoleWidth) || tf.equals(windowWidth)
+					|| tf.equals(embHoleLength) || tf.equals(embHoleHeight)
+					|| tf.equals(airstreamLength))
 			{
 				DoubleFormatter requiredDouble = new DoubleFormatter(false);
 				requiredDouble.setDecimatPrecision(dimensionalDecimalPrecision);
@@ -774,24 +794,28 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 		embouchureHoleButton.addActionListener(this);
 
 		windowLength = setTextField(5, null);
-		outerDiameter = setTextField(5, null);
 		windowWidth = setTextField(5, null);
-		innerDiameter = setTextField(5, null);
 		windowHeight = setTextField(5, null);
+		embHoleLength = setTextField(5, null);
+		embHoleWidth = setTextField(5, null);
 		embHoleHeight = setTextField(5, null);
+		airstreamLength = setTextField(5, null);
 		windwayLength = setTextField(5, null);
 		windwayHeight = setTextField(5, null);
 		fippleFactor = setTextField(5, null);
 
-		outerDiameter.setEnabled(false);
-		innerDiameter.setEnabled(false);
+		embHoleLength.setEnabled(false);
+		embHoleWidth.setEnabled(false);
+		embHoleHeight.setEnabled(false);
+		airstreamLength.setEnabled(false);
 
 		mouthpiecePosition.addFocusListener(this);
 		embouchureHoleButton.addFocusListener(this);
 		fippleButton.addFocusListener(this);
-		innerDiameter.addFocusListener(this);
-		outerDiameter.addFocusListener(this);
+		embHoleLength.addFocusListener(this);
+		embHoleWidth.addFocusListener(this);
 		embHoleHeight.addFocusListener(this);
+		airstreamLength.addFocusListener(this);
 		windowLength.addFocusListener(this);
 		windowWidth.addFocusListener(this);
 		windowHeight.addFocusListener(this);
@@ -842,12 +866,12 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 		gbc.gridx = 1;
 		panel.add(windowLength, gbc);
 
-		label = new JLabel("Outer Diameter: ");
+		label = new JLabel("Emb Hole Length: ");
 		gbc.gridx = 2;
 		gbc.gridwidth = 1;
 		panel.add(label, gbc);
 		gbc.gridx = 3;
-		panel.add(outerDiameter, gbc);
+		panel.add(embHoleLength, gbc);
 
 		++gbc.gridy;
 		label = new JLabel("Window Width: ");
@@ -856,12 +880,12 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 		gbc.gridx = 1;
 		panel.add(windowWidth, gbc);
 
-		label = new JLabel("Inner Diameter: ");
+		label = new JLabel("Emb Hole Width: ");
 		gbc.gridx = 2;
 		gbc.gridwidth = 1;
 		panel.add(label, gbc);
 		gbc.gridx = 3;
-		panel.add(innerDiameter, gbc);
+		panel.add(embHoleWidth, gbc);
 
 		++gbc.gridy;
 		label = new JLabel("Window Height: ");
@@ -882,6 +906,12 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 		panel.add(label, gbc);
 		gbc.gridx = 1;
 		panel.add(windwayLength, gbc);
+
+		label = new JLabel("Airstream Length: ");
+		gbc.gridx = 2;
+		panel.add(label, gbc);
+		gbc.gridx = 3;
+		panel.add(airstreamLength, gbc);
 
 		++gbc.gridy;
 		label = new JLabel("Windway Height: ");
@@ -1157,11 +1187,12 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 		windowWidth.setEnabled(fippleButton.isSelected());
 		windowHeight.setEnabled(fippleButton.isSelected());
 		windwayLength.setEnabled(fippleButton.isSelected());
-		windwayHeight.setEnabled(fippleButton.isSelected());
+		windwayHeight.setEnabled(fippleButton.isSelected() || embouchureHoleButton.isSelected());
 		fippleFactor.setEnabled(fippleButton.isSelected());
-		outerDiameter.setEnabled(embouchureHoleButton.isSelected());
-		innerDiameter.setEnabled(embouchureHoleButton.isSelected());
+		embHoleLength.setEnabled(embouchureHoleButton.isSelected());
+		embHoleWidth.setEnabled(embouchureHoleButton.isSelected());
 		embHoleHeight.setEnabled(embouchureHoleButton.isSelected());
+		airstreamLength.setEnabled(embouchureHoleButton.isSelected());
 	}
 
 	protected void resetTableData(JideTable table, int numRows, int numCols)

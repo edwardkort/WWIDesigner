@@ -38,6 +38,7 @@ import com.wwidesigner.modelling.LinearVInstrumentTuner;
 import com.wwidesigner.modelling.ReactanceEvaluator;
 import com.wwidesigner.modelling.WhistleCalculator;
 import com.wwidesigner.note.Tuning;
+import com.wwidesigner.optimization.AirstreamLengthObjectiveFunction;
 import com.wwidesigner.optimization.BaseObjectiveFunction;
 import com.wwidesigner.optimization.BasicTaperObjectiveFunction;
 import com.wwidesigner.optimization.BetaObjectiveFunction;
@@ -63,7 +64,8 @@ import com.wwidesigner.util.PhysicalParameters;
 public class WhistleStudyModel extends StudyModel
 {
 	// Named constants for the standard set of optimizers.
-	public static final String WINDOW_OPT_SUB_CATEGORY_ID = "1. Window Height Calibrator";
+	public static final String WINDOW_OPT_SUB_CATEGORY_ID = "1. Window Height Calibrator";			// for whistles
+	public static final String AIRSTREAM_OPT_SUB_CATEGORY_ID = "1. Airstream Length Calibrator";	// for flutes
 	public static final String BETA_OPT_SUB_CATEGORY_ID = "2. Beta Calibrator";
 	public static final String LENGTH_OPT_SUB_CATEGORY_ID = "3. Length Optimizer";
 	public static final String HOLESIZE_OPT_SUB_CATEGORY_ID = "4. Hole Size Optimizer";
@@ -108,6 +110,8 @@ public class WhistleStudyModel extends StudyModel
 		optimizers.addSub(WINDOW_OPT_SUB_CATEGORY_ID, null);
 		objectiveFunctionNames.put(WINDOW_OPT_SUB_CATEGORY_ID,
 				WindowHeightObjectiveFunction.class.getSimpleName());
+		objectiveFunctionNames.put(AIRSTREAM_OPT_SUB_CATEGORY_ID,
+				AirstreamLengthObjectiveFunction.class.getSimpleName());
 		optimizers.addSub(BETA_OPT_SUB_CATEGORY_ID, null);
 		objectiveFunctionNames.put(BETA_OPT_SUB_CATEGORY_ID,
 				BetaObjectiveFunction.class.getSimpleName());
@@ -207,9 +211,8 @@ public class WhistleStudyModel extends StudyModel
 			// selected.
 			tuning = new Tuning();
 		}
-		WhistleCalculator calculator = new WhistleCalculator();
+		InstrumentCalculator calculator = getCalculator();
 		calculator.setInstrument(instrument);
-		calculator.setPhysicalParameters(params);
 
 		Category optimizerCategory = getCategory(OPTIMIZER_CATEGORY_ID);
 		String optimizer = optimizerCategory.getSelectedSub();
@@ -226,11 +229,19 @@ public class WhistleStudyModel extends StudyModel
 		// below.
 		switch (objectiveFunctionClass)
 		{
+			case "AirstreamLengthObjectiveFunction":
+				evaluator = new FmaxEvaluator(calculator, getInstrumentTuner());
+				objective = new AirstreamLengthObjectiveFunction(calculator,
+						tuning, evaluator);
+				lowerBound = new double[] { 0.001 };
+				upperBound = new double[] { 0.020 };
+				break;
+
 			case "WindowHeightObjectiveFunction":
 				evaluator = new FmaxEvaluator(calculator, getInstrumentTuner());
 				objective = new WindowHeightObjectiveFunction(calculator,
 						tuning, evaluator);
-				lowerBound = new double[] { 0.000 };
+				lowerBound = new double[] { 0.0001 };
 				upperBound = new double[] { 0.030 };
 				break;
 
@@ -463,7 +474,7 @@ public class WhistleStudyModel extends StudyModel
 		if (!objectiveFunctionNames.containsValue(objFuncClassName))
 		{
 			throw new DataOpenException(
-					"Whistle study model does not support required optimizer, "
+					"This study model does not support required optimizer, "
 							+ objFuncClassName + " ("
 							+ constraints.getObjectiveDisplayName() + ")",
 					DataOpenException.OPTIMIZER_NOT_SUPPORTED);
@@ -523,7 +534,7 @@ public class WhistleStudyModel extends StudyModel
 			if (!objectiveFunctionNames.containsValue(objFuncClassName))
 			{
 				throw new DataOpenException(
-						"Whistle study model does not support required optimizer, "
+						"This study model does not support required optimizer, "
 								+ objFuncClassName + " ("
 								+ constraints.getObjectiveDisplayName() + ")",
 						DataOpenException.OPTIMIZER_NOT_SUPPORTED);

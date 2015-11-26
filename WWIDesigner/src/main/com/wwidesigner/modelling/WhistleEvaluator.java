@@ -79,7 +79,7 @@ public class WhistleEvaluator implements EvaluatorInterface
 				else if (tuner instanceof LinearVInstrumentTuner)
 				{
 					// For velocity deviation, use percentage difference.
-					double windowLength = calculator.getInstrument().getMouthpiece().getFipple().getWindowLength();
+					double windowLength = calculator.getInstrument().getMouthpiece().getAirstreamLength();
 					double targetVelocity = ((LinearVInstrumentTuner)tuner).getNominalV(f);
 					double calcVelocity = LinearVInstrumentTuner.velocity(f, windowLength, 
 							calculator.calcZ(f, target));

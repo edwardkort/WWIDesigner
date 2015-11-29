@@ -163,14 +163,4 @@ public class DefaultFippleMouthpieceCalculator extends MouthpieceCalculator
 
 		return scaledFippleFactor;
 	}
-
-	@Override
-	public Double calcGain(Mouthpiece mouthpiece, double freq, Complex Z,
-			PhysicalParameters physicalParams)
-	{
-		double radius = mouthpiece.getBoreDiameter() / 2.;
-		double waveNumber = physicalParams.calcWaveNumber(freq);
-		return mouthpiece.getGainFactor() * waveNumber * radius * radius
-				/ Z.abs();
-	}
 }

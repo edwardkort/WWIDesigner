@@ -1,7 +1,5 @@
 package com.wwidesigner.geometry.calculation;
 
-import org.apache.commons.math3.complex.Complex;
-
 import com.wwidesigner.geometry.Mouthpiece;
 import com.wwidesigner.math.TransferMatrix;
 import com.wwidesigner.util.PhysicalParameters;
@@ -33,12 +31,4 @@ public class NoOpReedMouthpieceCalculator extends MouthpieceCalculator
 	{
 		return 1;
 	}
-
-	@Override
-	public Double calcGain(Mouthpiece mouthpiece, double freq, Complex Z,
-			PhysicalParameters physicalParams)
-	{
-		return 1.0;
-	}
-
 }

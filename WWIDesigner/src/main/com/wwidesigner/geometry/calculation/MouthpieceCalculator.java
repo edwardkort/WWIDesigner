@@ -3,8 +3,6 @@
  */
 package com.wwidesigner.geometry.calculation;
 
-import org.apache.commons.math3.complex.Complex;
-
 import com.wwidesigner.geometry.Mouthpiece;
 import com.wwidesigner.math.StateVector;
 import com.wwidesigner.math.TransferMatrix;
@@ -32,7 +30,4 @@ public abstract class MouthpieceCalculator
 	}
 
 	public abstract int calcReflectanceMultiplier();
-
-	public abstract Double calcGain(Mouthpiece mouthpiece,
-			double freq, Complex Z, PhysicalParameters physicalParams);
 }

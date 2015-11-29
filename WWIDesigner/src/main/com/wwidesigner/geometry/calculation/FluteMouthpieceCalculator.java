@@ -123,17 +123,6 @@ public class FluteMouthpieceCalculator extends MouthpieceCalculator
 		return new Complex(Rw,Xw);
 	}
 
-	@Override
-	public Double calcGain(Mouthpiece mouthpiece,
-			double freq, Complex Z,
-			PhysicalParameters physicalParams)
-	{
-		double radius = mouthpiece.getBoreDiameter() / 2.;
-		double waveNumber = physicalParams.calcWaveNumber(freq);
-		return mouthpiece.getGainFactor() * waveNumber * radius*radius
-				/ Z.abs();
-	}
-	
 	/**
 	 * Calculate a state vector for the headspace, assuming it is long enough
 	 * to act as a duct with a closed upper end.

@@ -5,6 +5,7 @@ package com.wwidesigner.modelling;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
+
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
@@ -14,6 +15,7 @@ import com.jidesoft.chart.style.ChartStyle;
 import com.jidesoft.chart.style.LineStyle;
 import com.wwidesigner.geometry.Hole;
 import com.wwidesigner.geometry.Mouthpiece;
+import com.wwidesigner.geometry.Mouthpiece.EmbouchureHole;
 import com.wwidesigner.geometry.Mouthpiece.Fipple;
 import com.wwidesigner.geometry.PositionInterface;
 import com.wwidesigner.geometry.BorePoint;
@@ -30,7 +32,7 @@ public class SketchInstrument
 	PositionInterface[] borePoints;
 	SortedPositionList<Hole> holes;
 
-	protected static final double POINTS_PER_HOLE = 20.0;
+	protected static final double POINTS_PER_HOLE = 50.0;
 	protected static final int PIXELS_ACROSS = 1024;
 
 	protected double[] drawBore(Chart chart)
@@ -41,16 +43,18 @@ public class SketchInstrument
 		DefaultChartModel modelBottom = new DefaultChartModel("Interior Bottom");
 		ChartStyle styleInterior = new ChartStyle(Color.black, false, true);
 		float[] dashes = new float[2];
-		dashes[0] = 10.0f;
+		dashes[0] = 8.0f;
 		dashes[1] = 2.0f;
 		BasicStroke stroke = new BasicStroke(2, BasicStroke.CAP_BUTT,
-				BasicStroke.JOIN_ROUND, 10, dashes, 0.0f);
+				BasicStroke.JOIN_ROUND, 10, dashes, 4.0f);
 		LineStyle lineStyle = new LineStyle(Color.black, stroke);
 		styleInterior.setLineStyle(lineStyle);
 		double boreLength = 0.0;
 		double boreWidth = 0.0;
 		double boreStart = borePoints[0].getBorePosition();
-		// Leave top of bore open, for window and windway.
+		// Close top of bore, although this may obscure window and windway.
+		modelTop.addPoint(boreStart, 0.0);
+		modelBottom.addPoint(boreStart, 0.0);
 		for (PositionInterface borePoint : borePoints)
 		{
 			if (borePoint instanceof BorePoint)
@@ -102,10 +106,10 @@ public class SketchInstrument
 
 	protected void drawMouthpiece(Chart chart)
 	{
-		Fipple window = mouthpiece.getFipple();
-		if (window != null)
+		if (mouthpiece.getFipple() != null)
 		{
 			// Draw window as a closed rectangle.
+			Fipple window = mouthpiece.getFipple();
 			ChartStyle styleWindow = new ChartStyle(Color.black, false, true);
 			DefaultChartModel modelWindow = new DefaultChartModel("Window");
 			modelWindow.addPoint(mouthpiece.getBorePosition(),
@@ -147,6 +151,23 @@ public class SketchInstrument
 						-0.5 * window.getWindowWidth());
 				chart.addModel(modelWindway, styleWindway);
 			}
+		}
+		else if (mouthpiece.getEmbouchureHole() != null)
+		{
+			EmbouchureHole embouchureHole = mouthpiece.getEmbouchureHole();
+			ChartStyle styleHole = new ChartStyle(Color.black, false, true);
+			DefaultChartModel modelHole = new DefaultChartModel("EmbouchureHole");
+			// For simplicity, draw embouchure hole as an oval, even though it could be more square.
+			for (double theta = 0.0; theta < 2.0 * Math.PI - 0.01; theta += 2.0
+					* Math.PI / POINTS_PER_HOLE)
+			{
+				double x = 0.5 * embouchureHole.getLength() * Math.cos(theta);
+				double y = 0.5 * embouchureHole.getWidth() * Math.sin(theta);
+				modelHole.addPoint(mouthpiece.getBorePosition() + x, y);
+			}
+			// Close the circle by going back to the first point.
+			modelHole.addPoint(mouthpiece.getBorePosition() + 0.5 * embouchureHole.getLength(), 0.0);
+			chart.addModel(modelHole, styleHole);
 		}
 	}
 

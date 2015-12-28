@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns2:tuning xmlns:ns2="http://www.wwidesigner.com/Tuning">
+    <name>Bell note tuning, no holes</name>
+    <comment>Sample tuning for a whistle under construction, before holes are drilled, with min and max frequencies for the fundamental through fourth harmonic.  Used for calibrating whistle study model.</comment>
+    <numberOfHoles>0</numberOfHoles>
+    <fingering>
+        <note>
+            <name>1st</name>
+            <frequencyMin>535.0</frequencyMin>
+            <frequencyMax>551.0</frequencyMax>
+        </note>
+        <optimizationWeight>1</optimizationWeight>
+    </fingering>
+    <fingering>
+        <note>
+            <name>2nd</name>
+            <frequencyMin>1057.0</frequencyMin>
+            <frequencyMax>1105.0</frequencyMax>
+        </note>
+        <optimizationWeight>1</optimizationWeight>
+    </fingering>
+    <fingering>
+        <note>
+            <name>3rd</name>
+            <frequencyMin>1618.0</frequencyMin>
+            <frequencyMax>1668.0</frequencyMax>
+        </note>
+        <optimizationWeight>1</optimizationWeight>
+    </fingering>
+    <fingering>
+        <note>
+            <name>4th</name>
+            <frequencyMin>2185.0</frequencyMin>
+            <frequencyMax>2235.0</frequencyMax>
+        </note>
+        <optimizationWeight>1</optimizationWeight>
+    </fingering>
+</ns2:tuning>

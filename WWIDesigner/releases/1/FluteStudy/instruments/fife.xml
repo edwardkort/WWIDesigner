@@ -8,11 +8,12 @@ Positions measured from far left-hand end, above the cork.</description>
         <position>83.5</position>
         <embouchureHole>
             <length>9.6</length>
-            <width>5.2</width>
+            <width>9.6</width>
             <height>4.8</height>
-            <embouchureHeight>1.5</embouchureHeight>
+            <airstreamLength>3.9</airstreamLength>
+            <airstreamHeight>1.5</airstreamHeight>
         </embouchureHole>
-        <beta>0.313</beta>
+        <beta>0.255</beta>
     </mouthpiece>
     <borePoint>
         <borePosition>73.5</borePosition>

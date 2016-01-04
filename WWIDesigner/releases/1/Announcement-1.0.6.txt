@@ -1,0 +1,29 @@
+Hello all,
+
+I have just published WIDesigner v1.0.6. This is an update to v1.0.5. It introduces a new feature: explicit support for hemispherical bore heads.
+
+Many of us use split blanks and make the bore with a router. This leaves a hemispherical top to the bore (unless the bore is cut through the SAC and a plug is added). For the standard optimizers, WIDesigner has always handled this scenario, but you had to manually enter the values that described the hemispherical end. WIDesigner now does this for you with a button click.
+
+The taper optimizers, which completely rebuild the bore profile, did not honor the hemispherical head that you manually entered. So two new taper optimizers were added in this release, each of which create the hemispherical head during the optimization process.
+
+Since I make all my flutes with a split blank, I don't know why I didn't make these enhancements sooner.
+
+There were a couple of bug fixes and a dramatic speed-up for multi-start optimizations. Please read RELEASE_NOTES.txt for details.
+
+There weren't any real show stoppers in v1.0.5, but I encourage you to update to v1.0.6. You need not download the entire 9 MB release, if you already have v1.0.5. Just download WIDesigner-1.0.6.jar, and put it in your WIDesigner-1.0 folder. Please read UPDATE_README.txt for details.
+
+I have published two new YouTube videos covering: the hemispherical bore head feature, and the use of multi-start optimization. I believe those videos complete the tutorial set for WIDesigner. Sixteen videos, about 7 hours of air time: I'm tired.
+
+Links that you will find useful:
+Entry point to the on-line documentation:
+https://github.com/edwardkort/WWIDesigner/wiki/Using-WIDesigner
+Entry point to the YouTube videos:
+https://github.com/edwardkort/WWIDesigner/wiki/WIDesigner-Video-Tutorials
+Download page:
+https://github.com/edwardkort/WWIDesigner/releases/latest
+Issues page:
+https://github.com/edwardkort/WWIDesigner/issues
+
+Enjoy,
+Edward Kort
+Wood Wind

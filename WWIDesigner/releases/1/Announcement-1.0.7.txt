@@ -1,0 +1,16 @@
+Hello all,
+
+WIDesigner v1.0.7 has been released. This update adds a new feature, note spectrum graphing. This is our first foray into note quality metrics.
+
+As always, the download site is:
+https://github.com/edwardkort/WWIDesigner/releases/latest
+
+Documentation on this feature:
+https://github.com/edwardkort/WWIDesigner/wiki/Reading-the-Note-Spectrum-Graph
+
+A video tutorial on using this feature to assess overblow pitch and intonation of second-octave notes:
+https://youtu.be/scRkbepDRfc
+
+Enjoy,
+Edward Kort
+Wood Wind

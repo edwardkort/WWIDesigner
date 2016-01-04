@@ -1,0 +1,19 @@
+Hello all,
+
+I have just published WIDesigner v1.0.05. This is an update to v1.0.4, primarily bug fixes. And WIDesigner now works gracefully on the Mac!
+
+There weren't any real show stoppers in v1.0.4, but I encourage you to update to v1.0.5. You need not download the entire 9 MB release, if you already have v1.0.4. Just download WIDesigner-1.0.5.jar, and put it in your WIDesigner-1.0 folder. Please read UPDATE_README.txt for details.
+
+Links that you will find useful:
+Entry point to the on-line documentation:
+https://github.com/edwardkort/WWIDesigner/wiki/Using-WIDesigner
+Entry point to the YouTube videos:
+https://github.com/edwardkort/WWIDesigner/wiki/WIDesigner-Video-Tutorials
+Download page:
+https://github.com/edwardkort/WWIDesigner/releases/latest
+Issues page:
+https://github.com/edwardkort/WWIDesigner/issues
+
+Enjoy,
+Edward Kort
+Wood Wind

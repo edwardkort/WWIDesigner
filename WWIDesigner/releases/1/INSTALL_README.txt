@@ -1,9 +1,6 @@
 Installation README
 
-If this is the first time you have installed WIDesigner,
-download WIDesigner-1.x.x. Follow the instructions in
-the YouTube:
-   http://youtu.be/nDlKJURdHfw
-   
-If you have installed a prior version of WIDesigner,
-please follow the instructions in UPDATE_README.txt.
+This is an upgrade distribution for WIDesigner and
+requires a full install.
+
+Please read UPGRADE_README for installation instructions.

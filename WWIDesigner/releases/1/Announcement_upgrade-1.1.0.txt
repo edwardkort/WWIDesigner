@@ -1,0 +1,42 @@
+Hello all,
+
+WIDesigner v1.1.0 has just been published. This is an upgrade to v1.0.7. From the release notes:
+v1.1.0 changes
+Bugs fixed: none
+Enhancements:
+Added prototype transverse flute study. See
+  https://github.com/edwardkort/WWIDesigner/wiki/Working-with-the-Flute-Study-Model
+Added Supplementary Info table. See
+  https://github.com/edwardkort/WWIDesigner/wiki/The-Supplementary-Information-Table
+Updated tonehole calculations as per:
+  Antoine Lefebvre and Gary P. Scavone, Characterization of woodwind
+  instrument toneholes with the finite element method, J. Acoust.
+  Soc. Am. V. 131 (n. 4), April 2012
+Enhanced note spectrum plot: increased frequency range, added peak
+  frequency printout.
+Upgraded Apache commons math3 library to v3.5 (was v3.2).
+Upgraded JIDE libraries to v3.6.12 (was v3.6.8).
+
+For makers of transverse flutes, we would appreciate your feedback concerning the prototype implementation in this release.
+
+For NAF makers, I have updated the tonehole calculator to the lastest theory. It makes slight changes to hole size and tuning. I'm not sure, in practice, whether these changes are significant; but they cause no harm.
+
+Expanding on the note-quality metrics introduced in v1.0.7, this release expands the capabilities of the note spectrum plot and adds a supplemental information table.
+
+Because several referenced libraries were upgraded, this release is best implemented as a new install. Please see INSTALL_README.txt on the release page for instructions. Not to worry, all of your instrument, tuning, and constraints files will continue to work unchanged.
+
+The work in this release was the tour de force of Burton Patkau, the author of the Whistle study (and much else). Thank you, Burton.
+
+Links that you will find useful:
+Entry point to the on-line documentation:
+https://github.com/edwardkort/WWIDesigner/wiki/Using-WIDesigner
+Entry point to the YouTube videos:
+https://github.com/edwardkort/WWIDesigner/wiki/WIDesigner-Video-Tutorials
+Download page:
+https://github.com/edwardkort/WWIDesigner/releases/latest
+Issues page:
+https://github.com/edwardkort/WWIDesigner/issues
+
+Enjoy,
+Edward Kort
+Wood Wind

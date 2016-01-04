@@ -1,7 +1,23 @@
-Release notes for v1.0.7
+Release notes for v1.1.0
 
-This is an update to v1.0.6. Please read UPDATE_README for
+This is an upgrade to v1.0.7. Please read UPGRADE_README for
 installation details.
+
+v1.1.0 changes
+Bugs fixed: none
+Enhancements:
+Added prototype transverse flute study. See
+  https://github.com/edwardkort/WWIDesigner/wiki/Working-with-the-Flute-Study-Model
+Added Supplementary Info table. See
+  https://github.com/edwardkort/WWIDesigner/wiki/The-Supplementary-Information-Table
+Updated tonehole calculations as per:
+  Antoine Lefebvre and Gary P. Scavone, Characterization of woodwind
+  instrument toneholes with the finite element method, J. Acoust.
+  Soc. Am. V. 131 (n. 4), April 2012
+Enhanced note spectrum plot: increased frequency range, added peak
+  frequency printout.
+Upgraded Apache commons math3 library to v3.5 (was v3.2).
+Upgraded JIDE libraries to v3.6.12 (was v3.6.8).
 
 v1.0.7 changes
 Bugs fixed: none

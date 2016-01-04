@@ -1,0 +1,19 @@
+Hello flute makers,
+
+After 3 years of development by a team of 3, Woodwind Instrument Designer (WIDesigner) has been released. In its current version, it supports the design of Native American Flutes and whistles. And I am very pleased with the functionality and sophistication it brings to the design of these instruments.
+
+The program is a stand-alone Java application, written and distributed under an open-source license (GPL). That is, it is free to use, modify, and distribute. And as a Java application, it runs on Windows (multiple versions), Mac OSX, various flavors of Linux, and UNIX (Solaris).
+
+The code, distribution, and on-line documentation are hosted on GitHub. I have also published a series of video tutorials on YouTube, which contains the vast majority of information about using WIDesigner with NAFs. You can subscribe to the series under the name "Woodwind Instrument Designer". Please view the introductory video to see if WIDesigner is right for you: the program brings a level of complexity to flute design that many may not want to embrace.
+
+Links that you will find useful:
+Entry point to the on-line documentation:
+https://github.com/edwardkort/WWIDesigner/wiki/Using-WIDesigner
+Entry point to the YouTube videos:
+https://github.com/edwardkort/WWIDesigner/wiki/WIDesigner-Video-Tutorials
+Download page:
+https://github.com/edwardkort/WWIDesigner/releases/latest
+
+Enjoy,
+Edward Kort
+Wood Wind

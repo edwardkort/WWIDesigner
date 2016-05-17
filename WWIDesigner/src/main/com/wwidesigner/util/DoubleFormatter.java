@@ -107,7 +107,7 @@ public class DoubleFormatter extends DefaultFormatter
 			if (decFormatter != null)
 			{
 				int decDigits = decFormatter.getMaximumFractionDigits();
-				myClone.setDecimatPrecision(decDigits);
+				myClone.setDecimalPrecision(decDigits);
 			}
 		}
 		catch (CloneNotSupportedException e)
@@ -117,7 +117,7 @@ public class DoubleFormatter extends DefaultFormatter
 		return myClone;
 	}
 
-	public void setDecimatPrecision(int decimalPrecision)
+	public void setDecimalPrecision(int decimalPrecision)
 	{
 		if (decFormatter == null)
 		{

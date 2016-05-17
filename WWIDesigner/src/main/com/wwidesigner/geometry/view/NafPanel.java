@@ -16,12 +16,25 @@ import javax.swing.table.DefaultTableModel;
 
 import com.jidesoft.grid.JideTable;
 import com.wwidesigner.geometry.BorePoint;
+import com.wwidesigner.geometry.Instrument;
 import com.wwidesigner.geometry.Mouthpiece;
 import com.wwidesigner.geometry.calculation.HemisphericalBoreHead;
 import com.wwidesigner.util.SortedPositionList;
 
 public class NafPanel extends InstrumentPanel
 {
+	@Override
+	public void loadData(Instrument instrument)
+	{
+		if (instrument != null && instrument.getMouthpiece() != null
+				&& instrument.getMouthpiece().getFipple() == null)
+		{
+			// Use default mouthpiece if this is not a fipple mouthpiece.
+			super.layoutMouthpieceComponents();
+		}
+		super.loadData(instrument);
+	}
+
 	@Override
 	protected void layoutWidgets()
 	{
@@ -36,65 +49,60 @@ public class NafPanel extends InstrumentPanel
 	}
 
 	@Override
-	protected void layoutMouthpieceComponents(int gridx, int gridy,
-			int gridheight)
+	protected void layoutMouthpieceComponents()
 	{
 		GridBagConstraints gbc = new GridBagConstraints();
 		JLabel label;
-		JPanel panel = new JPanel();
-		panel.setLayout(new GridBagLayout());
+		mouthpiecePanel.removeAll();
 		gbc.anchor = GridBagConstraints.NORTHWEST;
 		gbc.gridy = 0;
 
 		label = new JLabel("Splitting-edge Position: ");
 		gbc.gridx = 0;
 		gbc.insets = new Insets(10, 0, 0, 0);
-		panel.add(label, gbc);
+		mouthpiecePanel.add(label, gbc);
 		gbc.gridx = 1;
 		gbc.insets = new Insets(10, 0, 0, 10);
-		panel.add(mouthpiecePosition, gbc);
+		mouthpiecePanel.add(mouthpiecePosition, gbc);
 		gbc.insets = new Insets(0, 0, 0, 0);
 
 		gbc.gridwidth = 1;
 		++gbc.gridy;
 		label = new JLabel("TSH Length: ");
 		gbc.gridx = 0;
-		panel.add(label, gbc);
+		mouthpiecePanel.add(label, gbc);
 		gbc.gridx = 1;
-		panel.add(windowLength, gbc);
+		mouthpiecePanel.add(windowLength, gbc);
 
 		++gbc.gridy;
 		label = new JLabel("TSH Width: ");
 		gbc.gridx = 0;
-		panel.add(label, gbc);
+		mouthpiecePanel.add(label, gbc);
 		gbc.gridx = 1;
-		panel.add(windowWidth, gbc);
+		mouthpiecePanel.add(windowWidth, gbc);
 
 		++gbc.gridy;
 		label = new JLabel("Flue Depth: ");
 		gbc.gridx = 0;
-		panel.add(label, gbc);
+		mouthpiecePanel.add(label, gbc);
 		gbc.gridx = 1;
-		panel.add(windwayHeight, gbc);
+		mouthpiecePanel.add(windwayHeight, gbc);
 
 		++gbc.gridy;
 		label = new JLabel("Fipple Factor: ");
 		gbc.gridx = 0;
-		panel.add(label, gbc);
+		mouthpiecePanel.add(label, gbc);
 		gbc.gridx = 1;
-		panel.add(fippleFactor, gbc);
-
-		gbc.anchor = GridBagConstraints.NORTHWEST;
-		gbc.gridx = gridx;
-		gbc.gridy = gridy;
-		gbc.gridheight = gridheight;
-		gbc.insets = new Insets(0, 0, 10, 10);
-		add(panel, gbc);
+		mouthpiecePanel.add(fippleFactor, gbc);
 	}
 
 	@Override
 	protected Mouthpiece getMouthpiece()
 	{
+		if (! fippleButton.isSelected())
+		{
+			return super.getMouthpiece();
+		}
 		Mouthpiece mouthpiece = new Mouthpiece();
 		Double value;
 		value = (Double) mouthpiecePosition.getValue();

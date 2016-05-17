@@ -19,90 +19,94 @@
 package com.wwidesigner.geometry.view;
 
 import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.awt.Insets;
-
 import javax.swing.JLabel;
-import javax.swing.JPanel;
-
+import com.wwidesigner.geometry.Instrument;
 import com.wwidesigner.geometry.Mouthpiece;
 
 public class FluteInstrumentPanel extends InstrumentPanel
 {
 	@Override
-	protected void layoutMouthpieceComponents(int gridx, int gridy,
-			int gridheight)
+	public void loadData(Instrument instrument)
+	{
+		if (instrument != null && instrument.getMouthpiece() != null
+				&& instrument.getMouthpiece().getEmbouchureHole() == null)
+		{
+			// Use default mouthpiece if this is not a flute mouthpiece.
+			super.layoutMouthpieceComponents();
+		}
+		super.loadData(instrument);
+	}
+
+	@Override
+	protected void layoutMouthpieceComponents()
 	{
 		GridBagConstraints gbc = new GridBagConstraints();
 		JLabel label;
-		JPanel panel = new JPanel();
-		panel.setLayout(new GridBagLayout());
+		mouthpiecePanel.removeAll();
 		gbc.anchor = GridBagConstraints.NORTHWEST;
 		gbc.gridy = 0;
 
 		label = new JLabel("Mouthpiece Position: ");
 		gbc.gridx = 0;
 		gbc.insets = new Insets(10, 0, 0, 0);
-		panel.add(label, gbc);
+		mouthpiecePanel.add(label, gbc);
 		gbc.gridx = 1;
 		gbc.insets = new Insets(10, 0, 0, 10);
-		panel.add(mouthpiecePosition, gbc);
+		mouthpiecePanel.add(mouthpiecePosition, gbc);
 		gbc.insets = new Insets(10, 0, 0, 0);
 
 		label = new JLabel("Beta Factor: ");
 		gbc.gridx = 2;
-		panel.add(label, gbc);
+		mouthpiecePanel.add(label, gbc);
 		gbc.gridx = 3;
-		panel.add(beta, gbc);
+		mouthpiecePanel.add(beta, gbc);
 		gbc.insets = new Insets(0, 0, 0, 0);
 
 		gbc.gridwidth = 1;
 		++gbc.gridy;
 		label = new JLabel("Emb Hole Length: ");
 		gbc.gridx = 0;
-		panel.add(label, gbc);
+		mouthpiecePanel.add(label, gbc);
 		gbc.gridx = 1;
-		panel.add(embHoleLength, gbc);
+		mouthpiecePanel.add(embHoleLength, gbc);
 
 		++gbc.gridy;
 		label = new JLabel("Emb Hole Width: ");
 		gbc.gridx = 0;
-		panel.add(label, gbc);
+		mouthpiecePanel.add(label, gbc);
 		gbc.gridx = 1;
-		panel.add(embHoleWidth, gbc);
+		mouthpiecePanel.add(embHoleWidth, gbc);
 
 		++gbc.gridy;
 		label = new JLabel("Emb Hole Height: ");
 		gbc.gridx = 0;
-		panel.add(label, gbc);
+		mouthpiecePanel.add(label, gbc);
 		gbc.gridx = 1;
-		panel.add(embHoleHeight, gbc);
+		mouthpiecePanel.add(embHoleHeight, gbc);
 
 		++gbc.gridy;
 		label = new JLabel("Airstream Length: ");
 		gbc.gridx = 0;
-		panel.add(label, gbc);
+		mouthpiecePanel.add(label, gbc);
 		gbc.gridx = 1;
-		panel.add(airstreamLength, gbc);
+		mouthpiecePanel.add(airstreamLength, gbc);
 
 		++gbc.gridy;
 		label = new JLabel("Airstream Height: ");
 		gbc.gridx = 0;
-		panel.add(label, gbc);
+		mouthpiecePanel.add(label, gbc);
 		gbc.gridx = 1;
-		panel.add(windwayHeight, gbc);
-
-		gbc.anchor = GridBagConstraints.NORTHWEST;
-		gbc.gridx = gridx;
-		gbc.gridy = gridy;
-		gbc.gridheight = gridheight;
-		gbc.insets = new Insets(0, 0, 10, 10);
-		add(panel, gbc);
+		mouthpiecePanel.add(windwayHeight, gbc);
 	}
 
 	@Override
 	protected Mouthpiece getMouthpiece()
 	{
+		if (! embouchureHoleButton.isSelected())
+		{
+			return super.getMouthpiece();
+		}
 		Mouthpiece mouthpiece = new Mouthpiece();
 		Double value;
 		value = (Double) mouthpiecePosition.getValue();

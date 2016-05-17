@@ -42,7 +42,8 @@ public class ReflectionEvaluator implements EvaluatorInterface
 			}
 			else
 			{
-				Complex reflectionCoeff = calculator.calcReflectionCoefficient(target);
+				// Multiply reflectance by -1, so that reflectance of -1 has phase angle of zero.
+				Complex reflectionCoeff = calculator.calcReflectionCoefficient(target).multiply(-1.0);
 				errorVector[i++] = reflectionCoeff.getArgument();
 			}
 		}

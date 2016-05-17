@@ -42,6 +42,7 @@ public class OptimizationPreferences extends PreferencesPane
 	public static final String NAF_STUDY_NAME = "NafStudy";
 	public static final String WHISTLE_STUDY_NAME = "WhistleStudy";
 	public static final String FLUTE_STUDY_NAME = "FluteStudy";
+	public static final String REED_STUDY_NAME = "ReedStudy";
 
 	public static final String BLOWING_LEVEL_OPT = "BlowingLevel";
 	public static final int DEFAULT_BLOWING_LEVEL = 5;
@@ -70,6 +71,7 @@ public class OptimizationPreferences extends PreferencesPane
 	JRadioButton nafButton;
 	JRadioButton whistleButton;
 	JRadioButton fluteButton;
+	JRadioButton reedButton;
 	ButtonGroup studyGroup;
 
 	JSpinner blowingLevelSpinner;
@@ -99,10 +101,12 @@ public class OptimizationPreferences extends PreferencesPane
 		nafButton = new JRadioButton("NAF Study");
 		whistleButton = new JRadioButton("Whistle Study");
 		fluteButton = new JRadioButton("Flute Study");
+		reedButton = new JRadioButton("Reed Study");
 		studyGroup = new ButtonGroup();
 		studyGroup.add(nafButton);
 		studyGroup.add(whistleButton);
 		studyGroup.add(fluteButton);
+		studyGroup.add(reedButton);
 
 		blowingLevel = new SpinnerNumberModel(DEFAULT_BLOWING_LEVEL, 0, 10, 1);
 		blowingLevelSpinner = new JSpinner(blowingLevel);
@@ -146,18 +150,28 @@ public class OptimizationPreferences extends PreferencesPane
 			nafButton.setSelected(true);
 			whistleButton.setSelected(false);
 			fluteButton.setSelected(false);
+			reedButton.setSelected(false);
 		}
 		else if (modelName.contentEquals(FLUTE_STUDY_NAME))
 		{
 			fluteButton.setSelected(true);
 			whistleButton.setSelected(false);
 			nafButton.setSelected(false);
+			reedButton.setSelected(false);
+		}
+		else if (modelName.contentEquals(REED_STUDY_NAME))
+		{
+			fluteButton.setSelected(false);
+			whistleButton.setSelected(false);
+			nafButton.setSelected(false);
+			reedButton.setSelected(true);
 		}
 		else
 		{
 			whistleButton.setSelected(true);
 			nafButton.setSelected(false);
 			fluteButton.setSelected(false);
+			reedButton.setSelected(false);
 		}
 		Number currentLevel = myPreferences.getInt(BLOWING_LEVEL_OPT,
 				DEFAULT_BLOWING_LEVEL);
@@ -200,6 +214,10 @@ public class OptimizationPreferences extends PreferencesPane
 		else if (fluteButton.isSelected())
 		{
 			studyName = FLUTE_STUDY_NAME;
+		}
+		else if (reedButton.isSelected())
+		{
+			studyName = REED_STUDY_NAME;
 		}
 		else
 		{
@@ -352,6 +370,8 @@ public class OptimizationPreferences extends PreferencesPane
 			topPanel.add(whistleButton, gbc);
 			gbc.gridx = 2;
 			topPanel.add(fluteButton, gbc);
+			gbc.gridx = 3;
+			topPanel.add(reedButton, gbc);
 			gbc.gridx = 0;
 			gbc.gridy = 1;
 			topPanel.add(new JLabel(LENGTH_TYPE_OPT + ": "), gbc);

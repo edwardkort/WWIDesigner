@@ -19,90 +19,94 @@
 package com.wwidesigner.geometry.view;
 
 import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.awt.Insets;
-
 import javax.swing.JLabel;
-import javax.swing.JPanel;
-
+import com.wwidesigner.geometry.Instrument;
 import com.wwidesigner.geometry.Mouthpiece;
 
 public class WhistleInstrumentPanel extends InstrumentPanel
 {
 	@Override
-	protected void layoutMouthpieceComponents(int gridx, int gridy,
-			int gridheight)
+	public void loadData(Instrument instrument)
+	{
+		if (instrument != null && instrument.getMouthpiece() != null
+				&& instrument.getMouthpiece().getFipple() == null)
+		{
+			// Use default mouthpiece if this is not a fipple mouthpiece.
+			super.layoutMouthpieceComponents();
+		}
+		super.loadData(instrument);
+	}
+
+	@Override
+	protected void layoutMouthpieceComponents()
 	{
 		GridBagConstraints gbc = new GridBagConstraints();
 		JLabel label;
-		JPanel panel = new JPanel();
-		panel.setLayout(new GridBagLayout());
+		mouthpiecePanel.removeAll();
 		gbc.anchor = GridBagConstraints.NORTHWEST;
 		gbc.gridy = 0;
 
 		label = new JLabel("Mouthpiece Position: ");
 		gbc.gridx = 0;
 		gbc.insets = new Insets(10, 0, 0, 0);
-		panel.add(label, gbc);
+		mouthpiecePanel.add(label, gbc);
 		gbc.gridx = 1;
 		gbc.insets = new Insets(10, 0, 0, 10);
-		panel.add(mouthpiecePosition, gbc);
+		mouthpiecePanel.add(mouthpiecePosition, gbc);
 		gbc.insets = new Insets(10, 0, 0, 0);
 
 		label = new JLabel("Beta Factor: ");
 		gbc.gridx = 2;
-		panel.add(label, gbc);
+		mouthpiecePanel.add(label, gbc);
 		gbc.gridx = 3;
-		panel.add(beta, gbc);
+		mouthpiecePanel.add(beta, gbc);
 		gbc.insets = new Insets(0, 0, 0, 0);
 
 		gbc.gridwidth = 1;
 		++gbc.gridy;
 		label = new JLabel("Window Length: ");
 		gbc.gridx = 0;
-		panel.add(label, gbc);
+		mouthpiecePanel.add(label, gbc);
 		gbc.gridx = 1;
-		panel.add(windowLength, gbc);
+		mouthpiecePanel.add(windowLength, gbc);
 
 		++gbc.gridy;
 		label = new JLabel("Window Width: ");
 		gbc.gridx = 0;
-		panel.add(label, gbc);
+		mouthpiecePanel.add(label, gbc);
 		gbc.gridx = 1;
-		panel.add(windowWidth, gbc);
+		mouthpiecePanel.add(windowWidth, gbc);
 
 		++gbc.gridy;
 		label = new JLabel("Window Height: ");
 		gbc.gridx = 0;
-		panel.add(label, gbc);
+		mouthpiecePanel.add(label, gbc);
 		gbc.gridx = 1;
-		panel.add(windowHeight, gbc);
+		mouthpiecePanel.add(windowHeight, gbc);
 
 		++gbc.gridy;
 		label = new JLabel("Windway Length: ");
 		gbc.gridx = 0;
-		panel.add(label, gbc);
+		mouthpiecePanel.add(label, gbc);
 		gbc.gridx = 1;
-		panel.add(windwayLength, gbc);
+		mouthpiecePanel.add(windwayLength, gbc);
 
 		++gbc.gridy;
 		label = new JLabel("Windway Height: ");
 		gbc.gridx = 0;
-		panel.add(label, gbc);
+		mouthpiecePanel.add(label, gbc);
 		gbc.gridx = 1;
-		panel.add(windwayHeight, gbc);
-
-		gbc.anchor = GridBagConstraints.NORTHWEST;
-		gbc.gridx = gridx;
-		gbc.gridy = gridy;
-		gbc.gridheight = gridheight;
-		gbc.insets = new Insets(0, 0, 10, 10);
-		add(panel, gbc);
+		mouthpiecePanel.add(windwayHeight, gbc);
 	}
 
 	@Override
 	protected Mouthpiece getMouthpiece()
 	{
+		if (! fippleButton.isSelected())
+		{
+			return super.getMouthpiece();
+		}
 		Mouthpiece mouthpiece = new Mouthpiece();
 		Double value;
 		value = (Double) mouthpiecePosition.getValue();

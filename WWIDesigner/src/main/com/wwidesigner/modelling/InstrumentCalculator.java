@@ -27,12 +27,31 @@ import com.wwidesigner.geometry.calculation.BoreSectionCalculator;
 import com.wwidesigner.geometry.calculation.HoleCalculator;
 import com.wwidesigner.geometry.calculation.DefaultHoleCalculator;
 import com.wwidesigner.geometry.calculation.MouthpieceCalculator;
-import com.wwidesigner.geometry.calculation.NoOpMouthpieceCalculator;
 import com.wwidesigner.geometry.calculation.SimpleBoreSectionCalculator;
 import com.wwidesigner.geometry.calculation.TerminationCalculator;
 import com.wwidesigner.geometry.calculation.IdealOpenEndCalculator;
 
 /**
+ * Calculates attributes of the instrument body as seen by the driving source.<br/>
+ * 
+ * For flow-node mouthpieces (flutes and fipple flutes):<br/>
+ * 
+ * - calcZ() returns impedance seen by driving source.  Expect resonance
+ *   when imaginary part is zero or phase angle is zero.<br/>
+ * 
+ * - calcReflectionCoefficient() returns coefficient of pressure reflection
+ *   seen by driving source.  Expect resonance when coefficient is -1
+ *   or phase angle is pi.<br/>
+ *
+ * For pressure-node mouthpieces (cane reeds, lip reeds, brass):<br/>
+ * 
+ * - calcZ() returns normalized admittance seen by driving source: Z0**2/Z.
+ *   Expect resonance when imaginary part is zero or phase angle is zero.<br/>
+ * 
+ * - calcReflectionCoefficient() returns negative coefficient of pressure
+ *   reflection (coefficient of flow reflection) seen by driving source.
+ *   Expect resonance when coefficient is -1 or phase angle is pi.<br/>
+ *
  * @author kort
  * 
  */
@@ -59,7 +78,7 @@ public abstract class InstrumentCalculator
 		this.instrument = instrument;
 		this.instrument.convertToMetres();
 		this.instrument.updateComponents();
-		this.mouthpieceCalculator = new NoOpMouthpieceCalculator();
+		this.mouthpieceCalculator = new MouthpieceCalculator();
 		this.terminationCalculator = new IdealOpenEndCalculator();
 		this.holeCalculator = new DefaultHoleCalculator();
 		this.boreSectionCalculator = new SimpleBoreSectionCalculator();
@@ -169,7 +188,7 @@ public abstract class InstrumentCalculator
 	 * specified fingering.
 	 * 
 	 * @param fingering
-	 * @return reflection coefficient
+	 * @return coefficient of pressure reflection
 	 */
 	public Complex calcReflectionCoefficient(Fingering fingering)
 	{
@@ -184,7 +203,7 @@ public abstract class InstrumentCalculator
 	 * 
 	 * @param freq
 	 * @param fingering
-	 * @return reflection coefficient
+	 * @return coefficient of pressure reflection
 	 */
 	public Complex calcReflectionCoefficient(double freq, Fingering fingering)
 	{
@@ -197,7 +216,7 @@ public abstract class InstrumentCalculator
 	 * instrument's current fingering.
 	 * 
 	 * @param freq
-	 * @return reflection coefficient
+	 * @return coefficient of pressure reflection
 	 */
 	public abstract Complex calcReflectionCoefficient(double freq);
 
@@ -287,6 +306,4 @@ public abstract class InstrumentCalculator
 	 */
 	public abstract double calcGain(double freq, Complex Z);
 
-	public abstract Double getPlayedFrequency(Fingering fingering,
-			double freqRange, int numberOfFrequencies);
 }

@@ -96,10 +96,15 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 	protected JTextField nameField;
 	protected JTextPane descriptionField;
 	protected JTextField lengthTypeField;
+	
+	protected JPanel mouthpiecePanel;
 	protected JFormattedTextField mouthpiecePosition;
 	protected ButtonGroup mouthpieceTypeGroup;
 	protected JRadioButton embouchureHoleButton;
 	protected JRadioButton fippleButton;
+	protected JRadioButton singleReedButton;
+	protected JRadioButton doubleReedButton;
+	protected JRadioButton lipReedButton;
 	protected JFormattedTextField embHoleLength;
 	protected JFormattedTextField embHoleWidth;
 	protected JFormattedTextField embHoleHeight;
@@ -110,10 +115,14 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 	protected JFormattedTextField windwayLength;
 	protected JFormattedTextField windwayHeight;
 	protected JFormattedTextField fippleFactor;
+	protected JFormattedTextField alpha;
+	protected JFormattedTextField crowFreq;
 	protected JFormattedTextField beta;
+
 	protected JFormattedTextField terminationFlange;
 	protected JideTable holeList;
 	protected JideTable boreList;
+	
 	protected int dimensionalDecimalPrecision;
 	protected int dimensionlessDecimalPrecision = 5;
 	protected FormatterFactory formatterFactory = new FormatterFactory();
@@ -217,13 +226,19 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 			embHoleWidth.setValue(null);
 			embHoleHeight.setValue(null);
 			airstreamLength.setValue(null);
+			alpha.setValue(null);
+			crowFreq.setValue(null);
 			if (mouthpiece != null)
 			{
 				mouthpiecePosition.setValue(mouthpiece.getPosition());
 				beta.setValue(mouthpiece.getBeta());
+				fippleButton.setSelected(false);
+				embouchureHoleButton.setSelected(false);
+				singleReedButton.setSelected(false);
+				doubleReedButton.setSelected(false);
+				lipReedButton.setSelected(false);
 				if (mouthpiece.getEmbouchureHole() != null)
 				{
-					fippleButton.setSelected(false);
 					embouchureHoleButton.setSelected(true);
 					embHoleLength.setValue(mouthpiece.getEmbouchureHole()
 							.getLength());
@@ -236,10 +251,9 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 					windwayHeight.setValue(mouthpiece.getEmbouchureHole()
 							.getAirstreamHeight());
 				}
-				else
+				else if (mouthpiece.getFipple() != null)
 				{
 					fippleButton.setSelected(true);
-					embouchureHoleButton.setSelected(false);
 					windowLength.setValue(mouthpiece.getFipple()
 							.getWindowLength());
 					windowWidth.setValue(mouthpiece.getFipple()
@@ -253,12 +267,40 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 					fippleFactor.setValue(mouthpiece.getFipple()
 							.getFippleFactor());
 				}
+				else if (mouthpiece.getSingleReed() != null)
+				{
+					singleReedButton.setSelected(true);
+					alpha.setValue(mouthpiece.getSingleReed()
+							.getAlpha());
+				}
+				else if (mouthpiece.getDoubleReed() != null)
+				{
+					doubleReedButton.setSelected(true);
+					alpha.setValue(mouthpiece.getDoubleReed()
+							.getAlpha());
+					crowFreq.setValue(mouthpiece.getDoubleReed()
+							.getCrowFreq());
+				}
+				else if (mouthpiece.getLipReed() != null)
+				{
+					lipReedButton.setSelected(true);
+					alpha.setValue(mouthpiece.getLipReed()
+							.getAlpha());
+				}
+				else
+				{
+					// Default to fipple mouthpiece.
+					fippleButton.setSelected(true);
+				}
 			}
 			else
 			{
 				// Default to fipple mouthpiece.
 				fippleButton.setSelected(true);
 				embouchureHoleButton.setSelected(false);
+				singleReedButton.setSelected(false);
+				doubleReedButton.setSelected(false);
+				lipReedButton.setSelected(false);
 			}
 			enableMouthpieceFields();
 
@@ -528,7 +570,6 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 			value = (Double) fippleFactor.getValue();
 			fipple.setFippleFactor(value);
 			mouthpiece.setFipple(fipple);
-			mouthpiece.setEmbouchureHole(null);
 		}
 		else if (embouchureHoleButton.isSelected())
 		{
@@ -564,7 +605,45 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 			}
 			hole.setAirstreamHeight(value);
 			mouthpiece.setEmbouchureHole(hole);
-			mouthpiece.setFipple(null);
+		}
+		else if (singleReedButton.isSelected())
+		{
+			Mouthpiece.SingleReed reed = new Mouthpiece.SingleReed();
+			value = (Double) alpha.getValue();
+			if (value == null)
+			{
+				value = Double.NaN;
+			}
+			reed.setAlpha(value);
+			mouthpiece.setSingleReed(reed);
+		}
+		else if (doubleReedButton.isSelected())
+		{
+			Mouthpiece.DoubleReed reed = new Mouthpiece.DoubleReed();
+			value = (Double) alpha.getValue();
+			if (value == null)
+			{
+				value = Double.NaN;
+			}
+			reed.setAlpha(value);
+			value = (Double) crowFreq.getValue();
+			if (value == null)
+			{
+				value = Double.NaN;
+			}
+			reed.setCrowFreq(value);
+			mouthpiece.setDoubleReed(reed);
+		}
+		else if (lipReedButton.isSelected())
+		{
+			Mouthpiece.LipReed reed = new Mouthpiece.LipReed();
+			value = (Double) alpha.getValue();
+			if (value == null)
+			{
+				value = Double.NaN;
+			}
+			reed.setAlpha(value);
+			mouthpiece.setLipReed(reed);
 		}
 		else
 		{
@@ -740,21 +819,26 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 					|| tf.equals(airstreamLength))
 			{
 				DoubleFormatter requiredDouble = new DoubleFormatter(false);
-				requiredDouble.setDecimatPrecision(dimensionalDecimalPrecision);
+				requiredDouble.setDecimalPrecision(dimensionalDecimalPrecision);
 				return requiredDouble;
 			}
 			if (tf.equals(windowHeight) || tf.equals(windwayLength)
 					|| tf.equals(windwayHeight) || tf.equals(terminationFlange))
 			{
 				DoubleFormatter optionalDouble = new DoubleFormatter(true);
-				optionalDouble.setDecimatPrecision(dimensionalDecimalPrecision);
+				optionalDouble.setDecimalPrecision(dimensionalDecimalPrecision);
 				return optionalDouble;
+			}
+			if (tf.equals(alpha) || tf.equals(crowFreq))
+			{
+				DoubleFormatter requiredDouble = new DoubleFormatter(false);
+				requiredDouble.setDecimalPrecision(dimensionlessDecimalPrecision);
+				return requiredDouble;
 			}
 			if (tf.equals(beta) || tf.equals(fippleFactor))
 			{
 				DoubleFormatter optionalDouble = new DoubleFormatter(true);
-				optionalDouble
-						.setDecimatPrecision(dimensionlessDecimalPrecision);
+				optionalDouble.setDecimalPrecision(dimensionlessDecimalPrecision);
 				return optionalDouble;
 			}
 			return new DefaultFormatter();
@@ -764,7 +848,16 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 	protected void setMouthpieceWidget(int gridx, int gridy, int gridheight)
 	{
 		createMouthpieceComponents();
-		layoutMouthpieceComponents(gridx, gridy, gridheight);
+		GridBagConstraints gbc = new GridBagConstraints();
+		mouthpiecePanel = new JPanel();
+		mouthpiecePanel.setLayout(new GridBagLayout());
+		layoutMouthpieceComponents();
+		gbc.anchor = GridBagConstraints.NORTHWEST;
+		gbc.gridx = gridx;
+		gbc.gridy = gridy;
+		gbc.gridheight = gridheight;
+		gbc.insets = new Insets(0, 0, 10, 10);
+		add(mouthpiecePanel, gbc);
 	}
 
 	protected JFormattedTextField setTextField(int numColumns,
@@ -780,18 +873,29 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 
 	protected void createMouthpieceComponents()
 	{
+		mouthpiecePanel = null;		// Created in layoutMouthpieceComponents().
+
 		mouthpiecePosition = setTextField(5, 0.0);
 
 		beta = setTextField(5, null);
 
 		fippleButton = new JRadioButton("Fipple Mouthpiece");
 		embouchureHoleButton = new JRadioButton("Embouchure Hole");
+		singleReedButton = new JRadioButton("Single Reed");
+		doubleReedButton = new JRadioButton("Double Reed");
+		lipReedButton = new JRadioButton("Brass");
 		fippleButton.setSelected(true);
 		mouthpieceTypeGroup = new ButtonGroup();
 		mouthpieceTypeGroup.add(fippleButton);
 		mouthpieceTypeGroup.add(embouchureHoleButton);
+		mouthpieceTypeGroup.add(singleReedButton);
+		mouthpieceTypeGroup.add(doubleReedButton);
+		mouthpieceTypeGroup.add(lipReedButton);
 		fippleButton.addActionListener(this);
 		embouchureHoleButton.addActionListener(this);
+		singleReedButton.addActionListener(this);
+		doubleReedButton.addActionListener(this);
+		lipReedButton.addActionListener(this);
 
 		windowLength = setTextField(5, null);
 		windowWidth = setTextField(5, null);
@@ -803,15 +907,22 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 		windwayLength = setTextField(5, null);
 		windwayHeight = setTextField(5, null);
 		fippleFactor = setTextField(5, null);
+		alpha = setTextField(5, null);
+		crowFreq = setTextField(5, null);
 
 		embHoleLength.setEnabled(false);
 		embHoleWidth.setEnabled(false);
 		embHoleHeight.setEnabled(false);
 		airstreamLength.setEnabled(false);
+		alpha.setEnabled(false);
+		crowFreq.setEnabled(false);
 
 		mouthpiecePosition.addFocusListener(this);
 		embouchureHoleButton.addFocusListener(this);
 		fippleButton.addFocusListener(this);
+		singleReedButton.addFocusListener(this);
+		doubleReedButton.addFocusListener(this);
+		lipReedButton.addFocusListener(this);
 		embHoleLength.addFocusListener(this);
 		embHoleWidth.addFocusListener(this);
 		embHoleHeight.addFocusListener(this);
@@ -823,116 +934,134 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 		windwayHeight.addFocusListener(this);
 		fippleFactor.addFocusListener(this);
 		beta.addFocusListener(this);
+		alpha.addFocusListener(this);
+		crowFreq.addFocusListener(this);
 	}
 
-	protected void layoutMouthpieceComponents(int gridx, int gridy,
-			int gridheight)
+	protected void layoutMouthpieceComponents()
 	{
 		GridBagConstraints gbc = new GridBagConstraints();
 		JLabel label;
-		JPanel panel = new JPanel();
-		panel.setLayout(new GridBagLayout());
+		mouthpiecePanel.removeAll();
 		gbc.anchor = GridBagConstraints.NORTHWEST;
 		gbc.gridy = 0;
 
 		label = new JLabel("Mouthpiece Position: ");
 		gbc.gridx = 0;
 		gbc.insets = new Insets(10, 0, 0, 0);
-		panel.add(label, gbc);
+		mouthpiecePanel.add(label, gbc);
 		gbc.gridx = 1;
 		gbc.insets = new Insets(10, 0, 0, 10);
-		panel.add(mouthpiecePosition, gbc);
+		mouthpiecePanel.add(mouthpiecePosition, gbc);
 		gbc.insets = new Insets(10, 0, 0, 0);
 
 		label = new JLabel("Beta Factor: ");
 		gbc.gridx = 2;
-		panel.add(label, gbc);
+		mouthpiecePanel.add(label, gbc);
+		gbc.insets = new Insets(10, 0, 0, 10);
 		gbc.gridx = 3;
-		panel.add(beta, gbc);
+		mouthpiecePanel.add(beta, gbc);
 		gbc.insets = new Insets(0, 0, 0, 0);
 
 		++gbc.gridy;
 		gbc.gridx = 0;
 		gbc.gridwidth = 2;
-		panel.add(fippleButton, gbc);
+		mouthpiecePanel.add(fippleButton, gbc);
 		gbc.gridx = 2;
-		panel.add(embouchureHoleButton, gbc);
+		mouthpiecePanel.add(embouchureHoleButton, gbc);
+		gbc.gridx = 4;
+		mouthpiecePanel.add(singleReedButton, gbc);
 
 		gbc.gridwidth = 1;
 		++gbc.gridy;
 		label = new JLabel("Window Length: ");
 		gbc.gridx = 0;
-		panel.add(label, gbc);
+		mouthpiecePanel.add(label, gbc);
 		gbc.gridx = 1;
-		panel.add(windowLength, gbc);
+		mouthpiecePanel.add(windowLength, gbc);
 
 		label = new JLabel("Emb Hole Length: ");
 		gbc.gridx = 2;
 		gbc.gridwidth = 1;
-		panel.add(label, gbc);
+		mouthpiecePanel.add(label, gbc);
 		gbc.gridx = 3;
-		panel.add(embHoleLength, gbc);
+		mouthpiecePanel.add(embHoleLength, gbc);
+
+		gbc.gridx = 4;
+		gbc.gridwidth = 2;
+		mouthpiecePanel.add(doubleReedButton, gbc);
+		gbc.gridwidth = 1;
 
 		++gbc.gridy;
 		label = new JLabel("Window Width: ");
 		gbc.gridx = 0;
-		panel.add(label, gbc);
+		mouthpiecePanel.add(label, gbc);
 		gbc.gridx = 1;
-		panel.add(windowWidth, gbc);
+		mouthpiecePanel.add(windowWidth, gbc);
 
 		label = new JLabel("Emb Hole Width: ");
 		gbc.gridx = 2;
 		gbc.gridwidth = 1;
-		panel.add(label, gbc);
+		mouthpiecePanel.add(label, gbc);
 		gbc.gridx = 3;
-		panel.add(embHoleWidth, gbc);
+		mouthpiecePanel.add(embHoleWidth, gbc);
+
+		gbc.gridx = 4;
+		gbc.gridwidth = 2;
+		mouthpiecePanel.add(lipReedButton, gbc);
+		gbc.gridwidth = 1;
 
 		++gbc.gridy;
 		label = new JLabel("Window Height: ");
 		gbc.gridx = 0;
-		panel.add(label, gbc);
+		mouthpiecePanel.add(label, gbc);
 		gbc.gridx = 1;
-		panel.add(windowHeight, gbc);
+		mouthpiecePanel.add(windowHeight, gbc);
 
 		label = new JLabel("Emb Hole Height: ");
 		gbc.gridx = 2;
-		panel.add(label, gbc);
+		mouthpiecePanel.add(label, gbc);
 		gbc.gridx = 3;
-		panel.add(embHoleHeight, gbc);
+		mouthpiecePanel.add(embHoleHeight, gbc);
+
+		label = new JLabel("Alpha (unused): ");
+		gbc.gridx = 4;
+		mouthpiecePanel.add(label, gbc);
+		gbc.gridx = 5;
+		mouthpiecePanel.add(alpha, gbc);
 
 		++gbc.gridy;
 		label = new JLabel("Windway Length: ");
 		gbc.gridx = 0;
-		panel.add(label, gbc);
+		mouthpiecePanel.add(label, gbc);
 		gbc.gridx = 1;
-		panel.add(windwayLength, gbc);
+		mouthpiecePanel.add(windwayLength, gbc);
 
 		label = new JLabel("Airstream Length: ");
 		gbc.gridx = 2;
-		panel.add(label, gbc);
+		mouthpiecePanel.add(label, gbc);
 		gbc.gridx = 3;
-		panel.add(airstreamLength, gbc);
+		mouthpiecePanel.add(airstreamLength, gbc);
+
+		label = new JLabel("Crow Freq: ");
+		gbc.gridx = 4;
+		mouthpiecePanel.add(label, gbc);
+		gbc.gridx = 5;
+		mouthpiecePanel.add(crowFreq, gbc);
 
 		++gbc.gridy;
 		label = new JLabel("Windway Height: ");
 		gbc.gridx = 0;
-		panel.add(label, gbc);
+		mouthpiecePanel.add(label, gbc);
 		gbc.gridx = 1;
-		panel.add(windwayHeight, gbc);
+		mouthpiecePanel.add(windwayHeight, gbc);
 
 		++gbc.gridy;
 		label = new JLabel("Fipple Factor: ");
 		gbc.gridx = 0;
-		panel.add(label, gbc);
+		mouthpiecePanel.add(label, gbc);
 		gbc.gridx = 1;
-		panel.add(fippleFactor, gbc);
-
-		gbc.anchor = GridBagConstraints.NORTHWEST;
-		gbc.gridx = gridx;
-		gbc.gridy = gridy;
-		gbc.gridheight = gridheight;
-		gbc.insets = new Insets(0, 0, 10, 10);
-		add(panel, gbc);
+		mouthpiecePanel.add(fippleFactor, gbc);
 	}
 
 	protected void setTerminationWidget(int gridx, int gridy, int gridheight)
@@ -1193,6 +1322,10 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 		embHoleWidth.setEnabled(embouchureHoleButton.isSelected());
 		embHoleHeight.setEnabled(embouchureHoleButton.isSelected());
 		airstreamLength.setEnabled(embouchureHoleButton.isSelected());
+		alpha.setEnabled(singleReedButton.isSelected() 
+				|| doubleReedButton.isSelected() 
+				|| lipReedButton.isSelected());
+		crowFreq.setEnabled(doubleReedButton.isSelected());
 	}
 
 	protected void resetTableData(JideTable table, int numRows, int numCols)
@@ -1321,7 +1454,10 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 	public void actionPerformed(ActionEvent event)
 	{
 		if (event.getSource().equals(fippleButton)
-				|| event.getSource().equals(embouchureHoleButton))
+			|| event.getSource().equals(embouchureHoleButton)
+			|| event.getSource().equals(singleReedButton)
+			|| event.getSource().equals(doubleReedButton)
+			|| event.getSource().equals(lipReedButton))
 		{
 			enableMouthpieceFields();
 		}

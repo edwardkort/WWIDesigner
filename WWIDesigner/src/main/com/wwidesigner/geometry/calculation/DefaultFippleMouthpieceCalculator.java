@@ -1,5 +1,5 @@
 /**
- * Mouthpiece calculator for a fipple mouthpiece.
+ * Mouthpiece calculator for a fipple mouthpiece, principally for NAFs.
  * 
  * Copyright (C) 2014, Edward Kort, Antoine Lefebvre, Burton Patkau.
  *
@@ -37,6 +37,11 @@ public class DefaultFippleMouthpieceCalculator extends MouthpieceCalculator
 	protected TransferMatrix calcTransferMatrix(Mouthpiece mouthpiece,
 			double waveNumber, PhysicalParameters parameters)
 	{
+		if (mouthpiece.isPressureNode())
+		{
+			// Resort to default if this is not a flow-node mouthpiece.
+			return super.calcTransferMatrix(mouthpiece, waveNumber, parameters);
+		}
 		// Use a simplified version of PhysicalParameters: no editable pressure
 		// nor CO2 concentration. This mouthpiece representation gives very
 		// wrong answers when they are varied.
@@ -58,18 +63,6 @@ public class DefaultFippleMouthpieceCalculator extends MouthpieceCalculator
 		Complex C = new Complex(0., 1.).multiply(sin_kl / z0);
 		Complex D = new Complex(cos_kl);
 		return new TransferMatrix(A, B, C, D);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * com.wwidesigner.geometry.MouthpieceCalculator#calcReflectanceMultiplier()
-	 */
-	@Override
-	public int calcReflectanceMultiplier()
-	{
-		return -1;
 	}
 
 	protected double calcKDeltaL(Mouthpiece mouthpiece, double omega, double z0)

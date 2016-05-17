@@ -549,6 +549,11 @@ public class StudyView extends DataViewPane implements EventSubscriber
 		{
 			setStudyModel(new FluteStudyModel());
 		}
+		else if (studyClassName
+				.contentEquals(OptimizationPreferences.REED_STUDY_NAME))
+		{
+			setStudyModel(new ReedStudyModel());
+		}
 		else
 		{
 			// Default study model.

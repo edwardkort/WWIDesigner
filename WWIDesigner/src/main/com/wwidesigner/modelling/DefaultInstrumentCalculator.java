@@ -30,7 +30,6 @@ import com.wwidesigner.geometry.calculation.MouthpieceCalculator;
 import com.wwidesigner.geometry.calculation.TerminationCalculator;
 import com.wwidesigner.math.StateVector;
 import com.wwidesigner.math.TransferMatrix;
-import com.wwidesigner.note.Fingering;
 import com.wwidesigner.util.PhysicalParameters;
 
 /**
@@ -110,14 +109,10 @@ public class DefaultInstrumentCalculator extends InstrumentCalculator
 	{
 		StateVector sv = calcInputStateVector(frequency);
 		
-		// TODO This mouthpiece calculation will change
 		double headRadius = instrument.getMouthpiece().getBoreDiameter() / 2.;
 		
 		Complex reflectance = sv.getReflectance( params.calcZ0(headRadius) );
-		
-		int reflectanceMultiplier = mouthpieceCalculator.calcReflectanceMultiplier();
-
-		return reflectance.multiply(reflectanceMultiplier);
+		return reflectance;
 	}
 
 	/*
@@ -149,19 +144,4 @@ public class DefaultInstrumentCalculator extends InstrumentCalculator
 		return gain;
 	}
 
-	@Override
-	public Double getPlayedFrequency(Fingering fingering, double freqRange,
-			int numberOfFrequencies)
-	{		Double playedFreq = null;
-		double targetFreq = fingering.getNote().getFrequency();
-		double freqStart = targetFreq / freqRange;
-		double freqEnd = targetFreq * freqRange;
-		ReflectanceSpectrum spectrum = new ReflectanceSpectrum();
-
-		spectrum.calcReflectance(this.instrument, this, freqStart, freqEnd,
-				numberOfFrequencies, fingering, params);
-		playedFreq = spectrum.getClosestMinimumFrequency(targetFreq);
-
-		return playedFreq;
-	}
 }

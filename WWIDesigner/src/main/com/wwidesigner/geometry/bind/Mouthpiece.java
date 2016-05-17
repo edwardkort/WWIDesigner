@@ -14,11 +14,10 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * First pass at a sound-mechanism model. Represents
- * 				a choice between (1) a flute-type embouchure and (2) a fipple
- * 				mechanism. We need to add reeds, end-blown flutes, etc. The position
- * 				of the mouthpiece is taken from the mouthpieceOrigin borePoint.
- * 			
+ * The sound-generation element.
+ * Represents a choice between possible sound-generation mechanisms:
+ * flute, fipple flute, cane reed, or lip reed (brass).
+ * 
  * 
  * <p>Java class for Mouthpiece complex type.
  * 
@@ -62,6 +61,40 @@ import javax.xml.bind.annotation.XmlType;
  *               &lt;/complexContent>
  *             &lt;/complexType>
  *           &lt;/element>
+ *           &lt;element name="singleReed">
+ *             &lt;complexType>
+ *               &lt;complexContent>
+ *                 &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
+ *                   &lt;sequence>
+ *                     &lt;element name="alpha" type="{http://www.wwidesigner.com/Instrument}MoreThanZero"/>
+ *                   &lt;/sequence>
+ *                 &lt;/restriction>
+ *               &lt;/complexContent>
+ *             &lt;/complexType>
+ *           &lt;/element>
+ *           &lt;element name="doubleReed">
+ *             &lt;complexType>
+ *               &lt;complexContent>
+ *                 &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
+ *                   &lt;sequence>
+ *                     &lt;element name="alpha" type="{http://www.wwidesigner.com/Instrument}MoreThanZero"/>
+ *                     &lt;element name="crowFreq" type="{http://www.wwidesigner.com/Instrument}MoreThanZero"/>
+ *                   &lt;/sequence>
+ *                 &lt;/restriction>
+ *               &lt;/complexContent>
+ *             &lt;/complexType>
+ *           &lt;/element>
+ *           &lt;element name="lipReed">
+ *             &lt;complexType>
+ *               &lt;complexContent>
+ *                 &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
+ *                   &lt;sequence>
+ *                     &lt;element name="alpha" type="{http://www.wwidesigner.com/Instrument}MoreThanZero"/>
+ *                   &lt;/sequence>
+ *                 &lt;/restriction>
+ *               &lt;/complexContent>
+ *             &lt;/complexType>
+ *           &lt;/element>
  *         &lt;/choice>
  *         &lt;element name="beta" minOccurs="0">
  *           &lt;simpleType>
@@ -83,6 +116,9 @@ import javax.xml.bind.annotation.XmlType;
     "position",
     "embouchureHole",
     "fipple",
+    "singleReed",
+    "doubleReed",
+    "lipReed",
     "beta"
 })
 public class Mouthpiece {
@@ -90,6 +126,9 @@ public class Mouthpiece {
     protected double position;
     protected Mouthpiece.EmbouchureHole embouchureHole;
     protected Mouthpiece.Fipple fipple;
+    protected Mouthpiece.SingleReed singleReed;
+    protected Mouthpiece.DoubleReed doubleReed;
+    protected Mouthpiece.LipReed lipReed;
     protected Double beta;
 
     /**
@@ -130,6 +169,13 @@ public class Mouthpiece {
      */
     public void setEmbouchureHole(Mouthpiece.EmbouchureHole value) {
         this.embouchureHole = value;
+        if (value != null)
+        {
+            this.fipple = null;
+            this.singleReed = null;
+            this.doubleReed = null;
+            this.lipReed = null;
+        }
     }
 
     /**
@@ -154,6 +200,106 @@ public class Mouthpiece {
      */
     public void setFipple(Mouthpiece.Fipple value) {
         this.fipple = value;
+        if (value != null)
+        {
+            this.embouchureHole = null;
+            this.singleReed = null;
+            this.doubleReed = null;
+            this.lipReed = null;
+        }
+    }
+
+    /**
+     * Gets the single-reed mouthpiece.
+     * 
+     * @return
+     *     possible object is
+     *     {@link Mouthpiece.SingleReed }
+     *     
+     */
+    public Mouthpiece.SingleReed getSingleReed() {
+        return singleReed;
+    }
+
+    /**
+     * Sets the single-reed mouthpiece.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link Mouthpiece.SingleReed }
+     *     
+     */
+    public void setSingleReed(Mouthpiece.SingleReed value) {
+        this.singleReed = value;
+        if (value != null)
+        {
+            this.embouchureHole = null;
+            this.fipple = null;
+            this.doubleReed = null;
+            this.lipReed = null;
+        }
+    }
+
+    /**
+     * Gets the double-reed mouthpiece.
+     * 
+     * @return
+     *     possible object is
+     *     {@link Mouthpiece.DoubleReed }
+     *     
+     */
+    public Mouthpiece.DoubleReed getDoubleReed() {
+        return doubleReed;
+    }
+
+    /**
+     * Sets the double-reed mouthpiece.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link Mouthpiece.DoubleReed }
+     *     
+     */
+    public void setDoubleReed(Mouthpiece.DoubleReed value) {
+        this.doubleReed = value;
+        if (value != null)
+        {
+            this.embouchureHole = null;
+            this.fipple = null;
+            this.singleReed = null;
+            this.lipReed = null;
+        }
+    }
+
+    /**
+     * Gets the lip-reed (brass) mouthpiece.
+     * 
+     * @return
+     *     possible object is
+     *     {@link Mouthpiece.LipReed }
+     *     
+     */
+    public Mouthpiece.LipReed getLipReed() {
+        return lipReed;
+    }
+
+    /**
+     * Sets the lip-reed (brass) mouthpiece.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link Mouthpiece.LipReed }
+     *     
+     */
+    public void setLipReed(Mouthpiece.LipReed value) {
+        this.lipReed = value;
+        if (value != null)
+        {
+            this.embouchureHole = null;
+            this.fipple = null;
+            this.singleReed = null;
+            this.doubleReed = null;
+        }
     }
 
     /**
@@ -471,6 +617,164 @@ public class Mouthpiece {
          */
         public void setWindwayHeight(Double value) {
             this.windwayHeight = value;
+        }
+
+    }
+
+
+    /**
+     * <p>Java class for anonymous complex type.
+     * 
+     * <p>The following schema fragment specifies the expected content contained within this class.
+     * 
+     * <pre>
+     * &lt;complexType>
+     *   &lt;complexContent>
+     *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
+     *       &lt;sequence>
+     *         &lt;element name="alpha" type="{http://www.wwidesigner.com/Instrument}MoreThanZero"/>
+     *       &lt;/sequence>
+     *     &lt;/restriction>
+     *   &lt;/complexContent>
+     * &lt;/complexType>
+     * </pre>
+     * 
+     * 
+     */
+    @XmlAccessorType(XmlAccessType.FIELD)
+    @XmlType(name = "", propOrder = {
+        "alpha"
+    })
+    public static class SingleReed {
+
+        protected double alpha;
+
+        /**
+         * Gets the value of the alpha property.
+         * 
+         */
+        public double getAlpha() {
+            return alpha;
+        }
+
+        /**
+         * Sets the value of the alpha property.
+         * 
+         */
+        public void setAlpha(double value) {
+            this.alpha = value;
+        }
+
+    }
+
+
+    /**
+     * <p>Java class for anonymous complex type.
+     * 
+     * <p>The following schema fragment specifies the expected content contained within this class.
+     * 
+     * <pre>
+     * &lt;complexType>
+     *   &lt;complexContent>
+     *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
+     *       &lt;sequence>
+     *         &lt;element name="alpha" type="{http://www.wwidesigner.com/Instrument}MoreThanZero"/>
+     *         &lt;element name="crowFreq" type="{http://www.wwidesigner.com/Instrument}MoreThanZero"/>
+     *       &lt;/sequence>
+     *     &lt;/restriction>
+     *   &lt;/complexContent>
+     * &lt;/complexType>
+     * </pre>
+     * 
+     * 
+     */
+    @XmlAccessorType(XmlAccessType.FIELD)
+    @XmlType(name = "", propOrder = {
+        "alpha",
+        "crowFreq"
+    })
+    public static class DoubleReed {
+
+        protected double alpha;
+        protected double crowFreq;
+
+        /**
+         * Gets the value of the alpha property.
+         * 
+         */
+        public double getAlpha() {
+            return alpha;
+        }
+
+        /**
+         * Sets the value of the alpha property.
+         * 
+         */
+        public void setAlpha(double value) {
+            this.alpha = value;
+        }
+
+
+        /**
+         * Gets the value of the crowFreq property.
+         * 
+         */
+        public double getCrowFreq() {
+            return crowFreq;
+        }
+
+        /**
+         * Sets the value of the crowFreq property.
+         * 
+         */
+        public void setCrowFreq(double value) {
+            this.crowFreq = value;
+        }
+
+    }
+
+
+    /**
+     * <p>Java class for anonymous complex type.
+     * 
+     * <p>The following schema fragment specifies the expected content contained within this class.
+     * 
+     * <pre>
+     * &lt;complexType>
+     *   &lt;complexContent>
+     *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
+     *       &lt;sequence>
+     *         &lt;element name="alpha" type="{http://www.wwidesigner.com/Instrument}MoreThanZero"/>
+     *       &lt;/sequence>
+     *     &lt;/restriction>
+     *   &lt;/complexContent>
+     * &lt;/complexType>
+     * </pre>
+     * 
+     * 
+     */
+    @XmlAccessorType(XmlAccessType.FIELD)
+    @XmlType(name = "", propOrder = {
+        "alpha"
+    })
+    public static class LipReed {
+
+        protected double alpha;
+
+        /**
+         * Gets the value of the alpha property.
+         * 
+         */
+        public double getAlpha() {
+            return alpha;
+        }
+
+        /**
+         * Sets the value of the alpha property.
+         * 
+         */
+        public void setAlpha(double value) {
+            this.alpha = value;
         }
 
     }

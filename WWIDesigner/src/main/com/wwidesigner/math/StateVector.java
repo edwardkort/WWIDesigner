@@ -89,8 +89,8 @@ public class StateVector
     }
 
 	/**
-	 * @return the reflectance that a component with this state vector is
-	 *         presenting
+	 * @return the reflectance (coefficient of reflection of pressure)
+	 *         that a component with this state vector is presenting
 	 */
     public Complex getReflectance(double Z0)
     {

@@ -50,6 +50,12 @@ public class FluteMouthpieceCalculator extends MouthpieceCalculator
 	protected TransferMatrix calcTransferMatrix(Mouthpiece mouthpiece,
 			double waveNumber, PhysicalParameters parameters)
 	{
+		if (mouthpiece.isPressureNode())
+		{
+			// Resort to default if this is not a flow-node mouthpiece.
+			return super.calcTransferMatrix(mouthpiece, waveNumber, parameters);
+		}
+
 		double freq = parameters.calcFrequency(waveNumber);
 		
 		Complex Zwindow = calcZ(mouthpiece, freq, parameters);
@@ -76,18 +82,6 @@ public class FluteMouthpieceCalculator extends MouthpieceCalculator
 		sv = calcTransferMatrix(mouthpiece, waveNumber, parameters)
 				.multiply(sv);
 		return sv;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * com.wwidesigner.geometry.MouthpieceCalculator#calcReflectanceMultiplier()
-	 */
-	@Override
-	public int calcReflectanceMultiplier()
-	{
-		return -1;
 	}
 
 	/**

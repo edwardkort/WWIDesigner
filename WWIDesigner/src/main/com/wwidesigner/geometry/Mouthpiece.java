@@ -35,6 +35,9 @@ public class Mouthpiece implements ComponentInterface, MouthpieceInterface,
 	protected Double beta;
 	protected Mouthpiece.EmbouchureHole embouchureHole;
 	protected Mouthpiece.Fipple fipple;
+	protected Mouthpiece.SingleReed singleReed;
+	protected Mouthpiece.DoubleReed doubleReed;
+	protected Mouthpiece.LipReed lipReed;
 
 	// Values not part of the binding framework
 	protected Double gainFactor;
@@ -163,6 +166,19 @@ public class Mouthpiece implements ComponentInterface, MouthpieceInterface,
 			this.beta = null;
 		}
 	}
+	
+	/**
+	 * Test the type of mouthpiece for a pressure node.
+	 * @return true for cane or lip reed mouthpiece, false for air reed (flute) mouthpiece.
+	 */
+	public boolean isPressureNode()
+	{
+		if (singleReed != null || doubleReed != null || lipReed != null)
+		{
+			return true;
+		}
+		return false;
+	}
 
 	/**
 	 * Gets the value of the embouchureHole property.
@@ -185,6 +201,13 @@ public class Mouthpiece implements ComponentInterface, MouthpieceInterface,
 	public void setEmbouchureHole(Mouthpiece.EmbouchureHole value)
 	{
 		this.embouchureHole = value;
+		if (value != null)
+		{
+			this.fipple = null;
+			this.singleReed = null;
+			this.doubleReed = null;
+			this.lipReed = null;
+		}
 		// Recalculate gain factor.
 		setBeta(this.beta);
 	}
@@ -210,7 +233,110 @@ public class Mouthpiece implements ComponentInterface, MouthpieceInterface,
 	public void setFipple(Mouthpiece.Fipple value)
 	{
 		this.fipple = value;
+		if (value != null)
+		{
+			this.embouchureHole = null;
+			this.singleReed = null;
+			this.doubleReed = null;
+			this.lipReed = null;
+		}
 		// Re-calculate gainFactor when the fipple changes.
+		this.setBeta(this.beta);
+	}
+
+	/**
+	 * Gets the single-reed mouthpiece.
+	 * 
+	 * @return possible object is {@link XmlMouthpiece.SingleReed }
+	 * 
+	 */
+	public Mouthpiece.SingleReed getSingleReed()
+	{
+		return singleReed;
+	}
+
+	/**
+	 * Sets the single-reed mouthpiece.
+	 * 
+	 * @param value
+	 *            allowed object is {@link XmlMouthpiece.SingleReed }
+	 * 
+	 */
+	public void setSingleReed(Mouthpiece.SingleReed value)
+	{
+		this.singleReed = value;
+		if (value != null)
+		{
+			this.embouchureHole = null;
+			this.fipple = null;
+			this.doubleReed = null;
+			this.lipReed = null;
+		}
+		// Re-calculate gainFactor when the reed changes.
+		this.setBeta(this.beta);
+	}
+	
+	/**
+	 * Gets the double-reed mouthpiece.
+	 * 
+	 * @return possible object is {@link XmlMouthpiece.DoubleReed }
+	 * 
+	 */
+	public Mouthpiece.DoubleReed getDoubleReed()
+	{
+		return doubleReed;
+	}
+
+	/**
+	 * Sets the double-reed mouthpiece.
+	 * 
+	 * @param value
+	 *            allowed object is {@link XmlMouthpiece.DoubleReed }
+	 * 
+	 */
+	public void setDoubleReed(Mouthpiece.DoubleReed value)
+	{
+		this.doubleReed = value;
+		if (value != null)
+		{
+			this.embouchureHole = null;
+			this.fipple = null;
+			this.singleReed = null;
+			this.lipReed = null;
+		}
+		// Re-calculate gainFactor when the reed changes.
+		this.setBeta(this.beta);
+	}
+	
+	/**
+	 * Gets the lip-reed (brass) mouthpiece.
+	 * 
+	 * @return possible object is {@link XmlMouthpiece.LipReed }
+	 * 
+	 */
+	public Mouthpiece.LipReed getLipReed()
+	{
+		return lipReed;
+	}
+
+	/**
+	 * Sets the lip-reed (brass) mouthpiece.
+	 * 
+	 * @param value
+	 *            allowed object is {@link XmlMouthpiece.LipReed }
+	 * 
+	 */
+	public void setLipReed(Mouthpiece.LipReed value)
+	{
+		this.lipReed = value;
+		if (value != null)
+		{
+			this.embouchureHole = null;
+			this.fipple = null;
+			this.singleReed = null;
+			this.doubleReed = null;
+		}
+		// Re-calculate gainFactor when the reed changes.
 		this.setBeta(this.beta);
 	}
 	
@@ -246,6 +372,21 @@ public class Mouthpiece implements ComponentInterface, MouthpieceInterface,
 		{
 			fipple.convertDimensions(multiplier);
 		}
+
+		if (singleReed != null)
+		{
+			singleReed.convertDimensions(multiplier);
+		}
+
+		if (doubleReed != null)
+		{
+			doubleReed.convertDimensions(multiplier);
+		}
+
+		if (lipReed != null)
+		{
+			lipReed.convertDimensions(multiplier);
+		}
 	}
 
 	public void checkValidity(InvalidFieldHandler handler, Double minPosition, Double maxPosition)
@@ -254,7 +395,14 @@ public class Mouthpiece implements ComponentInterface, MouthpieceInterface,
 		{
 			handler.logError("The mouthpiece/splitting-edge position must be specified");
 		}
-		else 
+		else if (isPressureNode())
+		{
+			if (minPosition != null && (minPosition > position || minPosition + 0.0001 < position))
+			{
+				handler.logError("The mouthpiece position must be the lowest bore position.");
+			}
+		}
+		else
 		{
 			if (minPosition != null && minPosition > position)
 			{
@@ -272,6 +420,18 @@ public class Mouthpiece implements ComponentInterface, MouthpieceInterface,
 		else if (embouchureHole != null)
 		{
 			embouchureHole.checkValidity(handler);
+		}
+		else if (singleReed != null)
+		{
+			singleReed.checkValidity(handler);
+		}
+		else if (doubleReed != null)
+		{
+			doubleReed.checkValidity(handler);
+		}
+		else if (lipReed != null)
+		{
+			lipReed.checkValidity(handler);
 		}
 		else
 		{
@@ -604,6 +764,160 @@ public class Mouthpiece implements ComponentInterface, MouthpieceInterface,
 			if (fippleFactor != null && fippleFactor <= 0.0)
 			{
 				handler.logError("Fipple factor, if specified, must be positive.");
+			}
+		}
+	}
+
+
+	/**
+	 * Detail class for a single-reed mouthpiece
+	 * details as yet unspecified.
+	 */
+	public static class SingleReed
+	{
+		protected double alpha;
+
+		/**
+		 * @return the alpha
+		 */
+		public double getAlpha()
+		{
+			return alpha;
+		}
+
+		/**
+		 * @param alpha
+		 *            the alpha to set
+		 */
+		public void setAlpha(double alpha)
+		{
+			this.alpha = alpha;
+		}
+
+		public void convertDimensions(double multiplier)
+		{
+		}
+
+		public void checkValidity(InvalidFieldHandler handler)
+		{
+			if (Double.isNaN(alpha))
+			{
+				handler.logError("Alpha factor must specified.");
+			}
+			else if (alpha <= 0.0)
+			{
+				handler.logError("Alpha factor must be positive.");
+			}
+		}
+	}
+
+	/**
+	 * Detail class for a double-reed mouthpiece
+	 * details as yet unspecified.
+	 */
+	public static class DoubleReed
+	{
+		protected double alpha;
+		protected double crowFreq;
+
+		/**
+		 * @return the alpha
+		 */
+		public double getAlpha()
+		{
+			return alpha;
+		}
+
+		/**
+		 * @param alpha
+		 *            the alpha to set
+		 */
+		public void setAlpha(double alpha)
+		{
+			this.alpha = alpha;
+		}
+
+
+		/**
+		 * @return the crowFreq
+		 */
+		public double getCrowFreq()
+		{
+			return crowFreq;
+		}
+
+		/**
+		 * @param crowFreq
+		 *            the crowFreq to set
+		 */
+		public void setCrowFreq(double crowFreq)
+		{
+			this.crowFreq = crowFreq;
+		}
+
+		public void convertDimensions(double multiplier)
+		{
+		}
+
+		public void checkValidity(InvalidFieldHandler handler)
+		{
+			if (Double.isNaN(alpha))
+			{
+				handler.logError("Alpha factor must specified.");
+			}
+			else if (alpha <= 0.0)
+			{
+				handler.logError("Alpha factor must be positive.");
+			}
+			if (Double.isNaN(crowFreq))
+			{
+				handler.logError("Crow frequency must specified.");
+			}
+			else if (crowFreq <= 0.0)
+			{
+				handler.logError("Crow frequency must be positive.");
+			}
+		}
+	}
+
+	/**
+	 * Detail class for a lip-reed (brass) mouthpiece
+	 * details as yet unspecified.
+	 */
+	public static class LipReed
+	{
+		protected double alpha;
+
+		/**
+		 * @return the alpha
+		 */
+		public double getAlpha()
+		{
+			return alpha;
+		}
+
+		/**
+		 * @param alpha
+		 *            the alpha to set
+		 */
+		public void setAlpha(double alpha)
+		{
+			this.alpha = alpha;
+		}
+
+		public void convertDimensions(double multiplier)
+		{
+		}
+
+		public void checkValidity(InvalidFieldHandler handler)
+		{
+			if (Double.isNaN(alpha))
+			{
+				handler.logError("Alpha factor must specified.");
+			}
+			else if (alpha <= 0.0)
+			{
+				handler.logError("Alpha factor must be positive.");
 			}
 		}
 	}

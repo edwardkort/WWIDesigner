@@ -160,10 +160,9 @@
 
 	<xsd:complexType name="Mouthpiece">
 		<xsd:annotation>
-			<xsd:documentation>First pass at a sound-mechanism model. Represents
-				a choice between (1) a flute-type embouchure and (2) a fipple
-				mechanism. We need to add reeds, end-blown flutes, etc. The position
-				of the mouthpiece is taken from the mouthpieceOrigin borePoint.
+			<xsd:documentation>The sound-generation element. Represents a choice between
+				possible sound-generation mechanisms: flute, fipple flute, cane reed,
+				or lip reed (brass).
 			</xsd:documentation>
 		</xsd:annotation>
 		<xsd:sequence>
@@ -255,6 +254,48 @@
 								minOccurs="0">
 								<xsd:annotation>
 									<xsd:documentation>Average height of windway at the exit.
+									</xsd:documentation>
+								</xsd:annotation>
+							</xsd:element>
+						</xsd:sequence>
+					</xsd:complexType>
+				</xsd:element>
+				<xsd:element name="singleReed">
+					<xsd:complexType>
+						<xsd:sequence>
+							<xsd:element name="alpha" type="wii:MoreThanZero">
+								<xsd:annotation>
+									<xsd:documentation>Place-holder.
+									</xsd:documentation>
+								</xsd:annotation>
+							</xsd:element>
+						</xsd:sequence>
+					</xsd:complexType>
+				</xsd:element>
+				<xsd:element name="doubleReed">
+					<xsd:complexType>
+						<xsd:sequence>
+							<xsd:element name="alpha" type="wii:MoreThanZero">
+								<xsd:annotation>
+									<xsd:documentation>Place-holder.
+									</xsd:documentation>
+								</xsd:annotation>
+							</xsd:element>
+							<xsd:element name="crowFreq" type="wii:MoreThanZero">
+								<xsd:annotation>
+									<xsd:documentation>Frequency of reed crow. (Place-holder.)
+									</xsd:documentation>
+								</xsd:annotation>
+							</xsd:element>
+						</xsd:sequence>
+					</xsd:complexType>
+				</xsd:element>
+				<xsd:element name="lipReed">
+					<xsd:complexType>
+						<xsd:sequence>
+							<xsd:element name="alpha" type="wii:MoreThanZero">
+								<xsd:annotation>
+									<xsd:documentation>Place-holder.
 									</xsd:documentation>
 								</xsd:annotation>
 							</xsd:element>

@@ -5,7 +5,7 @@ WIDesigner is a Java application to assist the design of woodwind instruments.
 In its current version, it calculates instrument dimensions to provide optimum tuning accuracy
 over the range of an instrument.
 The current release supports fipple flutes, and includes a prototype transverse flute model.
-We hope to add reed instruments in the near future.
+Support for reed and brass instruments is in progress.
 
 [Using WIDesigner](https://github.com/edwardkort/WWIDesigner/wiki/Using-WIDesigner) describes
 the current instantiation of the application, and summarizes how to use it. 

@@ -69,6 +69,8 @@ public class ConsoleView extends DataViewPane
 		System.out.println("This is free software, and you are welcome to redistribute it");
 		System.out.println("under the terms of the GNU General Public License, version 3 or later.");
 		System.out.println();
+		System.out.println("Layout data directory: " + getApplication().getDataDirectory().getAbsolutePath());
+		System.out.println();
 	}
 
 	private void updateTextArea(final String text)

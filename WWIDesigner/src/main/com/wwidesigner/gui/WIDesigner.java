@@ -15,11 +15,13 @@ import javax.swing.ImageIcon;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JDialog;
 import javax.swing.JMenu;
+import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JTextPane;
 import javax.swing.UIManager;
 
+import com.jidesoft.action.DockableBar;
 import com.jidesoft.app.framework.ApplicationVetoException;
 import com.jidesoft.app.framework.BasicDataModel;
 import com.jidesoft.app.framework.DataModel;
@@ -130,8 +132,8 @@ public class WIDesigner extends FileBasedApplication implements EventSubscriber
 	{
 		try
 		{
-			UIManager.setLookAndFeel(UIManager
-					.getCrossPlatformLookAndFeelClassName());
+			UIManager.setLookAndFeel(
+					UIManager.getCrossPlatformLookAndFeelClassName());
 		}
 		catch (Exception e)
 		{
@@ -161,8 +163,8 @@ public class WIDesigner extends FileBasedApplication implements EventSubscriber
 		// window size
 		ApplicationWindowsUI windowsUI = getApplicationUIManager()
 				.getWindowsUI();
-		windowsUI.setPreferredWindowSize(windowsUI
-				.getPreferredMaximumWindowSize());
+		windowsUI.setPreferredWindowSize(
+				windowsUI.getPreferredMaximumWindowSize());
 
 		getApplicationUIManager().setUseJideDocumentPane(true);
 
@@ -271,23 +273,22 @@ public class WIDesigner extends FileBasedApplication implements EventSubscriber
 			{
 				JMenu menu = menuBarUI.defaultMenu("Tool Menu", "Tool");
 				JMenuItem menuItem;
-				menuItem = menu.add(menuBarUI
-						.getAction(CALCULATE_TUNING_ACTION_ID));
+				menuItem = menu
+						.add(menuBarUI.getAction(CALCULATE_TUNING_ACTION_ID));
 				menuItem.setMnemonic('C');
 				menuItem = menu
 						.add(menuBarUI.getAction(GRAPH_TUNING_ACTION_ID));
 				menuItem.setMnemonic('G');
-				menuItem = menu
-						.add(menuBarUI.getAction(GRAPH_NOTE_ACTION_ID));
+				menuItem = menu.add(menuBarUI.getAction(GRAPH_NOTE_ACTION_ID));
 				menuItem.setMnemonic('n');
-				menuItem = menu.add(menuBarUI
-						.getAction(OPTIMIZE_INSTRUMENT_ACTION_ID));
+				menuItem = menu.add(
+						menuBarUI.getAction(OPTIMIZE_INSTRUMENT_ACTION_ID));
 				menuItem.setMnemonic('O');
-				menuItem = menu.add(menuBarUI
-						.getAction(SKETCH_INSTRUMENT_ACTION_ID));
+				menuItem = menu
+						.add(menuBarUI.getAction(SKETCH_INSTRUMENT_ACTION_ID));
 				menuItem.setMnemonic('S');
-				menuItem = menu.add(menuBarUI
-						.getAction(COMPARE_INSTRUMENT_ACTION_ID));
+				menuItem = menu
+						.add(menuBarUI.getAction(COMPARE_INSTRUMENT_ACTION_ID));
 				menuItem.setMnemonic('m');
 				menuItem = menu.add(menuBarUI
 						.getAction(CALCULATE_SUPPLEMENTARY_INFO_ACTION_ID));
@@ -304,8 +305,8 @@ public class WIDesigner extends FileBasedApplication implements EventSubscriber
 				Action action;
 				if (menuID == FILE_MENU_ID)
 				{
-					MenuGroup group = menuBarsUI.getMenuGroup(
-							FILE_NEW_GROUP_ID, menu);
+					MenuGroup group = menuBarsUI.getMenuGroup(FILE_NEW_GROUP_ID,
+							menu);
 					action = menuBarsUI.getAction(CREATE_TUNING_FILE_ACTION_ID);
 					menuItem = group.addMenuItem(action);
 					menuItem.setMnemonic('T');
@@ -325,8 +326,8 @@ public class WIDesigner extends FileBasedApplication implements EventSubscriber
 				}
 				else if (menuID == WINDOW_MENU_ID)
 				{
-					MenuGroup group = menuBarsUI.getMenuGroup(
-							WINDOW_USER_GROUP_ID, menu);
+					MenuGroup group = menuBarsUI
+							.getMenuGroup(WINDOW_USER_GROUP_ID, menu);
 					action = menuBarsUI.getAction(CLEAR_CONSOLE_ACTION_ID);
 					menuItem = group.addMenuItem(action);
 					menuItem.setMnemonic('l');
@@ -336,13 +337,20 @@ public class WIDesigner extends FileBasedApplication implements EventSubscriber
 					action = menuBarsUI.getAction(TOGGLE_VIEW_ACTION_ID);
 					menuItem = group.addMenuItem(action);
 					menuItem.setMnemonic('T');
-					JCheckBoxMenuItem cbItem = new JCheckBoxMenuItem(
-							menuBarsUI.getAction(WARN_ON_DIRTY_CLOSE_ACTION_ID));
+					JCheckBoxMenuItem cbItem = new JCheckBoxMenuItem(menuBarsUI
+							.getAction(WARN_ON_DIRTY_CLOSE_ACTION_ID));
 					cbItem.setSelected(getApplicationWarnOnDirtyClose());
 					cbItem.setMnemonic('W');
 					group.addMenuItem(cbItem);
 					group.insertSeparator(3);
 					group.insertSeparator(6);
+				}
+
+				// Prevent menuBar from being hidden.
+				JMenuBar menuBar = menuBarsUI.getMenuBar(menu);
+				if (menuBar instanceof DockableBar)
+				{
+					((DockableBar) menuBar).setHidable(false);
 				}
 			}
 		});
@@ -402,8 +410,8 @@ public class WIDesigner extends FileBasedApplication implements EventSubscriber
 					String oldName = focusedModel.getName();
 					String newName = JOptionPane.showInputDialog(
 							getApplicationUIManager().getWindowsUI()
-									.getDialogParent(), "Enter a new name for "
-									+ oldName, oldName);
+									.getDialogParent(),
+							"Enter a new name for " + oldName, oldName);
 					if (newName != null && !newName.equals(oldName))
 					{
 						focusedModel.setName(newName);
@@ -467,8 +475,8 @@ public class WIDesigner extends FileBasedApplication implements EventSubscriber
 				File priorStartDirectory = getLastDirectory();
 				File startDirectory = getConstraintsLeafDirectory();
 				setLastDirectory(startDirectory);
-				File constraintsFile = FileDialogRequest.showOpenDialog(
-						getApplication(), startDirectory);
+				File constraintsFile = FileDialogRequest
+						.showOpenDialog(getApplication(), startDirectory);
 				setLastDirectory(priorStartDirectory);
 				if (constraintsFile != null)
 				{
@@ -605,8 +613,8 @@ public class WIDesigner extends FileBasedApplication implements EventSubscriber
 	{
 		String rootPath = getConstraintsRootDirectoryPath();
 
-		return getStudyView()
-				.getConstraintsLeafDirectory(rootPath, constraints);
+		return getStudyView().getConstraintsLeafDirectory(rootPath,
+				constraints);
 	}
 
 	protected void addCompareInstrumentsAction()
@@ -650,7 +658,8 @@ public class WIDesigner extends FileBasedApplication implements EventSubscriber
 			{
 				TuningWizardDialog wizard = new TuningWizardDialog(
 						getApplicationUIManager().getWindowsUI()
-								.getDialogParent(), "Tuning File Wizard", false);
+								.getDialogParent(),
+						"Tuning File Wizard", false);
 				wizard.setCurrentSaveDirectory(getLastDirectory());
 				wizard.setVisible(true);
 			}
@@ -715,10 +724,9 @@ public class WIDesigner extends FileBasedApplication implements EventSubscriber
 			}
 		};
 		message = "Calculating optimized instrument.\nThis may take several minutes.\nPlease be patient.";
-		optActivity
-				.addProgressListener(new BlockingProgressListener(
-						getApplicationUIManager().getWindowsUI(), "Optimizing",
-						message));
+		optActivity.addProgressListener(new BlockingProgressListener(
+				getApplicationUIManager().getWindowsUI(), "Optimizing",
+				message));
 		action = new ActivityAction(optActivity)
 		{
 			@Override
@@ -845,8 +853,8 @@ public class WIDesigner extends FileBasedApplication implements EventSubscriber
 		};
 		message = "Calculating instrument tuning.\nThis may take several seconds.";
 		graphActivity.addProgressListener(new BlockingProgressListener(
-				getApplicationUIManager().getWindowsUI(),
-				GRAPH_NOTE_ACTION_ID, message));
+				getApplicationUIManager().getWindowsUI(), GRAPH_NOTE_ACTION_ID,
+				message));
 		action = new ActivityAction(graphActivity)
 		{
 			@Override
@@ -875,7 +883,8 @@ public class WIDesigner extends FileBasedApplication implements EventSubscriber
 		// The complexity in this method is due to the poor way that JDAF
 		// threads Actions and Activities.
 		// Anything simpler just didn't work right!
-		final Activity activity = new Activity(CALCULATE_SUPPLEMENTARY_INFO_ACTION_ID)
+		final Activity activity = new Activity(
+				CALCULATE_SUPPLEMENTARY_INFO_ACTION_ID)
 		{
 
 			@Override
@@ -954,9 +963,9 @@ public class WIDesigner extends FileBasedApplication implements EventSubscriber
 		// Add preview panel to Open file dialog
 		((FileDialogRequestHandler) getApplicationUIManager().getDialogsUI()
 				.getDialogHandler(FileDialogRequest.class))
-				.setUseAWTFileDialogs(false);
-		getApplicationUIManager().getDialogsUI().addDialogListener(
-				new FileOpenDialogPreviewPane());
+						.setUseAWTFileDialogs(false);
+		getApplicationUIManager().getDialogsUI()
+				.addDialogListener(new FileOpenDialogPreviewPane());
 
 		addDataModelListener(new DataModelAdapter()
 		{
@@ -1049,8 +1058,8 @@ public class WIDesigner extends FileBasedApplication implements EventSubscriber
 					}
 
 					action = getActionMap().get(GRAPH_NOTE_ACTION_ID);
-					if (StudyModel.INSTRUMENT_CATEGORY_ID.equals(model
-							.getSemanticName()))
+					if (StudyModel.INSTRUMENT_CATEGORY_ID
+							.equals(model.getSemanticName()))
 					{
 						setCompareInstrumentAction(model.getName(), true);
 						action.setEnabled(false);
@@ -1058,8 +1067,10 @@ public class WIDesigner extends FileBasedApplication implements EventSubscriber
 					else
 					{
 						setCompareInstrumentAction(null, true);
-						if (getStudyView().getStudyModel().getSelectedInstrumentName().isEmpty()
-							|| getStudyView().getSelectedFingering() == null)
+						if (getStudyView().getStudyModel()
+								.getSelectedInstrumentName().isEmpty()
+								|| getStudyView()
+										.getSelectedFingering() == null)
 						{
 							action.setEnabled(false);
 						}
@@ -1111,9 +1122,8 @@ public class WIDesigner extends FileBasedApplication implements EventSubscriber
 		else
 		{
 			DataModel otherModel = getFocusedModel();
-			if (otherModel == null
-					|| !StudyModel.INSTRUMENT_CATEGORY_ID.equals(otherModel
-							.getSemanticName()))
+			if (otherModel == null || !StudyModel.INSTRUMENT_CATEGORY_ID
+					.equals(otherModel.getSemanticName()))
 			{
 				action.setEnabled(false);
 			}
@@ -1241,8 +1251,7 @@ public class WIDesigner extends FileBasedApplication implements EventSubscriber
 		}
 	}
 
-	public static class SecondaryBasicDataModel2 extends
-			SecondaryBasicDataModel
+	public static class SecondaryBasicDataModel2 extends SecondaryBasicDataModel
 	{
 	}
 
@@ -1286,8 +1295,8 @@ public class WIDesigner extends FileBasedApplication implements EventSubscriber
 		}
 		else if (CONSTRAINTS_CAN_CREATE_EVENT_ID.equals(eventName))
 		{
-			Action action = getActionMap().get(
-					CREATE_DEFAULT_CONSTRAINTS_ACTION_ID);
+			Action action = getActionMap()
+					.get(CREATE_DEFAULT_CONSTRAINTS_ACTION_ID);
 			if (action != null)
 			{
 				action.setEnabled((Boolean) e.getSource());
@@ -1334,8 +1343,7 @@ public class WIDesigner extends FileBasedApplication implements EventSubscriber
 			Constraints constraints = StudyModel.getConstraints(xmlString);
 			if (constraints != null)
 			{
-				getEventManager().publish(
-						CONSTRAINTS_SAVE_AS_ACTIVE_EVENT_ID,
+				getEventManager().publish(CONSTRAINTS_SAVE_AS_ACTIVE_EVENT_ID,
 						getStudyView().getStudyModel()
 								.isOptimizerConstraintsDirectorySpecified(
 										getConstraintsRootDirectoryPath()));

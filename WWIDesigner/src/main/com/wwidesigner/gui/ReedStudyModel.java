@@ -412,7 +412,7 @@ public class ReedStudyModel extends StudyModel
 		defaultXmlViewMap = new HashMap<String, Class<? extends ContainedXmlView>>();
 
 		defaultXmlViewMap.put(INSTRUMENT_CATEGORY_ID,
-				ContainedInstrumentView.class);
+				ContainedReedInstrumentView.class);
 		defaultXmlViewMap.put(TUNING_CATEGORY_ID, ContainedTuningView.class);
 		defaultXmlViewMap.put(CONSTRAINTS_CATEGORY_ID,
 				SizableConstraintsEditorView.class);
@@ -426,7 +426,7 @@ public class ReedStudyModel extends StudyModel
 
 		toggleXmlViewLists.put(INSTRUMENT_CATEGORY_ID, new Class[] {
 				ContainedXmlTextView.class,
-				ContainedInstrumentView.class });
+				ContainedReedInstrumentView.class });
 		toggleXmlViewLists.put(TUNING_CATEGORY_ID, new Class[] {
 				ContainedXmlTextView.class, ContainedTuningView.class });
 		toggleXmlViewLists.put(CONSTRAINTS_CATEGORY_ID,

@@ -190,9 +190,48 @@ public class PlayingRange
 		}
 	}
 
+	/**
+	 *  UnivariateFunction class for finding local minima of |Z|,
+	 *  or a specified value of |Z|, the impedance magnitude.
+	 */
+	protected class ZMagnitude implements UnivariateZFunction
+	{
+		double targetMagnitude;
+
+		/**
+		 * Create a function for finding zeros or minima of |Z|.
+		 */
+		public ZMagnitude()
+		{
+			targetMagnitude = 0.0;
+		}
+		
+		/**
+		 * Create a function for finding frequencies at which |Z|
+		 * has a specified value.
+		 * @param target - target value of |Z|.
+		 */
+		public ZMagnitude(double target)
+		{
+			targetMagnitude = target;
+		}
+
+		public double value(Complex z)
+		{
+			return z.abs() - targetMagnitude;
+		}
+
+		public double value(double f)
+		{
+			Complex z = calculator.calcZ(f);
+			return z.abs() - targetMagnitude;
+		}
+	}
+
 	protected Reactance reactance;
 	protected Gain gainOne;
 	protected ZRatio zRatio;
+	protected ZMagnitude zMagnitude;
 	protected UnivariateSolver solver;
 	protected UnivariateOptimizer optimizer;
 	
@@ -221,6 +260,7 @@ public class PlayingRange
 		this.calculator = calculator;
 		this.calculator.setFingering(fingering);
 		this.reactance = new Reactance();
+		this.zMagnitude = new ZMagnitude();
 		this.gainOne = new Gain();
 		this.zRatio = new ZRatio();
 		this.solver = new BrentSolver();
@@ -235,6 +275,7 @@ public class PlayingRange
 	{
 		this.calculator = calculator;
 		this.reactance = new Reactance();
+		this.zMagnitude = new ZMagnitude();
 		this.gainOne = new Gain();
 		this.zRatio = new ZRatio();
 		this.solver = new BrentSolver();
@@ -622,4 +663,40 @@ public class PlayingRange
 		}
 		return rootFreq;
 	}
+
+	/**
+	 * Find the minimum magnitude of Z nearest to nearFreq
+	 * satisfying nearFreq/SearchBoundRatio <= f <= nearFreq*SearchBoundRatio.
+	 * In principle, this should give the same results as findXZero.
+	 * In practice, the results are slightly different, and optimization results
+	 * change dramatically with changes in initial conditions, even with significantly
+	 * tighter stopping criteria on the BrentOptimizer.  Not recommended.
+	 * @param nearFreq
+	 * @throws NoPlayingRange if there is no minimum of |Z|
+	 * within the specified range of nearFreq.
+	 */
+	/*
+	public double findZMinimum(double nearFreq) throws NoPlayingRange
+	{
+		double freqOfMin;		// Frequency at which |Z| is a minimum.
+		double[] bracket = findBracket(nearFreq, reactance);
+
+		try {
+			UnivariatePointValuePair  minimum;
+			minimum = optimizer.optimize(GoalType.MINIMIZE,
+					new UnivariateObjectiveFunction(zMagnitude),
+					new MaxEval(100), MaxIter.unlimited(),
+					new SearchInterval(bracket[0], bracket[1],
+							0.5*(bracket[0] + bracket[1])));
+			freqOfMin = minimum.getPoint();
+		}
+		catch (Exception e)
+		{
+			System.out.println("Exception in findZMinimum: " + e.getMessage());
+			// e.printStackTrace();
+			throw new NoPlayingRange(nearFreq);
+		}
+		return freqOfMin;
+	}
+    */
 }

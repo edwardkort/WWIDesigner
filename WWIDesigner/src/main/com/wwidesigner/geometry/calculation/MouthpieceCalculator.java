@@ -35,16 +35,16 @@ public class MouthpieceCalculator
 		// and a pure closed end for a pressure-node mouthpiece.
 		if (mouthpiece.isPressureNode())
 		{
-			double headRadius = mouthpiece.getBoreDiameter() / 2.;
+			double headRadius = 0.5 * mouthpiece.getBoreDiameter();
 			double z0 = parameters.calcZ0(headRadius);
-	        return new TransferMatrix(Complex.ZERO, new Complex(z0, 0), Complex.ONE.divide(z0), Complex.ZERO);
+	        return new TransferMatrix(Complex.ZERO, new Complex(z0, 0), Complex.ONE, Complex.ZERO);
 		}
 		return TransferMatrix.makeIdentity();
 	}
 
 	/**
 	 * For flow-node mouthpiece, return [P, U] as seen by driving source.
-	 * For pressure-node mouthpiece, return [Z0*U, P/Z0] as seen by driving source.
+	 * For pressure-node mouthpiece, return [Z0*U, P] as seen by driving source.
 	 * 
 	 * @param boreState - [P, U] of bore, as seen by mouthpiece.
 	 * @param mouthpiece - instrument mouthpiece description.

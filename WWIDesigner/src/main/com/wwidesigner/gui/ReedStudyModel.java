@@ -30,24 +30,21 @@ import com.wwidesigner.gui.util.DataOpenException;
 import com.wwidesigner.modelling.BellNoteEvaluator;
 import com.wwidesigner.modelling.CentDeviationEvaluator;
 import com.wwidesigner.modelling.EvaluatorInterface;
-import com.wwidesigner.modelling.FmaxEvaluator;
-import com.wwidesigner.modelling.FminEvaluator;
 import com.wwidesigner.modelling.InstrumentCalculator;
 import com.wwidesigner.modelling.InstrumentTuner;
 import com.wwidesigner.modelling.ReactanceEvaluator;
 import com.wwidesigner.modelling.SimpleInstrumentTuner;
 import com.wwidesigner.modelling.SimpleReedCalculator;
 import com.wwidesigner.note.Tuning;
+import com.wwidesigner.optimization.ReedCalibratorObjectiveFunction;
 import com.wwidesigner.optimization.BaseObjectiveFunction;
 import com.wwidesigner.optimization.BasicTaperObjectiveFunction;
-import com.wwidesigner.optimization.BetaObjectiveFunction;
 import com.wwidesigner.optimization.Constraints;
 import com.wwidesigner.optimization.HoleAndTaperObjectiveFunction;
 import com.wwidesigner.optimization.HoleObjectiveFunction;
 import com.wwidesigner.optimization.HolePositionObjectiveFunction;
 import com.wwidesigner.optimization.HoleSizeObjectiveFunction;
 import com.wwidesigner.optimization.LengthObjectiveFunction;
-import com.wwidesigner.optimization.WindowHeightObjectiveFunction;
 import com.wwidesigner.optimization.bind.OptimizationBindFactory;
 import com.wwidesigner.optimization.multistart.GridRangeProcessor;
 import com.wwidesigner.util.Constants.TemperatureType;
@@ -63,8 +60,8 @@ import com.wwidesigner.util.PhysicalParameters;
 public class ReedStudyModel extends StudyModel
 {
 	// Named constants for the standard set of optimizers.
-	public static final String CALIBRATOR_OPT_SUB_CATEGORY_ID = "1. Reed Calibrator";
-	public static final String BETA_OPT_SUB_CATEGORY_ID = "2. Beta Calibrator";
+	public static final String CALIBRATOR_SUB_CATEGORY_ID = "1. Reed Calibrator";
+	// Reed calibrator optimizes both alpha and beta.
 	public static final String LENGTH_OPT_SUB_CATEGORY_ID = "3. Length Optimizer";
 	public static final String HOLESIZE_OPT_SUB_CATEGORY_ID = "4. Hole Size Optimizer";
 	public static final String HOLESPACE_OPT_SUB_CATEGORY_ID = "5. Hole Spacing Optimizer";
@@ -74,7 +71,7 @@ public class ReedStudyModel extends StudyModel
 	public static final String ROUGH_CUT_OPT_SUB_CATEGORY_ID = "9. Rough-Cut Optimizer";
 
 	// Default minimum hole diameter, in meters.
-	public static final double MIN_HOLE_DIAMETER = 0.0040;
+	public static final double MIN_HOLE_DIAMETER = 0.0024;
 	// Default maximum hole diameter, in meters.
 	public static final double MAX_HOLE_DIAMETER = 0.0091;
 
@@ -105,12 +102,9 @@ public class ReedStudyModel extends StudyModel
 		// Add the standard set of optimizers to the Optimizer category,
 		// and assign an associated objective function name to each one.
 		Category optimizers = new Category(OPTIMIZER_CATEGORY_ID);
-		// optimizers.addSub(CALIBRATOR_OPT_SUB_CATEGORY_ID, null);
-		// objectiveFunctionNames.put(CALIBRATOR_OPT_SUB_CATEGORY_ID,
-		//		WindowHeightObjectiveFunction.class.getSimpleName());
-		// optimizers.addSub(BETA_OPT_SUB_CATEGORY_ID, null);
-		// objectiveFunctionNames.put(BETA_OPT_SUB_CATEGORY_ID,
-		//		BetaObjectiveFunction.class.getSimpleName());
+		optimizers.addSub(CALIBRATOR_SUB_CATEGORY_ID, null);
+		objectiveFunctionNames.put(CALIBRATOR_SUB_CATEGORY_ID,
+				ReedCalibratorObjectiveFunction.class.getSimpleName());
 		optimizers.addSub(LENGTH_OPT_SUB_CATEGORY_ID, null);
 		objectiveFunctionNames.put(LENGTH_OPT_SUB_CATEGORY_ID,
 				LengthObjectiveFunction.class.getSimpleName());
@@ -225,20 +219,12 @@ public class ReedStudyModel extends StudyModel
 		// below.
 		switch (objectiveFunctionClass)
 		{
-			case "WindowHeightObjectiveFunction":
-				evaluator = new FmaxEvaluator(calculator, getInstrumentTuner());
-				objective = new WindowHeightObjectiveFunction(calculator,
+			case "ReedCalibratorObjectiveFunction":
+				evaluator = new CentDeviationEvaluator(calculator, getInstrumentTuner());
+				objective = new ReedCalibratorObjectiveFunction(calculator,
 						tuning, evaluator);
-				lowerBound = new double[] { 0.0001 };
-				upperBound = new double[] { 0.030 };
-				break;
-
-			case "BetaObjectiveFunction":
-				evaluator = new FminEvaluator(calculator, getInstrumentTuner());
-				objective = new BetaObjectiveFunction(calculator, tuning,
-						evaluator);
-				lowerBound = new double[] { 0.2 };
-				upperBound = new double[] { 1.0 };
+				lowerBound = new double[] { 0.0001, 0.0001 };
+				upperBound = new double[] { 100.0,  2.0 };
 				break;
 
 			case "LengthObjectiveFunction":
@@ -266,7 +252,7 @@ public class ReedStudyModel extends StudyModel
 						getInstrumentTuner());
 				objective = new HolePositionObjectiveFunction(calculator,
 						tuning, evaluator);
-				// Bounds are hole separations, expressed in meters.
+				// Bounds are overall length, and hole separations, expressed in meters.
 				lowerBound = new double[numberOfHoles + 1];
 				upperBound = new double[numberOfHoles + 1];
 				Arrays.fill(lowerBound, 0.012);
@@ -276,8 +262,19 @@ public class ReedStudyModel extends StudyModel
 				upperBound[numberOfHoles] = 0.200;
 				if (numberOfHoles >= 5)
 				{
-					// Allow extra space between hands.
-					upperBound[numberOfHoles - 3] = 0.100;
+					// Allow extra space between hands, assuming upper hand
+					// uses same number or one more finger than lower hand.
+					upperBound[numberOfHoles/2] = 0.100;
+				}
+				if (numberOfHoles >= 7)
+				{
+					// Assume top hole is a thumb hole.
+					lowerBound[1] = 0.0005;
+				}
+				if (numberOfHoles == 10)
+				{
+					// Assume a thumb hole for the lower hand.
+					lowerBound[6] = 0.0005;
 				}
 
 				// For a rough-cut optimization, use multi-start optimization.
@@ -322,8 +319,19 @@ public class ReedStudyModel extends StudyModel
 				upperBound[numberOfHoles] = 0.200;
 				if (numberOfHoles >= 5)
 				{
-					// Allow extra space between hands.
-					upperBound[numberOfHoles - 3] = 0.100;
+					// Allow extra space between hands, assuming upper hand
+					// uses same number or one more finger than lower hand.
+					upperBound[numberOfHoles/2] = 0.100;
+				}
+				if (numberOfHoles >= 7)
+				{
+					// Assume top hole is a thumb hole.
+					lowerBound[1] = 0.0005;
+				}
+				if (numberOfHoles == 10)
+				{
+					// Assume a thumb hole for the lower hand.
+					lowerBound[6] = 0.0005;
 				}
 				break;
 
@@ -361,8 +369,19 @@ public class ReedStudyModel extends StudyModel
 				upperBound[numberOfHoles] = 0.200;
 				if (numberOfHoles >= 5)
 				{
-					// Allow extra space between hands.
-					upperBound[numberOfHoles - 3] = 0.100;
+					// Allow extra space between hands, assuming upper hand
+					// uses same number or one more finger than lower hand.
+					upperBound[numberOfHoles/2] = 0.100;
+				}
+				if (numberOfHoles >= 7)
+				{
+					// Assume top hole is a thumb hole.
+					lowerBound[1] = 0.0005;
+				}
+				if (numberOfHoles == 10)
+				{
+					// Assume a thumb hole for the lower hand.
+					lowerBound[6] = 0.0005;
 				}
 				// Bounds on taper.
 				lowerBound[lowerBound.length - 2] = 0.01;

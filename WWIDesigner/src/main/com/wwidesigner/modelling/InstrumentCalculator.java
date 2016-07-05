@@ -45,7 +45,7 @@ import com.wwidesigner.geometry.calculation.IdealOpenEndCalculator;
  *
  * For pressure-node mouthpieces (cane reeds, lip reeds, brass):<br/>
  * 
- * - calcZ() returns normalized admittance seen by driving source: Z0**2/Z.
+ * - calcZ() returns normalized admittance seen by driving source: Z0/Z.
  *   Expect resonance when imaginary part is zero or phase angle is zero.<br/>
  * 
  * - calcReflectionCoefficient() returns negative coefficient of pressure

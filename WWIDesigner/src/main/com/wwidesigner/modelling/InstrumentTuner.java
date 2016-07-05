@@ -206,6 +206,11 @@ public abstract class InstrumentTuner
 				.unmarshalXml(tuningXmlString, true);
 		setTuning(tuning);
 	}
+	
+	public InstrumentCalculator getCalculator()
+	{
+		return this.calculator;
+	}
 
 	/**
 	 * @param calculator

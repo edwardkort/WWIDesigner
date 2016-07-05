@@ -32,6 +32,8 @@ import javax.swing.table.TableModel;
 
 import org.apache.commons.math3.complex.Complex;
 
+import com.wwidesigner.geometry.Instrument;
+import com.wwidesigner.geometry.Mouthpiece;
 import com.wwidesigner.note.Fingering;
 import com.wwidesigner.note.Note;
 import com.wwidesigner.note.Tuning;
@@ -50,6 +52,7 @@ public class SupplementaryInfoTable extends DefaultTableModel
 	DecimalFormat format_;
 	DecimalFormat format_0;
 	DecimalFormat format_00;
+	DecimalFormat format_sci;
 
 	public SupplementaryInfoTable(String title)
 	{
@@ -57,6 +60,7 @@ public class SupplementaryInfoTable extends DefaultTableModel
 		format_ = new DecimalFormat("#0");
 		format_0 = new DecimalFormat("#0.0");
 		format_00 = new DecimalFormat("#0.00");
+		format_sci = new DecimalFormat("0.000E0");
 	}
 
 
@@ -115,17 +119,30 @@ public class SupplementaryInfoTable extends DefaultTableModel
 	 */
 	
 	/**
-	 * Collect the data necessary to tabulate the predicted tuning for an
+	 * Collect the data necessary to tabulate the supplementary data for an
 	 * instrument. Following this call, use showTuning() or printTuning() to
-	 * display the graph.
+	 * display the table.
 	 * 
-	 * @param target
-	 *            - target tuning
-	 * @param calculator
-	 *            - calculator to compute supplementary information.
+	 * @param tuner
+	 *            - instrument tuner loaded with instrument, tuning and calculator.
+	 * @param usePredicted
+	 *            - true to tabulate data at tuner's predicted tuning,
+	 *              false to tabulate data at target tuning.
 	 */
-	public void buildTable(Tuning target, InstrumentCalculator calculator)
+	public void buildTable(InstrumentTuner tuner, boolean usePredicted)
 	{
+		InstrumentCalculator calculator = tuner.getCalculator();
+		Tuning target;
+		if (usePredicted)
+		{
+			target = tuner.getPredictedTuning();
+		}
+		else
+		{
+			target = tuner.getTuning();
+		}
+		Instrument instrument = tuner.getInstrument();
+		Mouthpiece mouthpiece = instrument.getMouthpiece();
 		List<Fingering> fingerings = target.getFingering();
 		Note note;
 		Double freq;
@@ -133,26 +150,25 @@ public class SupplementaryInfoTable extends DefaultTableModel
 		Double windwayArea = null;		// Windway cross-section, in mm**2, if available.
 		Complex z;
 		double speed;
-		if (calculator.getInstrument() != null
-				&& calculator.getInstrument().getMouthpiece() != null
-				&& calculator.getInstrument().getMouthpiece().getFipple() != null)
+		if (mouthpiece.getFipple() != null)
 		{
-			windowLength = calculator.getInstrument().getMouthpiece().getFipple().getWindowLength();
-			if (calculator.getInstrument().getMouthpiece().getFipple().getWindwayHeight() != null)
+			windowLength = mouthpiece.getFipple().getWindowLength();
+			if (mouthpiece.getFipple().getWindwayHeight() != null)
 			{
-				windwayArea = 1.0e6 * calculator.getInstrument().getMouthpiece().getFipple().getWindowWidth()
-						* calculator.getInstrument().getMouthpiece().getFipple().getWindwayHeight();
+				windwayArea = 1.0e6 * mouthpiece.getFipple().getWindowWidth()
+						* mouthpiece.getFipple().getWindwayHeight();
 				if (windwayArea == 0.0)
 				{
 					windwayArea = null;
 				}
 			}
 		}
-		
+
 		int colNr;
 
 		addColumn("Note");
 		addColumn("Freq");
+		addColumn("Im(Z)");
 		addColumn("Gain");
 		addColumn("Q Factor");
 		if (windowLength != null)
@@ -178,6 +194,7 @@ public class SupplementaryInfoTable extends DefaultTableModel
 			{
 				calculator.setFingering(fingerings.get(i));
 				z = calculator.calcZ(freq);
+				values[colNr++] = format_sci.format(z.getImaginary());
 				values[colNr++] = formatted(calculator.calcGain(freq));
 				values[colNr++] = formatted(Q(freq, z, calculator));
 				if (windowLength != null)
@@ -195,6 +212,7 @@ public class SupplementaryInfoTable extends DefaultTableModel
 			}
 			else
 			{
+				values[colNr++] = "";
 				values[colNr++] = "";
 				values[colNr++] = "";
 				if (windowLength != null)

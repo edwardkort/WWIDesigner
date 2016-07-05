@@ -972,8 +972,6 @@ public class NafStudyModel extends StudyModel
 	public void calculateSupplementaryInfo(String title) throws Exception
 	{
 		InstrumentTuner tuner = getInstrumentTuner();
-		InstrumentCalculator calculator = getCalculator();
-		tuner.setCalculator(calculator);
 
 		Category category = this.getCategory(INSTRUMENT_CATEGORY_ID);
 		String instrumentName = category.getSelectedSub();
@@ -983,8 +981,10 @@ public class NafStudyModel extends StudyModel
 		String tuningName = category.getSelectedSub();
 		tuner.setTuning(getTuning());
 
+		tuner.setCalculator(getCalculator());
+
 		SupplementaryInfoTable table = new SupplementaryInfoTable(title + ": " + instrumentName + "/" + tuningName);
-		table.buildTable(tuner.getPredictedTuning(), calculator);
+		table.buildTable(tuner, true);
 		table.showTable(false);
 	}
 

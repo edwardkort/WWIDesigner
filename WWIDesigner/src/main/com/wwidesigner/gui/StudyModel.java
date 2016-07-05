@@ -793,15 +793,20 @@ public abstract class StudyModel implements CategoryType
 	
 	public void calculateSupplementaryInfo(String title) throws Exception
 	{
-		InstrumentCalculator calculator = getCalculator();
+		InstrumentTuner tuner = getInstrumentTuner();
+
 		Category category = this.getCategory(INSTRUMENT_CATEGORY_ID);
 		String instrumentName = category.getSelectedSub();
-		calculator.setInstrument(getInstrument());
+		tuner.setInstrument(getInstrument());
 
 		category = getCategory(TUNING_CATEGORY_ID);
 		String tuningName = category.getSelectedSub();
+		tuner.setTuning(getTuning());
+
+		tuner.setCalculator(getCalculator());
+
 		SupplementaryInfoTable table = new SupplementaryInfoTable(title + ": " + instrumentName + "/" + tuningName);
-		table.buildTable(getTuning(), calculator);
+		table.buildTable(tuner, false);
 		table.showTable(false);
 	}
 

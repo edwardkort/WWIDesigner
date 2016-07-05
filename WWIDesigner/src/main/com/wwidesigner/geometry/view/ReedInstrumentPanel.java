@@ -20,8 +20,13 @@ package com.wwidesigner.geometry.view;
 
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
+
 import javax.swing.JLabel;
+
 import com.wwidesigner.geometry.Instrument;
+
+// Requires JRE 8u60 or higher; otherwise, attempting to TAB out of the
+// mouthpiece type buttons causes Swing to throw an IllegalArgumentException.
 
 public class ReedInstrumentPanel extends InstrumentPanel
 {
@@ -44,6 +49,10 @@ public class ReedInstrumentPanel extends InstrumentPanel
 		GridBagConstraints gbc = new GridBagConstraints();
 		JLabel label;
 		mouthpiecePanel.removeAll();
+		mouthpieceTypeGroup.remove(fippleButton);
+		mouthpieceTypeGroup.remove(embouchureHoleButton);
+		mouthpieceTypeGroup.remove(lipReedButton);
+
 		gbc.anchor = GridBagConstraints.NORTHWEST;
 		gbc.gridy = 0;
 
@@ -72,7 +81,7 @@ public class ReedInstrumentPanel extends InstrumentPanel
 
 		gbc.gridwidth = 1;
 		++gbc.gridy;
-		label = new JLabel("Alpha (unused): ");
+		label = new JLabel("Alpha: ");
 		gbc.gridx = 0;
 		mouthpiecePanel.add(label, gbc);
 		gbc.gridx = 1;

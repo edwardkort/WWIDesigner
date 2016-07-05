@@ -1024,7 +1024,7 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 		gbc.gridx = 3;
 		mouthpiecePanel.add(embHoleHeight, gbc);
 
-		label = new JLabel("Alpha (unused): ");
+		label = new JLabel("Alpha: ");
 		gbc.gridx = 4;
 		mouthpiecePanel.add(label, gbc);
 		gbc.gridx = 5;

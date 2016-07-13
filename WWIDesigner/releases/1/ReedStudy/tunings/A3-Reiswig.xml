@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <ns2:tuning xmlns:ns2="http://www.wwidesigner.com/Tuning">
-    <name>A3 Closed Fingering</name>
+    <name>A3 Closed Fingering with foot holes</name>
     <comment>Bagpipe chanter with thumbhole and two open bottom holes, closed fingering, with tonic D3, lowest note G3, Just Intonation tuning with A4=440.</comment>
     <numberOfHoles>10</numberOfHoles>
     <fingering>

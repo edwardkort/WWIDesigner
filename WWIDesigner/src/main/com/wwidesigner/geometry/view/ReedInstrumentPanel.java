@@ -65,11 +65,6 @@ public class ReedInstrumentPanel extends InstrumentPanel
 		mouthpiecePanel.add(mouthpiecePosition, gbc);
 		gbc.insets = new Insets(10, 0, 0, 0);
 
-		label = new JLabel("Beta Factor: ");
-		gbc.gridx = 2;
-		mouthpiecePanel.add(label, gbc);
-		gbc.gridx = 3;
-		mouthpiecePanel.add(beta, gbc);
 		gbc.insets = new Insets(0, 0, 0, 0);
 
 		++gbc.gridy;
@@ -81,11 +76,18 @@ public class ReedInstrumentPanel extends InstrumentPanel
 
 		gbc.gridwidth = 1;
 		++gbc.gridy;
-		label = new JLabel("Alpha: ");
+		label = new JLabel("Alpha (ms): ");
 		gbc.gridx = 0;
 		mouthpiecePanel.add(label, gbc);
 		gbc.gridx = 1;
 		mouthpiecePanel.add(alpha, gbc);
+
+		++gbc.gridy;
+		label = new JLabel("Beta Factor: ");
+		gbc.gridx = 0;
+		mouthpiecePanel.add(label, gbc);
+		gbc.gridx = 1;
+		mouthpiecePanel.add(beta, gbc);
 
 		++gbc.gridy;
 		label = new JLabel("Crow Freq: ");

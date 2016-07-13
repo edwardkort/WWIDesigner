@@ -829,10 +829,16 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 				optionalDouble.setDecimalPrecision(dimensionalDecimalPrecision);
 				return optionalDouble;
 			}
-			if (tf.equals(alpha) || tf.equals(crowFreq))
+			if (tf.equals(alpha))
 			{
 				DoubleFormatter requiredDouble = new DoubleFormatter(false);
 				requiredDouble.setDecimalPrecision(dimensionlessDecimalPrecision);
+				return requiredDouble;
+			}
+			if (tf.equals(crowFreq))
+			{
+				DoubleFormatter requiredDouble = new DoubleFormatter(false);
+				requiredDouble.setDecimalPrecision(2);
 				return requiredDouble;
 			}
 			if (tf.equals(beta) || tf.equals(fippleFactor))
@@ -877,7 +883,7 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 
 		mouthpiecePosition = setTextField(5, 0.0);
 
-		beta = setTextField(5, null);
+		beta = setTextField(6, null);
 
 		fippleButton = new JRadioButton("Fipple Mouthpiece");
 		embouchureHoleButton = new JRadioButton("Embouchure Hole");
@@ -907,8 +913,8 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 		windwayLength = setTextField(5, null);
 		windwayHeight = setTextField(5, null);
 		fippleFactor = setTextField(5, null);
-		alpha = setTextField(5, null);
-		crowFreq = setTextField(5, null);
+		alpha = setTextField(6, null);
+		crowFreq = setTextField(6, null);
 
 		embHoleLength.setEnabled(false);
 		embHoleWidth.setEnabled(false);
@@ -1024,7 +1030,7 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 		gbc.gridx = 3;
 		mouthpiecePanel.add(embHoleHeight, gbc);
 
-		label = new JLabel("Alpha: ");
+		label = new JLabel("Alpha (ms): ");
 		gbc.gridx = 4;
 		mouthpiecePanel.add(label, gbc);
 		gbc.gridx = 5;

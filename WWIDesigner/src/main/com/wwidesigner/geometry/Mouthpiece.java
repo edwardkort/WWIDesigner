@@ -437,9 +437,9 @@ public class Mouthpiece implements ComponentInterface, MouthpieceInterface,
 		{
 			handler.logError("The type of mouthpiece is not specified");
 		}
-		if (beta != null && (beta <= 0.0 || beta >= 1.0))
+		if (beta != null && (beta < 0.0 || beta > 1.0))
 		{
-			handler.logError("Beta, if specified, must be positive and less than 1.");
+			handler.logError("Beta, if specified, must be between 0 and 1.");
 		}
 	}
 
@@ -804,9 +804,9 @@ public class Mouthpiece implements ComponentInterface, MouthpieceInterface,
 			{
 				handler.logError("Alpha factor must specified.");
 			}
-			else if (alpha <= 0.0)
+			else if (alpha < 0.0)
 			{
-				handler.logError("Alpha factor must be positive.");
+				handler.logError("Alpha factor must be zero or more.");
 			}
 		}
 	}
@@ -865,9 +865,9 @@ public class Mouthpiece implements ComponentInterface, MouthpieceInterface,
 			{
 				handler.logError("Alpha factor must specified.");
 			}
-			else if (alpha <= 0.0)
+			else if (alpha < 0.0)
 			{
-				handler.logError("Alpha factor must be positive.");
+				handler.logError("Alpha factor must be zero or more.");
 			}
 			if (Double.isNaN(crowFreq))
 			{
@@ -914,10 +914,6 @@ public class Mouthpiece implements ComponentInterface, MouthpieceInterface,
 			if (Double.isNaN(alpha))
 			{
 				handler.logError("Alpha factor must specified.");
-			}
-			else if (alpha <= 0.0)
-			{
-				handler.logError("Alpha factor must be positive.");
 			}
 		}
 	}

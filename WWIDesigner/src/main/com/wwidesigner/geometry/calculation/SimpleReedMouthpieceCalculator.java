@@ -51,11 +51,11 @@ public class SimpleReedMouthpieceCalculator extends MouthpieceCalculator
 		}
 
 		double freq = parameters.calcFrequency(waveNumber);
-		double alpha = 1.0;
+		double alpha = 0.0;
 		Double beta = mouthpiece.getBeta();
 		if (beta == null)
 		{
-			beta = 0.1;
+			beta = 0.0;
 		}
 //		double reedResonance = 440.0;
 		if (mouthpiece.getSingleReed() != null)
@@ -69,7 +69,9 @@ public class SimpleReedMouthpieceCalculator extends MouthpieceCalculator
 		}
 		else if (mouthpiece.getLipReed() != null)
 		{
-			alpha = mouthpiece.getLipReed().getAlpha();
+			// For lip reeds, adjustment factor is negative.
+			alpha = + mouthpiece.getLipReed().getAlpha();
+			beta = - beta;
 		}
 
 		double headRadius = 0.5 * mouthpiece.getBoreDiameter();

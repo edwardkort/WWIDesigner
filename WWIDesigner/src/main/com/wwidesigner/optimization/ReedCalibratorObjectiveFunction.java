@@ -47,8 +47,8 @@ public class ReedCalibratorObjectiveFunction extends BaseObjectiveFunction
 	{
 		double[] geometry = new double[2];
 		Mouthpiece mouthpiece = calculator.getInstrument().getMouthpiece(); 
-		double alpha = 1.0;
-		double beta = 0.1;
+		double alpha = 0.0;
+		double beta = 0.0;
 		if (mouthpiece.getSingleReed() != null)
 		{
 			alpha = mouthpiece.getSingleReed().getAlpha();

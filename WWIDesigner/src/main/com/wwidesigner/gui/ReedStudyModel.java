@@ -223,8 +223,8 @@ public class ReedStudyModel extends StudyModel
 				evaluator = new CentDeviationEvaluator(calculator, getInstrumentTuner());
 				objective = new ReedCalibratorObjectiveFunction(calculator,
 						tuning, evaluator);
-				lowerBound = new double[] { 0.0001, 0.0001 };
-				upperBound = new double[] { 100.0,  2.0 };
+				lowerBound = new double[] { 0.00, 0.00 };
+				upperBound = new double[] { 10.0, 10.0 };
 				break;
 
 			case "LengthObjectiveFunction":

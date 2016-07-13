@@ -263,9 +263,10 @@
 				<xsd:element name="singleReed">
 					<xsd:complexType>
 						<xsd:sequence>
-							<xsd:element name="alpha" type="wii:MoreThanZero">
+							<xsd:element name="alpha" type="wii:ZeroOrMore">
 								<xsd:annotation>
-									<xsd:documentation>Place-holder.
+									<xsd:documentation>Coefficient of frequency in adjustment to
+										normalized admittance, in milliseconds.
 									</xsd:documentation>
 								</xsd:annotation>
 							</xsd:element>
@@ -275,9 +276,10 @@
 				<xsd:element name="doubleReed">
 					<xsd:complexType>
 						<xsd:sequence>
-							<xsd:element name="alpha" type="wii:MoreThanZero">
+							<xsd:element name="alpha" type="wii:ZeroOrMore">
 								<xsd:annotation>
-									<xsd:documentation>Place-holder.
+									<xsd:documentation>Coefficient of frequency in adjustment to
+										normalized admittance, in milliseconds.
 									</xsd:documentation>
 								</xsd:annotation>
 							</xsd:element>
@@ -293,9 +295,10 @@
 				<xsd:element name="lipReed">
 					<xsd:complexType>
 						<xsd:sequence>
-							<xsd:element name="alpha" type="wii:MoreThanZero">
+							<xsd:element name="alpha" type="wii:Dimension">
 								<xsd:annotation>
-									<xsd:documentation>Place-holder.
+									<xsd:documentation>Coefficient of frequency in adjustment to
+										normalized admittance, in milliseconds.
 									</xsd:documentation>
 								</xsd:annotation>
 							</xsd:element>
@@ -305,16 +308,17 @@
 			</xsd:choice>
 			<xsd:element name="beta" minOccurs="0">
 				<xsd:annotation>
-					<xsd:documentation>Jet spatial amplification factor
-						typically between 0.3 and 0.4.
+					<xsd:documentation>For flow-node mouthpieces, jet spatial amplification factor,
+						dimensionless value typically between 0.3 and 0.4.
 						See Auvray, et al., "Regime change and oscillation
 						thresholds in recorder-like instruments",
-						J. Acoust. Soc. Am. 131 (2), February 2012
+						J. Acoust. Soc. Am. 131 (2), February 2012.
+						For pressure-node mouthpieces, dimensionless adjustment to normalized admittance.
 					</xsd:documentation>
 				</xsd:annotation>
 				<xsd:simpleType>
 					<xsd:restriction base="xsd:double">
-						<xsd:minExclusive value="0"></xsd:minExclusive>
+						<xsd:minInclusive value="0"></xsd:minInclusive>
 					</xsd:restriction>
 				</xsd:simpleType>
 			</xsd:element>

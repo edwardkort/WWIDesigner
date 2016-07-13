@@ -66,7 +66,7 @@ import javax.xml.bind.annotation.XmlType;
  *               &lt;complexContent>
  *                 &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *                   &lt;sequence>
- *                     &lt;element name="alpha" type="{http://www.wwidesigner.com/Instrument}MoreThanZero"/>
+ *                     &lt;element name="alpha" type="{http://www.wwidesigner.com/Instrument}ZeroOrMore"/>
  *                   &lt;/sequence>
  *                 &lt;/restriction>
  *               &lt;/complexContent>
@@ -77,7 +77,7 @@ import javax.xml.bind.annotation.XmlType;
  *               &lt;complexContent>
  *                 &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *                   &lt;sequence>
- *                     &lt;element name="alpha" type="{http://www.wwidesigner.com/Instrument}MoreThanZero"/>
+ *                     &lt;element name="alpha" type="{http://www.wwidesigner.com/Instrument}ZeroOrMore"/>
  *                     &lt;element name="crowFreq" type="{http://www.wwidesigner.com/Instrument}MoreThanZero"/>
  *                   &lt;/sequence>
  *                 &lt;/restriction>
@@ -89,7 +89,7 @@ import javax.xml.bind.annotation.XmlType;
  *               &lt;complexContent>
  *                 &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *                   &lt;sequence>
- *                     &lt;element name="alpha" type="{http://www.wwidesigner.com/Instrument}MoreThanZero"/>
+ *                     &lt;element name="alpha" type="{http://www.wwidesigner.com/Instrument}Dimension"/>
  *                   &lt;/sequence>
  *                 &lt;/restriction>
  *               &lt;/complexContent>
@@ -632,7 +632,7 @@ public class Mouthpiece {
      *   &lt;complexContent>
      *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
      *       &lt;sequence>
-     *         &lt;element name="alpha" type="{http://www.wwidesigner.com/Instrument}MoreThanZero"/>
+     *         &lt;element name="alpha" type="{http://www.wwidesigner.com/Instrument}ZeroOrMore"/>
      *       &lt;/sequence>
      *     &lt;/restriction>
      *   &lt;/complexContent>
@@ -678,7 +678,7 @@ public class Mouthpiece {
      *   &lt;complexContent>
      *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
      *       &lt;sequence>
-     *         &lt;element name="alpha" type="{http://www.wwidesigner.com/Instrument}MoreThanZero"/>
+     *         &lt;element name="alpha" type="{http://www.wwidesigner.com/Instrument}ZeroOrMore"/>
      *         &lt;element name="crowFreq" type="{http://www.wwidesigner.com/Instrument}MoreThanZero"/>
      *       &lt;/sequence>
      *     &lt;/restriction>
@@ -744,7 +744,7 @@ public class Mouthpiece {
      *   &lt;complexContent>
      *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
      *       &lt;sequence>
-     *         &lt;element name="alpha" type="{http://www.wwidesigner.com/Instrument}MoreThanZero"/>
+     *         &lt;element name="alpha" type="{http://www.wwidesigner.com/Instrument}Dimension"/>
      *       &lt;/sequence>
      *     &lt;/restriction>
      *   &lt;/complexContent>

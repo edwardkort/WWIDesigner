@@ -89,13 +89,16 @@ public class PlayingRangeSpectrum
 
 	protected void printLoopGainMaxima()
 	{
-		System.out.println("\nLoop gain maxima for " + mName);
-		DecimalFormat decFormat = new DecimalFormat("0.00");
 		Set<Entry<Double, Double>> entries = mGainMaxima.entrySet();
-		for (Entry<Double, Double> entry : entries)
+		if (entries.size() > 0)
 		{
-			System.out.println(decFormat.format(entry.getKey()) + " Hz, gain "
-					+ decFormat.format(entry.getValue()));
+			System.out.println("\nLoop gain maxima for " + mName);
+			DecimalFormat decFormat = new DecimalFormat("0.00");
+			for (Entry<Double, Double> entry : entries)
+			{
+				System.out.println(decFormat.format(entry.getKey()) + " Hz, gain "
+						+ decFormat.format(entry.getValue()));
+			}
 		}
 	}
 

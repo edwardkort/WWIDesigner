@@ -208,7 +208,10 @@ public abstract class BaseObjectiveFunction implements MultivariateFunction,
 		{
 			double err = errorVector[i];
 			int weight = fingeringTargets.get(i).getOptimizationWeight();
-			norm += err * err * weight;
+			if (weight > 0)
+			{
+				norm += err * err * weight;
+			}
 		}
 
 		return norm;

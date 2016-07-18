@@ -205,8 +205,9 @@ public class TuningComparisonTable extends DefaultTableModel
 
 		for (int i = 0; i < tgtFingering.size(); ++i)
 		{
-			if (tgtFingering.get(i).getOptimizationWeight() < 0)
+			if (tgtFingering.get(i).getOptimizationWeight() <= 0)
 			{
+				// Don't include zero-weighted notes, so they aren't included in deviation.
 				continue;
 			}
 			tgtNote = tgtFingering.get(i).getNote();

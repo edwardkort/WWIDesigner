@@ -7,35 +7,34 @@ import com.wwidesigner.optimization.HolePositionObjectiveFunction.BoreLengthAdju
 
 /**
  * Optimization objective function for hole positions and diameters,
- * and a two-section bore with taper:
+ * and a conical bore:
  * <ul>
  * <li>Position of end of bore,</li>
  * <li>For each hole, spacing to next hole, ending with spacing
  * from last hole to end of bore.</li>
  * <li>For each hole, hole diameter.</li>
- * <li>Length of head section, as a fraction of total bore length.</li>
- * <li>Taper ratio foot diameter / middle diameter.</li>
+ * <li>Bore diameter at the foot.</li>
  * </ul>
  * 
- * @author Edward Kort, Burton Patkau
+ * @author Burton Patkau
  * 
  */
-public class HoleAndTaperObjectiveFunction extends MergedObjectiveFunction
+public class HoleAndConicalBoreObjectiveFunction extends MergedObjectiveFunction
 {
-	public static final String DISPLAY_NAME = "Hole and taper optimizer";
+	public static final String DISPLAY_NAME = "Hole and conical bore optimizer";
 
-	public HoleAndTaperObjectiveFunction(InstrumentCalculator calculator,
+	public HoleAndConicalBoreObjectiveFunction(InstrumentCalculator calculator,
 			TuningInterface tuning, EvaluatorInterface evaluator)
 	{
 		super(calculator, tuning, evaluator);
 		this.components = new BaseObjectiveFunction[3];
 		this.components[0] = new HolePositionObjectiveFunction(calculator,
-				tuning, evaluator, BoreLengthAdjustmentType.MOVE_BOTTOM);
+				tuning, evaluator, BoreLengthAdjustmentType.PRESERVE_BELL);
 		this.components[1] = new HoleSizeObjectiveFunction(calculator, tuning,
 				evaluator);
-		this.components[2] = new BasicTaperObjectiveFunction(calculator, tuning, evaluator);
+		this.components[2] = new ConicalBoreObjectiveFunction(calculator, tuning, evaluator);
 		optimizerType = OptimizerType.BOBYQAOptimizer; // MultivariateOptimizer
-		maxEvaluations = 20000;
+		maxEvaluations = 30000;
 		sumDimensions();
 		constraints.setObjectiveDisplayName(DISPLAY_NAME);
 		constraints.setObjectiveFunctionName(this.getClass().getSimpleName());

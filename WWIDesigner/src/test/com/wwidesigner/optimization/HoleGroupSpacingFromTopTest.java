@@ -9,6 +9,7 @@ import org.junit.Test;
 import com.wwidesigner.geometry.Instrument;
 import com.wwidesigner.modelling.CentDeviationEvaluator;
 import com.wwidesigner.modelling.NAFCalculator;
+import com.wwidesigner.optimization.HolePositionObjectiveFunction.BoreLengthAdjustmentType;
 import com.wwidesigner.optimization.gui.ConstraintsDialog;
 import com.wwidesigner.util.Constants.TemperatureType;
 import com.wwidesigner.util.PhysicalParameters;
@@ -50,7 +51,7 @@ public class HoleGroupSpacingFromTopTest extends AbstractOptimizationTest
 					0.003, 0.014, 0.014, 0.014, 0.014, 0.014, 0.008, 0.008 };
 			evaluator = new CentDeviationEvaluator(calculator);
 			objective = new HoleFromTopObjectiveFunction(calculator, tuning,
-					evaluator);
+					evaluator, BoreLengthAdjustmentType.PRESERVE_TAPER);
 			objective.setMaxEvaluations(20000);
 			objective
 					.setOptimizerType(BaseObjectiveFunction.OptimizerType.BOBYQAOptimizer);
@@ -73,7 +74,7 @@ public class HoleGroupSpacingFromTopTest extends AbstractOptimizationTest
 					{ 5 }, { 6 } };
 			evaluator = new CentDeviationEvaluator(calculator);
 			objective = new HoleFromTopObjectiveFunction(calculator, tuning,
-					evaluator);
+					evaluator, BoreLengthAdjustmentType.PRESERVE_TAPER);
 			objective = new HoleGroupObjectiveFunction(calculator, tuning,
 					evaluator, holeGroups);
 			objective.setMaxEvaluations(20000);
@@ -150,7 +151,7 @@ public class HoleGroupSpacingFromTopTest extends AbstractOptimizationTest
 			holeGroups = new int[][] { { 0, 1, 2 }, { 3, 4, 5 }, { 6 } };
 			evaluator = new CentDeviationEvaluator(calculator);
 			objective = new HoleFromTopObjectiveFunction(calculator, tuning,
-					evaluator);
+					evaluator, BoreLengthAdjustmentType.PRESERVE_TAPER);
 			objective = new HoleGroupObjectiveFunction(calculator, tuning,
 					evaluator, holeGroups);
 			objective.setMaxEvaluations(20000);
@@ -221,7 +222,7 @@ public class HoleGroupSpacingFromTopTest extends AbstractOptimizationTest
 					0.003, 0.014, 0.014, 0.014, 0.014, 0.014, 0.008, 0.008 };
 			evaluator = new CentDeviationEvaluator(calculator);
 			objective = new HoleFromTopObjectiveFunction(calculator, tuning,
-					evaluator);
+					evaluator, BoreLengthAdjustmentType.PRESERVE_TAPER);
 			objective.setMaxEvaluations(20000);
 			objective
 					.setOptimizerType(BaseObjectiveFunction.OptimizerType.BOBYQAOptimizer);
@@ -244,7 +245,7 @@ public class HoleGroupSpacingFromTopTest extends AbstractOptimizationTest
 					{ 5 }, { 6 } };
 			evaluator = new CentDeviationEvaluator(calculator);
 			objective = new HoleFromTopObjectiveFunction(calculator, tuning,
-					evaluator);
+					evaluator, BoreLengthAdjustmentType.PRESERVE_TAPER);
 			objective = new HoleGroupObjectiveFunction(calculator, tuning,
 					evaluator, holeGroups);
 			objective.setMaxEvaluations(20000);

@@ -49,6 +49,7 @@ import com.wwidesigner.optimization.HolePositionObjectiveFunction;
 import com.wwidesigner.optimization.HoleSizeObjectiveFunction;
 import com.wwidesigner.optimization.LengthObjectiveFunction;
 import com.wwidesigner.optimization.WindowHeightObjectiveFunction;
+import com.wwidesigner.optimization.HolePositionObjectiveFunction.BoreLengthAdjustmentType;
 import com.wwidesigner.optimization.bind.OptimizationBindFactory;
 import com.wwidesigner.optimization.multistart.GridRangeProcessor;
 import com.wwidesigner.util.Constants.TemperatureType;
@@ -277,7 +278,7 @@ public class WhistleStudyModel extends StudyModel
 				evaluator = new CentDeviationEvaluator(calculator,
 						getInstrumentTuner());
 				objective = new HolePositionObjectiveFunction(calculator,
-						tuning, evaluator);
+						tuning, evaluator, BoreLengthAdjustmentType.PRESERVE_TAPER);
 				// Bounds are hole separations, expressed in meters.
 				lowerBound = new double[numberOfHoles + 1];
 				upperBound = new double[numberOfHoles + 1];

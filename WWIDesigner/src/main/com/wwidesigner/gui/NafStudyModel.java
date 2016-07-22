@@ -50,6 +50,7 @@ import com.wwidesigner.optimization.SingleTaperHoleGroupFromTopHemiHeadObjective
 import com.wwidesigner.optimization.SingleTaperHoleGroupFromTopObjectiveFunction;
 import com.wwidesigner.optimization.SingleTaperNoHoleGroupingFromTopHemiHeadObjectiveFunction;
 import com.wwidesigner.optimization.SingleTaperNoHoleGroupingFromTopObjectiveFunction;
+import com.wwidesigner.optimization.HolePositionObjectiveFunction.BoreLengthAdjustmentType;
 import com.wwidesigner.optimization.multistart.GridRangeProcessor;
 import com.wwidesigner.util.Constants.LengthType;
 import com.wwidesigner.util.Constants.TemperatureType;
@@ -444,7 +445,7 @@ public class NafStudyModel extends StudyModel
 				break;
 			case NO_GROUP_OPT_SUB_CATEGORY_ID:
 				objective = new HoleFromTopObjectiveFunction(calculator,
-						tuning, evaluator);
+						tuning, evaluator, BoreLengthAdjustmentType.PRESERVE_TAPER);
 				if (objectiveFunctionIntent == BaseObjectiveFunction.DEFAULT_CONSTRAINTS_INTENT)
 				{
 					// Length bounds are expressed in meters, diameter bounds as

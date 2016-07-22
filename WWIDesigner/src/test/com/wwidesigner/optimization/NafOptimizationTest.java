@@ -16,6 +16,7 @@ import com.wwidesigner.geometry.Instrument;
 import com.wwidesigner.geometry.PositionInterface;
 import com.wwidesigner.modelling.NAFCalculator;
 import com.wwidesigner.modelling.ReactanceEvaluator;
+import com.wwidesigner.optimization.HolePositionObjectiveFunction.BoreLengthAdjustmentType;
 import com.wwidesigner.util.Constants.TemperatureType;
 import com.wwidesigner.util.PhysicalParameters;
 import com.wwidesigner.util.SortedPositionList;
@@ -173,7 +174,8 @@ public class NafOptimizationTest extends AbstractOptimizationTest
 			setLowerBound(new double[] { 0.20, 0.25, 0.0075 });
 			setUpperBound(new double[] { 0.4, 1.0, 0.010 });
 			evaluator = new ReactanceEvaluator(calculator);
-			objective = new HoleFromTopObjectiveFunction(calculator, tuning, evaluator);
+			objective = new HoleFromTopObjectiveFunction(calculator, tuning, evaluator,
+					BoreLengthAdjustmentType.PRESERVE_TAPER);
 
 			Instrument optimizedInstrument = doInstrumentOptimization("One-hole");
 
@@ -226,7 +228,8 @@ public class NafOptimizationTest extends AbstractOptimizationTest
 			setUpperBound(new double[] { 0.6985, 0.5, 0.03175, 0.03175, 0.0762, 0.03175,
 					0.03175, 0.0127, 0.0127, 0.0127, 0.0127, 0.0127, 0.0127 });
 			evaluator = new ReactanceEvaluator(calculator);
-			objective = new HoleFromTopObjectiveFunction(calculator, tuning, evaluator);
+			objective = new HoleFromTopObjectiveFunction(calculator, tuning, evaluator,
+					BoreLengthAdjustmentType.PRESERVE_TAPER);
 
 			Instrument optimizedInstrument = doInstrumentOptimization("Six-hole");
 

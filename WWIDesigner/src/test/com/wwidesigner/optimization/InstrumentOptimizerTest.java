@@ -23,6 +23,7 @@ import com.wwidesigner.modelling.ReactanceEvaluator;
 import com.wwidesigner.modelling.SimpleTestCalculator;
 import com.wwidesigner.note.Tuning;
 import com.wwidesigner.note.bind.NoteBindFactory;
+import com.wwidesigner.optimization.HolePositionObjectiveFunction.BoreLengthAdjustmentType;
 import com.wwidesigner.util.BindFactory;
 import com.wwidesigner.util.Constants.TemperatureType;
 import com.wwidesigner.util.PhysicalParameters;
@@ -61,7 +62,7 @@ public class InstrumentOptimizerTest
 				0.05, 0.08 };
 		EvaluatorInterface evaluator = new ReactanceEvaluator(calculator);
 		BaseObjectiveFunction objective = new HolePositionObjectiveFunction(
-				calculator, tuning, evaluator);
+				calculator, tuning, evaluator, BoreLengthAdjustmentType.PRESERVE_TAPER);
 		objective.setLowerBounds(lowerBound);
 		objective.setUpperBounds(upperBound);
 		

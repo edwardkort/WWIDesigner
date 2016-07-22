@@ -7,6 +7,7 @@ import org.junit.Test;
 
 import com.wwidesigner.modelling.NAFCalculator;
 import com.wwidesigner.optimization.Constraint.ConstraintType;
+import com.wwidesigner.optimization.HolePositionObjectiveFunction.BoreLengthAdjustmentType;
 import com.wwidesigner.optimization.gui.ConstraintsDialog;
 
 public class ConstraintsTest extends AbstractOptimizationTest
@@ -94,7 +95,7 @@ public class ConstraintsTest extends AbstractOptimizationTest
 			setCalculator(new NAFCalculator());
 			setup();
 			objective = new HolePositionObjectiveFunction(calculator, tuning,
-					evaluator);
+					evaluator, BoreLengthAdjustmentType.PRESERVE_TAPER);
 			Constraints constraints = objective.getConstraints();
 			String category = "Hole position";
 

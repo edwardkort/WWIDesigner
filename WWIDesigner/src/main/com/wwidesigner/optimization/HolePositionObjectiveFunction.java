@@ -1,3 +1,21 @@
+/**
+ * Optimization objective function for bore length and hole positions:
+ * 
+ * Copyright (C) 2016, Edward Kort, Antoine Lefebvre, Burton Patkau.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.wwidesigner.optimization;
 
 import java.util.List;
@@ -31,12 +49,33 @@ public class HolePositionObjectiveFunction extends BaseObjectiveFunction
 {
 	public static final String CONSTR_CAT = "Hole position";
 	public static final ConstraintType CONSTR_TYPE = ConstraintType.DIMENSIONAL;
-	protected boolean allowBoreSizeInterpolation = true;
+	public enum BoreLengthAdjustmentType 
+	{
+		/**
+		 * Change the position of the bottom bore point, adjusting the diameter
+		 * to keep the taper angle unchanged.
+		 */
+		PRESERVE_TAPER,
+		/**
+		 * Change position of all bore points below bottom hole,
+		 * leaving bore diameters unchanged.
+		 */
+		PRESERVE_BELL,
+		/**
+		 * Change position of the bottom bore point,
+		 * leaving bore diameters unchanged.
+		 */
+		MOVE_BOTTOM
+	}
+	protected BoreLengthAdjustmentType lengthAdjustmentMode;
+	protected static final double MINIMUM_BORE_POINT_SPACING = 0.00001d;
 
 	public HolePositionObjectiveFunction(InstrumentCalculator calculator,
-			TuningInterface tuning, EvaluatorInterface evaluator)
+			TuningInterface tuning, EvaluatorInterface evaluator, 
+			BoreLengthAdjustmentType lengthAdjustmentMode)
 	{
 		super(calculator, tuning, evaluator);
+		this.lengthAdjustmentMode = lengthAdjustmentMode;
 		nrDimensions = 1 + calculator.getInstrument().getHole().size();
 		optimizerType = OptimizerType.BOBYQAOptimizer; // MultivariateOptimizer
 		if (nrDimensions == 1)
@@ -113,13 +152,6 @@ public class HolePositionObjectiveFunction extends BaseObjectiveFunction
 		calculator.getInstrument().updateComponents();
 	}
 
-	public BaseObjectiveFunction setAllowBoreSizeInterpolation(boolean allow)
-	{
-		allowBoreSizeInterpolation = allow;
-
-		return this;
-	}
-
 	protected void setBore(double[] point)
 	{
 		if (point.length != nrDimensions)
@@ -127,40 +159,74 @@ public class HolePositionObjectiveFunction extends BaseObjectiveFunction
 			throw new DimensionMismatchException(point.length, nrDimensions);
 		}
 
-		double minimumBorePointSpacing = 0.00001d;
-
-		// Ensure that no bore points are beyond the new bottom position.
-		double newEndPosition = point[0];
 		SortedPositionList<BorePoint> boreList = new SortedPositionList<BorePoint>(
 				calculator.getInstrument().getBorePoint());
 		BorePoint endPoint = boreList.getLast();
 
-		// Don't let optimizer delete a borePoint.
-		// Instead, move them up the bore a bit.
-		int lastPointIndex = boreList.size() - 1;
-		for (int i = lastPointIndex - 1; i >= 0; i--)
+		if (lengthAdjustmentMode == BoreLengthAdjustmentType.PRESERVE_BELL)
 		{
-			BorePoint borePoint = boreList.get(i);
-			double currentPosition = borePoint.getBorePosition();
-			if (currentPosition >= newEndPosition)
+			// Shift all the bore points that are below the new position of the bottom hole.
+			double bottomHolePosition;
+			if (nrDimensions > 1)
 			{
-				newEndPosition -= minimumBorePointSpacing;
-				borePoint.setBorePosition(newEndPosition);
+				bottomHolePosition = point[0] - point[nrDimensions - 1];
 			}
 			else
 			{
-				break;
+				// No holes.
+				bottomHolePosition = boreList.get(0).getBorePosition();
+			}
+			double netChange = point[0] - endPoint.getBorePosition();
+			double priorBorePoint = boreList.get(0).getBorePosition();
+			for (int i = 1; i < boreList.size(); ++i)
+			{
+				BorePoint borePoint = boreList.get(i);
+				double oldPosition = borePoint.getBorePosition(); 
+				if ( oldPosition + netChange > bottomHolePosition)
+				{
+					if (oldPosition + netChange <= priorBorePoint + MINIMUM_BORE_POINT_SPACING)
+					{
+						// Squeeze bore points together if necessary.
+						borePoint.setBorePosition(priorBorePoint + MINIMUM_BORE_POINT_SPACING);
+					}
+					else
+					{
+						borePoint.setBorePosition(oldPosition + netChange);
+					}
+				}
+				priorBorePoint = borePoint.getBorePosition();
 			}
 		}
-
-		// Extrapolate/interpolate the bore diameter of end point
-		if (allowBoreSizeInterpolation)
+		else
 		{
-			double endDiameter = BorePoint
-					.getInterpolatedExtrapolatedBoreDiameter(boreList, point[0]);
-			endPoint.setBoreDiameter(endDiameter);
+			// Don't let optimizer delete a borePoint.
+			// Instead, move them up the bore a bit.
+			double newEndPosition = point[0];
+			int lastPointIndex = boreList.size() - 1;
+			for (int i = lastPointIndex - 1; i >= 0; i--)
+			{
+				BorePoint borePoint = boreList.get(i);
+				double currentPosition = borePoint.getBorePosition();
+				if (currentPosition >= newEndPosition)
+				{
+					newEndPosition -= MINIMUM_BORE_POINT_SPACING;
+					borePoint.setBorePosition(newEndPosition);
+				}
+				else
+				{
+					break;
+				}
+			}
+	
+			// Extrapolate/interpolate the bore diameter of end point
+			if (lengthAdjustmentMode == BoreLengthAdjustmentType.PRESERVE_TAPER)
+			{
+				double endDiameter = BorePoint
+						.getInterpolatedExtrapolatedBoreDiameter(boreList, point[0]);
+				endPoint.setBoreDiameter(endDiameter);
+			}
+			endPoint.setBorePosition(point[0]);
 		}
-		endPoint.setBorePosition(point[0]);
 	}
 
 	protected void setConstraints()

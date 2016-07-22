@@ -3,6 +3,7 @@ package com.wwidesigner.optimization;
 import com.wwidesigner.modelling.EvaluatorInterface;
 import com.wwidesigner.modelling.InstrumentCalculator;
 import com.wwidesigner.note.TuningInterface;
+import com.wwidesigner.optimization.HolePositionObjectiveFunction.BoreLengthAdjustmentType;
 
 /**
  * Optimization objective function for bore length, hole positions without
@@ -24,7 +25,7 @@ public class SingleTaperNoHoleGroupingObjectiveFunction extends
 		super(calculator, tuning, evaluator);
 		this.components = new BaseObjectiveFunction[3];
 		this.components[0] = new HolePositionObjectiveFunction(calculator,
-				tuning, evaluator).setAllowBoreSizeInterpolation(false);
+				tuning, evaluator, BoreLengthAdjustmentType.MOVE_BOTTOM);
 		this.components[1] = new HoleSizeObjectiveFunction(calculator, tuning,
 				evaluator);
 		this.components[2] = new SingleTaperRatioObjectiveFunction(calculator,

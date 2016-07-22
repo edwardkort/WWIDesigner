@@ -42,9 +42,9 @@ public class HolePositionFromTopObjectiveFunction extends
 
 	public HolePositionFromTopObjectiveFunction(
 			InstrumentCalculator calculator, TuningInterface tuning,
-			EvaluatorInterface evaluator)
+			EvaluatorInterface evaluator, BoreLengthAdjustmentType lengthAdjustmentMode)
 	{
-		super(calculator, tuning, evaluator);
+		super(calculator, tuning, evaluator, lengthAdjustmentMode);
 	}
 
 	@Override

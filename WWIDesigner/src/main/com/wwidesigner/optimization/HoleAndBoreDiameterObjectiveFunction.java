@@ -31,12 +31,13 @@ public class HoleAndBoreDiameterObjectiveFunction extends MergedObjectiveFunctio
 	public static final String DISPLAY_NAME = "Hole and bore diameter optimizer";
 
 	public HoleAndBoreDiameterObjectiveFunction(InstrumentCalculator calculator,
-			TuningInterface tuning, EvaluatorInterface evaluator)
+			TuningInterface tuning, EvaluatorInterface evaluator, 
+			BoreLengthAdjustmentType lengthAdjustmentMode)
 	{
 		super(calculator, tuning, evaluator);
 		this.components = new BaseObjectiveFunction[3];
 		this.components[0] = new HolePositionObjectiveFunction(calculator,
-				tuning, evaluator, BoreLengthAdjustmentType.MOVE_BOTTOM);
+				tuning, evaluator, lengthAdjustmentMode);
 		this.components[1] = new HoleSizeObjectiveFunction(calculator, tuning,
 				evaluator);
 		this.components[2] = new BoreDiameterObjectiveFunction(calculator, tuning, evaluator);

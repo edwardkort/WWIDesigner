@@ -443,7 +443,7 @@ public class ReedStudyModel extends StudyModel
 				evaluator = new CentDeviationEvaluator(calculator,
 						getInstrumentTuner());
 				objective = new HoleAndBoreDiameterObjectiveFunction(calculator,
-						tuning, evaluator);
+						tuning, evaluator, BoreLengthAdjustmentType.PRESERVE_BELL);
 				nrDimensions = objective.getNrDimensions();
 				// Separation bounds and diameter bounds, expressed in meters,
 				// and bore diameter at foot, also in meters.
@@ -452,8 +452,8 @@ public class ReedStudyModel extends StudyModel
 				Arrays.fill(lowerBound, MIN_HOLE_DIAMETER);
 				Arrays.fill(upperBound, MAX_HOLE_DIAMETER);
 				// Bounds on hole spacing.
-				lowerBound[0] = 0.200;
-				upperBound[0] = 0.700;
+				lowerBound[0] = MIN_BORE_LENGTH;
+				upperBound[0] = MAX_BORE_LENGTH;
 				for (int gapNr = 1; gapNr < numberOfHoles; ++gapNr)
 				{
 					lowerBound[gapNr] = 0.012;

@@ -57,7 +57,7 @@ public class HolePositionObjectiveFunction extends BaseObjectiveFunction
 		 */
 		PRESERVE_TAPER,
 		/**
-		 * Change position of all bore points below bottom hole,
+		 * Change position of all bore points below longest bore segment,
 		 * leaving bore diameters unchanged.
 		 */
 		PRESERVE_BELL,
@@ -69,6 +69,7 @@ public class HolePositionObjectiveFunction extends BaseObjectiveFunction
 	}
 	protected BoreLengthAdjustmentType lengthAdjustmentMode;
 	protected static final double MINIMUM_BORE_POINT_SPACING = 0.00001d;
+	protected int bellIndex;
 
 	public HolePositionObjectiveFunction(InstrumentCalculator calculator,
 			TuningInterface tuning, EvaluatorInterface evaluator, 
@@ -77,6 +78,14 @@ public class HolePositionObjectiveFunction extends BaseObjectiveFunction
 		super(calculator, tuning, evaluator);
 		this.lengthAdjustmentMode = lengthAdjustmentMode;
 		nrDimensions = 1 + calculator.getInstrument().getHole().size();
+		if (lengthAdjustmentMode == BoreLengthAdjustmentType.PRESERVE_BELL)
+		{
+			bellIndex = findBell(calculator.getInstrument());
+		}
+		else
+		{
+			bellIndex = calculator.getInstrument().getBorePoint().size() - 1;
+		}
 		optimizerType = OptimizerType.BOBYQAOptimizer; // MultivariateOptimizer
 		if (nrDimensions == 1)
 		{
@@ -165,34 +174,20 @@ public class HolePositionObjectiveFunction extends BaseObjectiveFunction
 
 		if (lengthAdjustmentMode == BoreLengthAdjustmentType.PRESERVE_BELL)
 		{
-			// Shift all the bore points that are below the new position of the bottom hole.
-			double bottomHolePosition;
-			if (nrDimensions > 1)
-			{
-				bottomHolePosition = point[0] - point[nrDimensions - 1];
-			}
-			else
-			{
-				// No holes.
-				bottomHolePosition = boreList.get(0).getBorePosition();
-			}
 			double netChange = point[0] - endPoint.getBorePosition();
-			double priorBorePoint = boreList.get(0).getBorePosition();
-			for (int i = 1; i < boreList.size(); ++i)
+			double priorBorePoint = boreList.get(bellIndex - 1).getBorePosition();
+			for (int i = bellIndex; i < boreList.size(); ++i)
 			{
 				BorePoint borePoint = boreList.get(i);
 				double oldPosition = borePoint.getBorePosition(); 
-				if ( oldPosition + netChange > bottomHolePosition)
+				if (oldPosition + netChange <= priorBorePoint + MINIMUM_BORE_POINT_SPACING)
 				{
-					if (oldPosition + netChange <= priorBorePoint + MINIMUM_BORE_POINT_SPACING)
-					{
-						// Squeeze bore points together if necessary.
-						borePoint.setBorePosition(priorBorePoint + MINIMUM_BORE_POINT_SPACING);
-					}
-					else
-					{
-						borePoint.setBorePosition(oldPosition + netChange);
-					}
+					// Squeeze bore points together if necessary.
+					borePoint.setBorePosition(priorBorePoint + MINIMUM_BORE_POINT_SPACING);
+				}
+				else
+				{
+					borePoint.setBorePosition(oldPosition + netChange);
 				}
 				priorBorePoint = borePoint.getBorePosition();
 			}
@@ -262,6 +257,31 @@ public class HolePositionObjectiveFunction extends BaseObjectiveFunction
 		constraints.setObjectiveDisplayName("Hole position optimizer");
 		constraints.setObjectiveFunctionName(this.getClass().getSimpleName());
 		constraints.setConstraintsName("Default");
+	}
+	
+	/**
+	 * Find the beginning of the instrument bell, for use with PRESERVE_BELL.
+	 * Chooses the bore point that follows the longest bore segment.
+	 * @param boreList
+	 * @return index of bore point at start of bell.
+	 */
+	protected static int findBell(Instrument instrument)
+	{
+		SortedPositionList<BorePoint> boreList = new SortedPositionList<BorePoint>(
+				instrument.getBorePoint());
+		double longestSegment = 0;
+		double lastPosition = boreList.get(0).getBorePosition();
+		int bellIndex = boreList.size() - 1;
+		for (int idx = 1; idx < boreList.size(); ++idx)
+		{
+			if (boreList.get(idx).getBorePosition() - lastPosition >= longestSegment)
+			{
+				bellIndex = idx;
+				longestSegment = boreList.get(idx).getBorePosition();
+			}
+			lastPosition = boreList.get(idx).getBorePosition();
+		}
+		return bellIndex;
 	}
 
 }

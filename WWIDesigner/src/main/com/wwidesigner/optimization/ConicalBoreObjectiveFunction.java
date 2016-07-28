@@ -29,9 +29,10 @@ import com.wwidesigner.optimization.Constraint.ConstraintType;
 /**
  * Optimization objective function for a simple conical bore.
  * The single optimization dimension is the diameter at the foot.
- * All bore positions are invariant.
- * At present, this function varies only the geometry of the bottom bore section;
- * the diameters at all other bore points are left invariant.
+ * All bore point positions are invariant.
+ * All interior bore points in the bottom half of the bore are scaled
+ * proportionally to the change in the diameter at the foot.
+ * Diameter of interior bore points above the bottom half are left unchanged.
  * 
  * @author Burton Patkau
  * 

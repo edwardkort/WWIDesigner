@@ -15,6 +15,11 @@ import com.wwidesigner.optimization.HolePositionObjectiveFunction.BoreLengthAdju
  * <li>For each hole, hole diameter.</li>
  * <li>Bore diameter at the foot.</li>
  * </ul>
+ * Bore points below the lowest hole are kept the same distance
+ * from the bottom of the bore.
+ * All interior bore points in the bottom half of the bore are scaled
+ * proportionally to the change in the diameter at the foot.
+ * Diameter of interior bore points above the bottom half are left unchanged.
  * 
  * @author Burton Patkau
  * 

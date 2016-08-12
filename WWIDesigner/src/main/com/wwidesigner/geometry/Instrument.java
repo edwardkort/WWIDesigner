@@ -332,6 +332,7 @@ public class Instrument implements InstrumentInterface
 		}
 		Double minimumPosition = null;
 		Double maximumPosition = null;
+		BorePoint terminalBorePoint = null;
 		for (BorePoint bore : borePoint)
 		{
 			bore.checkValidity(handler);
@@ -344,6 +345,7 @@ public class Instrument implements InstrumentInterface
 					|| maximumPosition < bore.getBorePosition())
 			{
 				maximumPosition = bore.getBorePosition();
+				terminalBorePoint = bore;
 			}
 		}
 		if (minimumPosition != null && maximumPosition != null
@@ -370,7 +372,7 @@ public class Instrument implements InstrumentInterface
 			currentHole
 					.checkValidity(handler, minimumPosition, maximumPosition);
 		}
-		termination.checkValidity(handler);
+		termination.checkValidity(handler, terminalBorePoint);
 		handler.reportErrors(false);
 	}
 

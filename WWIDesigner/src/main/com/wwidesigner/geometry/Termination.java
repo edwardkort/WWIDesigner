@@ -35,16 +35,27 @@ public class Termination extends BorePoint implements TerminationInterface
 		flangeDiameter *= multiplier;
 	}
 
-	@Override
-	public void checkValidity(InvalidFieldHandler handler)
+	public void checkValidity(InvalidFieldHandler handler,
+			BorePoint terminalBorePoint)
 	{
 		if (Double.isNaN(flangeDiameter))
 		{
 			handler.logError("Termination flange diameter must be specified.");
 		}
-		else if (flangeDiameter <= 0.0)
+		else if (flangeDiameter < 0.0)
 		{
 			handler.logError("Termination flange diameter must be positive.");
+		}
+		else if (flangeDiameter < this.boreDiameter)
+		{
+			handler.logError(
+					"Termination flange diameter must not be less than bore diameter.");
+		}
+		else if ((terminalBorePoint != null) && ((terminalBorePoint.boreDiameter
+				- flangeDiameter) > 0.00001d))
+		{
+			handler.logError(
+					"Termination flange diameter must not be less than bore diameter.");
 		}
 	}
 }

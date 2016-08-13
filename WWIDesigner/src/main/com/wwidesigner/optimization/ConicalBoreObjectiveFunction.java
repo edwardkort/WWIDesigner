@@ -21,6 +21,7 @@ package com.wwidesigner.optimization;
 import com.wwidesigner.geometry.BorePoint;
 import com.wwidesigner.geometry.Instrument;
 import com.wwidesigner.geometry.PositionInterface;
+import com.wwidesigner.geometry.Termination;
 import com.wwidesigner.modelling.EvaluatorInterface;
 import com.wwidesigner.modelling.InstrumentCalculator;
 import com.wwidesigner.note.TuningInterface;
@@ -84,6 +85,14 @@ public class ConicalBoreObjectiveFunction extends BaseObjectiveFunction
 		BorePoint bottomPoint = (BorePoint) sortedPoints[sortedPoints.length - 1];
 		double topPosition = sortedPoints[0].getBorePosition();
 		double totalLength = bottomPoint.getBorePosition() - topPosition;
+		double terminationChange = point[0] - bottomPoint.getBoreDiameter();
+		Termination termination = calculator.getInstrument().getTermination();
+		if (termination != null)
+		{
+			// Change termination flange diameter as well, to preserve the flange width.
+			termination.setFlangeDiameter(termination.getFlangeDiameter() + terminationChange);
+		}
+
 		// Change the diameter of the lowest part of the bore, proportional
 		// to the change at the foot.
 		double fractionalChange = point[0]/bottomPoint.getBoreDiameter();

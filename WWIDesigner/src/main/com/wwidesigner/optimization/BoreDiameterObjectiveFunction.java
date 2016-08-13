@@ -21,6 +21,7 @@ package com.wwidesigner.optimization;
 import com.wwidesigner.geometry.BorePoint;
 import com.wwidesigner.geometry.Instrument;
 import com.wwidesigner.geometry.PositionInterface;
+import com.wwidesigner.geometry.Termination;
 import com.wwidesigner.modelling.EvaluatorInterface;
 import com.wwidesigner.modelling.InstrumentCalculator;
 import com.wwidesigner.note.TuningInterface;
@@ -34,11 +35,14 @@ import com.wwidesigner.optimization.Constraint.ConstraintType;
  * <li>For interior bore points from bottom to top,
  *  ratio of diameters at next bore point to this bore point.</li>
  * </ul>
- * The diameters at the top <i>N</i> bore points are left invariant.
+ * The diameters at the top <i>N</i> bore points are left unchanged.
+ * Bore point positions are invariant.
  * 
  * Use of diameter ratios rather than absolute diameters allows constraints to control
  * the direction of taper.  If lower bound is 1.0, bore flares out toward bottom;
  * if upper bound is 1.0, bore tapers inward toward bottom.
+ * 
+ * Do not use with other optimizers that might change the number of bore points.
  * 
  * @author Burton Patkau
  * 
@@ -48,15 +52,19 @@ public class BoreDiameterObjectiveFunction extends BaseObjectiveFunction
 	public static final String CONSTR_CAT = "Bore diameters";
 	public static final String DISPLAY_NAME = "Bore Diameter optimizer";
 	// First bore point affected by optimization.
-	protected int unchangedBorePoints;
+	protected final int unchangedBorePoints;
+	// Invariant: nrDimensions + unchangedBorePoints = number of bore points.
 
 	public BoreDiameterObjectiveFunction(InstrumentCalculator calculator,
 			TuningInterface tuning, EvaluatorInterface evaluator, int unchangedBorePoints)
 	{
 		super(calculator, tuning, evaluator);
 		int nrBorePoints = calculator.getInstrument().getBorePoint().size();
-		this.unchangedBorePoints = unchangedBorePoints;
-		if (this.unchangedBorePoints < 1)
+		if (unchangedBorePoints >= 1)
+		{
+			this.unchangedBorePoints = unchangedBorePoints;
+		}
+		else
 		{
 			// At a minimum, top bore point is unchanged.
 			this.unchangedBorePoints = 1;
@@ -70,6 +78,7 @@ public class BoreDiameterObjectiveFunction extends BaseObjectiveFunction
 		{
 			optimizerType = OptimizerType.BrentOptimizer; // UnivariateOptimizer
 		}
+		maxEvaluations = 10000;
 		setConstraints();
 	}
 
@@ -82,13 +91,15 @@ public class BoreDiameterObjectiveFunction extends BaseObjectiveFunction
 	protected void setConstraints()
 	{
 		String name;
-		name = "Diameter at bore point " + String.valueOf(nrDimensions + unchangedBorePoints)
+		int dimension;
+		int pointNr = borePointNr(0);
+		name = "Diameter at bore point " + String.valueOf(pointNr)
 				+ " (bottom)";
 		constraints.addConstraint(new Constraint(CONSTR_CAT,
 				name, ConstraintType.DIMENSIONAL));
-		for (int pointNr = borePointNr(1);
-				pointNr > unchangedBorePoints; pointNr--)
+		for (dimension = 1; dimension < nrDimensions; ++dimension)
 		{
+			pointNr = borePointNr(dimension);
 			name = "Ratio of diameters, bore point " + String.valueOf(pointNr + 1)
 					+ " / bore point " + String.valueOf(pointNr);
 			constraints.addConstraint(new Constraint(CONSTR_CAT,
@@ -107,38 +118,42 @@ public class BoreDiameterObjectiveFunction extends BaseObjectiveFunction
 	 */
 	protected int borePointNr(int dimensionIdx)
 	{
+		// Process bore points in reverse order, from bottom to top.
 		return nrDimensions + unchangedBorePoints - dimensionIdx;
 	}
-	
+
 	/**
-	 * Convert a bore point number in unchangedBorePoints+1 .. nrBorePoints
-	 * to a dimension number in 0 .. nrDimensions-1.
+	 * Point number used as an initial reference for the remaining points.
 	 */
-	protected int dimensionIdx(int borePointNr)
+	protected int referencePointNr()
 	{
-		return nrDimensions + unchangedBorePoints - borePointNr;
+		return nrDimensions + unchangedBorePoints;
 	}
 
 	@Override
 	public double[] getGeometryPoint()
 	{
 		double[] geometry = new double[nrDimensions];
+		int dimension;
+		int pointNr = borePointNr(0);
 		PositionInterface[] sortedPoints = Instrument.sortList(calculator
 				.getInstrument().getBorePoint());
-		BorePoint borePoint = (BorePoint) sortedPoints[borePointNr(0) - 1];
+		BorePoint borePoint = (BorePoint) sortedPoints[pointNr - 1];
 		double nextBoreDia = borePoint.getBoreDiameter();
 		geometry[0] = borePoint.getBoreDiameter();
-		for (int pointNr = borePointNr(1);
-				pointNr > unchangedBorePoints; pointNr--)
+
+		borePoint = (BorePoint) sortedPoints[referencePointNr() - 1];
+		for (dimension = 1; dimension < nrDimensions; ++dimension)
 		{
+			pointNr = borePointNr(dimension);
 			borePoint = (BorePoint) sortedPoints[pointNr - 1];
 			if (borePoint.getBoreDiameter() >= 0.000001)
 			{
-				geometry[dimensionIdx(pointNr)] = nextBoreDia/borePoint.getBoreDiameter();
+				geometry[dimension] = nextBoreDia/borePoint.getBoreDiameter();
 			}
 			else
 			{
-				geometry[dimensionIdx(pointNr)] = nextBoreDia/0.000001;
+				geometry[dimension] = nextBoreDia/0.000001;
 			}
 			nextBoreDia = borePoint.getBoreDiameter();
 		}
@@ -148,18 +163,29 @@ public class BoreDiameterObjectiveFunction extends BaseObjectiveFunction
 	@Override
 	public void setGeometryPoint(double[] point)
 	{
+		int dimension;
+		int pointNr = borePointNr(0);
 		PositionInterface[] sortedPoints = Instrument.sortList(calculator
 				.getInstrument().getBorePoint());
-		BorePoint borePoint = (BorePoint) sortedPoints[borePointNr(0) - 1];
+		BorePoint borePoint = (BorePoint) sortedPoints[pointNr - 1];
+		double terminationChange = point[0] - borePoint.getBoreDiameter();
 		borePoint.setBoreDiameter(point[0]);
-		double nextBoreDia = borePoint.getBoreDiameter();
-		for (int pointNr = borePointNr(1);
-				pointNr > unchangedBorePoints; pointNr--)
+		Termination termination = calculator.getInstrument().getTermination();
+		if (termination != null)
 		{
+			// Change termination flange diameter as well, to preserve the flange width.
+			termination.setFlangeDiameter(termination.getFlangeDiameter() + terminationChange);
+		}
+
+		borePoint = (BorePoint) sortedPoints[referencePointNr() - 1];
+		double nextBoreDia = borePoint.getBoreDiameter();
+		for (dimension = 1; dimension < nrDimensions; ++dimension)
+		{
+			pointNr = borePointNr(dimension);
 			borePoint = (BorePoint) sortedPoints[pointNr - 1];
-			if (point[dimensionIdx(pointNr)] >= 0.000001)
+			if (point[dimension] >= 0.000001)
 			{
-				borePoint.setBoreDiameter(nextBoreDia/point[dimensionIdx(pointNr)]);
+				borePoint.setBoreDiameter(nextBoreDia/point[dimension]);
 			}
 			else
 			{

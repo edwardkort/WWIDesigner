@@ -20,10 +20,10 @@ public class WhistleTuningPanel extends TuningPanel
 {
 	/**
 	 * Create a panel with components of a specified preferred width.
-	 * Optionally include columns for min and max frequency.
+	 * Optionally include columns for min and max frequency and optimization weight.
 	 * @param componentWidth - preferred width of display/edit components.
 	 */
-	public WhistleTuningPanel(int width, boolean withMinMax)
+	public WhistleTuningPanel(int width, boolean withMinMax, boolean withWeight)
 	{
 		super( width );
 		if (withMinMax)
@@ -33,6 +33,10 @@ public class WhistleTuningPanel extends TuningPanel
 		else
 		{
 			this.numberOfColumns = 3;
+		}
+		if (withWeight)
+		{
+			++this.numberOfColumns;
 		}
 	}
 
@@ -56,10 +60,20 @@ public class WhistleTuningPanel extends TuningPanel
 	@Override
 	protected String[] columnNames()
 	{
+		if (numberOfColumns == 6)
+		{
+			return (new String[] { "Symbol", "Frequency",
+					"Min Freq", "Max Freq", "Fingering", "Weight" });
+		}
 		if (numberOfColumns == 5)
 		{
 			return (new String[] { "Symbol", "Frequency",
 					"Min Freq", "Max Freq", "Fingering" });
+		}
+		if (numberOfColumns == 4)
+		{
+			return (new String[] { "Symbol", "Frequency",
+					"Fingering", "Weight" });
 		}
 		return (new String[] { "Symbol", "Frequency", "Fingering" });
 	}
@@ -67,9 +81,17 @@ public class WhistleTuningPanel extends TuningPanel
 	@Override
 	protected Object[] emptyRow()
 	{
+		if (numberOfColumns == 6)
+		{
+			return (new Object[] {null, null, null, null, new Fingering(numberOfHoles), null });
+		}
 		if (numberOfColumns == 5)
 		{
 			return (new Object[] {null, null, null, null, new Fingering(numberOfHoles) });
+		}
+		if (numberOfColumns == 4)
+		{
+			return (new Object[] {null, null, new Fingering(numberOfHoles), null });
 		}
 		return (new Object[] {null, null, new Fingering(numberOfHoles) });
 	}
@@ -78,9 +100,17 @@ public class WhistleTuningPanel extends TuningPanel
 	protected Object[] rowData(Fingering fingering)
 	{
 		Object[] newRow;
-		if (numberOfColumns == 5)
+		if (numberOfColumns == 6)
+		{
+			newRow = new Object[] {null, null, null, null, fingering, null};
+		}
+		else if (numberOfColumns == 5)
 		{
 			newRow = new Object[] {null, null, null, null, fingering};
+		}
+		else if (numberOfColumns == 4)
+		{
+			newRow = new Object[] {null, null, fingering, null};
 		}
 		else
 		{
@@ -91,10 +121,18 @@ public class WhistleTuningPanel extends TuningPanel
 		{
 			newRow[0] = fingering.getNote().getName();
 			newRow[1] = fingering.getNote().getFrequency();
-			if (numberOfColumns == 5)
+			if (numberOfColumns >= 5)
 			{
 				newRow[2] = fingering.getNote().getFrequencyMin();
 				newRow[3] = fingering.getNote().getFrequencyMax();
+				if (numberOfColumns == 6)
+				{
+					newRow[5] = fingering.getOptimizationWeight();
+				}
+			}
+			else if (numberOfColumns == 4)
+			{
+				newRow[3] = fingering.getOptimizationWeight();
 			}
 		}
 		
@@ -105,18 +143,31 @@ public class WhistleTuningPanel extends TuningPanel
 	protected Fingering getRowData(DefaultTableModel model, int row)
 	{
 		Fingering value = super.getRowData(model, row);
-		if (value == null || numberOfColumns != 5)
+		if (value == null || numberOfColumns == 3)
 		{
 			return value;
 		}
 
-		// Table also contains min and max columns.
-		// Add min and max to the data returned.
-		Note note = value.getNote();
-		Double freq = (Double) model.getValueAt(row, 2);
-		note.setFrequencyMin(freq);
-		freq = (Double) model.getValueAt(row, 3);
-		note.setFrequencyMax(freq);
+		if (numberOfColumns >= 5)
+		{
+			// Table also contains min and max columns.
+			// Add min and max to the data returned.
+			Note note = value.getNote();
+			Double freq = (Double) model.getValueAt(row, 2);
+			note.setFrequencyMin(freq);
+			freq = (Double) model.getValueAt(row, 3);
+			note.setFrequencyMax(freq);
+			if (numberOfColumns == 6)
+			{
+				Integer weight = (Integer) model.getValueAt(row, 5);
+				value.setOptimizationWeight(weight);
+			}
+		}
+		else if (numberOfColumns == 4)
+		{
+			Integer weight = (Integer) model.getValueAt(row, 3);
+			value.setOptimizationWeight(weight);
+		}
 		return value;
 	}
 	
@@ -171,11 +222,25 @@ public class WhistleTuningPanel extends TuningPanel
 	@Override
 	public void loadData(FingeringPattern fingerings, boolean suppressChangeEvent)
 	{
-		if (hasMinMax(fingerings))
+		if (numberOfColumns < 5 && hasMinMax(fingerings))
 		{
 			// If the tuning has min or max frequency data, display it.
-			numberOfColumns = 5;
+			if (numberOfColumns == 4 || hasWeights(fingerings))
+			{
+				// Display weights if they were already displayed,
+				// or the tuning has non-trivial optimization weights.
+				numberOfColumns = 6;
+			}
+			else
+			{
+				numberOfColumns = 5;
+			}
 			fingeringColumnIdx = 4;
+		}
+		else if (numberOfColumns == 3 && hasWeights(fingerings))
+		{
+			// If the tuning has non-trivial optimization weights, display them last.
+			numberOfColumns = 4;
 		}
 		super.loadData(fingerings, suppressChangeEvent);
 	}
@@ -199,4 +264,48 @@ public class WhistleTuningPanel extends TuningPanel
 		}
 		return false;
 	}
+
+	/**
+	 * Test whether a tuning has non-trivial optimization weights.
+	 */
+	static protected boolean hasWeights(FingeringPattern fingerings)
+	{
+		for (Fingering fingering : fingerings.getFingering())
+		{
+			if (fingering.getOptimizationWeight() != null
+					&& fingering.getOptimizationWeight() != 1)
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+
+	@Override
+	protected DefaultTableModel getTableModel()
+	{
+		DefaultTableModel model = new DefaultTableModel()
+		{
+			@Override
+			public Class<?> getColumnClass(int columnIndex)
+			{
+				if (columnIndex == 0)
+				{
+					return String.class;
+				}
+				else if (columnIndex == fingeringColumnIdx)
+				{
+					return Fingering.class;
+				}
+				else if (columnIndex == getColumnCount() - 1)
+				{
+					return Integer.class;
+				}
+				return Double.class;
+			}
+		};
+
+		return model;
+	}
+
 }

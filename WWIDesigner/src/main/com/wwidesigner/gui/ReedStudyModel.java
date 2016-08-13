@@ -37,6 +37,7 @@ import com.wwidesigner.modelling.SimpleInstrumentTuner;
 import com.wwidesigner.modelling.SimpleReedCalculator;
 import com.wwidesigner.note.Tuning;
 import com.wwidesigner.optimization.BoreDiameterObjectiveFunction;
+import com.wwidesigner.optimization.BorePositionObjectiveFunction;
 import com.wwidesigner.optimization.HoleAndBoreDiameterObjectiveFunction;
 import com.wwidesigner.optimization.ReedCalibratorObjectiveFunction;
 import com.wwidesigner.optimization.BaseObjectiveFunction;
@@ -73,22 +74,24 @@ public class ReedStudyModel extends StudyModel
 	public static final String HOLE_CONE_OPT_SUB_CATEGORY_ID = "7. Hole and Conical Bore Optimizer";
 	public static final String BORE_DIAMETER_OPT_SUB_CATEGORY_ID = "8. Bore Diameter Optimizer";
 	public static final String HOLE_BOREDIAMETER_OPT_SUB_CATEGORY_ID = "9. Hole and Bore Optimizer";
+	public static final String BORE_POSITION_OPT_SUB_CATEGORY_ID = "A. Bore Point Position Optimizer";
 	public static final String ROUGH_CUT_OPT_SUB_CATEGORY_ID = "Rough-Cut Optimizer";
 
-	// Default minimum bore diameter, in meters.
+	// Default minimum and maximum bore length, in meters
+	// (actually, position of bottom bore point).
 	public static final double MIN_BORE_LENGTH = 0.200;
-	// Default maximum bore diameter, in meters.
 	public static final double MAX_BORE_LENGTH = 1.000;
 
-	// Default minimum hole diameter, in meters.
+	// Default minimum and maximum hole diameter, in meters.
 	public static final double MIN_HOLE_DIAMETER = 0.0032;
-	// Default maximum hole diameter, in meters.
 	public static final double MAX_HOLE_DIAMETER = 0.0091;
 
-	// Default minimum bore diameter at bottom, in meters.
+	// Default minimum and maximum bore diameter at bottom, in meters.
 	public static final double MIN_BORE_DIAMETER = 0.0030;
-	// Default maximum bore diameter at bottom, in meters.
 	public static final double MAX_BORE_DIAMETER = 0.1000;
+	
+	// Minimum space between thumb and index finger, in meters.
+	public static final double MIN_THUMB_HOLE_SPACING = 0.0002;
 
 	protected int blowingLevel;
 
@@ -144,6 +147,9 @@ public class ReedStudyModel extends StudyModel
 		optimizers.addSub(HOLE_BOREDIAMETER_OPT_SUB_CATEGORY_ID, null);
 		objectiveFunctionNames.put(HOLE_BOREDIAMETER_OPT_SUB_CATEGORY_ID,
 				HoleAndBoreDiameterObjectiveFunction.class.getSimpleName());
+		optimizers.addSub(BORE_POSITION_OPT_SUB_CATEGORY_ID, null);
+		objectiveFunctionNames.put(BORE_POSITION_OPT_SUB_CATEGORY_ID,
+				BorePositionObjectiveFunction.class.getSimpleName());
 		optimizers.addSub(ROUGH_CUT_OPT_SUB_CATEGORY_ID, null);
 		objectiveFunctionNames.put(ROUGH_CUT_OPT_SUB_CATEGORY_ID,
 				HolePositionObjectiveFunction.class.getSimpleName());
@@ -296,12 +302,12 @@ public class ReedStudyModel extends StudyModel
 				if (numberOfHoles >= 7)
 				{
 					// Assume top hole is a thumb hole.
-					lowerBound[1] = 0.0005;
+					lowerBound[1] = MIN_THUMB_HOLE_SPACING;
 				}
 				if (numberOfHoles == 10)
 				{
 					// Assume a thumb hole for the lower hand.
-					lowerBound[6] = 0.0005;
+					lowerBound[6] = MIN_THUMB_HOLE_SPACING;
 				}
 
 				// For a rough-cut optimization, use multi-start optimization.
@@ -357,12 +363,12 @@ public class ReedStudyModel extends StudyModel
 				if (numberOfHoles >= 7)
 				{
 					// Assume top hole is a thumb hole.
-					lowerBound[1] = 0.0005;
+					lowerBound[1] = MIN_THUMB_HOLE_SPACING;
 				}
 				if (numberOfHoles == 10)
 				{
 					// Assume a thumb hole for the lower hand.
-					lowerBound[6] = 0.0005;
+					lowerBound[6] = MIN_THUMB_HOLE_SPACING;
 				}
 				break;
 
@@ -410,12 +416,12 @@ public class ReedStudyModel extends StudyModel
 				if (numberOfHoles >= 7)
 				{
 					// Assume top hole is a thumb hole.
-					lowerBound[1] = 0.0005;
+					lowerBound[1] = MIN_THUMB_HOLE_SPACING;
 				}
 				if (numberOfHoles == 10)
 				{
 					// Assume a thumb hole for the lower hand.
-					lowerBound[6] = 0.0005;
+					lowerBound[6] = MIN_THUMB_HOLE_SPACING;
 				}
 				// Bounds on conical bore.
 				lowerBound[lowerBound.length - 1] = 0.002;
@@ -473,12 +479,12 @@ public class ReedStudyModel extends StudyModel
 				if (numberOfHoles >= 7)
 				{
 					// Assume top hole is a thumb hole.
-					lowerBound[1] = 0.0005;
+					lowerBound[1] = MIN_THUMB_HOLE_SPACING;
 				}
 				if (numberOfHoles == 10)
 				{
 					// Assume a thumb hole for the lower hand.
-					lowerBound[6] = 0.0005;
+					lowerBound[6] = MIN_THUMB_HOLE_SPACING;
 				}
 				// Bounds on bore diameters.
 				lowerBound[2*numberOfHoles + 1] = MIN_BORE_DIAMETER;
@@ -488,6 +494,22 @@ public class ReedStudyModel extends StudyModel
 						lowerBound.length, 1.0);
 				Arrays.fill(upperBound, 2*numberOfHoles + 2, 
 						upperBound.length, 5.0);
+				break;
+
+			case "BorePositionObjectiveFunction":
+				evaluator = new CentDeviationEvaluator(calculator,
+						getInstrumentTuner());
+				objective = new BorePositionObjectiveFunction(calculator, tuning,
+						evaluator);
+				nrDimensions = objective.getNrDimensions();
+				// First bound is bottom bore position, expressed in meters.
+				// Remaining bounds are fractional positions.
+				lowerBound = new double[nrDimensions];
+				upperBound = new double[nrDimensions];
+				Arrays.fill(lowerBound, 0.1);
+				Arrays.fill(upperBound, 0.9);
+				lowerBound[0] = MIN_BORE_LENGTH;
+				upperBound[0] = MAX_BORE_LENGTH;
 				break;
 
 		}

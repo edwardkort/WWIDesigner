@@ -40,7 +40,7 @@ public class HoleAndBoreDiameterObjectiveFunction extends MergedObjectiveFunctio
 				tuning, evaluator, lengthAdjustmentMode);
 		this.components[1] = new HoleSizeObjectiveFunction(calculator, tuning,
 				evaluator);
-		this.components[2] = new BoreDiameterObjectiveFunction(calculator, tuning, evaluator);
+		this.components[2] = new BoreDiameterObjectiveFunction(calculator, tuning, evaluator, 1);
 		optimizerType = OptimizerType.BOBYQAOptimizer; // MultivariateOptimizer
 		maxEvaluations = 30000;
 		sumDimensions();

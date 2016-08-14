@@ -155,14 +155,14 @@ public class StudyView extends DataViewPane implements EventSubscriber
 		setStudyModel(modelName);
 		study.setPreferences(myPreferences);
 
-		getApplication().getEventManager().subscribe(
-				WIDesigner.FILE_OPENED_EVENT_ID, this);
-		getApplication().getEventManager().subscribe(
-				WIDesigner.FILE_CLOSED_EVENT_ID, this);
-		getApplication().getEventManager().subscribe(
-				WIDesigner.FILE_SAVED_EVENT_ID, this);
-		getApplication().getEventManager().subscribe(
-				WIDesigner.WINDOW_RENAMED_EVENT_ID, this);
+		getApplication().getEventManager()
+				.subscribe(WIDesigner.FILE_OPENED_EVENT_ID, this);
+		getApplication().getEventManager()
+				.subscribe(WIDesigner.FILE_CLOSED_EVENT_ID, this);
+		getApplication().getEventManager()
+				.subscribe(WIDesigner.FILE_SAVED_EVENT_ID, this);
+		getApplication().getEventManager()
+				.subscribe(WIDesigner.WINDOW_RENAMED_EVENT_ID, this);
 	}
 
 	protected void updateView()
@@ -255,8 +255,8 @@ public class StudyView extends DataViewPane implements EventSubscriber
 
 		getApplication().getEventManager().publish(
 				WIDesigner.OPTIMIZATION_ACTIVE_EVENT_ID, canDoOptimization);
-		getApplication().getEventManager().publish(
-				WIDesigner.TUNING_ACTIVE_EVENT_ID, canDoTuning);
+		getApplication().getEventManager()
+				.publish(WIDesigner.TUNING_ACTIVE_EVENT_ID, canDoTuning);
 		String constraintsDirectory = ((WIDesigner) getApplication())
 				.getConstraintsRootDirectoryPath();
 		getApplication().getEventManager().publish(
@@ -265,13 +265,13 @@ public class StudyView extends DataViewPane implements EventSubscriber
 		getApplication().getEventManager().publish(
 				WIDesigner.CONSTRAINTS_CAN_CREATE_EVENT_ID,
 				study.isOptimizerCreateSpecified());
-		getApplication().getEventManager()
-				.publish(WIDesigner.INSTRUMENT_SELECTED_EVENT_ID,
-						selectedInstrumentName);
 		getApplication().getEventManager().publish(
-				WIDesigner.NOTE_SELECTED_EVENT_ID, canGraphNote);
+				WIDesigner.INSTRUMENT_SELECTED_EVENT_ID,
+				selectedInstrumentName);
+		getApplication().getEventManager()
+				.publish(WIDesigner.NOTE_SELECTED_EVENT_ID, canGraphNote);
 	}
-	
+
 	@Override
 	public void doEvent(SubscriberEvent event)
 	{
@@ -351,9 +351,8 @@ public class StudyView extends DataViewPane implements EventSubscriber
 	{
 		try
 		{
-			String xmlConstraints = study
-					.getDefaultConstraints(getApplication()
-							.getApplicationUIManager().getWindowsUI()
+			String xmlConstraints = study.getDefaultConstraints(
+					getApplication().getApplicationUIManager().getWindowsUI()
 							.getDialogParent());
 			// For the cancelled hole-grouping scenario
 			if (xmlConstraints != null)
@@ -371,9 +370,8 @@ public class StudyView extends DataViewPane implements EventSubscriber
 	{
 		try
 		{
-			String xmlConstraints = study
-					.getBlankConstraints(getApplication()
-							.getApplicationUIManager().getWindowsUI()
+			String xmlConstraints = study.getBlankConstraints(
+					getApplication().getApplicationUIManager().getWindowsUI()
 							.getDialogParent());
 			// For the cancelled hole-grouping scenario
 			if (xmlConstraints != null)
@@ -455,7 +453,7 @@ public class StudyView extends DataViewPane implements EventSubscriber
 			showException(e);
 		}
 	}
-	
+
 	public Fingering getSelectedFingering()
 	{
 		FileBasedApplication app = (FileBasedApplication) getApplication();
@@ -485,16 +483,22 @@ public class StudyView extends DataViewPane implements EventSubscriber
 		return null;
 	}
 
-	public void graphNote()
+	public void graphNote() throws Exception
 	{
 		try
 		{
 			Fingering fingering = getSelectedFingering();
+			// Put in to show an understandable error.
+			if (fingering == null)
+			{
+				throw new Exception("Cannot retrieve a selected fingering.");
+			}
 			study.graphNote(fingering);
 		}
 		catch (Exception e)
 		{
 			showException(e);
+			throw new Exception(e);
 		}
 	}
 
@@ -536,8 +540,9 @@ public class StudyView extends DataViewPane implements EventSubscriber
 		if (studyClassName
 				.contentEquals(OptimizationPreferences.NAF_STUDY_NAME))
 		{
-			setStudyModel(new NafStudyModel(getApplication()
-					.getApplicationUIManager().getWindowsUI().getDialogParent()));
+			setStudyModel(
+					new NafStudyModel(getApplication().getApplicationUIManager()
+							.getWindowsUI().getDialogParent()));
 		}
 		else if (studyClassName
 				.contentEquals(OptimizationPreferences.WHISTLE_STUDY_NAME))
@@ -589,7 +594,8 @@ public class StudyView extends DataViewPane implements EventSubscriber
 		{
 			DataOpenException doException = (DataOpenException) exception;
 			exceptionType = doException.getType();
-			messageType = doException.isWarning() ? MessageDialogRequest.WARNING_STYLE
+			messageType = doException.isWarning()
+					? MessageDialogRequest.WARNING_STYLE
 					: MessageDialogRequest.ERROR_STYLE;
 		}
 		else if (exception instanceof InvalidFieldException)
@@ -651,8 +657,8 @@ public class StudyView extends DataViewPane implements EventSubscriber
 	public File getConstraintsLeafDirectory(String rootDirectoryPath,
 			Constraints constraints)
 	{
-		return study
-				.getConstraintsLeafDirectory(rootDirectoryPath, constraints);
+		return study.getConstraintsLeafDirectory(rootDirectoryPath,
+				constraints);
 	}
 
 	class TreeNodeWithToolTips extends DefaultMutableTreeNode

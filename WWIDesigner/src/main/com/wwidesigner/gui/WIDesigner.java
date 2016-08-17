@@ -1,9 +1,7 @@
 package com.wwidesigner.gui;
 
-import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Dimension;
-import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.net.URL;
@@ -1202,22 +1200,37 @@ public class WIDesigner extends FileBasedApplication implements EventSubscriber
 
 	protected final class BlockingProgressListener implements ProgressListener
 	{
-		private JDialog dialog;
+		protected JDialog dialog;
+		protected String activityName;
+		protected String message;
+		protected ApplicationWindowsUI windowsUI;
+		protected Activity parentActivity;
+		protected boolean isRunning;
 
+		/**
+		 * Construct a BlockingProgressListener with a Cancel button,
+		 * for an activity that supports parentActivity.cancel().
+		 */
+		protected BlockingProgressListener(Activity parentActivity, 
+				ApplicationWindowsUI windowsUI,
+				String activityName, String message)
+		{
+			this(windowsUI, activityName, message);
+			this.parentActivity = parentActivity;
+		}
+
+		/**
+		 * Construct a BlockingProgressListener without a Cancel button.
+		 */
 		protected BlockingProgressListener(ApplicationWindowsUI windowsUI,
 				String activityName, String message)
 		{
-			dialog = new JDialog(windowsUI.getDialogParent(), activityName,
-					true);
-			Container contentPane = dialog.getContentPane();
-			JTextPane textPane = new JTextPane();
-			textPane.setText(message);
-			textPane.setEditable(false);
-			textPane.setMargin(new Insets(20, 20, 20, 20));
-			textPane.setPreferredSize(new Dimension(300, 100));
-			contentPane.add(textPane, BorderLayout.CENTER);
-			dialog.pack();
-			dialog.setLocationRelativeTo(windowsUI.getDialogParent());
+			this.dialog = null;
+			this.windowsUI = windowsUI;
+			this.activityName = activityName;
+			this.message = message;
+			this.parentActivity = null;
+			this.isRunning = false;
 		}
 
 		@Override
@@ -1225,7 +1238,36 @@ public class WIDesigner extends FileBasedApplication implements EventSubscriber
 		{
 			try
 			{
-				dialog.setVisible(true);
+				// Use JOptionPane and JDialog instead of MessageDialogRequest,
+				// because we need to call dispose() when the activity ends.
+				JOptionPane optionPane = new JOptionPane(message, 
+						JOptionPane.PLAIN_MESSAGE, JOptionPane.DEFAULT_OPTION);
+				if (parentActivity == null)
+				{
+					// No buttons.
+					Object options[] = { };
+					optionPane.setOptions(options);
+				}
+				else
+				{
+					// Cancel button.
+					Object options[] = { "Cancel" };
+					optionPane.setOptions(options);
+				}
+				dialog = optionPane.createDialog(windowsUI.getDialogParent(), activityName);
+				Object selection = null;
+				isRunning = true;
+				while (isRunning && (selection == null 
+						|| selection == JOptionPane.UNINITIALIZED_VALUE))
+				{
+					dialog.setVisible(true);
+					selection = optionPane.getValue();
+				}
+				if (isRunning && parentActivity != null)
+				{
+					parentActivity.cancel();
+					System.out.println("Operation cancelled.");
+				}
 			}
 			catch (Exception ex)
 			{
@@ -1243,7 +1285,11 @@ public class WIDesigner extends FileBasedApplication implements EventSubscriber
 		{
 			try
 			{
-				dialog.dispose();
+				isRunning = false;
+				if (dialog != null)
+				{
+					dialog.dispose();
+				}
 			}
 			catch (Exception ex)
 			{

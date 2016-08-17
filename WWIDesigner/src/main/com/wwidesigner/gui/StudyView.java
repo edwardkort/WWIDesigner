@@ -167,7 +167,7 @@ public class StudyView extends DataViewPane implements EventSubscriber
 
 	protected void updateView()
 	{
-		// Reset the Constaints category as needed.
+		// Reset the Constraints category as needed.
 		study.updateConstraints();
 
 		// Build the selection tree.
@@ -483,7 +483,7 @@ public class StudyView extends DataViewPane implements EventSubscriber
 		return null;
 	}
 
-	public void graphNote() throws Exception
+	public void graphNote()
 	{
 		try
 		{
@@ -491,14 +491,13 @@ public class StudyView extends DataViewPane implements EventSubscriber
 			// Put in to show an understandable error.
 			if (fingering == null)
 			{
-				throw new Exception("Cannot retrieve a selected fingering.");
+				throw new Exception("Cannot retrieve a selected fingering.  Select a fingering on the turning panel.");
 			}
 			study.graphNote(fingering);
 		}
 		catch (Exception e)
 		{
 			showException(e);
-			throw new Exception(e);
 		}
 	}
 
@@ -639,8 +638,18 @@ public class StudyView extends DataViewPane implements EventSubscriber
 			exceptionType = "Operation failed";
 		}
 
-		MessageDialogRequest.showMessageDialog(getApplication(),
-				exceptionMessage, exceptionType, messageType);
+		// showException can be called on any thread, but message dialog must
+		// run on the AWT thread.
+		final String dialogMessage = exceptionMessage;
+		final int dialogType = messageType;
+		SwingUtilities.invokeLater(new Runnable()
+		{
+			public void run()
+			{
+				MessageDialogRequest.showMessageDialog(getApplication(),
+						dialogMessage, exceptionType, dialogType);
+			}
+		});
 		if (withTrace)
 		{
 			System.out.println(exception.getClass().getName() + " Exception: "

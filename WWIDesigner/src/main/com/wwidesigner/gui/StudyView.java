@@ -591,7 +591,7 @@ public class StudyView extends DataViewPane implements EventSubscriber
 		}
 		int messageType = MessageDialogRequest.ERROR_STYLE; // Message box
 															// style.
-		String exceptionType; // Message box title.
+		final String exceptionType; // Message box title.
 		String exceptionMessage = exception.getMessage(); // Message box text.
 		boolean withTrace = false; // true to print on console log.
 

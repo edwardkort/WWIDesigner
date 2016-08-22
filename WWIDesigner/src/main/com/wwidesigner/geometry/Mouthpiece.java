@@ -437,9 +437,9 @@ public class Mouthpiece implements ComponentInterface, MouthpieceInterface,
 		{
 			handler.logError("The type of mouthpiece is not specified");
 		}
-		if (beta != null && (beta < 0.0 || beta > 1.0))
+		if (beta != null && beta < 0.0)
 		{
-			handler.logError("Beta, if specified, must be between 0 and 1.");
+			handler.logError("Beta, if specified, must be zero or more.");
 		}
 	}
 
@@ -770,8 +770,7 @@ public class Mouthpiece implements ComponentInterface, MouthpieceInterface,
 
 
 	/**
-	 * Detail class for a single-reed mouthpiece
-	 * details as yet unspecified.
+	 * Detail class for a single-reed mouthpiece.
 	 */
 	public static class SingleReed
 	{
@@ -806,14 +805,14 @@ public class Mouthpiece implements ComponentInterface, MouthpieceInterface,
 			}
 			else if (alpha < 0.0)
 			{
-				handler.logError("Alpha factor must be zero or more.");
+				// For now, allow negative alpha.
+				// handler.logError("Alpha factor must be zero or more.");
 			}
 		}
 	}
 
 	/**
-	 * Detail class for a double-reed mouthpiece
-	 * details as yet unspecified.
+	 * Detail class for a double-reed mouthpiece.
 	 */
 	public static class DoubleReed
 	{
@@ -867,7 +866,8 @@ public class Mouthpiece implements ComponentInterface, MouthpieceInterface,
 			}
 			else if (alpha < 0.0)
 			{
-				handler.logError("Alpha factor must be zero or more.");
+				// For now, allow negative alpha.
+				// handler.logError("Alpha factor must be zero or more.");
 			}
 			if (Double.isNaN(crowFreq))
 			{

@@ -31,6 +31,7 @@ import com.wwidesigner.modelling.InstrumentCalculator;
 import com.wwidesigner.note.Fingering;
 import com.wwidesigner.note.TuningInterface;
 import com.wwidesigner.optimization.multistart.AbstractRangeProcessor;
+import com.wwidesigner.util.OperationCancelledException;
 
 /**
  * Base class for optimization objective functions. Each derived class supports
@@ -75,6 +76,7 @@ public abstract class BaseObjectiveFunction implements MultivariateFunction,
 												// for
 												// processing and termination
 												// logic.
+	protected boolean cancel;
 
 	// Statistics for the results of an optimization.
 	protected int tuningsDone; // Number of tuning error calculations.
@@ -99,6 +101,7 @@ public abstract class BaseObjectiveFunction implements MultivariateFunction,
 		optimizerType = OptimizerType.BOBYQAOptimizer;
 		maxEvaluations = 5000;
 		rangeProcessor = null;
+		cancel = false;
 		evaluationsDone = 0;
 		tuningsDone = 0;
 		constraints = new Constraints(calculator.getInstrument()
@@ -181,10 +184,16 @@ public abstract class BaseObjectiveFunction implements MultivariateFunction,
 	 * @param point
 	 *            - geometry values to test. point.length == nrDimensions.
 	 * @return array of error values, one for each fingering target.
+	 * @throws OperationCancelledException 
 	 * @throws DimensionMismatchException.
 	 */
 	public double[] getErrorVector(double[] point)
 	{
+		if (cancel)
+		{
+			cancel = false;
+			throw new OperationCancelledException("Operation cancelled.");
+		}
 		if (point.length != nrDimensions)
 		{
 			throw new DimensionMismatchException(point.length, nrDimensions);
@@ -593,5 +602,13 @@ public abstract class BaseObjectiveFunction implements MultivariateFunction,
 	 * Creates the Constraints unique to a given ObjectiveFunction.
 	 */
 	abstract protected void setConstraints();
+
+	/**
+	 * Set cancel to true to cancel an optimization.
+	 */
+	public void setCancel(boolean cancel)
+	{
+		this.cancel = cancel;
+	}
 
 }

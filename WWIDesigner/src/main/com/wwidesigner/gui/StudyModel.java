@@ -76,6 +76,10 @@ public abstract class StudyModel implements CategoryType
 	// Preferences.
 	protected BaseObjectiveFunction.OptimizerType preferredOptimizerType;
 
+	// Optimization currently active in optimizeInstrument().
+	// null if not executing optimizeInstrument.
+	protected BaseObjectiveFunction objective;
+
 	// Statistics saved from the most recent call to optimizeInstrument
 
 	protected double initialNorm; // Initial value of objective function.
@@ -106,6 +110,7 @@ public abstract class StudyModel implements CategoryType
 	{
 		setCategories();
 		preferredOptimizerType = null;
+		objective = null;
 	}
 
 	protected void setCategories()
@@ -886,7 +891,7 @@ public abstract class StudyModel implements CategoryType
 		{
 			return null;
 		}
-		BaseObjectiveFunction objective = getObjectiveFunction(BaseObjectiveFunction.OPTIMIZATION_INTENT);
+		objective = getObjectiveFunction(BaseObjectiveFunction.OPTIMIZATION_INTENT);
 
 		// Check to see whether there are 0 variables: an infinite loop
 		// situation.
@@ -915,10 +920,20 @@ public abstract class StudyModel implements CategoryType
 			String xmlString = marshal(instrument);
 			initialNorm = ObjectiveFunctionOptimizer.getInitialNorm();
 			finalNorm = ObjectiveFunctionOptimizer.getFinalNorm();
+			objective = null;
 			return xmlString;
 		}
+		objective = null;
 		return null;
 	} // optimizeInstrument
+	
+	public void cancelOptimization()
+	{
+		if (objective != null)
+		{
+			objective.setCancel(true);
+		}
+	}
 
 	public void compareInstrument(String newName, Instrument newInstrument,
 			LengthType defaultLengthType) throws Exception

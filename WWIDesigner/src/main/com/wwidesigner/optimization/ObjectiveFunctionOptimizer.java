@@ -48,6 +48,7 @@ import org.apache.commons.math3.random.MersenneTwister;
 import com.wwidesigner.modelling.EvaluatorInterface;
 import com.wwidesigner.optimization.multistart.AbstractRangeProcessor;
 import com.wwidesigner.optimization.multistart.RandomRangeProcessor;
+import com.wwidesigner.util.OperationCancelledException;
 
 public class ObjectiveFunctionOptimizer
 {
@@ -255,6 +256,10 @@ public class ObjectiveFunctionOptimizer
 		catch (TooManyEvaluationsException e)
 		{
 			System.out.println("Exception: " + e.getMessage());
+		}
+		catch (OperationCancelledException e)
+		{
+			System.out.println("Optimization cancelled.");
 		}
 		catch (Exception e)
 		{

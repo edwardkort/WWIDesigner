@@ -720,9 +720,19 @@ public class WIDesigner extends FileBasedApplication implements EventSubscriber
 					studyView.optimizeInstrument();
 				}
 			}
+
+			@Override
+			public void cancel()
+			{
+				StudyView studyView = getStudyView();
+				if (studyView != null)
+				{
+					studyView.cancelOptimization();
+				}
+			}
 		};
 		message = "Calculating optimized instrument.\nThis may take several minutes.\nPlease be patient.";
-		optActivity.addProgressListener(new BlockingProgressListener(
+		optActivity.addProgressListener(new BlockingProgressListener( optActivity,
 				getApplicationUIManager().getWindowsUI(), "Optimizing",
 				message));
 		action = new ActivityAction(optActivity)
@@ -1266,7 +1276,6 @@ public class WIDesigner extends FileBasedApplication implements EventSubscriber
 				if (isRunning && parentActivity != null)
 				{
 					parentActivity.cancel();
-					System.out.println("Operation cancelled.");
 				}
 			}
 			catch (Exception ex)

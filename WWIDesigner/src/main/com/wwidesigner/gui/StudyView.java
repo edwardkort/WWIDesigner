@@ -63,6 +63,7 @@ import com.wwidesigner.note.Fingering;
 import com.wwidesigner.optimization.Constraints;
 import com.wwidesigner.util.Constants.LengthType;
 import com.wwidesigner.util.InvalidFieldException;
+import com.wwidesigner.util.OperationCancelledException;
 
 /**
  * @author kort
@@ -397,6 +398,11 @@ public class StudyView extends DataViewPane implements EventSubscriber
 			showException(ex);
 		}
 	}
+	
+	public void cancelOptimization()
+	{
+		study.cancelOptimization();
+	}
 
 	private void addNewDataModel(String xmlData) throws Exception
 	{
@@ -631,6 +637,11 @@ public class StudyView extends DataViewPane implements EventSubscriber
 			exceptionType = "Operation cannot be performed";
 			exceptionMessage = "Optimization requires at least 1 variable.";
 			messageType = MessageDialogRequest.ERROR_STYLE;
+		}
+		else if (exception instanceof OperationCancelledException)
+		{
+			exceptionType = "Operation cancelled";
+			messageType = MessageDialogRequest.WARNING_STYLE;
 		}
 		else
 		{

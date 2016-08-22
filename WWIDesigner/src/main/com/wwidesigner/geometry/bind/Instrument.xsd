@@ -263,7 +263,7 @@
 				<xsd:element name="singleReed">
 					<xsd:complexType>
 						<xsd:sequence>
-							<xsd:element name="alpha" type="wii:ZeroOrMore">
+							<xsd:element name="alpha" type="xsd:double">
 								<xsd:annotation>
 									<xsd:documentation>Coefficient of frequency in adjustment to
 										normalized admittance, in milliseconds.
@@ -276,7 +276,7 @@
 				<xsd:element name="doubleReed">
 					<xsd:complexType>
 						<xsd:sequence>
-							<xsd:element name="alpha" type="wii:ZeroOrMore">
+							<xsd:element name="alpha" type="xsd:double">
 								<xsd:annotation>
 									<xsd:documentation>Coefficient of frequency in adjustment to
 										normalized admittance, in milliseconds.
@@ -295,7 +295,7 @@
 				<xsd:element name="lipReed">
 					<xsd:complexType>
 						<xsd:sequence>
-							<xsd:element name="alpha" type="wii:Dimension">
+							<xsd:element name="alpha" type="xsd:double">
 								<xsd:annotation>
 									<xsd:documentation>Coefficient of frequency in adjustment to
 										normalized admittance, in milliseconds.

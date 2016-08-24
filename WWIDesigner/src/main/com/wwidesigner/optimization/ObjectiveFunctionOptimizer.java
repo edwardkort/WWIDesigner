@@ -259,7 +259,13 @@ public class ObjectiveFunctionOptimizer
 		}
 		catch (OperationCancelledException e)
 		{
-			System.out.println("Optimization cancelled.");
+			if (optimizerType
+					.equals(BaseObjectiveFunction.OptimizerType.MultiStartOptimizer))
+			{
+				System.out.println("\nOptimization cancelled.\n");
+				return false;
+			}
+			System.out.println("\nOptimization cancelled.\nPartially-optimized result returned.\n");
 		}
 		catch (Exception e)
 		{
@@ -420,16 +426,23 @@ public class ObjectiveFunctionOptimizer
 		}
 		catch (TooManyEvaluationsException e)
 		{
-			System.out.print("Exception: " + e.getMessage());
+			System.out.println("Exception: " + e.getMessage());
 		}
 		// Thrown by BOBYQA for no apparent reason: a bug?
 		catch (NoSuchElementException e)
 		{
-			System.out.print("no valid solution found");
+			System.out.println("no valid solution found");
+		}
+		catch (OperationCancelledException e)
+		{
+			// Restore starting point.
+			objective.setGeometryPoint(startPoint);
+			// Re-throw the exception to give up the whole multi-start optimization.
+			throw new OperationCancelledException(e.getMessage());
 		}
 		catch (Exception e)
 		{
-			System.out.print("Exception: " + e.getMessage());
+			System.out.println("Exception: " + e.getMessage());
 			// e.printStackTrace();
 		}
 		finally

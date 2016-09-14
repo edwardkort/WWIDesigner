@@ -31,7 +31,7 @@ import com.wwidesigner.optimization.Constraint.ConstraintType;
  * The optimization dimensions are:
  * <ul>
  * <li>Absolute position of bottom bore point.</li>
- * <li>For interior bore points between top and bottom,
+ * <li>For each interior bore point between top and bottom,
  * distance from prior bore point to this bore point,
  * as a fraction of the distance from the prior bore point to the bottom.</li>
  * </ul>
@@ -39,6 +39,8 @@ import com.wwidesigner.optimization.Constraint.ConstraintType;
  * are invariant.
  * 
  * Do not use with other optimizers that might change the number of bore points.
+ * Specify bottomPointUnchanged = true to use with optimizers that might change
+ * the bottom bore position.
  * 
  * @author Burton Patkau
  * 
@@ -49,13 +51,25 @@ public class BorePositionObjectiveFunction extends BaseObjectiveFunction
 	public static final String DISPLAY_NAME = "Bore Position optimizer";
 	// Number of invariant bore points at the top of the instrument.
 	protected final int unchangedBorePoints;
-	// Invariant: nrDimensions + unchangedBorePoints = number of bore points.
+	// Set to 1 if bottom bore point is left unchanged,
+	// allowing other objective functions to manage it.
+	protected final int unchangedBottomPoint;
+	// Invariant: nrDimensions + unchangedBorePoints + unchangedBottomPoint = number of bore points.
 
 	public BorePositionObjectiveFunction(InstrumentCalculator calculator,
-			TuningInterface tuning, EvaluatorInterface evaluator, int unchangedBorePoints)
+			TuningInterface tuning, EvaluatorInterface evaluator, int unchangedBorePoints,
+			boolean bottomPointUnchanged)
 	{
 		super(calculator, tuning, evaluator);
 		int nrBorePoints = calculator.getInstrument().getBorePoint().size();
+		if (bottomPointUnchanged)
+		{
+			this.unchangedBottomPoint = 1;
+		}
+		else
+		{
+			this.unchangedBottomPoint = 0;
+		}
 		if (unchangedBorePoints >= 1)
 		{
 			this.unchangedBorePoints = unchangedBorePoints;
@@ -65,7 +79,7 @@ public class BorePositionObjectiveFunction extends BaseObjectiveFunction
 			// At a minimum, top bore point is unchanged.
 			this.unchangedBorePoints = 1;
 		}
-		nrDimensions = nrBorePoints - unchangedBorePoints;
+		nrDimensions = nrBorePoints - this.unchangedBorePoints - this.unchangedBottomPoint;
 		if (nrDimensions > 1)
 		{
 			optimizerType = OptimizerType.BOBYQAOptimizer; // MultivariateOptimizer
@@ -79,22 +93,33 @@ public class BorePositionObjectiveFunction extends BaseObjectiveFunction
 	}
 
 	public BorePositionObjectiveFunction(InstrumentCalculator calculator,
+			TuningInterface tuning, EvaluatorInterface evaluator, int unchangedBorePoints)
+	{
+		this(calculator, tuning, evaluator, unchangedBorePoints, false);
+	}
+
+	public BorePositionObjectiveFunction(InstrumentCalculator calculator,
 			TuningInterface tuning, EvaluatorInterface evaluator)
 	{
-		this(calculator, tuning, evaluator, 1);
+		this(calculator, tuning, evaluator, 1, false);
 	}
 
 	protected void setConstraints()
 	{
-		int nrBorePoints = nrDimensions + unchangedBorePoints;
+		int nrBorePoints = nrDimensions + unchangedBorePoints + unchangedBottomPoint;
 		String name;
-		int dimension;
-		int pointNr = borePointNr(0);
-		name = "Position of bore point " + String.valueOf(pointNr)
-				+ " (bottom)";
-		constraints.addConstraint(new Constraint(CONSTR_CAT,
-				name, ConstraintType.DIMENSIONAL));
-		for (dimension = 1; dimension < nrDimensions; ++dimension)
+		int dimension = 0;
+		int pointNr;
+		if (unchangedBottomPoint == 0)
+		{
+			pointNr = borePointNr(0);
+			name = "Position of bore point " + String.valueOf(pointNr)
+					+ " (bottom)";
+			constraints.addConstraint(new Constraint(CONSTR_CAT,
+					name, ConstraintType.DIMENSIONAL));
+			dimension = 1;
+		}
+		for (; dimension < nrDimensions; ++dimension)
 		{
 			pointNr = borePointNr(dimension);
 			name = "Relative position of bore point " + String.valueOf(pointNr)
@@ -116,17 +141,17 @@ public class BorePositionObjectiveFunction extends BaseObjectiveFunction
 	 */
 	protected int borePointNr(int dimensionIdx)
 	{
-		if (dimensionIdx == 0)
+		if (dimensionIdx == 0 && unchangedBottomPoint == 0)
 		{
-			// Bottom bore point.
+			// First dimension is bottom bore point.
 			return nrDimensions + unchangedBorePoints;
 		}
 		// Process remaining bore points in order, from top to bottom.
-		return unchangedBorePoints + dimensionIdx;
+		return unchangedBorePoints + dimensionIdx + unchangedBottomPoint;
 	}
 
 	/**
-	 * Point number used as an initial reference for the remaining points.
+	 * Point number used as an initial reference for the first changed point.
 	 */
 	protected int referencePointNr()
 	{
@@ -137,17 +162,22 @@ public class BorePositionObjectiveFunction extends BaseObjectiveFunction
 	public double[] getGeometryPoint()
 	{
 		double[] geometry = new double[nrDimensions];
-		int dimension;
-		int pointNr = borePointNr(0);
+		int dimension = 0;
+		int pointNr;
 		PositionInterface[] sortedPoints = Instrument.sortList(calculator
 				.getInstrument().getBorePoint());
-		BorePoint borePoint = (BorePoint) sortedPoints[pointNr - 1];
+		BorePoint borePoint = (BorePoint) sortedPoints[sortedPoints.length - 1];
 		double lastBorePosition = borePoint.getBorePosition();
-		geometry[0] = borePoint.getBorePosition();
+
+		if (unchangedBottomPoint == 0)
+		{
+			geometry[0] = borePoint.getBorePosition();
+			dimension = 1;
+		}
 
 		borePoint = (BorePoint) sortedPoints[referencePointNr() - 1];
 		double priorBorePosition = borePoint.getBorePosition();
-		for (dimension = 1; dimension < nrDimensions; ++dimension)
+		for (; dimension < nrDimensions; ++dimension)
 		{
 			pointNr = borePointNr(dimension);
 			borePoint = (BorePoint) sortedPoints[pointNr - 1];
@@ -161,17 +191,21 @@ public class BorePositionObjectiveFunction extends BaseObjectiveFunction
 	@Override
 	public void setGeometryPoint(double[] point)
 	{
-		int dimension;
-		int pointNr = borePointNr(0);
+		int dimension = 0;
+		int pointNr;
 		PositionInterface[] sortedPoints = Instrument.sortList(calculator
 				.getInstrument().getBorePoint());
-		BorePoint borePoint = (BorePoint) sortedPoints[pointNr - 1];
-		borePoint.setBorePosition(point[0]);
+		BorePoint borePoint = (BorePoint) sortedPoints[sortedPoints.length - 1];
+		if (unchangedBottomPoint == 0)
+		{
+			borePoint.setBorePosition(point[0]);
+			dimension = 1;
+		}
 		double lastBorePosition = borePoint.getBorePosition();
 
 		borePoint = (BorePoint) sortedPoints[referencePointNr() - 1];
 		double priorBorePosition = borePoint.getBorePosition();
-		for (dimension = 1; dimension < nrDimensions; ++dimension)
+		for (; dimension < nrDimensions; ++dimension)
 		{
 			pointNr = borePointNr(dimension);
 			borePoint = (BorePoint) sortedPoints[pointNr - 1];
@@ -185,24 +219,28 @@ public class BorePositionObjectiveFunction extends BaseObjectiveFunction
 	@Override
 	public void setLowerBounds(double[] lowerBounds)
 	{
-		PositionInterface[] sortedHoles = Instrument.sortList(calculator
-				.getInstrument().getHole());
-		double bottomHolePosition;
-		if (sortedHoles.length > 1)
+		if (unchangedBottomPoint == 0)
 		{
-			bottomHolePosition = sortedHoles[sortedHoles.length - 1].getBorePosition();
-		}
-		else {
-			// No holes.  Use mid-point of bore.
-			PositionInterface[] sortedPoints = Instrument.sortList(calculator
-					.getInstrument().getBorePoint());
-			bottomHolePosition = 0.5 * (sortedPoints[0].getBorePosition()
-					+ sortedPoints[sortedPoints.length - 1].getBorePosition());
-		}
-		if (lowerBounds[0] < bottomHolePosition + 0.012)
-		{
-			// Bottom bore point must be below the bottom hole.
-			lowerBounds[0] = bottomHolePosition + 0.012;
+			// Adjust first lower bound to keep bottom bore point below the bottom hole.
+			PositionInterface[] sortedHoles = Instrument.sortList(calculator
+					.getInstrument().getHole());
+			double bottomHolePosition;
+			if (sortedHoles.length > 1)
+			{
+				bottomHolePosition = sortedHoles[sortedHoles.length - 1].getBorePosition();
+			}
+			else {
+				// No holes.  Use mid-point of bore.
+				PositionInterface[] sortedPoints = Instrument.sortList(calculator
+						.getInstrument().getBorePoint());
+				bottomHolePosition = 0.5 * (sortedPoints[0].getBorePosition()
+						+ sortedPoints[sortedPoints.length - 1].getBorePosition());
+			}
+			if (lowerBounds[0] < bottomHolePosition + 0.012)
+			{
+				// Raise the lower bound to restrict bottom bore position.
+				lowerBounds[0] = bottomHolePosition + 0.012;
+			}
 		}
 		super.setLowerBounds(lowerBounds);
 	}

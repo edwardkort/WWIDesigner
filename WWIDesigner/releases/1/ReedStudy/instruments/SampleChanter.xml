@@ -2,15 +2,15 @@
 <ns2:instrument xmlns:ns2="http://www.wwidesigner.com/Instrument">
     <name>Eric Reiswig smallpipe chanter</name>
     <description>CPVC and brass smallpipe chanter in A as described by Eric Reiswig, at http://www3.telus.net/ereiswig/ssp_make.htm,
-without the two always-open bottom holes	.</description>
+without the two always-open bottom holes.</description>
     <lengthType>mm</lengthType>
     <mouthpiece>
         <position>-40.0</position>
         <doubleReed>
-            <alpha>1.7</alpha>
+            <alpha>1.8</alpha>
             <crowFreq>466.0</crowFreq>
         </doubleReed>
-        <beta>0.1</beta>
+        <beta>0.09</beta>
     </mouthpiece>
     <borePoint>
         <borePosition>-40.0</borePosition>

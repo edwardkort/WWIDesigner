@@ -37,8 +37,10 @@ import com.wwidesigner.modelling.SimpleInstrumentTuner;
 import com.wwidesigner.modelling.SimpleReedCalculator;
 import com.wwidesigner.note.Tuning;
 import com.wwidesigner.optimization.BoreDiameterObjectiveFunction;
+import com.wwidesigner.optimization.BoreObjectiveFunction;
 import com.wwidesigner.optimization.BorePositionObjectiveFunction;
 import com.wwidesigner.optimization.HoleAndBoreDiameterObjectiveFunction;
+import com.wwidesigner.optimization.HoleAndBorePositionObjectiveFunction;
 import com.wwidesigner.optimization.ReedCalibratorObjectiveFunction;
 import com.wwidesigner.optimization.BaseObjectiveFunction;
 import com.wwidesigner.optimization.ConicalBoreObjectiveFunction;
@@ -75,6 +77,8 @@ public class ReedStudyModel extends StudyModel
 	public static final String BORE_DIAMETER_OPT_SUB_CATEGORY_ID = "8. Bore Diameter Optimizer";
 	public static final String HOLE_BOREDIAMETER_OPT_SUB_CATEGORY_ID = "9. Hole and Bore Optimizer";
 	public static final String BORE_POSITION_OPT_SUB_CATEGORY_ID = "A. Bore Point Position Optimizer";
+	public static final String HOLE_BOREPOSITION_OPT_SUB_CATEGORY_ID = "B. Hole + Bore Position Optimizer";
+	public static final String BORE_OPT_SUB_CATEGORY_ID = "C. Bore Point Optimizer";
 	public static final String ROUGH_CUT_OPT_SUB_CATEGORY_ID = "Rough-Cut Optimizer";
 
 	// Default minimum and maximum bore length, in meters
@@ -150,6 +154,12 @@ public class ReedStudyModel extends StudyModel
 		optimizers.addSub(BORE_POSITION_OPT_SUB_CATEGORY_ID, null);
 		objectiveFunctionNames.put(BORE_POSITION_OPT_SUB_CATEGORY_ID,
 				BorePositionObjectiveFunction.class.getSimpleName());
+		optimizers.addSub(HOLE_BOREPOSITION_OPT_SUB_CATEGORY_ID, null);
+		objectiveFunctionNames.put(HOLE_BOREPOSITION_OPT_SUB_CATEGORY_ID,
+				HoleAndBorePositionObjectiveFunction.class.getSimpleName());
+		optimizers.addSub(BORE_OPT_SUB_CATEGORY_ID, null);
+		objectiveFunctionNames.put(BORE_OPT_SUB_CATEGORY_ID,
+				BoreObjectiveFunction.class.getSimpleName());
 		optimizers.addSub(ROUGH_CUT_OPT_SUB_CATEGORY_ID, null);
 		objectiveFunctionNames.put(ROUGH_CUT_OPT_SUB_CATEGORY_ID,
 				HolePositionObjectiveFunction.class.getSimpleName());
@@ -452,7 +462,8 @@ public class ReedStudyModel extends StudyModel
 						tuning, evaluator, BoreLengthAdjustmentType.PRESERVE_BELL);
 				nrDimensions = objective.getNrDimensions();
 				// Separation bounds and diameter bounds, expressed in meters,
-				// and bore diameter at foot, also in meters.
+				// bore diameter at foot, also in meters,
+				// and bore diameter ratios.
 				lowerBound = new double[nrDimensions];
 				upperBound = new double[nrDimensions];
 				Arrays.fill(lowerBound, MIN_HOLE_DIAMETER);
@@ -510,6 +521,79 @@ public class ReedStudyModel extends StudyModel
 				Arrays.fill(upperBound, 0.9);
 				lowerBound[0] = MIN_BORE_LENGTH;
 				upperBound[0] = MAX_BORE_LENGTH;
+				break;
+
+			case "HoleAndBorePositionObjectiveFunction":
+				evaluator = new CentDeviationEvaluator(calculator,
+						getInstrumentTuner());
+				objective = new HoleAndBorePositionObjectiveFunction(calculator,
+						tuning, evaluator, BoreLengthAdjustmentType.PRESERVE_BELL);
+				nrDimensions = objective.getNrDimensions();
+				// Separation bounds and diameter bounds, expressed in meters,
+				// and bore position ratios.
+				lowerBound = new double[nrDimensions];
+				upperBound = new double[nrDimensions];
+				Arrays.fill(lowerBound, MIN_HOLE_DIAMETER);
+				Arrays.fill(upperBound, MAX_HOLE_DIAMETER);
+				// Bounds on hole spacing.
+				lowerBound[0] = MIN_BORE_LENGTH;
+				upperBound[0] = MAX_BORE_LENGTH;
+				for (int gapNr = 1; gapNr < numberOfHoles; ++gapNr)
+				{
+					lowerBound[gapNr] = 0.012;
+					upperBound[gapNr] = 0.040;
+				}
+				if (numberOfHoles > 0)
+				{
+					lowerBound[numberOfHoles] = 0.012;
+					upperBound[numberOfHoles] = 0.200;
+				}
+				if (numberOfHoles >= 5)
+				{
+					// Allow extra space between hands, assuming upper hand
+					// uses same number or one more finger than lower hand.
+					upperBound[(numberOfHoles+1)/2] = 0.100;
+				}
+				if (numberOfHoles >= 7)
+				{
+					// Assume top hole is a thumb hole.
+					lowerBound[1] = MIN_THUMB_HOLE_SPACING;
+				}
+				if (numberOfHoles == 10)
+				{
+					// Assume a thumb hole for the lower hand.
+					lowerBound[6] = MIN_THUMB_HOLE_SPACING;
+				}
+				// Bore position ratios.
+				Arrays.fill(lowerBound, 2*numberOfHoles + 1,
+						lowerBound.length, 0.1);
+				Arrays.fill(upperBound, 2*numberOfHoles + 1,
+						upperBound.length, 0.9);
+				break;
+
+			case "BoreObjectiveFunction":
+				evaluator = new CentDeviationEvaluator(calculator,
+						getInstrumentTuner());
+				objective = new BoreObjectiveFunction(calculator, tuning,
+						evaluator, 1);
+				nrDimensions = objective.getNrDimensions();
+				// First half are bore positions, second half are bore diameters.
+				lowerBound = new double[nrDimensions];
+				upperBound = new double[nrDimensions];
+				lowerBound[0] = MIN_BORE_LENGTH;
+				upperBound[0] = MAX_BORE_LENGTH;
+				lowerBound[nrDimensions/2] = MIN_BORE_DIAMETER;
+				upperBound[nrDimensions/2] = MAX_BORE_DIAMETER;
+				if (nrDimensions > 2)
+				{
+					Arrays.fill(lowerBound, 1, nrDimensions/2, 0.1);
+					Arrays.fill(upperBound, 1, nrDimensions/2, 0.9);
+					// Bore taper flares out toward bottom.
+					Arrays.fill(lowerBound, nrDimensions/2 + 1, 
+							lowerBound.length, 1.0);
+					Arrays.fill(upperBound, nrDimensions/2 + 1, 
+							upperBound.length, 5.0);
+				}
 				break;
 
 		}

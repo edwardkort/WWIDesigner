@@ -197,7 +197,8 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 	* A hyper-rectangle has a Rectangle Key, with the value (f) of the
 	* function at the center, the "size" measure (d) of the rectangle,
 	* an "age" measure for tie-breaking purposes, and a RectangleValue with
-	* the coordinates of the center (c), and the widths of the sides (w).
+	* the coordinates of the center (c) in absolute terms, and the widths
+	* of the sides (w) relative to boundDifference.
 	*
 	* We store the hyper-rectangles in a red-black tree, sorted by (d,f)
 	* in lexicographic order, to allow us to perform quick convex-hull
@@ -214,8 +215,8 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 		/**
 		 * Create the key for a real rectangle, of specified diameter and
 		 * function value.
-		 * @param diameter
-		 * @param fValue
+		 * @param diameter - "diameter" measure of the rectangle
+		 * @param fValue - function value at centre of rectangle
 		 */
 		public RectangleKey(double diameter, double fValue)
 		{
@@ -284,9 +285,20 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 	
 	protected class RectangleValue
 	{
+		/**
+		 * Coordinates of centre point of the rectangle, in absolute terms.
+		 */
 		protected  double[] centre;
+		
+		/**
+		 * Width of rectangle, relative to boundDifference.
+		 */
 		protected  double[] width;
 
+		/**
+		 * @param centre - Coordinates of centre point of the rectangle, in absolute terms.
+		 * @param width - Width of rectangle, relative to boundDifference.
+		 */
 		public RectangleValue(double[] centre, double[] width)
 		{
 			this.centre = centre;
@@ -411,8 +423,7 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 			{
 				if (boundDifference[i] > 0)
 				{
-					sum += w[i] * w[i]
-							/ (boundDifference[i] * boundDifference[i]);
+					sum += w[i] * w[i];
 				}
 			}
 			return ((float) (FastMath.sqrt(sum) * 0.5));
@@ -424,9 +435,9 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 			double wmax = 0.0;
 			for (i = 0; i < w.length; ++i)
 			{
-				if (boundDifference[i] > 0 && w[i] > wmax * boundDifference[i])
+				if (w[i] > wmax)
 				{
-					wmax = w[i] / boundDifference[i];
+					wmax = w[i];
 				}
 			}
 			return ((float) (wmax * 0.5));
@@ -466,11 +477,20 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 		// Initialize bound differences.
 		boundDifference = new double[dimension];
 		double[] centre = new double[dimension];
+		double[] width  = new double[dimension];
 
 		for (int i = 0; i < dimension; i++)
 		{
 			boundDifference[i] = getUpperBound()[i] - getLowerBound()[i];
 			centre[i] = 0.5 * (getUpperBound()[i] + getLowerBound()[i]);
+			if (boundDifference[i] > 0)
+			{
+				width[i] = 1.0;		// Full scale
+			}
+			else
+			{
+				width[i] = 0.0;		// No variation
+			}
 		}
 		
 		convergenceDiameter = thresholdDiameter(convergenceThreshold, dimension);
@@ -486,10 +506,9 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 		}
 		hull = new Rectangle[hullSize];
 
-		RectangleValue firstRect = new RectangleValue(centre,
-				Arrays.copyOf(boundDifference, dimension));
+		RectangleValue firstRect = new RectangleValue(centre, width);
 		RectangleKey   firstKey = new RectangleKey(
-				rectangleDiameter(boundDifference), computeObjectiveValue(centre));
+				rectangleDiameter(width), computeObjectiveValue(centre));
 
 		rtree.put(firstKey, firstRect);
 		divideRectangle(firstKey, firstRect);
@@ -542,17 +561,17 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 		// Find longest side.
 		for (i = 0; i < n; ++i)
 		{
-			if (boundDifference[i] > 0 && w[i] > wmax * boundDifference[i])
+			if (boundDifference[i] > 0 && w[i] > wmax)
 			{
 				imax = i;
-				wmax = w[i] / boundDifference[i];
+				wmax = w[i];
 			}
 		}
 		// Count number of long sides.
 		for (i = 0; i < n; ++i)
 		{
 			if (boundDifference[i] > 0
-					&& wmax - w[i] / boundDifference[i] <= wmax * EQUAL_SIDE_TOL)
+					&& wmax - w[i] <= wmax * EQUAL_SIDE_TOL)
 			{
 				++nlongest;
 			}
@@ -565,22 +584,22 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 			{
 				isort[i] = i;
 				if (boundDifference[i] > 0
-						&& wmax - w[i] / boundDifference[i] <= wmax * EQUAL_SIDE_TOL)
+						&& wmax - w[i] <= wmax * EQUAL_SIDE_TOL)
 				{
 					csave = c[i];
-					c[i] = csave - w[i] * THIRD;
+					c[i] = csave - w[i] * THIRD * boundDifference[i];
 					fv[2 * i] = computeObjectiveValue(c);
 					newK = FastMath.abs(3.0 * (fv[2 * i] - rectKey.getfValue())
-							/ (w[i] / boundDifference[i]));
+							/ w[i]);
 					if (newK > maxK)
 					{
 						maxK = newK;
 					}
-					c[i] = csave + w[i] * THIRD;
+					c[i] = csave + w[i] * THIRD * boundDifference[i];
 					fv[2 * i + 1] = computeObjectiveValue(c);
 					newK = FastMath.abs(3.0
 							* (fv[2 * i + 1] - rectKey.getfValue())
-							/ (w[i] / boundDifference[i]));
+							/ w[i]);
 					if (newK > maxK)
 					{
 						maxK = newK;
@@ -602,14 +621,14 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 
 				new_c = Arrays.copyOf(c, c.length);
 				new_w = Arrays.copyOf(w, w.length);
-				new_c[isort[i]] = c[isort[i]] - w[isort[i]];
+				new_c[isort[i]] = c[isort[i]] - w[isort[i]] * boundDifference[i];
 				newKey = new RectangleKey(rectKey.getDiameter(),
 						fv[2 * isort[i]]);
 				newRect = new RectangleValue(new_c, new_w);
 				rtree.put(newKey, newRect);
 				new_c = Arrays.copyOf(c, c.length);
 				new_w = Arrays.copyOf(w, w.length);
-				new_c[isort[i]] = c[isort[i]] + w[isort[i]];
+				new_c[isort[i]] = c[isort[i]] + w[isort[i]] * boundDifference[i];
 				newKey = new RectangleKey(rectKey.getDiameter(),
 						fv[2 * isort[i] + 1]);
 				newRect = new RectangleValue(new_c, new_w);
@@ -626,13 +645,13 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 
 			new_c = Arrays.copyOf(c, c.length);
 			new_w = Arrays.copyOf(w, w.length);
-			new_c[i] = c[i] - w[i];
+			new_c[i] = c[i] - w[i] * boundDifference[i];
 			newKey = new RectangleKey(newKey.getDiameter(),
 					computeObjectiveValue(new_c));
 			newRect = new RectangleValue(new_c, new_w);
 			rtree.put(newKey, newRect);
 			newK = FastMath.abs((newKey.getfValue() - rectKey.getfValue())
-					/ (w[i] / boundDifference[i]));
+					/ w[i]);
 			if (newK > maxK)
 			{
 				maxK = newK;
@@ -640,13 +659,13 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 
 			new_c = Arrays.copyOf(c, c.length);
 			new_w = Arrays.copyOf(w, w.length);
-			new_c[i] = c[i] + w[i];
+			new_c[i] = c[i] + w[i] * boundDifference[i];
 			newKey = new RectangleKey(newKey.getDiameter(),
 					computeObjectiveValue(new_c));
 			newRect = new RectangleValue(new_c, new_w);
 			rtree.put(newKey, newRect);
 			newK = FastMath.abs((newKey.getfValue() - rectKey.getfValue())
-					/ (w[i] / boundDifference[i]));
+					/ w[i]);
 			if (newK > maxK)
 			{
 				maxK = newK;
@@ -693,8 +712,8 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 
 				/* for the DIRECT-L variant, we only divide one rectangle out
 				   of all points with equal diameter and function values
-				     ... note that for which_opt != 1, i == ip-1 should be a no-op
-				         anyway, since we set allow_dups=0 in convex_hull above */
+				     ... note that for optHull_onePoint != 1, i == ip-1 should be a no-op
+				         anyway, since we set allow_dups=0 in getPotentiallyOptimal above */
 				if (optHull_onePoint == 1)
 				{
 					/* find next unequal points after i */

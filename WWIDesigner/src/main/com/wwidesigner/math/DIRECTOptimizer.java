@@ -133,27 +133,48 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 	 *  0 = Jones, centre-to-vertex distance
 	 *  1 = Gablonsky, half longest side
 	 */
-	protected int which_diam;
+	protected int optDiam_longSide;
 
 	/* which way to divide rects:
 	 *  0: orig. Jones, divide all longest sides
 	 *  1: Gablonsky, cubes divide all sides, otherwise divide first long side
 	 */
-	protected int which_div;
+	protected int optDivide_oneSide;
 
 	/* which rectangles are considered "potentially optimal"
 	 *  0: Jones, all points on convex hull, even equal points
 	 *  1: Gablonsky, pick one of each equal point
 	 */
-	protected int which_opt;
+	protected int optHull_onePoint;
  
+	/**
+	 * Desired accuracy in x values required for convergence,
+	 * relative to distance between bounds.
+	 */
 	protected double convergenceThreshold;
 
-	protected double[] fv;		// workspace of function values, of length >= 2*n
-	protected Integer[] isort;	// workspace for index sort, length >= n
-	protected PointValuePair currentBest;	// Best point found so far
-	protected double maxK;		// largest slope found so far
+	/**
+	 * Diameter at which convergenceThreshold has been reached.
+	 */
+	protected double convergenceDiameter;
 
+	/**
+	 * Workspace of function values when dividing a rectangle.
+	 * fv[2*i] is value at point below centre in dimension i,
+	 * fv[2*i+1] is value at point above centre in dimension i.
+	 */
+	protected double[] fv;
+	
+	/**
+	 * Array of dimension indexes, used for indirect sort of fv.
+	 */
+	protected Integer[] isort;
+	
+	/**
+	 * Best point found so far.
+	 */
+	protected PointValuePair currentBest;
+	
 	/** Differences between the upper and lower bounds. */
 	private double[] boundDifference;
 
@@ -166,9 +187,9 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 	{
 		super(null);
 		this.convergenceThreshold = convergenceThreshold;
-		which_diam = 1;		// Gablonsky diameter measure.
-		which_div  = 0;		// Jones long side division.
-		which_opt  = 1;		// Gablonsky hull selection: allow duplicate points.
+		optDiam_longSide = 1;		// Gablonsky diameter measure.
+		optDivide_oneSide  = 0;		// Jones long side division.
+		optHull_onePoint  = 1;		// Gablonsky hull selection: allow duplicate points.
 	}
 
 	/* Basic data structure:
@@ -329,7 +350,6 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 	protected PointValuePair doOptimize()
 	{
 		currentBest = new PointValuePair(getStartPoint(), Double.MAX_VALUE, true);
-		maxK = 0;
 
 		// Validity checks.
 		setup();
@@ -338,7 +358,7 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 		{
 			incrementIterationCount();
 		}
-		while (dividePoteniallyOptimal());
+		while (dividePotentiallyOptimal());
 
 		if (getGoalType() == GoalType.MAXIMIZE)
 		{
@@ -349,6 +369,11 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 		return currentBest;
 	}
 	
+	public PointValuePair getCurrentBest()
+	{
+		return currentBest;
+	}
+
 	// To maximize a function, minimize negative value of the function.
 	@Override
 	public double computeObjectiveValue(double[] params)
@@ -365,17 +390,19 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 		return fval;
 	}
 
-	/* Evaluate the "diameter" (d) of a rectangle of widths w[n] 
-
-	   We round the result to single precision, which should be plenty for
-	   the use we put the diameter to (rect sorting), to allow our
-	   performance hack in convex_hull to work (in the Jones and Gablonsky
-	   DIRECT algorithms, all of the rects fall into a few diameter
-	   values, and we don't want rounding error to spoil this) */
-	protected double rect_diameter(double[] w)
+	/**
+	 *  Evaluate the "diameter" (d) of a rectangle of widths w[n] 
+	 *
+	 *  We round the result to single precision, which should be plenty for
+	 *  the use we put the diameter to (rect sorting), to allow our
+	 *  performance hack in getPotentiallyOptimal to work (in the Jones and Gablonsky
+	 *  DIRECT algorithms, all of the rects fall into a few diameter
+	 *  values, and we don't want rounding error to spoil this). 
+	 */
+	protected double rectangleDiameter(double[] w)
 	{
 		int i;
-		if (which_diam == 0)
+		if (optDiam_longSide == 0)
 		{
 			/* Jones measure */
 			/* distance from center to a vertex */
@@ -405,6 +432,22 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 			return ((float) (wmax * 0.5));
 		}
 	}
+	
+	/**
+	 * Return the threshold diameter required for convergence, for a given
+	 * relative convergence threshold.
+	 */
+	protected double thresholdDiameter(double convergenceThreshold, int dimension)
+	{
+		if (optDiam_longSide == 1)
+		{
+			// Diameter is half of longest side.
+			return 0.5 * convergenceThreshold;
+		}
+		double iterations = FastMath.ceil(FastMath.log(THIRD,convergenceThreshold));
+		double threshold = FastMath.pow(THIRD, iterations);
+		return 0.5 * FastMath.sqrt(dimension) * threshold;
+	}
 
 	/**
 	 * Performs validity checks, and creates initial rectangle.
@@ -429,6 +472,8 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 			boundDifference[i] = getUpperBound()[i] - getLowerBound()[i];
 			centre[i] = 0.5 * (getUpperBound()[i] + getLowerBound()[i]);
 		}
+		
+		convergenceDiameter = thresholdDiameter(convergenceThreshold, dimension);
 
 		nextSerial = 0;
 		rtree = new TreeMap<RectangleKey, RectangleValue>();
@@ -444,7 +489,7 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 		RectangleValue firstRect = new RectangleValue(centre,
 				Arrays.copyOf(boundDifference, dimension));
 		RectangleKey   firstKey = new RectangleKey(
-				rect_diameter(boundDifference), computeObjectiveValue(centre));
+				rectangleDiameter(boundDifference), computeObjectiveValue(centre));
 
 		rtree.put(firstKey, firstRect);
 		divideRectangle(firstKey, firstRect);
@@ -472,8 +517,8 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 	/**
 	 * Divide a specified rectangle, already in rtree, into thirds,
 	 * and update rtree accordingly.  Divide either on all the
-	 * long sides, or only on the longest side,
-	 * depending on which_div.
+	 * long sides, or only on one longest side,
+	 * depending on optDivide_oneSide.
 	 */
 	protected double divideRectangle(RectangleKey rectKey,
 			RectangleValue rectangle)
@@ -486,7 +531,9 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 		int imax = 0;			// Dimension index of longest side.
 		int nlongest = 0;		// Number of sides (about) the same size as longest.
 		double csave;
-		double maxK = 0;		// Maximum improvement in K. 
+		// double oldF = rectKey.getfValue();	// f at old centre.
+		// double bestNewF;		// Minimum f at new points.
+		double maxK = 0;		// Maximum improvement in K.
 		double newK;
 		RectangleKey newKey;
 		RectangleValue newRect;
@@ -510,7 +557,7 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 				++nlongest;
 			}
 		}
-		if (which_div == 1 || (which_div == 0 && nlongest == n))
+		if (optDivide_oneSide == 1 || (optDivide_oneSide == 0 && nlongest == n))
 		{
 			/* trisect all longest sides, in increasing order of the average
 		       function value along that direction */
@@ -549,7 +596,7 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 			for (i = 0; i < nlongest; ++i) {
 				w[isort[i]] *= THIRD;
 				rtree.remove(rectKey);
-				rectKey = new RectangleKey(rect_diameter(w),
+				rectKey = new RectangleKey(rectangleDiameter(w),
 						rectKey.getfValue());
 				rtree.put(rectKey, rectangle);
 
@@ -573,7 +620,7 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 		{
 			i = imax; /* trisect longest side */
 			w[i] *= THIRD;
-			newKey = new RectangleKey(rect_diameter(w), rectKey.getfValue());
+			newKey = new RectangleKey(rectangleDiameter(w), rectKey.getfValue());
 			rtree.remove(rectKey);
 			rtree.put(newKey, rectangle);
 
@@ -614,7 +661,7 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 	 * @return true if x threshold has not yet been reached;
 	 *				there is more work to be done.
 	 */
-	protected boolean dividePoteniallyOptimal()
+	protected boolean dividePotentiallyOptimal()
 	{
 		int i;
 		int nhull;
@@ -623,11 +670,11 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 		int nrPromisingDivisions = 0;
 		int ip;
 
-		nhull = getPotentiallyOptimal(which_opt != 1);
+		nhull = getPotentiallyOptimal(optHull_onePoint != 1);
 
 		for (i = 0; i < nhull; ++i)
 		{
-			if (small(hull[i].getValue().getWidth()))
+			if (hull[i].getKey().getDiameter() <= convergenceDiameter)
 			{
 				// Rectangle already smaller than required accuracy.
 				// Not worth dividing.
@@ -639,10 +686,6 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 				double requiredK = (hull[i].getKey().getfValue() - currentBest.getValue())
 						/ hull[i].getKey().getDiameter() ;
 				localK = divideRectangle(hull[i].getKey(), hull[i].getValue());
-				if (localK > maxK)
-				{
-					maxK = localK;
-				}
 				if (localK > requiredK)
 				{
 					++nrPromisingDivisions;
@@ -652,7 +695,7 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 				   of all points with equal diameter and function values
 				     ... note that for which_opt != 1, i == ip-1 should be a no-op
 				         anyway, since we set allow_dups=0 in convex_hull above */
-				if (which_opt == 1)
+				if (optHull_onePoint == 1)
 				{
 					/* find next unequal points after i */
 					for (ip = i+1; ip < nhull 
@@ -667,26 +710,6 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 		return nrSmall == 0 || nrPromisingDivisions > 0;
 	}
 
-	/**
-	 * Test whether a rectangle is smaller than the established termination thresholds.
-	 * @param w - width of rectangle
-	 * @return true iff each side of the rectangle is, relative to the distance between the bounds,
-	 *				is smaller than the convergence threshold.
-	 */
-	protected boolean small(double[] w)
-	{
-		int i;
-		for (i = 0; i < w.length; ++i)
-		{
-			if (boundDifference[i] > 0.0 
-					&& w[i] > 0.5 * boundDifference[i] * convergenceThreshold)
-			{
-				return false;
-			}
-		}
-		return true;
-	}
-
 	/* Convex hull algorithm, used to find the potentially optimal
 	   points.  What we really have in DIRECT is a "dynamic convex hull"
 	   problem, since we are dynamically adding/removing points and
@@ -694,7 +717,7 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 	   algorithms for this problem yet. */
 
 	/* Find the lower convex hull of a set of points (x,y) stored in a rb-tree
-	   of pointers to {x,y} arrays sorted in lexigraphic order by (x,y).
+	   of pointers to {x,y} arrays sorted in ascending order by (x,y).
 
 	   Unlike standard convex hulls, we allow redundant points on the hull,
 	   and even allow duplicate points if allow_dups is nonzero.

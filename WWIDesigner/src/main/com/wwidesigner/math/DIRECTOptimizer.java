@@ -55,8 +55,11 @@
  *   The resolution of all the x (independent) variables of the solution
  *   found is within a specified fraction (convergenceThreshold) of the
  *   distance between the bounds for their respective dimensions, and no 
- *   other solution (hyperrectangle) examined in the search space shows
- *   promise of providing a better solution.
+ *   other solution (hyperrectangle) examined in the current iteration shows
+ *   promise of providing a better solution.  When dividing a hyperrectangle,
+ *   a new point "shows promise" if a line through the original centre
+ *   and the new point leads to a lower value than the current best when
+ *   extrapolated to either edge of the hyperrectangle being divided.
  *
  * With DIRECT, the current best solution can change dramatically from
  * iteration to iteration.  Thus, typical convergence criteria that look
@@ -75,11 +78,11 @@
  * of the convex hull, we select only the lower right quarter of the
  * convex hull.  This effectively fulfills "eps arbitrarily small
  * but non-zero" without having to use eps.  The POH hull will always
- * include a rectangle containing fmin; if there is more than one
- * such rectangle, it will include the rectangle(s) with the largest
+ * include a hyperrectangle containing fmin; if there is more than one
+ * such hyperrectangle, it will include the one(s) with the largest
  * diameter.
  * 
- * Java implementation: Copyright (C) 2016, Edward Kort, Antoine Lefebvre, Burton Patkau.
+ * Java implementation: Copyright (C) 2016, Burton Patkau, Edward Kort, Antoine Lefebvre.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -375,7 +378,7 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 		if (getGoalType() == GoalType.MAXIMIZE)
 		{
 			return new PointValuePair(currentBest.getPoint(),
-					- currentBest.getValue());
+					-currentBest.getValue());
 		}
 
 		return currentBest;
@@ -383,10 +386,16 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 	
 	public PointValuePair getCurrentBest()
 	{
+		if (getGoalType() == GoalType.MAXIMIZE)
+		{
+			return new PointValuePair(currentBest.getPoint(),
+					-currentBest.getValue());
+		}
 		return currentBest;
 	}
 
 	// To maximize a function, minimize negative value of the function.
+	/** {@inheritDoc} */
 	@Override
 	public double computeObjectiveValue(double[] params)
 	{
@@ -538,8 +547,10 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 	 * and update rtree accordingly.  Divide either on all the
 	 * long sides, or only on one longest side,
 	 * depending on optDivide_oneSide.
+	 * @return Number of new function points that suggest there may
+	 * be a better minimum within the original rectangle.
 	 */
-	protected double divideRectangle(RectangleKey rectKey,
+	protected int divideRectangle(RectangleKey rectKey,
 			RectangleValue rectangle)
 	{
 		int i;
@@ -550,10 +561,9 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 		int imax = 0;			// Dimension index of longest side.
 		int nlongest = 0;		// Number of sides (about) the same size as longest.
 		double csave;
-		// double oldF = rectKey.getfValue();	// f at old centre.
-		// double bestNewF;		// Minimum f at new points.
-		double maxK = 0;		// Maximum improvement in K.
-		double newK;
+		double centreF = rectKey.getfValue();	// f at old centre.
+		double newF;			// f at new points.
+		int nrPromising = 0;	// Number of new rectangles that may contain minimum.
 		RectangleKey newKey;
 		RectangleValue newRect;
 		double[] new_c, new_w;
@@ -588,21 +598,16 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 				{
 					csave = c[i];
 					c[i] = csave - w[i] * THIRD * boundDifference[i];
-					fv[2 * i] = computeObjectiveValue(c);
-					newK = FastMath.abs(3.0 * (fv[2 * i] - rectKey.getfValue())
-							/ w[i]);
-					if (newK > maxK)
+					newF = fv[2 * i] = computeObjectiveValue(c);
+					if (isPromising(centreF, newF, n))
 					{
-						maxK = newK;
+						++nrPromising;
 					}
 					c[i] = csave + w[i] * THIRD * boundDifference[i];
-					fv[2 * i + 1] = computeObjectiveValue(c);
-					newK = FastMath.abs(3.0
-							* (fv[2 * i + 1] - rectKey.getfValue())
-							/ w[i]);
-					if (newK > maxK)
+					newF = fv[2 * i + 1] = computeObjectiveValue(c);
+					if (isPromising(centreF, newF, n))
 					{
-						maxK = newK;
+						++nrPromising;
 					}
 					c[i] = csave;
 				}
@@ -646,32 +651,49 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 			new_c = Arrays.copyOf(c, c.length);
 			new_w = Arrays.copyOf(w, w.length);
 			new_c[i] = c[i] - w[i] * boundDifference[i];
-			newKey = new RectangleKey(newKey.getDiameter(),
-					computeObjectiveValue(new_c));
+			newF = computeObjectiveValue(new_c);
+			newKey = new RectangleKey(newKey.getDiameter(), newF);
 			newRect = new RectangleValue(new_c, new_w);
 			rtree.put(newKey, newRect);
-			newK = FastMath.abs((newKey.getfValue() - rectKey.getfValue())
-					/ w[i]);
-			if (newK > maxK)
+			if (isPromising(centreF, newF, n))
 			{
-				maxK = newK;
+				++nrPromising;
 			}
 
 			new_c = Arrays.copyOf(c, c.length);
 			new_w = Arrays.copyOf(w, w.length);
 			new_c[i] = c[i] + w[i] * boundDifference[i];
-			newKey = new RectangleKey(newKey.getDiameter(),
-					computeObjectiveValue(new_c));
+			newF = computeObjectiveValue(new_c);
+			newKey = new RectangleKey(newKey.getDiameter(), newF);
 			newRect = new RectangleValue(new_c, new_w);
 			rtree.put(newKey, newRect);
-			newK = FastMath.abs((newKey.getfValue() - rectKey.getfValue())
-					/ w[i]);
-			if (newK > maxK)
+			if (isPromising(centreF, newF, n))
 			{
-				maxK = newK;
+				++nrPromising;
 			}
 		}
-		return maxK;
+		return nrPromising;
+	}
+	
+	/**
+	 * Return true if a new function point indicates the possibility that there
+	 * is a better minimum than the current best.
+	 * @param centreF - function value at original centre point
+	 * @param newF - function value at new point, 1/3 of width from centre
+	 * @param dimension - problem dimension
+	 */
+	protected boolean isPromising(double centreF, double newF, int dimension)
+	{
+		// Extrapolate line from original centre through new point to
+		// either edge of original rectangle.
+		// Return true if it leads to lower value than current best.
+		// Increasing or decreasing factor of 1.5 will make search
+		// more thorough or less.
+		if (centreF - 1.5 * FastMath.abs(centreF - newF) < currentBest.getValue())
+		{
+			return true;
+		}
+		return false;
 	}
 
 	/**
@@ -685,7 +707,6 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 		int i;
 		int nhull;
 		int nrSmall = 0;	// Number of POH too small to be worth dividing.
-		double localK;		// K found by dividing rectangle.
 		int nrPromisingDivisions = 0;
 		int ip;
 
@@ -693,7 +714,7 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 
 		for (i = 0; i < nhull; ++i)
 		{
-			if (hull[i].getKey().getDiameter() <= convergenceDiameter)
+			if (hull[i].getKey().getDiameter() < convergenceDiameter)
 			{
 				// Rectangle already smaller than required accuracy.
 				// Not worth dividing.
@@ -702,13 +723,7 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 			else
 			{
 				/* "potentially optimal" rectangle, so subdivide */
-				double requiredK = (hull[i].getKey().getfValue() - currentBest.getValue())
-						/ hull[i].getKey().getDiameter() ;
-				localK = divideRectangle(hull[i].getKey(), hull[i].getValue());
-				if (localK > requiredK)
-				{
-					++nrPromisingDivisions;
-				}
+				nrPromisingDivisions += divideRectangle(hull[i].getKey(), hull[i].getValue());
 
 				/* for the DIRECT-L variant, we only divide one rectangle out
 				   of all points with equal diameter and function values

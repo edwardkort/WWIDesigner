@@ -131,20 +131,21 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 	private static final double THIRD = 0.3333333333333333333333d;
 	private static final double EQUAL_SIDE_TOL = 5e-2;		// tolerance to equate side sizes
 	private static final double DIAMETER_GRANULARITY = 1.0e-13;
+	protected static final boolean DISPLAY_PROGRESS = true;	// Debugging output.
 
-	/* which measure of hyper-rectangle diameter to use:
+	/** which measure of hyper-rectangle diameter to use:
 	 *  0 = Jones, centre-to-vertex distance
 	 *  1 = Gablonsky, half longest side
 	 */
 	protected int optDiam_longSide;
 
-	/* which way to divide rects:
+	/** which way to divide rects:
 	 *  0: orig. Jones, divide all longest sides
 	 *  1: Gablonsky, cubes divide all sides, otherwise divide first long side
 	 */
 	protected int optDivide_oneSide;
 
-	/* which rectangles are considered "potentially optimal"
+	/** which rectangles are considered "potentially optimal"
 	 *  0: Jones, all points on convex hull, even equal points
 	 *  1: Gablonsky, pick one of each equal point
 	 */
@@ -190,9 +191,9 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 	{
 		super(null);
 		this.convergenceThreshold = convergenceThreshold;
-		optDiam_longSide = 1;		// Gablonsky diameter measure.
+		optDiam_longSide = 0;		// Gablonsky diameter measure.
 		optDivide_oneSide  = 0;		// Jones long side division.
-		optHull_onePoint  = 1;		// Gablonsky hull selection: allow duplicate points.
+		optHull_onePoint  = 0;		// Gablonsky hull selection: no duplicate points.
 	}
 
 	/* Basic data structure:
@@ -685,11 +686,15 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 	protected boolean isPromising(double centreF, double newF, int dimension)
 	{
 		// Extrapolate line from original centre through new point to
-		// either edge of original rectangle.
+		// near edge of original rectangle, or within new central rectangle.
 		// Return true if it leads to lower value than current best.
-		// Increasing or decreasing factor of 1.5 will make search
+		// Increasing or decreasing factors (1.5 and 0.1) will make search
 		// more thorough or less.
-		if (centreF - 1.5 * FastMath.abs(centreF - newF) < currentBest.getValue())
+		if (newF < centreF && centreF - 1.5 * (centreF - newF) < currentBest.getValue())
+		{
+			return true;
+		}
+		if (newF > centreF && centreF - 0.1 * (newF - centreF) < currentBest.getValue())
 		{
 			return true;
 		}
@@ -711,7 +716,7 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 		int ip;
 
 		nhull = getPotentiallyOptimal(optHull_onePoint != 1);
-
+		
 		for (i = 0; i < nhull; ++i)
 		{
 			if (hull[i].getKey().getDiameter() < convergenceDiameter)
@@ -741,7 +746,15 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 				}
 			}
 		}
-		return nrSmall == 0 || nrPromisingDivisions > 0;
+		
+		if (DISPLAY_PROGRESS)
+		{
+			System.out.println("DIRECT: " + rtree.size() + " rectangles, " + nhull + " POH ("
+					+ nrSmall + " small, " + nrPromisingDivisions + " promising)."
+					+ " Current best " + currentBest.getValue());
+		}
+
+		return nrSmall < 1 || nrPromisingDivisions > 0;
 	}
 
 	/* Convex hull algorithm, used to find the potentially optimal

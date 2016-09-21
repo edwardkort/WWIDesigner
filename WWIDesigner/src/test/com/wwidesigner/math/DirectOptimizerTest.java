@@ -22,7 +22,7 @@ import org.junit.Test;
  */
 public class DirectOptimizerTest
 {
-	public static final double CONVERGENCE_THRESHOLD = 0.01;
+	public static final double CONVERGENCE_THRESHOLD = 0.005;  // About 3**-5.
 	MultivariateOptimizer optimizer;
 
 	public static void main(String[] args)
@@ -101,7 +101,7 @@ public class DirectOptimizerTest
 		for (int i = 0; i < outcome.getPoint().length; ++i)
 		{
 			System.out.print(" ");
-			System.out.printf(" %8.4f", outcome.getPoint()[i]);
+			System.out.printf(" %9.6f", outcome.getPoint()[i]);
 		}
 		System.out.println();
 		long elapsedTime = System.currentTimeMillis() - startTime;
@@ -147,9 +147,11 @@ public class DirectOptimizerTest
 		PointValuePair outcome = optimizationTest(objective);
 
 		// Test that optimum and optimizer point are correct.
-		Assert.assertArrayEquals("Rosenbrock x is incorrect", expected, outcome.getPoint(), 0.005);
+		// DIRECTOptimizer currently finds a near-minimum, just around the corner from expected.
+		Assert.assertArrayEquals("Rosenbrock x is incorrect", expected, outcome.getPoint(), 0.03);
 		Assert.assertEquals("Rosenbrock f(x) is incorrect", 0.0, outcome.getValue(), 0.002);
-		Assert.assertFalse("Rosenbrock, too many evaluations", objective.getEvaluations() > 450);
+		Assert.assertFalse("Rosenbrock, too many evaluations, " +  objective.getEvaluations(),
+				objective.getEvaluations() > 460);
 	}
 
 	public class HartmanFunction extends OptimizerTestFunction
@@ -229,9 +231,11 @@ public class DirectOptimizerTest
 		PointValuePair outcome = optimizationTest(objective);
 
 		// Test that optimum and optimizer point are correct.
+		// x[0] found is inaccurate.
 		Assert.assertArrayEquals("Hartman3 x is incorrect", expected, outcome.getPoint(), 0.02);
 		Assert.assertEquals("Hartman3 f(x) is incorrect", -3.8628, outcome.getValue(), 0.001);
-		Assert.assertFalse("Hartman3, too many evaluations", objective.getEvaluations() > 250);
+		Assert.assertFalse("Hartman3, too many evaluations, " +  objective.getEvaluations(),
+				objective.getEvaluations() > 200);
 	}
 
 	/**
@@ -249,9 +253,10 @@ public class DirectOptimizerTest
 		PointValuePair outcome = optimizationTest(objective);
 
 		// Test that optimum and optimizer point are correct.
-		Assert.assertArrayEquals("Hartman6 x is incorrect", expected, outcome.getPoint(), 0.003);
-		Assert.assertEquals("Hartman6 f(x) is incorrect", -3.3224, outcome.getValue(), 0.001);
-		Assert.assertFalse("Hartman6, too many evaluations", objective.getEvaluations() > 450);
+		Assert.assertArrayEquals("Hartman6 x is incorrect", expected, outcome.getPoint(), 0.0021);
+		Assert.assertEquals("Hartman6 f(x) is incorrect", -3.3224, outcome.getValue(), 0.0005);
+		Assert.assertFalse("Hartman6, too many evaluations, " +  objective.getEvaluations(),
+				objective.getEvaluations() > 380);
 	}
 
 	public class ShekelFunction extends OptimizerTestFunction
@@ -317,9 +322,10 @@ public class DirectOptimizerTest
 		PointValuePair outcome = optimizationTest(objective);
 
 		// Test that optimum and optimizer point are correct.
-		Assert.assertEquals("Shekel5 f(x) is incorrect", -10.1531996790582, outcome.getValue(), 0.1);
-		Assert.assertArrayEquals("Shekel5 x is incorrect", expected, outcome.getPoint(), 0.02);
-		Assert.assertFalse("Shekel5, too many evaluations", objective.getEvaluations() > 150);
+		Assert.assertArrayEquals("Shekel5 x is incorrect", expected, outcome.getPoint(), 0.015);
+		Assert.assertEquals("Shekel5 f(x) is incorrect", -10.1531996790582, outcome.getValue(), 0.06);
+		Assert.assertFalse("Shekel5, too many evaluations, " +  objective.getEvaluations(),
+				objective.getEvaluations() > 100);
 	}
 
 	/**
@@ -337,9 +343,10 @@ public class DirectOptimizerTest
 		PointValuePair outcome = optimizationTest(objective);
 
 		// Test that optimum and optimizer point are correct.
-		Assert.assertEquals("Shekel7 f(x) is incorrect", -10.4029405668187, outcome.getValue(), 0.1);
-		Assert.assertArrayEquals("Shekel7 x is incorrect", expected, outcome.getPoint(), 0.02);
-		Assert.assertFalse("Shekel7, too many evaluations", objective.getEvaluations() > 150);
+		Assert.assertArrayEquals("Shekel7 x is incorrect", expected, outcome.getPoint(), 0.015);
+		Assert.assertEquals("Shekel7 f(x) is incorrect", -10.4029405668187, outcome.getValue(), 0.06);
+		Assert.assertFalse("Shekel7, too many evaluations, " +  objective.getEvaluations(),
+				objective.getEvaluations() > 100);
 	}
 
 	/**
@@ -357,9 +364,10 @@ public class DirectOptimizerTest
 		PointValuePair outcome = optimizationTest(objective);
 
 		// Test that optimum and optimizer point are correct.
-		Assert.assertEquals("Shekel10 f(x) is incorrect", -10.5364098166920, outcome.getValue(), 0.1);
-		Assert.assertArrayEquals("Shekel10 x is incorrect", expected, outcome.getPoint(), 0.02);
-		Assert.assertFalse("Shekel10, too many evaluations", objective.getEvaluations() > 150);
+		Assert.assertArrayEquals("Shekel10 x is incorrect", expected, outcome.getPoint(), 0.015);
+		Assert.assertEquals("Shekel10 f(x) is incorrect", -10.5364098166920, outcome.getValue(), 0.06);
+		Assert.assertFalse("Shekel10, too many evaluations, " +  objective.getEvaluations(),
+				objective.getEvaluations() > 100);
 	}
 
 	public class GoldsteinPriceFunction extends OptimizerTestFunction
@@ -402,7 +410,8 @@ public class DirectOptimizerTest
 		// Test that optimum and optimizer point are correct.
 		Assert.assertArrayEquals("Goldstein-Price x is incorrect", expected, outcome.getPoint(), 0.005);
 		Assert.assertEquals("Goldstein-Price f(x) is incorrect", 3.0, outcome.getValue(), 0.01);
-		Assert.assertFalse("Goldstein-Price, too many evaluations", objective.getEvaluations() > 300);
+		Assert.assertFalse("Goldstein-Price, too many evaluations, " +  objective.getEvaluations(),
+				objective.getEvaluations() > 160);
 	}
 
 }

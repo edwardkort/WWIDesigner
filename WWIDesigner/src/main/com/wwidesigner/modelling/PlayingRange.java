@@ -525,7 +525,7 @@ public class PlayingRange
 		{
 			// For step tapers, this exception is hit with no other consequences.
 			// Comment out the system message so as not to raise unneeded flags.
-			 System.out.println("Exception in findXZero: " + e.getMessage());
+			// System.out.println("Exception in findXZero: " + e.getMessage());
 			// e.printStackTrace();
 			throw new NoPlayingRange(nearFreq);
 		}

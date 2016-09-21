@@ -66,7 +66,8 @@ public abstract class BaseObjectiveFunction implements MultivariateFunction,
 	// Recommended optimization method.
 	public enum OptimizerType
 	{
-		BrentOptimizer, BOBYQAOptimizer, CMAESOptimizer, MultiStartOptimizer, SimplexOptimizer, PowellOptimizer
+		BrentOptimizer, BOBYQAOptimizer, CMAESOptimizer, MultiStartOptimizer,
+		DIRECTOptimizer, SimplexOptimizer, PowellOptimizer
 	}
 
 	protected OptimizerType optimizerType;

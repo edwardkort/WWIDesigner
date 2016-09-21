@@ -45,6 +45,7 @@ import org.apache.commons.math3.optim.univariate.UnivariateObjectiveFunction;
 import org.apache.commons.math3.optim.univariate.UnivariatePointValuePair;
 import org.apache.commons.math3.random.MersenneTwister;
 
+import com.wwidesigner.math.DIRECTOptimizer;
 import com.wwidesigner.modelling.EvaluatorInterface;
 import com.wwidesigner.optimization.multistart.AbstractRangeProcessor;
 import com.wwidesigner.optimization.multistart.RandomRangeProcessor;
@@ -211,6 +212,23 @@ public class ObjectiveFunctionOptimizer
 						new CMAESOptimizer.PopulationSize(objective
 								.getNrInterpolations()),
 						new CMAESOptimizer.Sigma(objective.getStdDev()));
+				objective.setGeometryPoint(outcome.getPoint());
+			}
+			else if (optimizerType
+					.equals(BaseObjectiveFunction.OptimizerType.DIRECTOptimizer))
+			{
+				// Multivariate optimization, with bounds.
+				MultivariateOptimizer optimizer;
+				PointValuePair outcome;
+				optimizer = new DIRECTOptimizer(0.00001);
+				outcome = optimizer.optimize(
+						GoalType.MINIMIZE,
+						new ObjectiveFunction(objective),
+						new MaxEval(objective.getMaxEvaluations()),
+						MaxIter.unlimited(),
+						new InitialGuess(startPoint),
+						new SimpleBounds(objective.getLowerBounds(), objective
+								.getUpperBounds()));
 				objective.setGeometryPoint(outcome.getPoint());
 			}
 			else

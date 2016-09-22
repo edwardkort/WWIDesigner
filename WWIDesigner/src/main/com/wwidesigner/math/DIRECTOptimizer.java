@@ -627,14 +627,14 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 
 				new_c = Arrays.copyOf(c, c.length);
 				new_w = Arrays.copyOf(w, w.length);
-				new_c[isort[i]] = c[isort[i]] - w[isort[i]] * boundDifference[i];
+				new_c[isort[i]] = c[isort[i]] - w[isort[i]] * boundDifference[isort[i]];
 				newKey = new RectangleKey(rectKey.getDiameter(),
 						fv[2 * isort[i]]);
 				newRect = new RectangleValue(new_c, new_w);
 				rtree.put(newKey, newRect);
 				new_c = Arrays.copyOf(c, c.length);
 				new_w = Arrays.copyOf(w, w.length);
-				new_c[isort[i]] = c[isort[i]] + w[isort[i]] * boundDifference[i];
+				new_c[isort[i]] = c[isort[i]] + w[isort[i]] * boundDifference[isort[i]];
 				newKey = new RectangleKey(rectKey.getDiameter(),
 						fv[2 * isort[i] + 1]);
 				newRect = new RectangleValue(new_c, new_w);

@@ -1171,6 +1171,11 @@ public abstract class StudyModel implements CategoryType
 		{
 			preferredOptimizerType = null;
 		}
+		else if (optimizerPreference
+				.contentEquals(OptimizationPreferences.OPT_DIRECT_NAME))
+		{
+			preferredOptimizerType = BaseObjectiveFunction.OptimizerType.DIRECTOptimizer;
+		}
 		else
 		{
 			preferredOptimizerType = null;

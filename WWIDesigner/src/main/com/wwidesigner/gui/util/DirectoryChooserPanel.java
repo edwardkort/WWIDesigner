@@ -28,7 +28,7 @@ public class DirectoryChooserPanel extends JPanel
 	{
 		button = new JButton("Browse...");
 		textField = new JTextField();
-		textField.setPreferredSize(new Dimension(300,
+		textField.setPreferredSize(new Dimension(400,
 				button.getPreferredSize().height));
 		button.addActionListener(new ActionListener()
 		{

@@ -12,6 +12,7 @@ import java.text.NumberFormat;
 import java.util.prefs.Preferences;
 
 import javax.swing.ButtonGroup;
+import javax.swing.JCheckBox;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -61,6 +62,7 @@ public class OptimizationPreferences extends PreferencesPane
 
 	public static final String OPTIMIZER_TYPE_OPT = "OptimizerType";
 	public static final String OPT_DEFAULT_NAME = "Default";
+	public static final String OPT_DIRECT_NAME = "DIRECT";
 
 	public static final String LENGTH_TYPE_OPT = "Length Type";
 	public static final String LENGTH_TYPE_DEFAULT = "IN";
@@ -87,6 +89,7 @@ public class OptimizationPreferences extends PreferencesPane
 	DirectoryChooserPanel constraintsDirChooser;
 
 	LengthTypeComboBox lengthTypeComboBox;
+	JCheckBox optimizerBox;
 
 	JTextField generalMessageField;
 	JTextField whistleMessageField;
@@ -112,6 +115,7 @@ public class OptimizationPreferences extends PreferencesPane
 		blowingLevelSpinner = new JSpinner(blowingLevel);
 		blowingLevelSpinner.setName("Blowing Level");
 		lengthTypeComboBox = new LengthTypeComboBox();
+		optimizerBox = new JCheckBox("Use DIRECT optimizer (slow & thorough)");
 
 		floatFormat = NumberFormat.getNumberInstance();
 		floatFormat.setMinimumFractionDigits(1);
@@ -126,10 +130,10 @@ public class OptimizationPreferences extends PreferencesPane
 
 		constraintsDirChooser = new DirectoryChooserPanel();
 
-		generalMessageField = new JTextField(25);
+		generalMessageField = new JTextField(40);
 		generalMessageField.setEditable(false);
 		generalMessageField.setText("");
-		whistleMessageField = new JTextField(25);
+		whistleMessageField = new JTextField(40);
 		whistleMessageField.setEditable(false);
 		whistleMessageField.setText("");
 
@@ -196,6 +200,9 @@ public class OptimizationPreferences extends PreferencesPane
 		String dimensionType = myPreferences.get(LENGTH_TYPE_OPT,
 				LENGTH_TYPE_DEFAULT);
 		lengthTypeComboBox.setSelectedLengthType(dimensionType);
+		String optimizerName = myPreferences.get(OPTIMIZER_TYPE_OPT,
+				OPT_DEFAULT_NAME);
+		optimizerBox.setSelected(optimizerName.equals(OPT_DIRECT_NAME));
 	}
 
 	@Override
@@ -222,6 +229,10 @@ public class OptimizationPreferences extends PreferencesPane
 		else
 		{
 			studyName = WHISTLE_STUDY_NAME;
+		}
+		if (optimizerBox.isSelected())
+		{
+			optimizerName = OPT_DIRECT_NAME;
 		}
 
 		// Update the preferences, and re-set the view's study model.
@@ -382,6 +393,10 @@ public class OptimizationPreferences extends PreferencesPane
 			topPanel.add(new JLabel("Temperature, C: "), gbc);
 			gbc.gridx = 1;
 			topPanel.add(temperatureField, gbc);
+			gbc.gridx = 2;
+			gbc.gridwidth = 2;
+			topPanel.add(optimizerBox, gbc);
+			gbc.gridwidth = 1;
 			gbc.gridx = 0;
 			gbc.gridy = 3;
 			topPanel.add(new JLabel("Relative Humidity, %: "), gbc);

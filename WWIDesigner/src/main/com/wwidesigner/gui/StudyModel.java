@@ -328,6 +328,7 @@ public abstract class StudyModel implements CategoryType
 
 		public void removeSubByValue(Object value)
 		{
+			int size = subs.size();
 			if (value == null)
 			{
 				return;
@@ -347,7 +348,15 @@ public abstract class StudyModel implements CategoryType
 				{
 					iterator.remove();
 					toolTips.remove(entry.getKey());
-					break;
+					if (size != 2)
+					{
+						break;
+					}
+				}
+				else if (size == 2)
+				{
+					// If there's only one other entry, select it.
+					selectedSub = entry.getKey();
 				}
 			}
 		}

@@ -103,6 +103,7 @@ package com.wwidesigner.math;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.TreeMap;
 import java.util.Map.Entry;
 
@@ -158,11 +159,6 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 	protected double convergenceThreshold;
 
 	/**
-	 * Diameter at which convergenceThreshold has been reached.
-	 */
-	protected double convergenceDiameter;
-
-	/**
 	 * Workspace of function values when dividing a rectangle.
 	 * fv[2*i] is value at point below centre in dimension i,
 	 * fv[2*i+1] is value at point above centre in dimension i.
@@ -179,6 +175,11 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 	 */
 	protected PointValuePair currentBest;
 	
+	/**
+	 * Worst value found so far, used for unfeasible points.
+	 */
+	protected double fMax;
+	
 	/** Differences between the upper and lower bounds. */
 	private double[] boundDifference;
 
@@ -191,9 +192,9 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 	{
 		super(null);
 		this.convergenceThreshold = convergenceThreshold;
-		optDiam_longSide = 0;		// Gablonsky diameter measure.
+		optDiam_longSide = 0;		// Jones diameter measure.
 		optDivide_oneSide  = 0;		// Jones long side division.
-		optHull_onePoint  = 0;		// Gablonsky hull selection: no duplicate points.
+		optHull_onePoint  = 0;		// Jones hull selection: allow duplicate points.
 	}
 
 	/* Basic data structure:
@@ -369,12 +370,14 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 
 		// Validity checks.
 		setup();
+		
+		double convergenceDiameter = thresholdDiameter(convergenceThreshold, boundDifference.length );
 
 		do
 		{
 			incrementIterationCount();
 		}
-		while (dividePotentiallyOptimal());
+		while (dividePotentiallyOptimal(convergenceDiameter));
 
 		if (getGoalType() == GoalType.MAXIMIZE)
 		{
@@ -400,14 +403,26 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 	@Override
 	public double computeObjectiveValue(double[] params)
 	{
-		double fval = super.computeObjectiveValue(params);
-		if (getGoalType() == GoalType.MAXIMIZE)
+		double fval;
+		try
 		{
-			fval = -fval;
+			fval = super.computeObjectiveValue(params);
+			if (getGoalType() == GoalType.MAXIMIZE)
+			{
+				fval = -fval;
+			}
+			if (fval < currentBest.getValue())
+			{
+				currentBest = new PointValuePair(params, fval, true);
+			}
+			if (fval > fMax)
+			{
+				fMax = fval;
+			}
 		}
-		if (fval < currentBest.getValue())
+		catch (NoSuchElementException e)
 		{
-			currentBest = new PointValuePair(params, fval, true);
+			fval = fMax;
 		}
 		return fval;
 	}
@@ -465,6 +480,8 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 			// Diameter is half of longest side.
 			return 0.5 * convergenceThreshold;
 		}
+		// Round the threshold down to the next smaller power of 1/3.
+		// Rectangle is small when *all* sides are this size.
 		double iterations = FastMath.ceil(FastMath.log(THIRD,convergenceThreshold));
 		double threshold = FastMath.pow(THIRD, iterations);
 		return 0.5 * FastMath.sqrt(dimension) * threshold;
@@ -503,8 +520,6 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 			}
 		}
 		
-		convergenceDiameter = thresholdDiameter(convergenceThreshold, dimension);
-
 		nextSerial = 0;
 		rtree = new TreeMap<RectangleKey, RectangleValue>();
 		fv = new double[2 * dimension];
@@ -516,9 +531,13 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 		}
 		hull = new Rectangle[hullSize];
 
+		fMax = 1.0;
 		RectangleValue firstRect = new RectangleValue(centre, width);
 		RectangleKey   firstKey = new RectangleKey(
 				rectangleDiameter(width), computeObjectiveValue(centre));
+		// We assume that the first point is feasible, and does not throw
+		// an exception, otherwise the function value will be fMax.
+		fMax = firstKey.getfValue();
 
 		rtree.put(firstKey, firstRect);
 		divideRectangle(firstKey, firstRect);
@@ -707,7 +726,7 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 	 * @return true if x threshold has not yet been reached;
 	 *				there is more work to be done.
 	 */
-	protected boolean dividePotentiallyOptimal()
+	protected boolean dividePotentiallyOptimal(double convergenceDiameter)
 	{
 		int i;
 		int nhull;

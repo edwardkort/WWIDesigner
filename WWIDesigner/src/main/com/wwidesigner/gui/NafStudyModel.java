@@ -197,6 +197,14 @@ public class NafStudyModel extends StudyModel
 		getParams().printProperties();
 
 		preferredOptimizerType = null;
+		String optimizerPreference = newPreferences.get(
+				OptimizationPreferences.OPTIMIZER_TYPE_OPT,
+				OptimizationPreferences.OPT_DEFAULT_NAME);
+		if (optimizerPreference
+				.contentEquals(OptimizationPreferences.OPT_DIRECT_NAME))
+		{
+			preferredOptimizerType = BaseObjectiveFunction.OptimizerType.DIRECTOptimizer;
+		}
 	}
 
 	/**

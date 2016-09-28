@@ -176,7 +176,7 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 	protected PointValuePair currentBest;
 	
 	/**
-	 * Worst value found so far, used for unfeasible points.
+	 * Worst value found so far, used for infeasible points.
 	 */
 	protected double fMax;
 	
@@ -608,7 +608,7 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 		}
 		if (optDivide_oneSide == 1 || (optDivide_oneSide == 0 && nlongest == n))
 		{
-			/* trisect all longest sides, in increasing order of the average
+			/* trisect all longest sides, in increasing order of the minimum
 		       function value along that direction */
 			for (i = 0; i < n; ++i)
 			{
@@ -782,17 +782,18 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 	   updating the hull, but I haven't implemented any of the fancy
 	   algorithms for this problem yet. */
 
-	/* Find the lower convex hull of a set of points (x,y) stored in a rb-tree
-	   of pointers to {x,y} arrays sorted in ascending order by (x,y).
-
-	   Unlike standard convex hulls, we allow redundant points on the hull,
-	   and even allow duplicate points if allow_dups is nonzero.
-	   Also, we require the first segment of the hull to have a positive slope,
-	   the first point on the hull is that with the minimum y value so far,
-	   at the largest x value of such points.
-
-	   The return value is the number of points in the hull, with pointers
-	   stored in hull[i] (should be an array of length >= t->N).
+	/**
+	 * Find the lower convex hull of a set of points (x,y) stored in a rb-tree
+	 * of pointers to {x,y} arrays sorted in ascending order by (x,y).
+	 *
+	 * Unlike standard convex hulls, we allow redundant points on the hull,
+	 * and even allow duplicate points if allow_dups is nonzero.
+	 * Also, we require the first segment of the hull to have a positive slope,
+	 * the first point on the hull is that with the minimum y value so far,
+	 * at the largest x value of such points.
+	 *
+	 * @return the number of points in the hull, with pointers
+	 * stored in hull[i] (should be an array of length >= t->N).
 	 */
 	protected int getPotentiallyOptimal(boolean allow_dups)
 	{
@@ -906,7 +907,7 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 				/* because we allow equal points in our hull, we have
 				   to modify the standard convex-hull algorithm slightly:
 				   we need to look backwards in the hull list until we
-				   find a point t2 != t1 */
+				   find a point t2 != t1, instead of just t1 - 1. */
 				it2 = getPrunePoint(hull, nhull, t1);
 				if (it2 < 0)
 				{

@@ -142,7 +142,7 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 
 	/** which way to divide rects:
 	 *  0: orig. Jones, divide all longest sides
-	 *  1: Gablonsky, cubes divide all sides, otherwise divide first long side
+	 *  1: cubes divide all sides, otherwise divide first long side
 	 */
 	protected int optDivide_oneSide;
 
@@ -193,7 +193,7 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 		super(null);
 		this.convergenceThreshold = convergenceThreshold;
 		optDiam_longSide = 0;		// Jones diameter measure.
-		optDivide_oneSide  = 0;		// Jones long side division.
+		optDivide_oneSide  = 1;		// Jones long side division.
 		optHull_onePoint  = 0;		// Jones hull selection: allow duplicate points.
 	}
 
@@ -299,6 +299,13 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 		 * Width of rectangle, relative to boundDifference.
 		 */
 		protected  double[] width;
+		
+		/**
+		 * Length of longest side, count of long sides, and index of first long side.
+		 */
+		protected  double maxWidth;
+		protected  int longCount;
+		protected  int longIdx;
 
 		/**
 		 * @param centre - Coordinates of centre point of the rectangle, in absolute terms.
@@ -308,6 +315,30 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 		{
 			this.centre = centre;
 			this.width = width;
+			updateLongSides();
+		}
+		
+		public void updateLongSides()
+		{
+			int i;
+			maxWidth = width[0];
+			longIdx = 0;
+			for (i = 1; i < width.length; ++i)
+			{
+				if (width[i] > maxWidth)
+				{
+					maxWidth = width[i];
+					longIdx = i;
+				}
+			}
+			longCount = 0;
+			for (i = 0; i < width.length; ++i)
+			{
+				if (width[i] >= maxWidth * (1.0 - EQUAL_SIDE_TOL))
+				{
+					++longCount;
+				}
+			}
 		}
 
 		public double[] getCentre()
@@ -318,6 +349,30 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 		public double[] getWidth()
 		{
 			return width;
+		}
+
+		public int getLongCount()
+		{
+			return longCount;
+		}
+
+		public int getLongIdx()
+		{
+			return longIdx;
+		}
+
+		public boolean isLongSide(int i)
+		{
+			if (i == longIdx)
+			{
+				return true;
+			}
+			return width[i] >= maxWidth * (1.0 - EQUAL_SIDE_TOL);
+		}
+		
+		public boolean isHypercube()
+		{
+			return longCount == width.length;
 		}
 	}
 	
@@ -577,9 +632,6 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 		int n = rectangle.getWidth().length;
 		double[] c = rectangle.getCentre();
 		double[] w = rectangle.getWidth();
-		double wmax = -1.0;		// Width of longest side.
-		int imax = 0;			// Dimension index of longest side.
-		int nlongest = 0;		// Number of sides (about) the same size as longest.
 		double csave;
 		double centreF = rectKey.getfValue();	// f at old centre.
 		double newF;			// f at new points.
@@ -588,33 +640,15 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 		RectangleValue newRect;
 		double[] new_c, new_w;
 
-		// Find longest side.
-		for (i = 0; i < n; ++i)
-		{
-			if (boundDifference[i] > 0 && w[i] > wmax)
-			{
-				imax = i;
-				wmax = w[i];
-			}
-		}
-		// Count number of long sides.
-		for (i = 0; i < n; ++i)
-		{
-			if (boundDifference[i] > 0
-					&& wmax - w[i] <= wmax * EQUAL_SIDE_TOL)
-			{
-				++nlongest;
-			}
-		}
-		if (optDivide_oneSide == 1 || (optDivide_oneSide == 0 && nlongest == n))
+		int nlongest = rectangle.getLongCount();
+		if (optDivide_oneSide == 0 || (optDivide_oneSide == 1 && rectangle.isHypercube()))
 		{
 			/* trisect all longest sides, in increasing order of the minimum
 		       function value along that direction */
 			for (i = 0; i < n; ++i)
 			{
 				isort[i] = i;
-				if (boundDifference[i] > 0
-						&& wmax - w[i] <= wmax * EQUAL_SIDE_TOL)
+				if (rectangle.isLongSide(i))
 				{
 					csave = c[i];
 					c[i] = csave - w[i] * THIRD * boundDifference[i];
@@ -638,12 +672,15 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 			}
 			Arrays.sort(isort, new RectangleDivisionComparator());
 			for (i = 0; i < nlongest; ++i) {
+				// Replace centre rectangle with smaller rectangle.
 				w[isort[i]] *= THIRD;
 				rtree.remove(rectKey);
+				rectangle.updateLongSides();
 				rectKey = new RectangleKey(rectangleDiameter(w),
 						rectKey.getfValue());
 				rtree.put(rectKey, rectangle);
 
+				// Insert new rectangles for side divisions.
 				new_c = Arrays.copyOf(c, c.length);
 				new_w = Arrays.copyOf(w, w.length);
 				new_c[isort[i]] = c[isort[i]] - w[isort[i]] * boundDifference[isort[i]];
@@ -662,12 +699,15 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 		}
 		else
 		{
-			i = imax; /* trisect longest side */
+			// Replace centre rectangle with smaller rectangle.
+			i = rectangle.getLongIdx(); /* trisect longest side */
 			w[i] *= THIRD;
 			newKey = new RectangleKey(rectangleDiameter(w), rectKey.getfValue());
 			rtree.remove(rectKey);
+			rectangle.updateLongSides();
 			rtree.put(newKey, rectangle);
 
+			// Insert new rectangles for side divisions.
 			new_c = Arrays.copyOf(c, c.length);
 			new_w = Arrays.copyOf(w, w.length);
 			new_c[i] = c[i] - w[i] * boundDifference[i];

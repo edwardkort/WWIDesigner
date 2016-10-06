@@ -142,7 +142,7 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 
 	/** which way to divide rects:
 	 *  0: orig. Jones, divide all longest sides
-	 *  1: cubes divide all sides, otherwise divide first long side
+	 *  1: divide all sides for hypercubes, otherwise divide first long side
 	 */
 	protected int optDivide_oneSide;
 
@@ -369,10 +369,18 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 			}
 			return width[i] >= maxWidth * (1.0 - EQUAL_SIDE_TOL);
 		}
-		
-		public boolean isHypercube()
+
+		public boolean isSmall()
 		{
-			return longCount == width.length;
+			int i;
+			for (i = 0; i < width.length; ++i)
+			{
+				if (width[i] > convergenceThreshold)
+				{
+					return false;
+				}
+			}
+			return true;
 		}
 	}
 	
@@ -598,6 +606,88 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 		divideRectangle(firstKey, firstRect);
 	}
 
+	/**
+	 * Class to hold the description of which sides of a rectangle
+	 * should be divided.  The choice of sides is made in selectEligibleSides(),
+	 * which supplies the outcome using this class.
+	 */
+	protected class EligibleSides
+	{
+		protected int nrEligibleSides;
+		protected int eligibleSide;
+		protected boolean[] isEligibleSide;
+
+		public EligibleSides(int nrDimensions)
+		{
+			nrEligibleSides = 0;
+			eligibleSide = 0;
+			isEligibleSide = new boolean[nrDimensions];
+			Arrays.fill(isEligibleSide, false);
+		}
+
+		public void setNrEligibleSides(int nrEligibleSides)
+		{
+			this.nrEligibleSides = nrEligibleSides;
+		}
+
+		public int getNrEligibleSides()
+		{
+			return nrEligibleSides;
+		}
+
+		public void setEligibleSide(int eligibleSide)
+		{
+			this.eligibleSide = eligibleSide;
+		}
+
+		public int getEligibleSide()
+		{
+			return eligibleSide;
+		}
+		
+		public void setEligible(int i, boolean isEligible)
+		{
+			isEligibleSide[i] = isEligible;
+		}
+
+		public boolean isEligible(int i)
+		{
+			if (i < 0 || i >= isEligibleSide.length)
+			{
+				return false;
+			}
+			return isEligibleSide[i];
+		}
+	}
+	
+	/**
+	 * For a specified rectangle, choose which sides to use for dividing the rectangle.
+	 */
+	protected EligibleSides selectEligibleSides(RectangleValue rectangle)
+	{
+		EligibleSides eligibleSides = new EligibleSides(rectangle.getWidth().length);
+		int nrZeroSides = 0;
+		int nrEligibleSides = rectangle.getLongCount();
+		int eligibleSide = rectangle.getLongIdx();
+		for (int i = 0; i < rectangle.getWidth().length; ++i)
+		{
+			eligibleSides.setEligible(i, rectangle.isLongSide(i));
+			if (! rectangle.isLongSide(i) && boundDifference[i] <= 0.0)
+			{
+				++nrZeroSides;
+			}
+		}
+		if (optDivide_oneSide == 1
+				&& nrEligibleSides + nrZeroSides != rectangle.getWidth().length)
+		{
+			// Not a hypercube.  Divide only on one side.
+			nrEligibleSides = 1;
+		}
+		eligibleSides.setNrEligibleSides(nrEligibleSides);
+		eligibleSides.setEligibleSide(eligibleSide);
+		return eligibleSides;
+	}
+
 	protected class RectangleDivisionComparator implements Comparator<Integer>
 	{
 		@Override
@@ -640,15 +730,16 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 		RectangleValue newRect;
 		double[] new_c, new_w;
 
-		int nlongest = rectangle.getLongCount();
-		if (optDivide_oneSide == 0 || (optDivide_oneSide == 1 && rectangle.isHypercube()))
+		EligibleSides eligibleSides = selectEligibleSides(rectangle);
+
+		if (eligibleSides.getNrEligibleSides() > 1)
 		{
 			/* trisect all longest sides, in increasing order of the minimum
 		       function value along that direction */
 			for (i = 0; i < n; ++i)
 			{
 				isort[i] = i;
-				if (rectangle.isLongSide(i))
+				if (eligibleSides.isEligible(i))
 				{
 					csave = c[i];
 					c[i] = csave - w[i] * THIRD * boundDifference[i];
@@ -671,7 +762,7 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 				}
 			}
 			Arrays.sort(isort, new RectangleDivisionComparator());
-			for (i = 0; i < nlongest; ++i) {
+			for (i = 0; i < eligibleSides.getNrEligibleSides(); ++i) {
 				// Replace centre rectangle with smaller rectangle.
 				w[isort[i]] *= THIRD;
 				rtree.remove(rectKey);
@@ -700,7 +791,7 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 		else
 		{
 			// Replace centre rectangle with smaller rectangle.
-			i = rectangle.getLongIdx(); /* trisect longest side */
+			i = eligibleSides.getEligibleSide();
 			w[i] *= THIRD;
 			newKey = new RectangleKey(rectangleDiameter(w), rectKey.getfValue());
 			rtree.remove(rectKey);
@@ -778,7 +869,8 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 		
 		for (i = 0; i < nhull; ++i)
 		{
-			if (hull[i].getKey().getDiameter() < convergenceDiameter)
+			if (hull[i].getKey().getDiameter() < convergenceDiameter
+					&& hull[i].getValue().isSmall())
 			{
 				// Rectangle already smaller than required accuracy.
 				// Not worth dividing.

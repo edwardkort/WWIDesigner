@@ -217,10 +217,17 @@ public class ObjectiveFunctionOptimizer
 			else if (optimizerType
 					.equals(BaseObjectiveFunction.OptimizerType.DIRECTOptimizer))
 			{
-				// Multivariate optimization, with bounds.
+				// Multivariate DIRECT optimization, with bounds.
 				MultivariateOptimizer optimizer;
 				PointValuePair outcome;
 				optimizer = new DIRECTOptimizer(0.00001);
+
+				// Run optimization first with the first-stage evaluator, if specified
+				EvaluatorInterface originalEvaluator = objective.getEvaluator();
+				if (objective.isRunTwoStageOptimization())
+				{
+					objective.setEvaluator(objective.getFirstStageEvaluator());
+				}
 				outcome = optimizer.optimize(
 						GoalType.MINIMIZE,
 						new ObjectiveFunction(objective),
@@ -229,6 +236,29 @@ public class ObjectiveFunctionOptimizer
 						new InitialGuess(startPoint),
 						new SimpleBounds(objective.getLowerBounds(), objective
 								.getUpperBounds()));
+
+				int nrEvaluations = optimizer.getEvaluations();
+				System.out.println("After " + nrEvaluations
+						+ " evaluations, global optimizer found optimum " + outcome.getValue());
+				if (objective.isRunTwoStageOptimization())
+				{
+					objective.setEvaluator(originalEvaluator);
+				}
+				
+				// Use BOBYQA to refine global optimum found.
+
+				double trustRegion = objective.getInitialTrustRegionRadius();
+				double stoppingTrustRegion = objective
+						.getStoppingTrustRegionRadius();
+				optimizer = new BOBYQAOptimizer(
+						objective.getNrInterpolations(), trustRegion,
+						stoppingTrustRegion);
+				outcome = optimizer.optimize(GoalType.MINIMIZE,
+						new ObjectiveFunction(objective),
+						new MaxEval(objective.getMaxEvaluations() - nrEvaluations),
+						MaxIter.unlimited(), new InitialGuess(outcome.getPoint()),
+						new SimpleBounds(objective.getLowerBounds(),
+								objective.getUpperBounds()));
 				objective.setGeometryPoint(outcome.getPoint());
 			}
 			else

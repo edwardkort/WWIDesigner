@@ -143,6 +143,9 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 	/** which way to divide rects:
 	 *  0: orig. Jones, divide all longest sides
 	 *  1: divide all sides for hypercubes, otherwise divide first long side
+	 *  2: for hypercubes, divide sides with above-average potential,
+	 *     otherwise divide long side with most potential, based on
+	 *     improvement in function value for last division in each dimension.
 	 */
 	protected int optDivide_oneSide;
 
@@ -190,10 +193,10 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 
 	public DIRECTOptimizer(double convergenceThreshold)
 	{
-		super(null);
+		super(null);		// No standard convergence checker.
 		this.convergenceThreshold = convergenceThreshold;
 		optDiam_longSide = 0;		// Jones diameter measure.
-		optDivide_oneSide  = 1;		// Jones long side division.
+		optDivide_oneSide  = 2;		// Jones long side division.
 		optHull_onePoint  = 0;		// Jones hull selection: allow duplicate points.
 	}
 
@@ -301,6 +304,11 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 		protected  double[] width;
 		
 		/**
+		 * Indication of potential improvement available on each dimension.
+		 */
+		protected  double[] potential;
+		
+		/**
 		 * Length of longest side, count of long sides, and index of first long side.
 		 */
 		protected  double maxWidth;
@@ -315,6 +323,20 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 		{
 			this.centre = centre;
 			this.width = width;
+			this.potential = new double[width.length];
+			Arrays.fill(this.potential, 0.0);
+			updateLongSides();
+		}
+		
+		/**
+		 * @param centre - Coordinates of centre point of the rectangle, in absolute terms.
+		 * @param width - Width of rectangle, relative to boundDifference.
+		 */
+		public RectangleValue(double[] centre, double[] width, double[] potential)
+		{
+			this.centre = centre;
+			this.width = width;
+			this.potential = potential;
 			updateLongSides();
 		}
 		
@@ -349,6 +371,11 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 		public double[] getWidth()
 		{
 			return width;
+		}
+
+		public double[] getPotential()
+		{
+			return potential;
 		}
 
 		public int getLongCount()
@@ -628,6 +655,11 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 		public void setNrEligibleSides(int nrEligibleSides)
 		{
 			this.nrEligibleSides = nrEligibleSides;
+			if (nrEligibleSides == 1)
+			{
+				Arrays.fill(isEligibleSide, false);
+				isEligibleSide[eligibleSide] = true;
+			}
 		}
 
 		public int getNrEligibleSides()
@@ -638,6 +670,11 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 		public void setEligibleSide(int eligibleSide)
 		{
 			this.eligibleSide = eligibleSide;
+			if (nrEligibleSides == 1)
+			{
+				Arrays.fill(isEligibleSide, false);
+				isEligibleSide[eligibleSide] = true;
+			}
 		}
 
 		public int getEligibleSide()
@@ -666,22 +703,67 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 	protected EligibleSides selectEligibleSides(RectangleValue rectangle)
 	{
 		EligibleSides eligibleSides = new EligibleSides(rectangle.getWidth().length);
-		int nrZeroSides = 0;
+		boolean isHypercube = true;		// if all long sides have non-zero width.
 		int nrEligibleSides = rectangle.getLongCount();
 		int eligibleSide = rectangle.getLongIdx();
-		for (int i = 0; i < rectangle.getWidth().length; ++i)
+		int i;
+		double highestPotential, totalPotential;
+		// Default is to divide on all longest sides.
+		for (i = 0; i < rectangle.getWidth().length; ++i)
 		{
 			eligibleSides.setEligible(i, rectangle.isLongSide(i));
-			if (! rectangle.isLongSide(i) && boundDifference[i] <= 0.0)
+			if (! rectangle.isLongSide(i) && boundDifference[i] > 0.0)
 			{
-				++nrZeroSides;
+				isHypercube = false;
 			}
 		}
-		if (optDivide_oneSide == 1
-				&& nrEligibleSides + nrZeroSides != rectangle.getWidth().length)
+		if (optDivide_oneSide == 1 && ! isHypercube)
 		{
-			// Not a hypercube.  Divide only on one side.
+			// Divide on only one side.
 			nrEligibleSides = 1;
+		}
+		else if (optDivide_oneSide == 2 && ! isHypercube)
+		{
+			// Divide on only the long side with the most potential.
+			highestPotential = -Double.MAX_VALUE;
+			nrEligibleSides = 1;
+			for (i = 0; i < rectangle.getWidth().length; ++i)
+			{
+				if (rectangle.isLongSide(i) 
+						&& rectangle.getPotential()[i] > highestPotential)
+				{
+					highestPotential = rectangle.getPotential()[i];
+					eligibleSide = i;
+				}
+			}
+		}
+		else if (optDivide_oneSide == 2 && nrEligibleSides >= 4)
+		{
+			// Divide on long sides with above average potential.
+			totalPotential = 0.0;
+			nrEligibleSides = 0;
+			for (i = 0; i < rectangle.getWidth().length; ++i)
+			{
+				if (rectangle.isLongSide(i))
+				{
+					totalPotential += rectangle.getPotential()[i];
+				}
+			}
+			for (i = 0; i < rectangle.getWidth().length; ++i)
+			{
+				if (rectangle.isLongSide(i)
+						&& rectangle.getPotential()[i] * rectangle.getLongCount()
+						>= totalPotential)
+				{
+					eligibleSides.setEligible(i, true);
+					eligibleSide = i;
+					++nrEligibleSides;
+				}
+				else
+				{
+					eligibleSides.setEligible(i, false);
+				}
+			}
 		}
 		eligibleSides.setNrEligibleSides(nrEligibleSides);
 		eligibleSides.setEligibleSide(eligibleSide);
@@ -777,15 +859,21 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 				new_c[isort[i]] = c[isort[i]] - w[isort[i]] * boundDifference[isort[i]];
 				newKey = new RectangleKey(rectKey.getDiameter(),
 						fv[2 * isort[i]]);
-				newRect = new RectangleValue(new_c, new_w);
+				newRect = new RectangleValue(new_c, new_w,
+						Arrays.copyOf(rectangle.getPotential(), n));
+				calculatePotential(newRect, isort[i], fv[2 * isort[i]], centreF, w[isort[i]]);
 				rtree.put(newKey, newRect);
 				new_c = Arrays.copyOf(c, c.length);
 				new_w = Arrays.copyOf(w, w.length);
 				new_c[isort[i]] = c[isort[i]] + w[isort[i]] * boundDifference[isort[i]];
 				newKey = new RectangleKey(rectKey.getDiameter(),
 						fv[2 * isort[i] + 1]);
-				newRect = new RectangleValue(new_c, new_w);
+				newRect = new RectangleValue(new_c, new_w,
+						Arrays.copyOf(rectangle.getPotential(), n));
+				calculatePotential(newRect, isort[i], fv[2 * isort[i] + 1], centreF, w[isort[i]]);
 				rtree.put(newKey, newRect);
+				calculatePotential(rectangle, i, centreF,
+						FastMath.min(fv[2 * isort[i]], fv[2 * isort[i] + 1]), w[i]);
 			}
 		}
 		else
@@ -802,11 +890,13 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 			new_c = Arrays.copyOf(c, c.length);
 			new_w = Arrays.copyOf(w, w.length);
 			new_c[i] = c[i] - w[i] * boundDifference[i];
-			newF = computeObjectiveValue(new_c);
-			newKey = new RectangleKey(newKey.getDiameter(), newF);
-			newRect = new RectangleValue(new_c, new_w);
+			fv[0] = computeObjectiveValue(new_c);
+			newKey = new RectangleKey(newKey.getDiameter(), fv[0]);
+			newRect = new RectangleValue(new_c, new_w,
+					Arrays.copyOf(rectangle.getPotential(), n));
+			calculatePotential(newRect, i, fv[0], centreF, w[i]);
 			rtree.put(newKey, newRect);
-			if (isPromising(centreF, newF, n))
+			if (isPromising(centreF, fv[0], n))
 			{
 				++nrPromising;
 			}
@@ -814,14 +904,17 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 			new_c = Arrays.copyOf(c, c.length);
 			new_w = Arrays.copyOf(w, w.length);
 			new_c[i] = c[i] + w[i] * boundDifference[i];
-			newF = computeObjectiveValue(new_c);
-			newKey = new RectangleKey(newKey.getDiameter(), newF);
-			newRect = new RectangleValue(new_c, new_w);
+			fv[1] = computeObjectiveValue(new_c);
+			newKey = new RectangleKey(newKey.getDiameter(), fv[1]);
+			newRect = new RectangleValue(new_c, new_w,
+					Arrays.copyOf(rectangle.getPotential(), n));
+			calculatePotential(newRect, i, fv[1], centreF, w[i]);
 			rtree.put(newKey, newRect);
-			if (isPromising(centreF, newF, n))
+			if (isPromising(centreF, fv[1], n))
 			{
 				++nrPromising;
 			}
+			calculatePotential(rectangle, i, centreF, FastMath.min(fv[0], fv[1]), w[i]);
 		}
 		return nrPromising;
 	}
@@ -849,6 +942,12 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 			return true;
 		}
 		return false;
+	}
+
+	protected void calculatePotential(RectangleValue rectangle, int dimension,
+			double thisF, double neighbourF, double baseline)
+	{
+		rectangle.getPotential()[dimension] = (neighbourF - thisF);
 	}
 
 	/**
@@ -931,7 +1030,7 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 	{
 		int nhull = 0;
 		double minslope;
-		double xmin, xmax, yminmin, ymaxmin;
+		double xmax, ymaxmin;
 		Entry<RectangleKey, RectangleValue> n, nmax;
 		RectangleKey newKey;
 
@@ -939,75 +1038,38 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 
 		n = rtree.firstEntry();
 		nmax = rtree.lastEntry();
-
-		xmin = n.getKey().getDiameter();
-		yminmin = n.getKey().getfValue();
 		xmax = nmax.getKey().getDiameter();
-
-		if (allow_dups)
-		{
-			/* include any duplicate points at (xmin,yminmin) */
-			do
-			{
-				hull[nhull++] = new Rectangle(n);
-				n = rtree.higherEntry(n.getKey());
-			} while (n != null && n.getKey().getDiameter() == xmin
-					&& n.getKey().getfValue() == yminmin);
-		}
-		else
-		{
-			// include just the point at (xmin,yminmin)
-			hull[nhull++] = new Rectangle(n);
-		}
-
-		if (xmin == xmax)
-		{
-			return nhull;
-		}
 
 		// Set nmax to first node with x == xmax
 		//	while (nmax.getKey().getDiameter() == xmax)
 		//	{
-		//		max = rtree.lowerEntry(nmax.getKey()); /* non-NULL since xmin != xmax */
+		//		max = rtree.lowerEntry(nmax.getKey());
 		//	}
 		//	nmax = rtree.higherEntry(nmax.getKey());
 		// performance hack (see also below)
 		RectangleKey testKey = new RectangleKey(xmax
 				* (1 - DIAMETER_GRANULARITY));
-		nmax = rtree.higherEntry(testKey);	// non-NULL since xmin != xmax
+		nmax = rtree.higherEntry(testKey);
 		assert nmax.getKey().getDiameter() == xmax;
 
 		ymaxmin = nmax.getKey().getfValue();
-		minslope = (ymaxmin - yminmin) / (xmax - xmin);
 
-		// Set n to first node with x != xmin */
-
-		// while (n.getKey().getDiameter() == xmin)
-		//	n = rtree.higherEntry(n.getKey()); /* non-NULL since xmin != xmax */
-		/* performance hack (see also below) */
-		testKey = new RectangleKey(xmin * (1 + DIAMETER_GRANULARITY));
-		n = rtree.higherEntry(testKey);	// non-NULL since xmin != xmax
-		assert n.getKey().getDiameter() > xmin;
+		double xlast = 0;						// Diameter of last entry in hull.
+		double ylast = currentBest.getValue();	// f value of last entry in hull.
+		minslope = (ymaxmin - ylast) / (xmax - xlast);
 
 		RectangleKey k;
 		for (; ! n.getKey().equals(nmax.getKey());
 				n = rtree.higherEntry(n.getKey()))
-		{ 
+		{
 			k = n.getKey();
-			if (k.getfValue() > yminmin + (k.getDiameter() - xmin) * minslope)
-			{
-				// This point is above the line from nmin to nmax.
-				continue;
-			}
 
 			/* performance hack: most of the points in DIRECT lie along
 			   vertical lines at a few x values, and we can exploit this */
-			if (nhull > 0
-					&& k.getDiameter()
-						== hull[nhull - 1].getKey().getDiameter())
+			if (nhull > 0 && k.getDiameter() == xlast)
 			{
 				/* x == previous x.  Skip all points with higher y. */
-				if (k.getfValue() > hull[nhull - 1].getKey().getfValue())
+				if (k.getfValue() > ylast)
 				{
 					/* because of the round to float in rect_diameter, above,
 					   it shouldn't be possible for two diameters (x values)
@@ -1027,6 +1089,12 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 					}
 					continue;
 				}
+			}
+
+			if (nhull > 0 && k.getfValue() > ylast + (k.getDiameter() - xlast) * minslope)
+			{
+				// This point is above the line from last point to nmax.
+				continue;
 			}
 
 			/* Remove points until we are making a "left turn" to k */
@@ -1066,6 +1134,9 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 				nhull = it2 + 1;
 			}
 			hull[nhull++] = new Rectangle(n);
+			xlast = n.getKey().getDiameter();
+			ylast = n.getKey().getfValue();
+			minslope = (ymaxmin - ylast) / (xmax - xlast);
 		}
 
 		if (allow_dups)

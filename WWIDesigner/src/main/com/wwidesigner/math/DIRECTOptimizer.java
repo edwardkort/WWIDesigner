@@ -707,7 +707,7 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 		int nrEligibleSides = rectangle.getLongCount();
 		int eligibleSide = rectangle.getLongIdx();
 		int i;
-		double highestPotential, totalPotential;
+		double highestPotential;
 		// Default is to divide on all longest sides.
 		for (i = 0; i < rectangle.getWidth().length; ++i)
 		{
@@ -734,34 +734,6 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 				{
 					highestPotential = rectangle.getPotential()[i];
 					eligibleSide = i;
-				}
-			}
-		}
-		else if (optDivide_oneSide == 2 && nrEligibleSides >= 4)
-		{
-			// Divide on long sides with above average potential.
-			totalPotential = 0.0;
-			nrEligibleSides = 0;
-			for (i = 0; i < rectangle.getWidth().length; ++i)
-			{
-				if (rectangle.isLongSide(i))
-				{
-					totalPotential += rectangle.getPotential()[i];
-				}
-			}
-			for (i = 0; i < rectangle.getWidth().length; ++i)
-			{
-				if (rectangle.isLongSide(i)
-						&& rectangle.getPotential()[i] * rectangle.getLongCount()
-						>= totalPotential)
-				{
-					eligibleSides.setEligible(i, true);
-					eligibleSide = i;
-					++nrEligibleSides;
-				}
-				else
-				{
-					eligibleSides.setEligible(i, false);
 				}
 			}
 		}

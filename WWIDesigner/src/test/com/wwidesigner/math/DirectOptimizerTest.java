@@ -253,10 +253,12 @@ public class DirectOptimizerTest
 		PointValuePair outcome = optimizationTest(objective);
 
 		// Test that optimum and optimizer point are correct.
+		// When dividing on only one long side at a time, performance on H6 depends greatly
+		// on the choice of *which* long side.
 		Assert.assertArrayEquals("Hartman6 x is incorrect", expected, outcome.getPoint(), 0.0021);
 		Assert.assertEquals("Hartman6 f(x) is incorrect", -3.3224, outcome.getValue(), 0.0005);
 		Assert.assertFalse("Hartman6, too many evaluations, " +  objective.getEvaluations(),
-				objective.getEvaluations() > 380);
+				objective.getEvaluations() > 415);
 	}
 
 	public class ShekelFunction extends OptimizerTestFunction

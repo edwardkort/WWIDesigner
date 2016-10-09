@@ -233,7 +233,7 @@ public class Tube
 		Complex D = cos_kL.multiply(sourceRadius/loadRadius).add(sin_kL.multiply(cot_out));
 
 		TransferMatrix tm = new TransferMatrix(A, B, C, D); 
-		assert tm.determinant() == Complex.valueOf(1.0,0.0);
+		// assert tm.determinant() == Complex.valueOf(1.0,0.0);
 		return tm;
 	}
 

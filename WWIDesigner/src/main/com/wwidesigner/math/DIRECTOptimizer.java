@@ -919,7 +919,18 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 	protected void calculatePotential(RectangleValue rectangle, int dimension,
 			double thisF, double neighbourF, double baseline)
 	{
-		rectangle.getPotential()[dimension] = (neighbourF - thisF);
+		double newPotential = (neighbourF - thisF);
+		if (newPotential >= rectangle.getPotential()[dimension])
+		{
+			// When potential increases, use new figure immediately.
+			rectangle.getPotential()[dimension] = newPotential;
+		}
+		else
+		{
+			// When potential decreases, only decrease half way.
+			rectangle.getPotential()[dimension]
+					= 0.5 * (newPotential + rectangle.getPotential()[dimension]);
+		}
 	}
 
 	/**

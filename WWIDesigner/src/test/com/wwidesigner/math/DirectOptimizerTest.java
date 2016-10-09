@@ -258,7 +258,7 @@ public class DirectOptimizerTest
 		Assert.assertArrayEquals("Hartman6 x is incorrect", expected, outcome.getPoint(), 0.0021);
 		Assert.assertEquals("Hartman6 f(x) is incorrect", -3.3224, outcome.getValue(), 0.0005);
 		Assert.assertFalse("Hartman6, too many evaluations, " +  objective.getEvaluations(),
-				objective.getEvaluations() > 415);
+				objective.getEvaluations() > 420);
 	}
 
 	public class ShekelFunction extends OptimizerTestFunction

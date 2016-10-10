@@ -50,7 +50,8 @@
  * 
  * Translator's Note: Burton Patkau
  * 
- * This implementation uses the following convergence criterion:
+ * This implementation converges when one of the following convergence criteria
+ * is true:
  * 
  *   The resolution of all the x (independent) variables of the solution
  *   found is within a specified fraction (convergenceThreshold) of the
@@ -60,6 +61,9 @@
  *   a new point "shows promise" if a line through the original centre
  *   and the new point leads to a lower value than the current best when
  *   extrapolated to either edge of the hyperrectangle being divided.
+ *
+ *   The function value at the best point has reached a target value
+ *   specified with the TargetFunctionValue option.
  *
  * With DIRECT, the current best solution can change dramatically from
  * iteration to iteration.  Thus, typical convergence criteria that look
@@ -109,6 +113,7 @@ import java.util.Map.Entry;
 
 import org.apache.commons.math3.exception.NumberIsTooSmallException;
 import org.apache.commons.math3.optim.nonlinear.scalar.GoalType;
+import org.apache.commons.math3.optim.OptimizationData;
 import org.apache.commons.math3.optim.PointValuePair;
 import org.apache.commons.math3.optim.nonlinear.scalar.MultivariateOptimizer;
 import org.apache.commons.math3.util.FastMath;
@@ -156,10 +161,15 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 	protected int optHull_onePoint;
  
 	/**
-	 * Desired accuracy in x values required for convergence,
+	 * Desired accuracy in x values sufficient for convergence,
 	 * relative to distance between bounds.
 	 */
 	protected double convergenceThreshold;
+
+	/**
+	 * Target absolute function value sufficient for convergence.
+	 */
+	protected Double targetFunctionValue;
 
 	/**
 	 * Workspace of function values when dividing a rectangle.
@@ -195,6 +205,7 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 	{
 		super(null);		// No standard convergence checker.
 		this.convergenceThreshold = convergenceThreshold;
+		this.targetFunctionValue = null;
 		optDiam_longSide = 0;		// Jones diameter measure.
 		optDivide_oneSide  = 2;		// Jones long side division.
 		optHull_onePoint  = 0;		// Jones hull selection: allow duplicate points.
@@ -467,7 +478,8 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 		{
 			incrementIterationCount();
 		}
-		while (dividePotentiallyOptimal(convergenceDiameter));
+		while (dividePotentiallyOptimal(convergenceDiameter)
+				&& (targetFunctionValue == null || currentBest.getValue() > targetFunctionValue));
 
 		if (getGoalType() == GoalType.MAXIMIZE)
 		{
@@ -516,8 +528,48 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 		}
 		return fval;
 	}
+	
+	public static class TargetFunctionValue implements OptimizationData
+	{
+		double targetValue;
+		
+		public TargetFunctionValue(double targetValue)
+		{
+			this.targetValue = targetValue;
+		}
 
-	/**
+		public double getTargetValue()
+		{
+			return targetValue;
+		}
+	}
+
+    /**
+     * Scans the list of (required and optional) optimization data that
+     * characterize the problem.
+     *
+     * @param optData Optimization data.
+     * Looks for an instance of the TargetValue class.
+     */
+    @Override
+    protected void parseOptimizationData(OptimizationData... optData) {
+        // Allow base class to register its own data.
+        super.parseOptimizationData(optData);
+
+        // The existing values (as set by the previous call) are reused if
+        // not provided in the argument list.
+        for (OptimizationData data : optData) {
+            if (data instanceof TargetFunctionValue) {
+                targetFunctionValue = ((TargetFunctionValue) data).getTargetValue();
+                if (getGoalType() == GoalType.MAXIMIZE)
+                {
+                	targetFunctionValue = -targetFunctionValue;
+                }
+            }
+        }
+    }
+
+    /**
 	 *  Evaluate the "diameter" (d) of a rectangle of widths w[n] 
 	 *
 	 *  We round the result to single precision, which should be plenty for

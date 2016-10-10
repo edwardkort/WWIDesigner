@@ -228,12 +228,16 @@ public class ObjectiveFunctionOptimizer
 				{
 					objective.setEvaluator(objective.getFirstStageEvaluator());
 				}
+				// Specify a target function value, to guard against underconstrained
+				// optimizations.  Value here should be suitable for CentsDeviationEvaluator,
+				// and adequate for most other evaluators.
 				outcome = optimizer.optimize(
 						GoalType.MINIMIZE,
 						new ObjectiveFunction(objective),
 						new MaxEval(objective.getMaxEvaluations()),
 						MaxIter.unlimited(),
 						new InitialGuess(startPoint),
+						new DIRECTOptimizer.TargetFunctionValue(0.001),
 						new SimpleBounds(objective.getLowerBounds(), objective
 								.getUpperBounds()));
 

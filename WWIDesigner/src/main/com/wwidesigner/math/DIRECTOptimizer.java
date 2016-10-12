@@ -1,14 +1,9 @@
 /**
- * Re-implementation of the DIRECT and DIRECT-L algorithms
- * described in:
+ * Re-implementation of the DIRECT algorithms described in:
  *
  *		D. R. Jones, C. D. Perttunen, and B. E. Stuckmann,
  *		"Lipschitzian optimization without the lipschitz constant,"
  *		J. Optimization Theory and Applications, vol. 79, p. 157 (1993).
- *
- *		J. M. Gablonsky and C. T. Kelley, "A locally-biased form
- *		of the DIRECT algorithm," J. Global Optimization 21 (1),
- *		p. 27-37 (2001).
  *
  * Original implementation in C by Steven G. Johnson
  * Translated to Java and adapted by Burton Patkau
@@ -119,46 +114,26 @@ import org.apache.commons.math3.optim.nonlinear.scalar.MultivariateOptimizer;
 import org.apache.commons.math3.util.FastMath;
 
 /**
- * Implementation of the DIRECT and DIRECT-L optimization algorithms
- * described in:
+ * Implementation of the DIRECT optimization algorithms described in:
  *
  *		D. R. Jones, C. D. Perttunen, and B. E. Stuckmann,
  *		"Lipschitzian optimization without the lipschitz constant,"
  *		J. Optimization Theory and Applications, vol. 79, p. 157 (1993).
- *
- *		J. M. Gablonsky and C. T. Kelley, "A locally-biased form
- *		of the DIRECT algorithm," J. Global Optimization 21 (1),
- *		p. 27-37 (2001).
  */
 public class DIRECTOptimizer extends MultivariateOptimizer
 {
 	public static final double DEFAULT_X_THRESHOLD = 1.0e-4;
 
-	private static final double THIRD = 0.3333333333333333333333d;
-	private static final double EQUAL_SIDE_TOL = 5e-2;		// tolerance to equate side sizes
-	private static final double DIAMETER_GRANULARITY = 1.0e-13;
-	protected static final boolean DISPLAY_PROGRESS = true;	// Debugging output.
-
-	/** which measure of hyper-rectangle diameter to use:
-	 *  0 = Jones, centre-to-vertex distance
-	 *  1 = Gablonsky, half longest side
-	 */
-	protected int optDiam_longSide;
-
-	/** which way to divide rects:
-	 *  0: orig. Jones, divide all longest sides
-	 *  1: divide all sides for hypercubes, otherwise divide first long side
-	 *  2: for hypercubes, divide sides with above-average potential,
-	 *     otherwise divide long side with most potential, based on
-	 *     improvement in function value for last division in each dimension.
-	 */
-	protected int optDivide_oneSide;
+	protected static final double THIRD = 0.3333333333333333333333d;
+	protected static final double EQUAL_SIDE_TOL = 5e-2;		// tolerance to equate side sizes
+	protected static final double DIAMETER_GRANULARITY = 1.0e-13;
+	protected static final boolean DISPLAY_PROGRESS = false;	// Debugging output.
 
 	/** which rectangles are considered "potentially optimal"
-	 *  0: Jones, all points on convex hull, even equal points
-	 *  1: Gablonsky, pick one of each equal point
+	 *  true:  Jones, all points on convex hull, even equal points
+	 *  false: Gablonsky, pick one of each equal point
 	 */
-	protected int optHull_onePoint;
+	protected boolean allowDuplicatesInHull;
  
 	/**
 	 * Desired accuracy in x values sufficient for convergence,
@@ -167,7 +142,8 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 	protected double convergenceThreshold;
 
 	/**
-	 * Target absolute function value sufficient for convergence.
+	 * Target absolute function value sufficient for convergence,
+	 * null for no target.
 	 */
 	protected Double targetFunctionValue;
 
@@ -194,7 +170,7 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 	protected double fMax;
 	
 	/** Differences between the upper and lower bounds. */
-	private double[] boundDifference;
+	protected double[] boundDifference;
 
 	public DIRECTOptimizer()
 	{
@@ -206,9 +182,7 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 		super(null);		// No standard convergence checker.
 		this.convergenceThreshold = convergenceThreshold;
 		this.targetFunctionValue = null;
-		optDiam_longSide = 0;		// Jones diameter measure.
-		optDivide_oneSide  = 2;		// Jones long side division.
-		optHull_onePoint  = 0;		// Jones hull selection: allow duplicate points.
+		allowDuplicatesInHull = true;		// Jones hull selection: allow duplicate points.
 	}
 
 	/* Basic data structure:
@@ -334,8 +308,7 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 		{
 			this.centre = centre;
 			this.width = width;
-			this.potential = new double[width.length];
-			Arrays.fill(this.potential, 0.0);
+			this.potential = null;
 			updateLongSides();
 		}
 		
@@ -387,6 +360,16 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 		public double[] getPotential()
 		{
 			return potential;
+		}
+
+		public void setPotential(double[] potential)
+		{
+			this.potential = potential;
+		}
+
+		public void setPotential(int dimension, double potential)
+		{
+			this.potential[dimension] = potential;
 		}
 
 		public int getLongCount()
@@ -531,14 +514,14 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 	
 	public static class TargetFunctionValue implements OptimizationData
 	{
-		double targetValue;
+		Double targetValue;
 		
-		public TargetFunctionValue(double targetValue)
+		public TargetFunctionValue(Double targetValue)
 		{
 			this.targetValue = targetValue;
 		}
 
-		public double getTargetValue()
+		public Double getTargetValue()
 		{
 			return targetValue;
 		}
@@ -581,34 +564,17 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 	protected double rectangleDiameter(double[] w)
 	{
 		int i;
-		if (optDiam_longSide == 0)
+		/* Jones measure */
+		/* distance from center to a vertex */
+		double sum = 0.0;
+		for (i = 0; i < w.length; ++i)
 		{
-			/* Jones measure */
-			/* distance from center to a vertex */
-			double sum = 0.0;
-			for (i = 0; i < w.length; ++i)
+			if (boundDifference[i] > 0)
 			{
-				if (boundDifference[i] > 0)
-				{
-					sum += w[i] * w[i];
-				}
+				sum += w[i] * w[i];
 			}
-			return ((float) (FastMath.sqrt(sum) * 0.5));
 		}
-		else
-		{
-			/* Gablonsky measure */
-			/* half-width of longest side */
-			double wmax = 0.0;
-			for (i = 0; i < w.length; ++i)
-			{
-				if (w[i] > wmax)
-				{
-					wmax = w[i];
-				}
-			}
-			return ((float) (wmax * 0.5));
-		}
+		return ((float) (FastMath.sqrt(sum) * 0.5));
 	}
 	
 	/**
@@ -617,11 +583,6 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 	 */
 	protected double thresholdDiameter(double convergenceThreshold, int dimension)
 	{
-		if (optDiam_longSide == 1)
-		{
-			// Diameter is half of longest side.
-			return 0.5 * convergenceThreshold;
-		}
 		// Round the threshold down to the next smaller power of 1/3.
 		// Rectangle is small when *all* sides are this size.
 		double iterations = FastMath.ceil(FastMath.log(THIRD,convergenceThreshold));
@@ -755,39 +716,13 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 	protected EligibleSides selectEligibleSides(RectangleValue rectangle)
 	{
 		EligibleSides eligibleSides = new EligibleSides(rectangle.getWidth().length);
-		boolean isHypercube = true;		// if all long sides have non-zero width.
 		int nrEligibleSides = rectangle.getLongCount();
 		int eligibleSide = rectangle.getLongIdx();
 		int i;
-		double highestPotential;
-		// Default is to divide on all longest sides.
+		// Divide on all longest sides.
 		for (i = 0; i < rectangle.getWidth().length; ++i)
 		{
 			eligibleSides.setEligible(i, rectangle.isLongSide(i));
-			if (! rectangle.isLongSide(i) && boundDifference[i] > 0.0)
-			{
-				isHypercube = false;
-			}
-		}
-		if (optDivide_oneSide == 1 && ! isHypercube)
-		{
-			// Divide on only one side.
-			nrEligibleSides = 1;
-		}
-		else if (optDivide_oneSide == 2 && ! isHypercube)
-		{
-			// Divide on only the long side with the most potential.
-			highestPotential = -Double.MAX_VALUE;
-			nrEligibleSides = 1;
-			for (i = 0; i < rectangle.getWidth().length; ++i)
-			{
-				if (rectangle.isLongSide(i) 
-						&& rectangle.getPotential()[i] > highestPotential)
-				{
-					highestPotential = rectangle.getPotential()[i];
-					eligibleSide = i;
-				}
-			}
 		}
 		eligibleSides.setNrEligibleSides(nrEligibleSides);
 		eligibleSides.setEligibleSide(eligibleSide);
@@ -883,20 +818,20 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 				new_c[isort[i]] = c[isort[i]] - w[isort[i]] * boundDifference[isort[i]];
 				newKey = new RectangleKey(rectKey.getDiameter(),
 						fv[2 * isort[i]]);
-				newRect = new RectangleValue(new_c, new_w,
-						Arrays.copyOf(rectangle.getPotential(), n));
-				calculatePotential(newRect, isort[i], fv[2 * isort[i]], centreF, w[isort[i]]);
+				newRect = new RectangleValue(new_c, new_w);
+				calculatePotential(newRect, rectangle.getPotential(), isort[i],
+						fv[2 * isort[i]], centreF, w[isort[i]]);
 				rtree.put(newKey, newRect);
 				new_c = Arrays.copyOf(c, c.length);
 				new_w = Arrays.copyOf(w, w.length);
 				new_c[isort[i]] = c[isort[i]] + w[isort[i]] * boundDifference[isort[i]];
 				newKey = new RectangleKey(rectKey.getDiameter(),
 						fv[2 * isort[i] + 1]);
-				newRect = new RectangleValue(new_c, new_w,
-						Arrays.copyOf(rectangle.getPotential(), n));
-				calculatePotential(newRect, isort[i], fv[2 * isort[i] + 1], centreF, w[isort[i]]);
+				newRect = new RectangleValue(new_c, new_w);
+				calculatePotential(newRect, rectangle.getPotential(), isort[i],
+						fv[2 * isort[i] + 1], centreF, w[isort[i]]);
 				rtree.put(newKey, newRect);
-				calculatePotential(rectangle, i, centreF,
+				calculatePotential(rectangle, rectangle.getPotential(), i, centreF,
 						FastMath.min(fv[2 * isort[i]], fv[2 * isort[i] + 1]), w[i]);
 			}
 		}
@@ -916,9 +851,9 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 			new_c[i] = c[i] - w[i] * boundDifference[i];
 			fv[0] = computeObjectiveValue(new_c);
 			newKey = new RectangleKey(newKey.getDiameter(), fv[0]);
-			newRect = new RectangleValue(new_c, new_w,
-					Arrays.copyOf(rectangle.getPotential(), n));
-			calculatePotential(newRect, i, fv[0], centreF, w[i]);
+			newRect = new RectangleValue(new_c, new_w);
+			calculatePotential(newRect, rectangle.getPotential(), i,
+					fv[0], centreF, w[i]);
 			rtree.put(newKey, newRect);
 			if (isPromising(centreF, fv[0], n))
 			{
@@ -930,15 +865,16 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 			new_c[i] = c[i] + w[i] * boundDifference[i];
 			fv[1] = computeObjectiveValue(new_c);
 			newKey = new RectangleKey(newKey.getDiameter(), fv[1]);
-			newRect = new RectangleValue(new_c, new_w,
-					Arrays.copyOf(rectangle.getPotential(), n));
-			calculatePotential(newRect, i, fv[1], centreF, w[i]);
+			newRect = new RectangleValue(new_c, new_w);
+			calculatePotential(newRect, rectangle.getPotential(), i,
+					fv[1], centreF, w[i]);
 			rtree.put(newKey, newRect);
 			if (isPromising(centreF, fv[1], n))
 			{
 				++nrPromising;
 			}
-			calculatePotential(rectangle, i, centreF, FastMath.min(fv[0], fv[1]), w[i]);
+			calculatePotential(rectangle, rectangle.getPotential(), i,
+					centreF, FastMath.min(fv[0], fv[1]), w[i]);
 		}
 		return nrPromising;
 	}
@@ -968,21 +904,9 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 		return false;
 	}
 
-	protected void calculatePotential(RectangleValue rectangle, int dimension,
-			double thisF, double neighbourF, double baseline)
+	protected void calculatePotential(RectangleValue rectangle, double[] basePotential,
+			int dimension, double thisF, double neighbourF, double baseline)
 	{
-		double newPotential = (neighbourF - thisF);
-		if (newPotential >= rectangle.getPotential()[dimension])
-		{
-			// When potential increases, use new figure immediately.
-			rectangle.getPotential()[dimension] = newPotential;
-		}
-		else
-		{
-			// When potential decreases, only decrease half way.
-			rectangle.getPotential()[dimension]
-					= 0.5 * (newPotential + rectangle.getPotential()[dimension]);
-		}
 	}
 
 	/**
@@ -997,9 +921,8 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 		int nhull;
 		int nrSmall = 0;	// Number of POH too small to be worth dividing.
 		int nrPromisingDivisions = 0;
-		int ip;
 
-		nhull = getPotentiallyOptimal(optHull_onePoint != 1);
+		nhull = getPotentiallyOptimal(allowDuplicatesInHull);
 		
 		for (i = 0; i < nhull; ++i)
 		{
@@ -1014,21 +937,6 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 			{
 				/* "potentially optimal" rectangle, so subdivide */
 				nrPromisingDivisions += divideRectangle(hull[i].getKey(), hull[i].getValue());
-
-				/* for the DIRECT-L variant, we only divide one rectangle out
-				   of all points with equal diameter and function values
-				     ... note that for optHull_onePoint != 1, i == ip-1 should be a no-op
-				         anyway, since we set allow_dups=0 in getPotentiallyOptimal above */
-				if (optHull_onePoint == 1)
-				{
-					/* find next unequal points after i */
-					for (ip = i+1; ip < nhull 
-							&& hull[ip].getKey().getDiameter() == hull[i].getKey().getDiameter();
-							++ip)
-					{
-					}
-					i = ip - 1; /* skip to next unequal point for next iteration */
-				}
 			}
 		}
 		

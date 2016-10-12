@@ -12,20 +12,20 @@ import org.junit.Test;
  * @author Burton Patkau
  * 
  */
-public class DirectOptimizerTest extends StandardOptimizerTest
+public class Direct1OptimizerTest extends StandardOptimizerTest
 {
 	public static final double CONVERGENCE_THRESHOLD = 0.005;  // About 3**-5.
 	MultivariateOptimizer optimizer;
 
 	public static void main(String[] args)
 	{
-		DirectOptimizerTest myTest = new DirectOptimizerTest();
+		Direct1OptimizerTest myTest = new Direct1OptimizerTest();
 		myTest.testRosenbrock();
 	}
 	
-	public DirectOptimizerTest()
+	public Direct1OptimizerTest()
 	{
-		super(new DIRECTOptimizer(CONVERGENCE_THRESHOLD));
+		super(new DIRECT1Optimizer(CONVERGENCE_THRESHOLD));
 	}
 
 	/**
@@ -70,7 +70,7 @@ public class DirectOptimizerTest extends StandardOptimizerTest
 		Assert.assertArrayEquals("Hartman3 x is incorrect", expected, outcome.getPoint(), 0.02);
 		Assert.assertEquals("Hartman3 f(x) is incorrect", -3.8628, outcome.getValue(), 0.001);
 		Assert.assertFalse("Hartman3, too many evaluations, " +  objective.getEvaluations(),
-				objective.getEvaluations() > 230);
+				objective.getEvaluations() > 200);
 	}
 
 	/**
@@ -93,7 +93,7 @@ public class DirectOptimizerTest extends StandardOptimizerTest
 		Assert.assertArrayEquals("Hartman6 x is incorrect", expected, outcome.getPoint(), 0.0021);
 		Assert.assertEquals("Hartman6 f(x) is incorrect", -3.3224, outcome.getValue(), 0.0005);
 		Assert.assertFalse("Hartman6, too many evaluations, " +  objective.getEvaluations(),
-				objective.getEvaluations() > 760);
+				objective.getEvaluations() > 420);
 	}
 
 	/**
@@ -114,7 +114,7 @@ public class DirectOptimizerTest extends StandardOptimizerTest
 		Assert.assertArrayEquals("Shekel5 x is incorrect", expected, outcome.getPoint(), 0.015);
 		Assert.assertEquals("Shekel5 f(x) is incorrect", -10.1531996790582, outcome.getValue(), 0.06);
 		Assert.assertFalse("Shekel5, too many evaluations, " +  objective.getEvaluations(),
-				objective.getEvaluations() > 130);
+				objective.getEvaluations() > 100);
 	}
 
 	/**
@@ -135,7 +135,7 @@ public class DirectOptimizerTest extends StandardOptimizerTest
 		Assert.assertArrayEquals("Shekel7 x is incorrect", expected, outcome.getPoint(), 0.015);
 		Assert.assertEquals("Shekel7 f(x) is incorrect", -10.4029405668187, outcome.getValue(), 0.06);
 		Assert.assertFalse("Shekel7, too many evaluations, " +  objective.getEvaluations(),
-				objective.getEvaluations() > 120);
+				objective.getEvaluations() > 100);
 	}
 
 	/**
@@ -156,7 +156,7 @@ public class DirectOptimizerTest extends StandardOptimizerTest
 		Assert.assertArrayEquals("Shekel10 x is incorrect", expected, outcome.getPoint(), 0.015);
 		Assert.assertEquals("Shekel10 f(x) is incorrect", -10.5364098166920, outcome.getValue(), 0.06);
 		Assert.assertFalse("Shekel10, too many evaluations, " +  objective.getEvaluations(),
-				objective.getEvaluations() > 120);
+				objective.getEvaluations() > 100);
 	}
 
 	/**

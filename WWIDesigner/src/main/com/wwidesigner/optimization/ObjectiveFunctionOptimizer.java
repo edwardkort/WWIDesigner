@@ -45,6 +45,7 @@ import org.apache.commons.math3.optim.univariate.UnivariateObjectiveFunction;
 import org.apache.commons.math3.optim.univariate.UnivariatePointValuePair;
 import org.apache.commons.math3.random.MersenneTwister;
 
+import com.wwidesigner.math.DIRECT1Optimizer;
 import com.wwidesigner.math.DIRECTOptimizer;
 import com.wwidesigner.modelling.EvaluatorInterface;
 import com.wwidesigner.optimization.multistart.AbstractRangeProcessor;
@@ -220,7 +221,7 @@ public class ObjectiveFunctionOptimizer
 				// Multivariate DIRECT optimization, with bounds.
 				MultivariateOptimizer optimizer;
 				PointValuePair outcome;
-				optimizer = new DIRECTOptimizer(0.00001);
+				optimizer = new DIRECT1Optimizer(0.00001);
 
 				// Run optimization first with the first-stage evaluator, if specified
 				EvaluatorInterface originalEvaluator = objective.getEvaluator();

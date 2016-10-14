@@ -831,7 +831,7 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 				calculatePotential(newRect, rectangle.getPotential(), isort[i],
 						fv[2 * isort[i] + 1], centreF, w[isort[i]]);
 				rtree.put(newKey, newRect);
-				calculatePotential(rectangle, rectangle.getPotential(), i, centreF,
+				calculatePotential(rectangle, rectangle.getPotential(), isort[i], centreF,
 						FastMath.min(fv[2 * isort[i]], fv[2 * isort[i] + 1]), w[i]);
 			}
 		}

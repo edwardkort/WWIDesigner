@@ -53,7 +53,7 @@ public class DIRECT1Optimizer extends DIRECTOptimizer
 	protected EligibleSides selectEligibleSides(RectangleValue rectangle)
 	{
 		EligibleSides eligibleSides = new EligibleSides(rectangle.getWidth().length);
-		boolean isHypercube = true;		// if all long sides have non-zero width.
+		boolean isHypercube = true;		// if all non-zero sides have the same width.
 		int nrEligibleSides = rectangle.getLongCount();
 		int eligibleSide = rectangle.getLongIdx();
 		int i;
@@ -70,7 +70,7 @@ public class DIRECT1Optimizer extends DIRECTOptimizer
 		}
 		if (! isHypercube)
 		{
-			// Divide on only the long side with the most potential.
+			// Divide on only one long side with the most potential.
 			highestPotential = -Double.MAX_VALUE;
 			double[] potential = rectangle.getPotential();
 			if (potential == null)

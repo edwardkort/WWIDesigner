@@ -100,7 +100,7 @@ public abstract class BaseObjectiveFunction implements MultivariateFunction,
 		this.evaluator = evaluator;
 		nrDimensions = 1;
 		optimizerType = OptimizerType.BOBYQAOptimizer;
-		maxEvaluations = 5000;
+		maxEvaluations = 10000;
 		rangeProcessor = null;
 		cancel = false;
 		evaluationsDone = 0;

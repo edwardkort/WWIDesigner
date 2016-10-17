@@ -221,7 +221,7 @@ public class ObjectiveFunctionOptimizer
 				// Multivariate DIRECT optimization, with bounds.
 				MultivariateOptimizer optimizer;
 				PointValuePair outcome;
-				optimizer = new DIRECT1Optimizer(0.00001);
+				optimizer = new DIRECT1Optimizer(6.0e-6);	// About 3^-11.
 
 				// Run optimization first with the first-stage evaluator, if specified
 				EvaluatorInterface originalEvaluator = objective.getEvaluator();
@@ -235,15 +235,14 @@ public class ObjectiveFunctionOptimizer
 				outcome = optimizer.optimize(
 						GoalType.MINIMIZE,
 						new ObjectiveFunction(objective),
-						new MaxEval(objective.getMaxEvaluations()),
+						new MaxEval(2 * objective.getMaxEvaluations()),
 						MaxIter.unlimited(),
 						new InitialGuess(startPoint),
 						new DIRECTOptimizer.TargetFunctionValue(0.001),
 						new SimpleBounds(objective.getLowerBounds(), objective
 								.getUpperBounds()));
 
-				int nrEvaluations = optimizer.getEvaluations();
-				System.out.println("After " + nrEvaluations
+				System.out.println("After " + optimizer.getEvaluations()
 						+ " evaluations, global optimizer found optimum " + outcome.getValue());
 				if (objective.isRunTwoStageOptimization())
 				{
@@ -260,7 +259,7 @@ public class ObjectiveFunctionOptimizer
 						stoppingTrustRegion);
 				outcome = optimizer.optimize(GoalType.MINIMIZE,
 						new ObjectiveFunction(objective),
-						new MaxEval(objective.getMaxEvaluations() - nrEvaluations),
+						new MaxEval(objective.getMaxEvaluations()),
 						MaxIter.unlimited(), new InitialGuess(outcome.getPoint()),
 						new SimpleBounds(objective.getLowerBounds(),
 								objective.getUpperBounds()));

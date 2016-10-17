@@ -43,6 +43,7 @@ import com.wwidesigner.optimization.BaseObjectiveFunction;
 import com.wwidesigner.optimization.BasicTaperObjectiveFunction;
 import com.wwidesigner.optimization.BetaObjectiveFunction;
 import com.wwidesigner.optimization.Constraints;
+import com.wwidesigner.optimization.GlobalHolePositionObjectiveFunction;
 import com.wwidesigner.optimization.HoleAndTaperObjectiveFunction;
 import com.wwidesigner.optimization.HoleObjectiveFunction;
 import com.wwidesigner.optimization.HolePositionObjectiveFunction;
@@ -51,7 +52,6 @@ import com.wwidesigner.optimization.LengthObjectiveFunction;
 import com.wwidesigner.optimization.WindowHeightObjectiveFunction;
 import com.wwidesigner.optimization.HolePositionObjectiveFunction.BoreLengthAdjustmentType;
 import com.wwidesigner.optimization.bind.OptimizationBindFactory;
-import com.wwidesigner.optimization.multistart.GridRangeProcessor;
 import com.wwidesigner.util.Constants.TemperatureType;
 import com.wwidesigner.util.BindFactory;
 import com.wwidesigner.util.PhysicalParameters;
@@ -136,7 +136,7 @@ public class WhistleStudyModel extends StudyModel
 				HoleAndTaperObjectiveFunction.class.getSimpleName());
 		optimizers.addSub(ROUGH_CUT_OPT_SUB_CATEGORY_ID, null);
 		objectiveFunctionNames.put(ROUGH_CUT_OPT_SUB_CATEGORY_ID,
-				HolePositionObjectiveFunction.class.getSimpleName());
+				GlobalHolePositionObjectiveFunction.class.getSimpleName());
 		categories.add(optimizers);
 	}
 
@@ -275,17 +275,34 @@ public class WhistleStudyModel extends StudyModel
 				break;
 
 			case "HolePositionObjectiveFunction":
+			case "GlobalHolePositionObjectiveFunction":
 				evaluator = new CentDeviationEvaluator(calculator,
 						getInstrumentTuner());
-				objective = new HolePositionObjectiveFunction(calculator,
-						tuning, evaluator, BoreLengthAdjustmentType.PRESERVE_TAPER);
+				if (objectiveFunctionClass.equals("GlobalHolePositionObjectiveFunction"))
+				{
+					// For a rough-cut optimization, use DIRECT global optimizer.
+					// Optimize reactance in the first stage. Although this is
+					// inaccurate, since it seeks fmax rather than nominal playing
+					// frequency, it is much faster.
+
+					objective = new GlobalHolePositionObjectiveFunction(calculator,
+							tuning, evaluator, BoreLengthAdjustmentType.MOVE_BOTTOM);
+					objective.setRunTwoStageOptimization(true);
+					objective.setFirstStageEvaluator(
+							new ReactanceEvaluator(calculator));
+				}
+				else
+				{
+					objective = new HolePositionObjectiveFunction(calculator,
+							tuning, evaluator, BoreLengthAdjustmentType.PRESERVE_TAPER);
+				}
 				// Bounds are hole separations, expressed in meters.
 				lowerBound = new double[numberOfHoles + 1];
 				upperBound = new double[numberOfHoles + 1];
 				Arrays.fill(lowerBound, 0.012);
 				lowerBound[0] = 0.200;
 				Arrays.fill(upperBound, 0.040);
-				upperBound[0] = 0.700;
+				upperBound[0] = 0.600;
 				upperBound[numberOfHoles] = 0.200;
 				if (numberOfHoles >= 5)
 				{
@@ -293,23 +310,17 @@ public class WhistleStudyModel extends StudyModel
 					upperBound[numberOfHoles - 3] = 0.100;
 				}
 
-				// For a rough-cut optimization, use multi-start optimization.
-				// Optimize reactance in the first stage. Although this is
-				// inaccurate, since it seeks fmax rather than nominal playing
-				// frequency, it is much faster.
 
-				if (optimizer == ROUGH_CUT_OPT_SUB_CATEGORY_ID)
-				{
-					objective.setRunTwoStageOptimization(true);
-					objective.setFirstStageEvaluator(
-							new ReactanceEvaluator(calculator));
-					int nrOfStarts = 4 * numberOfHoles;
-					GridRangeProcessor rangeProcessor = new GridRangeProcessor(
-							lowerBound, upperBound, null, nrOfStarts);
-					objective.setRangeProcessor(rangeProcessor);
-					objective.setMaxEvaluations(nrOfStarts
-							* objective.getMaxEvaluations());
-				}
+				// Use the following lines to use multi-start optimization.
+				// if (objectiveFunctionClass.equals("GlobalHolePositionObjectiveFunction"))
+				// {
+					// int nrOfStarts = 4 * numberOfHoles;
+					// GridRangeProcessor rangeProcessor = new GridRangeProcessor(
+					//		lowerBound, upperBound, null, nrOfStarts);
+					// objective.setRangeProcessor(rangeProcessor);
+					// objective.setMaxEvaluations(nrOfStarts
+					//		* objective.getMaxEvaluations());
+				// }
 				break;
 
 			case "HoleObjectiveFunction":

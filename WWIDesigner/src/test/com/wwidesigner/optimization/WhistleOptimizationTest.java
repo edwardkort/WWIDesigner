@@ -68,7 +68,7 @@ public class WhistleOptimizationTest extends PerturbedInstrumentOptimization
 		myStudy.getParams().setProperties(27.0, 98.4, 100, 0.040);
 		myStudy.setBlowingLevel(4);
 		myStudy.setCategorySelection(WhistleStudyModel.OPTIMIZER_CATEGORY_ID,
-				WhistleStudyModel.ROUGH_CUT_OPT_SUB_CATEGORY_ID);
+				WhistleStudyModel.GLOBAL_HOLESPACE_OPT_SUB_CATEGORY_ID);
 		
 		setStudyModel(myStudy);
 		setTuning(remoteTuningFile);

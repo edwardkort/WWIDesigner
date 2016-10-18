@@ -43,6 +43,7 @@ import com.wwidesigner.optimization.BaseObjectiveFunction;
 import com.wwidesigner.optimization.BasicTaperObjectiveFunction;
 import com.wwidesigner.optimization.BetaObjectiveFunction;
 import com.wwidesigner.optimization.Constraints;
+import com.wwidesigner.optimization.GlobalHoleAndTaperObjectiveFunction;
 import com.wwidesigner.optimization.GlobalHolePositionObjectiveFunction;
 import com.wwidesigner.optimization.HoleAndTaperObjectiveFunction;
 import com.wwidesigner.optimization.HoleObjectiveFunction;
@@ -74,7 +75,8 @@ public class WhistleStudyModel extends StudyModel
 	public static final String HOLE_OPT_SUB_CATEGORY_ID = "6. Hole Size+Spacing Optimizer";
 	public static final String TAPER_OPT_SUB_CATEGORY_ID = "7. Taper Optimizer";
 	public static final String HOLE_TAPER_OPT_SUB_CATEGORY_ID = "8. Hole and Taper Optimizer";
-	public static final String ROUGH_CUT_OPT_SUB_CATEGORY_ID = "9. Rough-Cut Optimizer";
+	public static final String GLOBAL_HOLESPACE_OPT_SUB_CATEGORY_ID = "A. Hole Spacing Global Optimizer";
+	public static final String GLOBAL_HOLE_TAPER_OPT_SUB_CATEGORY_ID = "B. Hole and Taper Global Optimizer";
 
 	// Default minimum hole diameter, in meters.
 	public static final double MIN_HOLE_DIAMETER = 0.0040;
@@ -134,9 +136,12 @@ public class WhistleStudyModel extends StudyModel
 		optimizers.addSub(HOLE_TAPER_OPT_SUB_CATEGORY_ID, null);
 		objectiveFunctionNames.put(HOLE_TAPER_OPT_SUB_CATEGORY_ID,
 				HoleAndTaperObjectiveFunction.class.getSimpleName());
-		optimizers.addSub(ROUGH_CUT_OPT_SUB_CATEGORY_ID, null);
-		objectiveFunctionNames.put(ROUGH_CUT_OPT_SUB_CATEGORY_ID,
+		optimizers.addSub(GLOBAL_HOLESPACE_OPT_SUB_CATEGORY_ID, null);
+		objectiveFunctionNames.put(GLOBAL_HOLESPACE_OPT_SUB_CATEGORY_ID,
 				GlobalHolePositionObjectiveFunction.class.getSimpleName());
+		optimizers.addSub(GLOBAL_HOLE_TAPER_OPT_SUB_CATEGORY_ID, null);
+		objectiveFunctionNames.put(GLOBAL_HOLE_TAPER_OPT_SUB_CATEGORY_ID,
+				GlobalHoleAndTaperObjectiveFunction.class.getSimpleName());
 		categories.add(optimizers);
 	}
 
@@ -363,10 +368,19 @@ public class WhistleStudyModel extends StudyModel
 				break;
 
 			case "HoleAndTaperObjectiveFunction":
+			case "GlobalHoleAndTaperObjectiveFunction":
 				evaluator = new CentDeviationEvaluator(calculator,
 						getInstrumentTuner());
-				objective = new HoleAndTaperObjectiveFunction(calculator,
-						tuning, evaluator);
+				if (objectiveFunctionClass.equals("GlobalHoleAndTaperObjectiveFunction"))
+				{
+					objective = new GlobalHoleAndTaperObjectiveFunction(calculator,
+							tuning, evaluator);
+				}
+				else
+				{
+					objective = new HoleAndTaperObjectiveFunction(calculator,
+							tuning, evaluator);
+				}
 				// Separation bounds and diameter bounds, expressed in meters,
 				// and two taper ratios.
 				lowerBound = new double[2 * numberOfHoles + 3];
@@ -375,7 +389,7 @@ public class WhistleStudyModel extends StudyModel
 				Arrays.fill(upperBound, MAX_HOLE_DIAMETER);
 				// Bounds on hole spacing.
 				lowerBound[0] = 0.200;
-				upperBound[0] = 0.700;
+				upperBound[0] = 0.600;
 				for (int gapNr = 1; gapNr < numberOfHoles; ++gapNr)
 				{
 					lowerBound[gapNr] = 0.012;
@@ -389,10 +403,10 @@ public class WhistleStudyModel extends StudyModel
 					upperBound[numberOfHoles - 3] = 0.100;
 				}
 				// Bounds on taper.
-				lowerBound[lowerBound.length - 2] = 0.01;
+				lowerBound[lowerBound.length - 2] = 0.1;
 				lowerBound[lowerBound.length - 1] = 0.3;
 				upperBound[upperBound.length - 2] = 0.5;
-				upperBound[upperBound.length - 1] = 2.0;
+				upperBound[upperBound.length - 1] = 1.1;
 				break;
 		}
 

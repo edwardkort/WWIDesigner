@@ -37,11 +37,6 @@ public class GlobalHoleAndTaperObjectiveFunction extends HoleAndTaperObjectiveFu
 		super(calculator, tuning, evaluator);
 		optimizerType = OptimizerType.DIRECTOptimizer;
 		maxEvaluations = 30000;
-	}
-
-	protected void setConstraints()
-	{
-		super.setConstraints();
 		constraints.setObjectiveDisplayName("Hole and taper global optimizer");
 	}
 }

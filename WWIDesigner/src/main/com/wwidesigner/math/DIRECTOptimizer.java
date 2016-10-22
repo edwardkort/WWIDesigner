@@ -119,6 +119,24 @@ import org.apache.commons.math3.util.FastMath;
  *		D. R. Jones, C. D. Perttunen, and B. E. Stuckmann,
  *		"Lipschitzian optimization without the lipschitz constant,"
  *		J. Optimization Theory and Applications, vol. 79, p. 157 (1993).
+ *<br/>
+ * This implementation supports two convergence criteria:
+ *<ul> 
+ *<li>The constructor specifies a relative convergence threshold
+ *    on the resolution of the x (independent) variables of the solution.
+ *    The algorithm converges when all x variables are within the specified
+ *    fraction of the distance between the bounds for their respective
+ *    dimensions, and no other solution (hyperrectangle) examined in the
+ *    current iteration shows promise of providing a better solution.
+ *    When dividing a hyperrectangle, a new point "shows promise" if a
+ *    line through the original centre and the new point leads to a lower
+ *    value than the current best when extrapolated to either edge of the
+ *    hyperrectangle being divided.</li>
+ *
+ *<li>The optimize() call can supply a TargetFunctionValue.  The algorithm
+ *    converges when it finds a function value less than or equal to the
+ *    target value.</li>
+ *</ul>
  */
 public class DIRECTOptimizer extends MultivariateOptimizer
 {
@@ -172,11 +190,21 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 	/** Differences between the upper and lower bounds. */
 	protected double[] boundDifference;
 
+	/**
+	 * Create an optimizer that uses the DIRECT algorithm, with default
+	 * convergence threshold on hyperrectangle sizes.
+	 */
 	public DIRECTOptimizer()
 	{
 		this(DEFAULT_X_THRESHOLD);
 	}
 
+	/**
+	 * Create an optimizer that uses the DIRECT algorithm.
+	 * @param convergenceThreshold - The optimizer converges when the best solution
+	 * is in a hyperrectangle with all sides smaller than this threshold, relative
+	 * to the distance between the upper and lower bounds.
+	 */
 	public DIRECTOptimizer(double convergenceThreshold)
 	{
 		super(null);		// No standard convergence checker.

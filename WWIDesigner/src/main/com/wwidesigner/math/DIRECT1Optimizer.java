@@ -22,8 +22,9 @@ package com.wwidesigner.math;
 import java.util.Arrays;
 
 /**
- * Variant of the DIRECT optimization algorithms.
- * For other than hypercubes, divides only one long side from
+ * DIRECT-1 variant of the DIRECT optimization algorithm.
+ * For hypercubes, divide all sides, as in the original algorithm.
+ * For other than hypercubes, divide only one long side from
  * each hyperrectangle.  This strategy is suggested in:
  * 
  *     D.R. Jones. The DIRECT Global Optimization Algorithm.
@@ -31,16 +32,26 @@ import java.util.Arrays;
  *
  * Instead of choosing the one long side at random as suggested there,
  * we track the improvement in function value observed on the latest
- * divisions in each dimension, and choose the long side showing the
- * greatest improvement.
+ * divisions in each dimension, and choose the long side that showed
+ * the greatest improvement.
  */
 public class DIRECT1Optimizer extends DIRECTOptimizer
 {
+	/**
+	 * Create an optimizer that uses the DIRECT-1 variant of the DIRECT algorithm,
+	 * with default convergence threshold on hyperrectangle sizes.
+	 */
 	public DIRECT1Optimizer()
 	{
 		this(DEFAULT_X_THRESHOLD);
 	}
 
+	/**
+	 * Create an optimizer that uses the DIRECT-1 variant of the DIRECT algorithm.
+	 * @param convergenceThreshold - The optimizer converges when the best solution
+	 * is in a hyperrectangle with all sides smaller than this threshold, relative
+	 * to the distance between the upper and lower bounds.
+	 */
 	public DIRECT1Optimizer(double convergenceThreshold)
 	{
 		super(convergenceThreshold);

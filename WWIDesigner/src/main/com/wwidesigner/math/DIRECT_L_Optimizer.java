@@ -70,11 +70,21 @@ package com.wwidesigner.math;
  */
 public class DIRECT_L_Optimizer extends DIRECTOptimizer
 {
+	/**
+	 * Create an optimizer that uses the DIRECT-L variant of the DIRECT algorithm,
+	 * with default convergence threshold on hyperrectangle sizes.
+	 */
 	public DIRECT_L_Optimizer()
 	{
 		this(DEFAULT_X_THRESHOLD);
 	}
 
+	/**
+	 * Create an optimizer that uses the DIRECT-L variant of the DIRECT algorithm.
+	 * @param convergenceThreshold - The optimizer converges when the best solution
+	 * is in a hyperrectangle with all sides smaller than this threshold, relative
+	 * to the distance between the upper and lower bounds.
+	 */
 	public DIRECT_L_Optimizer(double convergenceThreshold)
 	{
 		super(convergenceThreshold);

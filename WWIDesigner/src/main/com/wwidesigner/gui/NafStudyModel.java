@@ -233,8 +233,8 @@ public class NafStudyModel extends StudyModel
 					getCategory(CONSTRAINTS_CATEGORY_ID), optimizerSelected,
 					true))
 			{
-				replaceCategory(CONSTRAINTS_CATEGORY_ID, new Category(
-						CONSTRAINTS_CATEGORY_ID));
+				replaceCategory(CONSTRAINTS_CATEGORY_ID,
+						new Category(CONSTRAINTS_CATEGORY_ID));
 			}
 		}
 		// If the number of holes match the constraints set, leave it.
@@ -244,8 +244,8 @@ public class NafStudyModel extends StudyModel
 			if (!constraintsAndHoleNumberCompatible(
 					getCategory(CONSTRAINTS_CATEGORY_ID), dataNumberOfHoles))
 			{
-				replaceCategory(CONSTRAINTS_CATEGORY_ID, new Category(
-						CONSTRAINTS_CATEGORY_ID));
+				replaceCategory(CONSTRAINTS_CATEGORY_ID,
+						new Category(CONSTRAINTS_CATEGORY_ID));
 			}
 		}
 		// If there is neither hole number nor optimizer information, leave
@@ -283,9 +283,9 @@ public class NafStudyModel extends StudyModel
 		FileDataModel dataModel = (FileDataModel) subs.values().iterator()
 				.next();
 		Constraints constraints = getConstraints((String) dataModel.getData());
-		String constraintsOptimizerName = isDisplayName ? constraints
-				.getObjectiveDisplayName() : constraints
-				.getObjectiveFunctionName();
+		String constraintsOptimizerName = isDisplayName
+				? constraints.getObjectiveDisplayName()
+				: constraints.getObjectiveFunctionName();
 
 		return constraintsOptimizerName.equals(optimizerName);
 	}
@@ -419,8 +419,8 @@ public class NafStudyModel extends StudyModel
 				}
 				break;
 			case HOLESIZE_OPT_SUB_CATEGORY_ID:
-				objective = new NafHoleSizeObjectiveFunction(calculator,
-						tuning, evaluator);
+				objective = new NafHoleSizeObjectiveFunction(calculator, tuning,
+						evaluator);
 				if (objectiveFunctionIntent == BaseObjectiveFunction.DEFAULT_CONSTRAINTS_INTENT)
 				{
 					// Bounds are hole diameters expressed in meters.
@@ -452,8 +452,8 @@ public class NafStudyModel extends StudyModel
 				}
 				break;
 			case NO_GROUP_OPT_SUB_CATEGORY_ID:
-				objective = new HoleFromTopObjectiveFunction(calculator,
-						tuning, evaluator, BoreLengthAdjustmentType.PRESERVE_TAPER);
+				objective = new HoleFromTopObjectiveFunction(calculator, tuning,
+						evaluator, BoreLengthAdjustmentType.PRESERVE_TAPER);
 				if (objectiveFunctionIntent == BaseObjectiveFunction.DEFAULT_CONSTRAINTS_INTENT)
 				{
 					// Length bounds are expressed in meters, diameter bounds as
@@ -471,8 +471,8 @@ public class NafStudyModel extends StudyModel
 								0.003175, 0.002032, 0.002032 };
 						upperBound = new double[] { 0.6985, 0.50, 0.03175,
 								0.03175, 0.0762, 0.03175, 0.03175, 0.003175,
-								0.0127, 0.0127, 0.0127, 0.0127, 0.0127,
-								0.00635, 0.00635 };
+								0.0127, 0.0127, 0.0127, 0.0127, 0.0127, 0.00635,
+								0.00635 };
 					}
 					else if (numberOfHoles == 6)
 					{
@@ -540,8 +540,8 @@ public class NafStudyModel extends StudyModel
 								0.02032, 0.02032, 0.002032, 0.003175, 0.003175,
 								0.003175, 0.003175, 0.003175 };
 						upperBound = new double[] { 0.6985, 0.5, 0.03175,
-								0.0762, 0.03175, 0.0127, 0.0127, 0.0127,
-								0.0127, 0.0127, 0.0127 };
+								0.0762, 0.03175, 0.0127, 0.0127, 0.0127, 0.0127,
+								0.0127, 0.0127 };
 					}
 					else
 					// Create blank constraints for the no-default scenario
@@ -578,8 +578,8 @@ public class NafStudyModel extends StudyModel
 								0.003175, 0.002032, 0.002032, 0.8, 0.0, 0.0 };
 						upperBound = new double[] { 0.6985, 0.50, 0.03175,
 								0.03175, 0.0762, 0.03175, 0.03175, 0.003175,
-								0.0127, 0.0127, 0.0127, 0.0127, 0.0127,
-								0.00635, 0.00635, 1.2, 1.0, 1.0 };
+								0.0127, 0.0127, 0.0127, 0.0127, 0.0127, 0.00635,
+								0.00635, 1.2, 1.0, 1.0 };
 					}
 					else if (numberOfHoles == 6)
 					{
@@ -620,8 +620,8 @@ public class NafStudyModel extends StudyModel
 								0.003175, 0.002032, 0.002032, 0.8, 0.0, 0.0 };
 						upperBound = new double[] { 0.6985, 0.50, 0.03175,
 								0.03175, 0.0762, 0.03175, 0.03175, 0.003175,
-								0.0127, 0.0127, 0.0127, 0.0127, 0.0127,
-								0.00635, 0.00635, 1.2, 1.0, 1.0 };
+								0.0127, 0.0127, 0.0127, 0.0127, 0.0127, 0.00635,
+								0.00635, 1.2, 1.0, 1.0 };
 					}
 					else if (numberOfHoles == 6)
 					{
@@ -692,8 +692,8 @@ public class NafStudyModel extends StudyModel
 								0.02032, 0.02032, 0.002032, 0.003175, 0.003175,
 								0.003175, 0.003175, 0.003175, 0.8, 0.0, 0.0 };
 						upperBound = new double[] { 0.6985, 0.5, 0.03175,
-								0.0762, 0.03175, 0.0127, 0.0127, 0.0127,
-								0.0127, 0.0127, 0.0127, 1.2, 1.0, 1.0 };
+								0.0762, 0.03175, 0.0127, 0.0127, 0.0127, 0.0127,
+								0.0127, 0.0127, 1.2, 1.0, 1.0 };
 					}
 					else
 					// Create blank constraints for the no-default scenario
@@ -760,8 +760,8 @@ public class NafStudyModel extends StudyModel
 								0.02032, 0.02032, 0.002032, 0.003175, 0.003175,
 								0.003175, 0.003175, 0.003175, 0.8, 0.0, 0.0 };
 						upperBound = new double[] { 0.6985, 0.5, 0.03175,
-								0.0762, 0.03175, 0.0127, 0.0127, 0.0127,
-								0.0127, 0.0127, 0.0127, 1.2, 1.0, 1.0 };
+								0.0762, 0.03175, 0.0127, 0.0127, 0.0127, 0.0127,
+								0.0127, 0.0127, 1.2, 1.0, 1.0 };
 					}
 					else
 					// Create blank constraints for the no-default scenario
@@ -787,9 +787,11 @@ public class NafStudyModel extends StudyModel
 		else if (objectiveFunctionIntent == BaseObjectiveFunction.OPTIMIZATION_INTENT)
 		{
 			objective.setConstraintsBounds(constraints);
-			objective.setRunTwoStageOptimization(true);
-			objective
-					.setFirstStageEvaluator(new ReflectionEvaluator(calculator));
+			// Using different evaluators with a granular solution space can
+			// yield sub-optimal solutions.
+			objective.setRunTwoStageOptimization(false);
+			// objective
+			// .setFirstStageEvaluator(new ReflectionEvaluator(calculator));
 			Category multiStartCategory = getCategory(MULTI_START_CATEGORY_ID);
 			String multiStartSelected = multiStartCategory.getSelectedSub();
 			if (multiStartSelected == VARY_FIRST_MULTI_START_SUB_CATEGORY_ID)
@@ -819,7 +821,8 @@ public class NafStudyModel extends StudyModel
 				parentFrame, numberOfHoles);
 		spacingDialog.pack();
 		spacingDialog.setVisible(true);
-		if (spacingDialog.getDialogResult() == HoleGroupSpacingDialog.RESULT_AFFIRMED)
+		if (spacingDialog
+				.getDialogResult() == HoleGroupSpacingDialog.RESULT_AFFIRMED)
 		{
 			return spacingDialog.getHoleSpacingGroups();
 		}
@@ -879,10 +882,12 @@ public class NafStudyModel extends StudyModel
 
 		// Check that constraints is for a represented optimizer
 		String objFuncDisplayName = constraints.getObjectiveDisplayName();
-		if (!isValidSubCategory(OPTIMIZER_CATEGORY_ID, objFuncDisplayName, true))
+		if (!isValidSubCategory(OPTIMIZER_CATEGORY_ID, objFuncDisplayName,
+				true))
 		{
-			throw new DataOpenException("Required optimizer, "
-					+ objFuncDisplayName + ", is not supported",
+			throw new DataOpenException(
+					"Required optimizer, " + objFuncDisplayName
+							+ ", is not supported",
 					DataOpenException.OPTIMIZER_NOT_SUPPORTED);
 		}
 
@@ -992,7 +997,8 @@ public class NafStudyModel extends StudyModel
 
 		tuner.setCalculator(getCalculator());
 
-		SupplementaryInfoTable table = new SupplementaryInfoTable(title + ": " + instrumentName + "/" + tuningName);
+		SupplementaryInfoTable table = new SupplementaryInfoTable(
+				title + ": " + instrumentName + "/" + tuningName);
 		table.buildTable(tuner, true);
 		table.showTable(false);
 	}

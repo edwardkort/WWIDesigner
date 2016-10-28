@@ -55,6 +55,15 @@ public class BoreDiameterObjectiveFunction extends BaseObjectiveFunction
 	protected final int unchangedBorePoints;
 	// Invariant: nrDimensions + unchangedBorePoints = number of bore points.
 
+	/**
+	 * Create an optimization objective function for bore diameters at existing
+	 * bore points.
+	 * @param calculator
+	 * @param tuning
+	 * @param evaluator
+	 * @param unchangedBorePoints - Leave diameter unchanged for this many bore points
+	 * from the top of the bore.
+	 */
 	public BoreDiameterObjectiveFunction(InstrumentCalculator calculator,
 			TuningInterface tuning, EvaluatorInterface evaluator, int unchangedBorePoints)
 	{

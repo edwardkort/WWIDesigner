@@ -29,6 +29,17 @@ public class BoreObjectiveFunction extends MergedObjectiveFunction
 {
 	public static final String DISPLAY_NAME = "Bore point position and diameter optimizer";
 
+	/**
+	 * Create an optimization objective function for bore point position and
+	 * diameter at existing bore points.
+	 * 
+	 * @param calculator
+	 * @param tuning
+	 * @param evaluator
+	 * @param unchangedBorePoints
+	 *            - Leave diameter and position unchanged for this many bore
+	 *            points from the top of the bore.
+	 */
 	public BoreObjectiveFunction(InstrumentCalculator calculator,
 			TuningInterface tuning, EvaluatorInterface evaluator, 
 			int unchangedBorePoints)
@@ -40,7 +51,7 @@ public class BoreObjectiveFunction extends MergedObjectiveFunction
 		this.components[1] = new BoreDiameterObjectiveFunction(calculator,
 				tuning, evaluator, unchangedBorePoints);
 		optimizerType = OptimizerType.BOBYQAOptimizer; // MultivariateOptimizer
-		maxEvaluations = 20000;
+		maxEvaluations = 40000;
 		sumDimensions();
 		constraints.setObjectiveDisplayName(DISPLAY_NAME);
 		constraints.setObjectiveFunctionName(this.getClass().getSimpleName());

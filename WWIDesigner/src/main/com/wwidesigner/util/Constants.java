@@ -70,10 +70,10 @@ public interface Constants
 					multiplier = 100.;
 					break;
 				case IN:
-					multiplier = 39.3701;
+					multiplier = 39.370078740157484;
 					break;
 				case FT:
-					multiplier = 3.2808;
+					multiplier = 3.2808398950131233;
 					break;
 				default:
 					multiplier = 1.;

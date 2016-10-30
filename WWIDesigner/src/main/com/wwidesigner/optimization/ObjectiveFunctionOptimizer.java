@@ -112,11 +112,6 @@ public class ObjectiveFunctionOptimizer
 			BaseObjectiveFunction objective,
 			BaseObjectiveFunction.OptimizerType optimizerType)
 	{
-		// Rely on relative difference to test convergence,
-		// to allow for vast differences in absolute error scale
-		// between objective functions.
-		ConvergenceChecker<PointValuePair> convergenceChecker = new SimpleValueChecker(
-				1.e-6, 1.e-14);
 
 		System.out.print("\nSystem has ");
 		System.out.print(objective.getNrDimensions());
@@ -138,51 +133,42 @@ public class ObjectiveFunctionOptimizer
 					.equals(BaseObjectiveFunction.OptimizerType.BrentOptimizer))
 			{
 				// Univariate optimization.
-				BrentOptimizer optimizer = new BrentOptimizer(1.e-6, 1.e-14);
-				UnivariatePointValuePair outcome;
-				outcome = optimizer.optimize(GoalType.MINIMIZE,
-						new UnivariateObjectiveFunction(objective),
-						new MaxEval(objective.getMaxEvaluations()), MaxIter
-								.unlimited(),
-						new SearchInterval(objective.getLowerBounds()[0],
-								objective.getUpperBounds()[0], startPoint[0]));
+				UnivariatePointValuePair outcome = runBrent(objective,
+						startPoint);
 				double[] geometry = new double[1];
 				geometry[0] = outcome.getPoint();
 				objective.setGeometryPoint(geometry);
 			}
-			else if (optimizerType
-					.equals(BaseObjectiveFunction.OptimizerType.PowellOptimizer))
+			else if (optimizerType.equals(
+					BaseObjectiveFunction.OptimizerType.PowellOptimizer))
 			{
 				// Multivariate optimization, without bounds.
-				PowellOptimizer optimizer = new PowellOptimizer(1.e-6, 1.e-14);
-				PointValuePair outcome;
-				outcome = optimizer.optimize(GoalType.MINIMIZE,
-						new ObjectiveFunction(objective),
-						new MaxEval(objective.getMaxEvaluations()),
-						MaxIter.unlimited(), new InitialGuess(startPoint));
+				PointValuePair outcome = runPowell(objective, startPoint);
 				objective.setGeometryPoint(outcome.getPoint());
 			}
-			else if (optimizerType
-					.equals(BaseObjectiveFunction.OptimizerType.SimplexOptimizer))
+			else if (optimizerType.equals(
+					BaseObjectiveFunction.OptimizerType.SimplexOptimizer))
 			{
 				// Multivariate optimization, without bounds.
-				SimplexOptimizer optimizer = new SimplexOptimizer(
-						convergenceChecker);
-				MultiDirectionalSimplex simplex = new MultiDirectionalSimplex(
-						objective.getSimplexStepSize());
-				PointValuePair outcome;
-				outcome = optimizer.optimize(GoalType.MINIMIZE,
-						new ObjectiveFunction(objective),
-						new MaxEval(objective.getMaxEvaluations()),
-						MaxIter.unlimited(), new InitialGuess(startPoint),
-						simplex);
+				PointValuePair outcome = runSimplex(objective, startPoint);
 				objective.setGeometryPoint(outcome.getPoint());
 			}
-			else if (optimizerType
-					.equals(BaseObjectiveFunction.OptimizerType.MultiStartOptimizer))
+			else if (optimizerType.equals(
+					BaseObjectiveFunction.OptimizerType.MultiStartOptimizer))
 			{
+				// Make the startPoint from the optimization result of a
+				// DIRECT/BOBYQA run.
 				PointValuePair outcome;
-				outcome = optimizeMultiStart(objective, startPoint);
+				MultivariateOptimizer optimizer = new DIRECT1Optimizer(6.0e-6);
+				outcome = runDirect(optimizer, objective, startPoint);
+				System.out.println(
+						"After global optimizer, error: " + outcome.getValue());
+
+				outcome = runBobyqa(objective, outcome.getPoint());
+				System.out
+						.println("Refined start, error: " + outcome.getValue());
+
+				outcome = optimizeMultiStart(objective, outcome.getPoint());
 				if (outcome == null)
 				{
 					// Restore starting point.
@@ -197,111 +183,30 @@ public class ObjectiveFunctionOptimizer
 					.equals(BaseObjectiveFunction.OptimizerType.CMAESOptimizer))
 			{
 				// Multivariate optimization, with bounds.
-				MultivariateOptimizer optimizer;
-				PointValuePair outcome;
-				optimizer = new CMAESOptimizer(objective.getMaxEvaluations(),
-						0.0001 * initialNorm, true, 0, 0,
-						new MersenneTwister(), false, convergenceChecker);
-				outcome = optimizer.optimize(
-						GoalType.MINIMIZE,
-						new ObjectiveFunction(objective),
-						new MaxEval(objective.getMaxEvaluations()),
-						MaxIter.unlimited(),
-						new InitialGuess(startPoint),
-						new SimpleBounds(objective.getLowerBounds(), objective
-								.getUpperBounds()),
-						new CMAESOptimizer.PopulationSize(objective
-								.getNrInterpolations()),
-						new CMAESOptimizer.Sigma(objective.getStdDev()));
+				PointValuePair outcome = runCmaes(objective, startPoint);
 				objective.setGeometryPoint(outcome.getPoint());
 			}
-			else if (optimizerType
-					.equals(BaseObjectiveFunction.OptimizerType.DIRECTOptimizer))
+			else if (optimizerType.equals(
+					BaseObjectiveFunction.OptimizerType.DIRECTOptimizer))
 			{
 				// Multivariate DIRECT optimization, with bounds.
-				MultivariateOptimizer optimizer;
-				PointValuePair outcome;
-				optimizer = new DIRECT1Optimizer(6.0e-6);	// About 3^-11.
-
-				// Run optimization first with the first-stage evaluator, if specified
-				EvaluatorInterface originalEvaluator = objective.getEvaluator();
-				if (objective.isRunTwoStageOptimization())
-				{
-					objective.setEvaluator(objective.getFirstStageEvaluator());
-				}
-				// Specify a target function value, to guard against underconstrained
-				// optimizations.  Value here should be suitable for CentsDeviationEvaluator,
-				// and adequate for most other evaluators.
-				outcome = optimizer.optimize(
-						GoalType.MINIMIZE,
-						new ObjectiveFunction(objective),
-						new MaxEval(2 * objective.getMaxEvaluations()),
-						MaxIter.unlimited(),
-						new InitialGuess(startPoint),
-						new DIRECTOptimizer.TargetFunctionValue(0.001),
-						new SimpleBounds(objective.getLowerBounds(), objective
-								.getUpperBounds()));
+				MultivariateOptimizer optimizer = new DIRECT1Optimizer(6.0e-6); // About
+				// 3^-11.
+				PointValuePair outcome = runDirect(optimizer, objective,
+						startPoint);
 
 				System.out.println("After " + optimizer.getEvaluations()
-						+ " evaluations, global optimizer found optimum " + outcome.getValue());
-				if (objective.isRunTwoStageOptimization())
-				{
-					objective.setEvaluator(originalEvaluator);
-				}
-				
-				// Use BOBYQA to refine global optimum found.
+						+ " evaluations, global optimizer found optimum "
+						+ outcome.getValue());
 
-				double trustRegion = objective.getInitialTrustRegionRadius();
-				double stoppingTrustRegion = objective
-						.getStoppingTrustRegionRadius();
-				optimizer = new BOBYQAOptimizer(
-						objective.getNrInterpolations(), trustRegion,
-						stoppingTrustRegion);
-				outcome = optimizer.optimize(GoalType.MINIMIZE,
-						new ObjectiveFunction(objective),
-						new MaxEval(objective.getMaxEvaluations()),
-						MaxIter.unlimited(), new InitialGuess(outcome.getPoint()),
-						new SimpleBounds(objective.getLowerBounds(),
-								objective.getUpperBounds()));
+				// Use BOBYQA to refine global optimum found.
+				outcome = runBobyqa(objective, outcome.getPoint());
 				objective.setGeometryPoint(outcome.getPoint());
 			}
 			else
 			{
 				// Multivariate BOBYQA optimization, with bounds.
-				MultivariateOptimizer optimizer;
-				double trustRegion = objective.getInitialTrustRegionRadius();
-				double stoppingTrustRegion = objective
-						.getStoppingTrustRegionRadius();
-				PointValuePair outcome;
-				optimizer = new BOBYQAOptimizer(
-						objective.getNrInterpolations(), trustRegion,
-						stoppingTrustRegion);
-
-				// Run optimization first with the first-stage evaluator, if
-				// specified
-				EvaluatorInterface originalEvaluator = objective.getEvaluator();
-				if (objective.isRunTwoStageOptimization())
-				{
-					objective.setEvaluator(objective.getFirstStageEvaluator());
-					outcome = optimizer.optimize(GoalType.MINIMIZE,
-							new ObjectiveFunction(objective), new MaxEval(
-									objective.getMaxEvaluations()), MaxIter
-									.unlimited(), new InitialGuess(startPoint),
-							new SimpleBounds(objective.getLowerBounds(),
-									objective.getUpperBounds()));
-					objective.setGeometryPoint(outcome.getPoint());
-				}
-
-				objective.setEvaluator(originalEvaluator);
-				outcome = optimizer.optimize(
-						GoalType.MINIMIZE,
-						new ObjectiveFunction(objective),
-						new MaxEval(objective.getMaxEvaluations()
-								- objective.getNumberOfEvaluations()),
-						MaxIter.unlimited(),
-						new InitialGuess(objective.getInitialPoint()),
-						new SimpleBounds(objective.getLowerBounds(), objective
-								.getUpperBounds()));
+				PointValuePair outcome = runBobyqa(objective, startPoint);
 				objective.setGeometryPoint(outcome.getPoint());
 			}
 		}
@@ -311,13 +216,14 @@ public class ObjectiveFunctionOptimizer
 		}
 		catch (OperationCancelledException e)
 		{
-			if (optimizerType
-					.equals(BaseObjectiveFunction.OptimizerType.MultiStartOptimizer))
+			if (optimizerType.equals(
+					BaseObjectiveFunction.OptimizerType.MultiStartOptimizer))
 			{
 				System.out.println("\nOptimization cancelled.\n");
 				return false;
 			}
-			System.out.println("\nOptimization cancelled.\nPartially-optimized result returned.\n");
+			System.out.println(
+					"\nOptimization cancelled.\nPartially-optimized result returned.\n");
 		}
 		catch (Exception e)
 		{
@@ -441,29 +347,18 @@ public class ObjectiveFunctionOptimizer
 				BOBYQAOptimizer optimizer = new BOBYQAOptimizer(
 						objective.getNrInterpolations(), trustRegion,
 						stoppingTrustRegion);
-				result = optimizer.optimize(
-						GoalType.MINIMIZE,
-						new ObjectiveFunction(objective),
-						new MaxEval(maxEvaluations),
-						MaxIter.unlimited(),
-						new InitialGuess(nextStart),
-						new SimpleBounds(objective.getLowerBounds(), objective
-								.getUpperBounds()));
+				result = runBobyqa(optimizer, objective, nextStart,
+						maxEvaluations);
 				singleRunEvaluations = optimizer.getEvaluations();
 			}
 			else
 			// Use Brent
 			{
 				BrentOptimizer optimizer = new BrentOptimizer(1.e-6, 1.e-14);
-				UnivariatePointValuePair outcome = optimizer.optimize(
-						GoalType.MINIMIZE, new UnivariateObjectiveFunction(
-								objective),
-						new MaxEval(objective.getMaxEvaluations()), MaxIter
-								.unlimited(),
-						new SearchInterval(objective.getLowerBounds()[0],
-								objective.getUpperBounds()[0], startPoint[0]));
-				result = new PointValuePair(
-						new double[] { outcome.getPoint() }, outcome.getValue());
+				UnivariatePointValuePair outcome = runBrent(optimizer,
+						objective, startPoint);
+				result = new PointValuePair(new double[] { outcome.getPoint() },
+						outcome.getValue());
 				singleRunEvaluations = optimizer.getEvaluations();
 			}
 			double value = result.getValue();
@@ -489,7 +384,8 @@ public class ObjectiveFunctionOptimizer
 		{
 			// Restore starting point.
 			objective.setGeometryPoint(startPoint);
-			// Re-throw the exception to give up the whole multi-start optimization.
+			// Re-throw the exception to give up the whole multi-start
+			// optimization.
 			throw new OperationCancelledException(e.getMessage());
 		}
 		catch (Exception e)
@@ -514,7 +410,8 @@ public class ObjectiveFunctionOptimizer
 	 * @param optima
 	 *            - array of point-value pairs from successive optimizations.
 	 */
-	protected static void sortPairs(final GoalType goal, PointValuePair[] optima)
+	protected static void sortPairs(final GoalType goal,
+			PointValuePair[] optima)
 	{
 		Arrays.sort(optima, new Comparator<PointValuePair>()
 		{
@@ -549,5 +446,153 @@ public class ObjectiveFunctionOptimizer
 	public static double getResidualErrorRatio()
 	{
 		return finalNorm / initialNorm;
+	}
+
+	protected static UnivariatePointValuePair runBrent(BrentOptimizer optimizer,
+			BaseObjectiveFunction objective, double[] startPoint)
+			throws TooManyEvaluationsException
+	{
+		UnivariatePointValuePair outcome;
+		outcome = optimizer.optimize(GoalType.MINIMIZE,
+				new UnivariateObjectiveFunction(objective),
+				new MaxEval(objective.getMaxEvaluations()), MaxIter.unlimited(),
+				new SearchInterval(objective.getLowerBounds()[0],
+						objective.getUpperBounds()[0], startPoint[0]));
+
+		return outcome;
+	}
+
+	protected static UnivariatePointValuePair runBrent(
+			BaseObjectiveFunction objective, double[] startPoint)
+			throws TooManyEvaluationsException
+	{
+		BrentOptimizer optimizer = new BrentOptimizer(1.e-6, 1.e-14);
+
+		return runBrent(optimizer, objective, startPoint);
+	}
+
+	protected static PointValuePair runBobyqa(BOBYQAOptimizer optimizer,
+			BaseObjectiveFunction objective, double[] startPoint,
+			int maxEvaluations) throws TooManyEvaluationsException
+	{
+		PointValuePair outcome;
+		EvaluatorInterface originalEvaluator = objective.getEvaluator();
+		if (objective.isRunTwoStageOptimization())
+		{
+			objective.setEvaluator(objective.getFirstStageEvaluator());
+			outcome = optimizer.optimize(GoalType.MINIMIZE,
+					new ObjectiveFunction(objective),
+					new MaxEval(maxEvaluations), MaxIter.unlimited(),
+					new InitialGuess(startPoint),
+					new SimpleBounds(objective.getLowerBounds(),
+							objective.getUpperBounds()));
+			objective.setGeometryPoint(outcome.getPoint());
+			startPoint = objective.getInitialPoint();
+		}
+
+		objective.setEvaluator(originalEvaluator);
+		outcome = optimizer.optimize(GoalType.MINIMIZE,
+				new ObjectiveFunction(objective),
+				new MaxEval(maxEvaluations - optimizer.getEvaluations()),
+				MaxIter.unlimited(), new InitialGuess(startPoint),
+				new SimpleBounds(objective.getLowerBounds(),
+						objective.getUpperBounds()));
+
+		return outcome;
+	}
+
+	protected static PointValuePair runBobyqa(BaseObjectiveFunction objective,
+			double[] startPoint) throws TooManyEvaluationsException
+	{
+		double trustRegion = objective.getInitialTrustRegionRadius();
+		double stoppingTrustRegion = objective.getStoppingTrustRegionRadius();
+		BOBYQAOptimizer optimizer = new BOBYQAOptimizer(
+				objective.getNrInterpolations(), trustRegion,
+				stoppingTrustRegion);
+
+		return runBobyqa(optimizer, objective, startPoint,
+				objective.getMaxEvaluations());
+	}
+
+	protected static PointValuePair runPowell(BaseObjectiveFunction objective,
+			double[] startPoint) throws TooManyEvaluationsException
+	{
+		PowellOptimizer optimizer = new PowellOptimizer(1.e-6, 1.e-14);
+
+		return optimizer.optimize(GoalType.MINIMIZE,
+				new ObjectiveFunction(objective),
+				new MaxEval(objective.getMaxEvaluations()), MaxIter.unlimited(),
+				new InitialGuess(startPoint));
+	}
+
+	protected static PointValuePair runSimplex(BaseObjectiveFunction objective,
+			double[] startPoint) throws TooManyEvaluationsException
+	{
+		// Rely on relative difference to test convergence,
+		// to allow for vast differences in absolute error scale
+		// between objective functions.
+		ConvergenceChecker<PointValuePair> convergenceChecker = new SimpleValueChecker(
+				1.e-6, 1.e-14);
+		SimplexOptimizer optimizer = new SimplexOptimizer(convergenceChecker);
+		MultiDirectionalSimplex simplex = new MultiDirectionalSimplex(
+				objective.getSimplexStepSize());
+
+		return optimizer.optimize(GoalType.MINIMIZE,
+				new ObjectiveFunction(objective),
+				new MaxEval(objective.getMaxEvaluations()), MaxIter.unlimited(),
+				new InitialGuess(startPoint), simplex);
+	}
+
+	protected static PointValuePair runCmaes(BaseObjectiveFunction objective,
+			double[] startPoint) throws TooManyEvaluationsException
+	{
+		// Rely on relative difference to test convergence,
+		// to allow for vast differences in absolute error scale
+		// between objective functions.
+		ConvergenceChecker<PointValuePair> convergenceChecker = new SimpleValueChecker(
+				1.e-6, 1.e-14);
+		MultivariateOptimizer optimizer = new CMAESOptimizer(
+				objective.getMaxEvaluations(), 0.0001 * initialNorm, true, 0, 0,
+				new MersenneTwister(), false, convergenceChecker);
+
+		return optimizer.optimize(GoalType.MINIMIZE,
+				new ObjectiveFunction(objective),
+				new MaxEval(objective.getMaxEvaluations()), MaxIter.unlimited(),
+				new InitialGuess(startPoint),
+				new SimpleBounds(objective.getLowerBounds(),
+						objective.getUpperBounds()),
+				new CMAESOptimizer.PopulationSize(
+						objective.getNrInterpolations()),
+				new CMAESOptimizer.Sigma(objective.getStdDev()));
+	}
+
+	protected static PointValuePair runDirect(MultivariateOptimizer optimizer,
+			BaseObjectiveFunction objective, double[] startPoint)
+			throws TooManyEvaluationsException
+	{
+		PointValuePair outcome;
+
+		// Run optimization first with the first-stage evaluator, if
+		// specified
+		EvaluatorInterface originalEvaluator = objective.getEvaluator();
+		if (objective.isRunTwoStageOptimization())
+		{
+			objective.setEvaluator(objective.getFirstStageEvaluator());
+		}
+		// Specify a target function value, to guard against
+		// underconstrained
+		// optimizations. Value here should be suitable for
+		// CentsDeviationEvaluator,
+		// and adequate for most other evaluators.
+		outcome = optimizer.optimize(GoalType.MINIMIZE,
+				new ObjectiveFunction(objective),
+				new MaxEval(2 * objective.getMaxEvaluations()),
+				MaxIter.unlimited(), new InitialGuess(startPoint),
+				new DIRECTOptimizer.TargetFunctionValue(0.001),
+				new SimpleBounds(objective.getLowerBounds(),
+						objective.getUpperBounds()));
+		objective.setEvaluator(originalEvaluator);
+
+		return outcome;
 	}
 }

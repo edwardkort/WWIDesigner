@@ -207,7 +207,7 @@ public class WhistleHoleCalculator extends HoleCalculator
 		// Complex A = Complex.ONE.add(B.multiply(C)).sqrt();
 		TransferMatrix result = new TransferMatrix( A, B, C, A );
 		
-		assert result.determinant() == Complex.valueOf(1.0,0.0);
+		// assert result.determinant() == Complex.valueOf(1.0,0.0);
 
 		return result;
 	}

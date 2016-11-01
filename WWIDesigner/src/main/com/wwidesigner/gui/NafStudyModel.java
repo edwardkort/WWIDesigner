@@ -93,8 +93,8 @@ public class NafStudyModel extends StudyModel
 
 	public static final String NO_MULTI_START_SUB_CATEGORY_ID = "No multi-start optimization";
 	public static final String NO_MULTI_START_TOOL_TIP = "Run optimizer once";
-	public static final String VARY_FIRST_MULTI_START_SUB_CATEGORY_ID = "Vary first bound variable";
-	public static final String VARY_FIRST_MULTI_START_TOOL_TIP = "Run optimizer multiple times, starting with different bore lengths (typically)";
+	public static final String VARY_FIRST_MULTI_START_SUB_CATEGORY_ID = "Vary bore length";
+	public static final String VARY_FIRST_MULTI_START_TOOL_TIP = "Run optimizer multiple times, starting with different bore lengths";
 	public static final String VARY_ALL_MULTI_START_SUB_CATEGORY_ID = "Vary all dimensions";
 	public static final String VARY_ALL_MULTI_START_TOOL_TIP = "Run optimizer multiple times, starting with different values for all parameters";
 
@@ -130,8 +130,10 @@ public class NafStudyModel extends StudyModel
 				NO_MULTI_START_TOOL_TIP);
 		multiStart.addSub(VARY_FIRST_MULTI_START_SUB_CATEGORY_ID, null,
 				VARY_FIRST_MULTI_START_TOOL_TIP);
-		multiStart.addSub(VARY_ALL_MULTI_START_SUB_CATEGORY_ID, null,
-				VARY_ALL_MULTI_START_TOOL_TIP);
+		// For now, remove this option: it doesn't seem to provide additional
+		// functionality
+		// multiStart.addSub(VARY_ALL_MULTI_START_SUB_CATEGORY_ID, null,
+		// VARY_ALL_MULTI_START_TOOL_TIP);
 		// Default to no multi-start
 		multiStart.setSelectedSub(NO_MULTI_START_SUB_CATEGORY_ID);
 		categories.add(multiStart);

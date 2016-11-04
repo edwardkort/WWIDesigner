@@ -58,4 +58,9 @@ public class BoreObjectiveFunction extends MergedObjectiveFunction
 		constraints.setConstraintsName("Default");
 	}
 
+	@Override
+	public double getStoppingTrustRegionRadius()
+	{
+		return 0.5e-6;
+	}
 }

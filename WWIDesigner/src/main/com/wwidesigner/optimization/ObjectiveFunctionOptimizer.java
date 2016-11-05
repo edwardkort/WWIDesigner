@@ -48,6 +48,7 @@ import org.apache.commons.math3.random.MersenneTwister;
 import com.wwidesigner.math.DIRECT1Optimizer;
 import com.wwidesigner.math.DIRECTOptimizer;
 import com.wwidesigner.modelling.EvaluatorInterface;
+import com.wwidesigner.optimization.BaseObjectiveFunction.OptimizerType;
 import com.wwidesigner.optimization.multistart.AbstractRangeProcessor;
 import com.wwidesigner.optimization.multistart.RandomRangeProcessor;
 import com.wwidesigner.util.OperationCancelledException;
@@ -112,6 +113,10 @@ public class ObjectiveFunctionOptimizer
 			BaseObjectiveFunction objective,
 			BaseObjectiveFunction.OptimizerType optimizerType)
 	{
+		if (!canOptimize(objective, optimizerType))
+		{
+			return false;
+		}
 
 		System.out.print("\nSystem has ");
 		System.out.print(objective.getNrDimensions());
@@ -129,6 +134,10 @@ public class ObjectiveFunctionOptimizer
 
 		try
 		{
+			if (objective.isMultiStart())
+			{
+
+			}
 			if (optimizerType
 					.equals(BaseObjectiveFunction.OptimizerType.BrentOptimizer))
 			{
@@ -153,8 +162,7 @@ public class ObjectiveFunctionOptimizer
 				PointValuePair outcome = runSimplex(objective, startPoint);
 				objective.setGeometryPoint(outcome.getPoint());
 			}
-			else if (optimizerType.equals(
-					BaseObjectiveFunction.OptimizerType.MultiStartOptimizer))
+			else if (objective.isMultiStart())
 			{
 				// Make the startPoint from the optimization result of a
 				// DIRECT/BOBYQA run.
@@ -216,8 +224,7 @@ public class ObjectiveFunctionOptimizer
 		}
 		catch (OperationCancelledException e)
 		{
-			if (optimizerType.equals(
-					BaseObjectiveFunction.OptimizerType.MultiStartOptimizer))
+			if (objective.isMultiStart())
 			{
 				System.out.println("\nOptimization cancelled.\n");
 				return false;
@@ -250,6 +257,29 @@ public class ObjectiveFunctionOptimizer
 
 		return true;
 	} // optimizeObjectiveFunction
+
+	/**
+	 * Check whether the optimization is both multi-start and DIRECT. If so,
+	 * show a dialog giving the user the option to do a single-start with DIRECT
+	 * or cancel the optimization; if OK is selected, the rangeProcessor is set
+	 * to null.
+	 * 
+	 * @param objective
+	 * @param optimizerType
+	 * @return True to continue optimization.
+	 */
+	private static boolean canOptimize(BaseObjectiveFunction objective,
+			OptimizerType optimizerType)
+	{
+		boolean multistart = objective.isMultiStart();
+
+		if (!objective.isMultiStart() || !optimizerType
+				.equals(BaseObjectiveFunction.OptimizerType.DIRECTOptimizer))
+		{
+			return true;
+		}
+		return false;
+	}
 
 	/**
 	 * Use a multi-start BOBYQA optimization to optimize a specified objective

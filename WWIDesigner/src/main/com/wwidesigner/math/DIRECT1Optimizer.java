@@ -64,44 +64,49 @@ public class DIRECT1Optimizer extends DIRECTOptimizer
 	protected EligibleSides selectEligibleSides(RectangleValue rectangle)
 	{
 		EligibleSides eligibleSides = new EligibleSides(rectangle.getWidth().length);
-		boolean isHypercube = true;		// if all non-zero sides have the same width.
 		int nrEligibleSides = rectangle.getLongCount();
 		int eligibleSide = rectangle.getLongIdx();
 		int i;
-		double highestPotential;
 		
-		// For hypercubes, divide on all sides.
-		for (i = 0; i < rectangle.getWidth().length; ++i)
+		if (nrEligibleSides == 1)
 		{
-			eligibleSides.setEligible(i, rectangle.isLongSide(i));
-			if (! rectangle.isLongSide(i) && boundDifference[i] > 0.0)
-			{
-				isHypercube = false;
-			}
+			eligibleSides.setEligibleSide(eligibleSide);
+			eligibleSides.setNrEligibleSides(nrEligibleSides);
+			return eligibleSides;
 		}
-		if (! isHypercube)
+		
+		if (rectangle.isHypercube())
 		{
-			// Divide on only one long side with the most potential.
-			highestPotential = -Double.MAX_VALUE;
-			double[] potential = rectangle.getPotential();
-			if (potential == null)
-			{
-				potential = new double[rectangle.getWidth().length];
-				Arrays.fill(potential, 0.0);
-			}
-			nrEligibleSides = 1;
+			// For hypercubes, divide on all sides.
 			for (i = 0; i < rectangle.getWidth().length; ++i)
 			{
-				if (rectangle.isLongSide(i) 
-						&& potential[i] > highestPotential)
-				{
-					highestPotential = potential[i];
-					eligibleSide = i;
-				}
+				eligibleSides.setEligible(i, rectangle.isLongSide(i));
+			}
+			eligibleSides.setNrEligibleSides(nrEligibleSides);
+			return eligibleSides;
+		}
+
+		// Divide on only one long side with the most potential.
+		double highestPotential = -Double.MAX_VALUE;
+		double[] potential = rectangle.getPotential();
+		if (potential == null)
+		{
+			potential = new double[rectangle.getWidth().length];
+			Arrays.fill(potential, 0.0);
+		}
+		nrEligibleSides = 1;
+		for (i = 0; i < rectangle.getWidth().length; ++i)
+		{
+			if (rectangle.isLongSide(i) 
+					&& potential[i] > highestPotential)
+			{
+				highestPotential = potential[i];
+				eligibleSide = i;
+				eligibleSides.setEligible(i, true);
 			}
 		}
-		eligibleSides.setNrEligibleSides(nrEligibleSides);
 		eligibleSides.setEligibleSide(eligibleSide);
+		eligibleSides.setNrEligibleSides(nrEligibleSides);
 		return eligibleSides;
 	}
 

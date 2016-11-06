@@ -431,6 +431,19 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 			}
 			return true;
 		}
+
+		public boolean isHypercube()
+		{
+			int i;
+			for (i = 0; i < width.length; ++i)
+			{
+				if (boundDifference[i] > 0.0 && ! isLongSide(i) )
+				{
+					return false;
+				}
+			}
+			return true;
+		}
 	}
 	
 	protected class Rectangle implements

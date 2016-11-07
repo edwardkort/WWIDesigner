@@ -141,6 +141,7 @@ import org.apache.commons.math3.util.FastMath;
 public class DIRECTOptimizer extends MultivariateOptimizer
 {
 	public static final double DEFAULT_X_THRESHOLD = 1.0e-4;
+	public static final int DEFAULT_ITERATION_THRESHOLD = 20;
 
 	protected static final double THIRD = 0.3333333333333333333333d;
 	protected static final double EQUAL_SIDE_TOL = 5e-2;		// tolerance to equate side sizes
@@ -157,7 +158,13 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 	 * Desired accuracy in x values sufficient for convergence,
 	 * relative to distance between bounds.
 	 */
-	protected double convergenceThreshold;
+	protected double convergenceXThreshold;
+	
+	/**
+	 * If convergenceXThreshold has been reached, assume convergence
+	 * after this many iterations without improvement in function value.
+	 */
+	protected int convergedIterationsThreshold;
 
 	/**
 	 * Target absolute function value sufficient for convergence,
@@ -181,6 +188,7 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 	 * Best point found so far.
 	 */
 	protected PointValuePair currentBest;
+	protected int iterationOfLastImprovement;
 	
 	/**
 	 * Worst value found so far, used for infeasible points.
@@ -196,19 +204,39 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 	 */
 	public DIRECTOptimizer()
 	{
-		this(DEFAULT_X_THRESHOLD);
+		this(DEFAULT_X_THRESHOLD, DEFAULT_ITERATION_THRESHOLD);
 	}
 
 	/**
 	 * Create an optimizer that uses the DIRECT algorithm.
-	 * @param convergenceThreshold - The optimizer converges when the best solution
-	 * is in a hyperrectangle with all sides smaller than this threshold, relative
-	 * to the distance between the upper and lower bounds.
+	 * 
+	 * @param convergenceXThreshold
+	 *            - The optimizer converges when the best solution is in a
+	 *            hyperrectangle with all sides smaller than this threshold,
+	 *            relative to the distance between the upper and lower bounds.
 	 */
-	public DIRECTOptimizer(double convergenceThreshold)
+	public DIRECTOptimizer(double convergenceXThreshold)
+	{
+		this(convergenceXThreshold, DEFAULT_ITERATION_THRESHOLD);
+	}
+
+	/**
+	 * Create an optimizer that uses the DIRECT algorithm.
+	 * 
+	 * @param convergenceXThreshold
+	 *            - The optimizer converges when the best solution is in a
+	 *            hyperrectangle with all sides smaller than this threshold,
+	 *            relative to the distance between the upper and lower bounds.
+	 * @param convergedIterationThreshold
+	 *            - If convergenceXThreshold has been reached, assume
+	 *            convergence after this many iterations without improvement in
+	 *            function value.
+	 */
+	public DIRECTOptimizer(double convergenceXThreshold, int convergedIterationThreshold)
 	{
 		super(null);		// No standard convergence checker.
-		this.convergenceThreshold = convergenceThreshold;
+		this.convergenceXThreshold = convergenceXThreshold;
+		this.convergedIterationsThreshold = convergedIterationThreshold;
 		this.targetFunctionValue = null;
 		allowDuplicatesInHull = true;		// Jones hull selection: allow duplicate points.
 	}
@@ -424,7 +452,7 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 			int i;
 			for (i = 0; i < width.length; ++i)
 			{
-				if (width[i] > convergenceThreshold)
+				if (width[i] > convergenceXThreshold)
 				{
 					return false;
 				}
@@ -492,11 +520,12 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 	protected PointValuePair doOptimize()
 	{
 		currentBest = new PointValuePair(getStartPoint(), Double.MAX_VALUE, true);
+		iterationOfLastImprovement = 0;
 
 		// Validity checks.
 		setup();
 		
-		double convergenceDiameter = thresholdDiameter(convergenceThreshold, boundDifference.length );
+		double convergenceDiameter = thresholdDiameter(convergenceXThreshold, boundDifference.length );
 
 		do
 		{
@@ -540,6 +569,7 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 			if (fval < currentBest.getValue())
 			{
 				currentBest = new PointValuePair(params, fval, true);
+				iterationOfLastImprovement = getIterations();
 			}
 			if (fval > fMax)
 			{
@@ -988,7 +1018,9 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 					+ " Current best " + currentBest.getValue());
 		}
 
-		return nrSmall < 1 || nrPromisingDivisions > 0;
+		return nrSmall < 1 
+				|| nrPromisingDivisions > 0
+					&& getIterations() < iterationOfLastImprovement + convergedIterationsThreshold;
 	}
 
 	/* Convex hull algorithm, used to find the potentially optimal

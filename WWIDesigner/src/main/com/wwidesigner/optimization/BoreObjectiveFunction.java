@@ -61,6 +61,6 @@ public class BoreObjectiveFunction extends MergedObjectiveFunction
 	@Override
 	public double getStoppingTrustRegionRadius()
 	{
-		return 0.5e-6;
+		return 0.8e-6;
 	}
 }

@@ -47,6 +47,7 @@ import org.apache.commons.math3.random.MersenneTwister;
 
 import com.wwidesigner.math.DIRECT1Optimizer;
 import com.wwidesigner.math.DIRECTOptimizer;
+import com.wwidesigner.math.DIRECTCOptimizer;
 import com.wwidesigner.modelling.EvaluatorInterface;
 import com.wwidesigner.optimization.multistart.AbstractRangeProcessor;
 import com.wwidesigner.optimization.multistart.RandomRangeProcessor;
@@ -190,12 +191,12 @@ public class ObjectiveFunctionOptimizer
 					BaseObjectiveFunction.OptimizerType.DIRECTOptimizer))
 			{
 				// Multivariate DIRECT optimization, with bounds.
-				MultivariateOptimizer optimizer = new DIRECT1Optimizer(6.0e-6); // About
-				// 3^-11.
+				// Convergence threshold about 3^-11.
+				MultivariateOptimizer optimizer = new DIRECTCOptimizer(6.0e-6);
 				PointValuePair outcome = runDirect(optimizer, objective,
 						startPoint);
 
-				System.out.println("After " + optimizer.getEvaluations()
+				System.out.println("After " + objective.getNumberOfEvaluations()
 						+ " evaluations, global optimizer found optimum "
 						+ outcome.getValue());
 

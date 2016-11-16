@@ -123,8 +123,8 @@ public abstract class BaseObjectiveFunction implements MultivariateFunction,
 	@Override
 	public double value(double[] point)
 	{
-		double[] errorVector = getErrorVector(point);
 		++evaluationsDone;
+		double[] errorVector = getErrorVector(point);
 		tuningsDone += errorVector.length;
 		return calcNorm(errorVector);
 	}

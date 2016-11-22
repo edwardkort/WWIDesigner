@@ -43,6 +43,7 @@ import com.wwidesigner.geometry.bind.GeometryBindFactory;
 import com.wwidesigner.geometry.view.InstrumentComparisonTable;
 import com.wwidesigner.gui.util.DataOpenException;
 import com.wwidesigner.gui.util.HoleNumberMismatchException;
+import com.wwidesigner.gui.util.OptimizerMismatchException;
 import com.wwidesigner.modelling.InstrumentCalculator;
 import com.wwidesigner.modelling.InstrumentTuner;
 import com.wwidesigner.modelling.PlayingRangeSpectrum;
@@ -71,8 +72,10 @@ public abstract class StudyModel implements CategoryType
 	// Plot from a major 9th below to 3rd harmonic above.
 	protected static final double SPECTRUM_FREQUENCY_BELOW = 0.45;
 	protected static final double SPECTRUM_FREQUENCY_ABOVE = 3.17;
-	protected static final int SPECTRUM_NUMBER_OF_POINTS = 2000;	// Number of points to plot.
-	
+	protected static final int SPECTRUM_NUMBER_OF_POINTS = 2000; // Number of
+																	// points to
+																	// plot.
+
 	// Preferences.
 	protected BaseObjectiveFunction.OptimizerType preferredOptimizerType;
 
@@ -187,7 +190,8 @@ public abstract class StudyModel implements CategoryType
 	 *            - Name of subcategory to select in the named category. Post:
 	 *            getSelectedSub(categoryName) returns subCategoryName.
 	 */
-	public void setCategorySelection(String categoryName, String subcategoryName)
+	public void setCategorySelection(String categoryName,
+			String subcategoryName)
 	{
 		for (Category thisCategory : categories)
 		{
@@ -641,7 +645,8 @@ public abstract class StudyModel implements CategoryType
 	protected boolean validHoleCount() throws Exception
 	{
 		Integer tuningHoleCount = getHoleCountFromSelected(TUNING_CATEGORY_ID);
-		Integer instrumentHoleCount = getHoleCountFromSelected(INSTRUMENT_CATEGORY_ID);
+		Integer instrumentHoleCount = getHoleCountFromSelected(
+				INSTRUMENT_CATEGORY_ID);
 		if (tuningHoleCount == null || instrumentHoleCount == null)
 		{
 			return false;
@@ -650,9 +655,9 @@ public abstract class StudyModel implements CategoryType
 		{
 			return true;
 		}
-		throw new HoleNumberMismatchException("Tuning file has "
-				+ tuningHoleCount + " holes, Instrument has "
-				+ instrumentHoleCount + " holes.");
+		throw new HoleNumberMismatchException(
+				"Tuning file has " + tuningHoleCount + " holes, Instrument has "
+						+ instrumentHoleCount + " holes.");
 	}
 
 	/**
@@ -804,7 +809,7 @@ public abstract class StudyModel implements CategoryType
 		tuner.showTuning(title + ": " + instrumentName + "/" + tuningName,
 				false);
 	}
-	
+
 	public void calculateSupplementaryInfo(String title) throws Exception
 	{
 		InstrumentTuner tuner = getInstrumentTuner();
@@ -819,7 +824,8 @@ public abstract class StudyModel implements CategoryType
 
 		tuner.setCalculator(getCalculator());
 
-		SupplementaryInfoTable table = new SupplementaryInfoTable(title + ": " + instrumentName + "/" + tuningName);
+		SupplementaryInfoTable table = new SupplementaryInfoTable(
+				title + ": " + instrumentName + "/" + tuningName);
 		table.buildTable(tuner, false);
 		table.showTable(false);
 	}
@@ -841,7 +847,7 @@ public abstract class StudyModel implements CategoryType
 		tuner.plotTuning(title + ": " + instrumentName + "/" + tuningName,
 				false);
 	}
-	
+
 	public void graphNote(Fingering fingering) throws Exception
 	{
 		Instrument instrument = getInstrument();
@@ -854,13 +860,14 @@ public abstract class StudyModel implements CategoryType
 		InstrumentCalculator calculator = getCalculator();
 		calculator.setInstrument(instrument);
 		PlayingRangeSpectrum spectrum = new PlayingRangeSpectrum();
-		spectrum.plot(calculator, fingering, SPECTRUM_FREQUENCY_BELOW, SPECTRUM_FREQUENCY_ABOVE,
-				SPECTRUM_NUMBER_OF_POINTS, false);
+		spectrum.plot(calculator, fingering, SPECTRUM_FREQUENCY_BELOW,
+				SPECTRUM_FREQUENCY_ABOVE, SPECTRUM_NUMBER_OF_POINTS, false);
 	}
 
 	public String getDefaultConstraints(Object... parentFrame) throws Exception
 	{
-		BaseObjectiveFunction objective = getObjectiveFunction(BaseObjectiveFunction.DEFAULT_CONSTRAINTS_INTENT);
+		BaseObjectiveFunction objective = getObjectiveFunction(
+				BaseObjectiveFunction.DEFAULT_CONSTRAINTS_INTENT);
 		// For the case of a cancelled hole-grouping.
 		if (objective == null)
 		{
@@ -875,7 +882,8 @@ public abstract class StudyModel implements CategoryType
 
 	public String getBlankConstraints(Frame parentFrame) throws Exception
 	{
-		BaseObjectiveFunction objective = getObjectiveFunction(BaseObjectiveFunction.BLANK_CONSTRAINTS_INTENT);
+		BaseObjectiveFunction objective = getObjectiveFunction(
+				BaseObjectiveFunction.BLANK_CONSTRAINTS_INTENT);
 		// For the case of a cancelled hole-grouping.
 		if (objective == null)
 		{
@@ -900,7 +908,8 @@ public abstract class StudyModel implements CategoryType
 		{
 			return null;
 		}
-		objective = getObjectiveFunction(BaseObjectiveFunction.OPTIMIZATION_INTENT);
+		objective = getObjectiveFunction(
+				BaseObjectiveFunction.OPTIMIZATION_INTENT);
 
 		// Check to see whether there are 0 variables: an infinite loop
 		// situation.
@@ -911,11 +920,17 @@ public abstract class StudyModel implements CategoryType
 
 		BaseObjectiveFunction.OptimizerType optimizerType = objective
 				.getOptimizerType();
-		if (preferredOptimizerType != null
-				&& !optimizerType
-						.equals(BaseObjectiveFunction.OptimizerType.BrentOptimizer))
+		if (preferredOptimizerType != null && !optimizerType
+				.equals(BaseObjectiveFunction.OptimizerType.BrentOptimizer))
 		{
 			optimizerType = preferredOptimizerType;
+		}
+
+		if (!objective.isOptimizerMatch(optimizerType))
+		{
+			throw new OptimizerMismatchException(
+					"Cannot run multi-start optimization with "
+							+ optimizerType);
 		}
 
 		initialNorm = 1.0;
@@ -935,7 +950,7 @@ public abstract class StudyModel implements CategoryType
 		objective = null;
 		return null;
 	} // optimizeInstrument
-	
+
 	public void cancelOptimization()
 	{
 		if (objective != null)
@@ -1030,8 +1045,8 @@ public abstract class StudyModel implements CategoryType
 	{
 		BindFactory geometryBindFactory = GeometryBindFactory.getInstance();
 		String xmlString = getSelectedXmlString(INSTRUMENT_CATEGORY_ID);
-		Instrument instrument = (Instrument) geometryBindFactory.unmarshalXml(
-				xmlString, true);
+		Instrument instrument = (Instrument) geometryBindFactory
+				.unmarshalXml(xmlString, true);
 		instrument.checkValidity();
 		instrument.updateComponents();
 		return instrument;
@@ -1089,8 +1104,8 @@ public abstract class StudyModel implements CategoryType
 		BindFactory geometryBindFactory = GeometryBindFactory.getInstance();
 		String inputPath = BindFactory.getPathFromName(fileName);
 		File inputFile = new File(inputPath);
-		Instrument instrument = (Instrument) geometryBindFactory.unmarshalXml(
-				inputFile, true);
+		Instrument instrument = (Instrument) geometryBindFactory
+				.unmarshalXml(inputFile, true);
 		instrument.updateComponents();
 
 		return instrument;
@@ -1219,7 +1234,8 @@ public abstract class StudyModel implements CategoryType
 		return defaultClass;
 	}
 
-	protected Class<ContainedXmlView>[] getToggleViewClasses(String categoryName)
+	protected Class<ContainedXmlView>[] getToggleViewClasses(
+			String categoryName)
 	{
 		return toggleXmlViewLists.get(categoryName);
 	}
@@ -1237,7 +1253,8 @@ public abstract class StudyModel implements CategoryType
 		String xmlData = (String) dataModel.getData().toString();
 		String categoryName = getCategoryName(xmlData);
 
-		Class<? extends ContainedXmlView> defaultViewClass = getDefaultViewClass(categoryName);
+		Class<? extends ContainedXmlView> defaultViewClass = getDefaultViewClass(
+				categoryName);
 		ContainedXmlView defaultView = null;
 		try
 		{
@@ -1278,7 +1295,8 @@ public abstract class StudyModel implements CategoryType
 		String xmlData = (String) dataModel.getData().toString();
 		String categoryName = getCategoryName(xmlData);
 
-		Class<ContainedXmlView>[] toggleViews = getToggleViewClasses(categoryName);
+		Class<ContainedXmlView>[] toggleViews = getToggleViewClasses(
+				categoryName);
 
 		Class<ContainedXmlView> nextViewClass = null;
 		int numberOfToggles = toggleViews == null ? 0 : toggleViews.length;
@@ -1337,7 +1355,8 @@ public abstract class StudyModel implements CategoryType
 		String xmlData = (String) dataModel.getData().toString();
 		String categoryName = getCategoryName(xmlData);
 
-		Class<ContainedXmlView>[] toggleViews = getToggleViewClasses(categoryName);
+		Class<ContainedXmlView>[] toggleViews = getToggleViewClasses(
+				categoryName);
 
 		int numberOfViews = 0;
 		if (toggleViews != null)

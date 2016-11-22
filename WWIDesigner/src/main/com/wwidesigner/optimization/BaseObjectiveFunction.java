@@ -39,8 +39,8 @@ import com.wwidesigner.util.OperationCancelledException;
  * 
  * @author Burton Patkau
  */
-public abstract class BaseObjectiveFunction implements MultivariateFunction,
-		UnivariateFunction
+public abstract class BaseObjectiveFunction
+		implements MultivariateFunction, UnivariateFunction
 {
 	// The Intent denotes the use of the ObjectiveFunction based on it
 	// Constraints
@@ -66,8 +66,7 @@ public abstract class BaseObjectiveFunction implements MultivariateFunction,
 	// Recommended optimization method.
 	public enum OptimizerType
 	{
-		BrentOptimizer, BOBYQAOptimizer, CMAESOptimizer, MultiStartOptimizer,
-		DIRECTOptimizer, SimplexOptimizer, PowellOptimizer
+		BrentOptimizer, BOBYQAOptimizer, CMAESOptimizer, DIRECTOptimizer, SimplexOptimizer, PowellOptimizer
 	}
 
 	protected OptimizerType optimizerType;
@@ -105,8 +104,8 @@ public abstract class BaseObjectiveFunction implements MultivariateFunction,
 		cancel = false;
 		evaluationsDone = 0;
 		tuningsDone = 0;
-		constraints = new Constraints(calculator.getInstrument()
-				.getLengthType());
+		constraints = new Constraints(
+				calculator.getInstrument().getLengthType());
 	}
 
 	/**
@@ -185,7 +184,7 @@ public abstract class BaseObjectiveFunction implements MultivariateFunction,
 	 * @param point
 	 *            - geometry values to test. point.length == nrDimensions.
 	 * @return array of error values, one for each fingering target.
-	 * @throws OperationCancelledException 
+	 * @throws OperationCancelledException
 	 * @throws DimensionMismatchException.
 	 */
 	public double[] getErrorVector(double[] point)
@@ -301,7 +300,7 @@ public abstract class BaseObjectiveFunction implements MultivariateFunction,
 		}
 
 		if (optimizerType.equals(OptimizerType.BOBYQAOptimizer)
-				|| optimizerType.equals(OptimizerType.MultiStartOptimizer)
+				|| isMultiStart()
 				|| optimizerType.equals(OptimizerType.DIRECTOptimizer))
 		{
 			// Largest recommended value for BOBYQA.
@@ -518,10 +517,10 @@ public abstract class BaseObjectiveFunction implements MultivariateFunction,
 
 	public OptimizerType getOptimizerType()
 	{
-		if (isMultiStart())
-		{
-			return OptimizerType.MultiStartOptimizer;
-		}
+		// if (isMultiStart())
+		// {
+		// return OptimizerType.MultiStartOptimizer;
+		// }
 		return optimizerType;
 	}
 
@@ -611,6 +610,26 @@ public abstract class BaseObjectiveFunction implements MultivariateFunction,
 	public void setCancel(boolean cancel)
 	{
 		this.cancel = cancel;
+	}
+
+	/**
+	 * Currently, multi-start optimization makes no sense with the DIRECT
+	 * optimizer selected. Check for this combination. Other combinations may be
+	 * added in the future.
+	 * 
+	 * @param optimizerType
+	 * @return False if multi-start optimization and DIRECT optimizer, true
+	 *         otherwise.
+	 */
+	public boolean isOptimizerMatch(OptimizerType anOptimizerType)
+	{
+		if (isMultiStart()
+				&& anOptimizerType.equals(OptimizerType.DIRECTOptimizer))
+		{
+			return false;
+		}
+
+		return true;
 	}
 
 }

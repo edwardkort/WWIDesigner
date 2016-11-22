@@ -45,7 +45,6 @@ import org.apache.commons.math3.optim.univariate.UnivariateObjectiveFunction;
 import org.apache.commons.math3.optim.univariate.UnivariatePointValuePair;
 import org.apache.commons.math3.random.MersenneTwister;
 
-import com.wwidesigner.math.DIRECT1Optimizer;
 import com.wwidesigner.math.DIRECTOptimizer;
 import com.wwidesigner.math.DIRECTCOptimizer;
 import com.wwidesigner.modelling.EvaluatorInterface;
@@ -113,7 +112,6 @@ public class ObjectiveFunctionOptimizer
 			BaseObjectiveFunction objective,
 			BaseObjectiveFunction.OptimizerType optimizerType)
 	{
-
 		System.out.print("\nSystem has ");
 		System.out.print(objective.getNrDimensions());
 		System.out.print(" optimization variables and ");
@@ -130,32 +128,7 @@ public class ObjectiveFunctionOptimizer
 
 		try
 		{
-			if (optimizerType
-					.equals(BaseObjectiveFunction.OptimizerType.BrentOptimizer))
-			{
-				// Univariate optimization.
-				UnivariatePointValuePair outcome = runBrent(objective,
-						startPoint);
-				double[] geometry = new double[1];
-				geometry[0] = outcome.getPoint();
-				objective.setGeometryPoint(geometry);
-			}
-			else if (optimizerType.equals(
-					BaseObjectiveFunction.OptimizerType.PowellOptimizer))
-			{
-				// Multivariate optimization, without bounds.
-				PointValuePair outcome = runPowell(objective, startPoint);
-				objective.setGeometryPoint(outcome.getPoint());
-			}
-			else if (optimizerType.equals(
-					BaseObjectiveFunction.OptimizerType.SimplexOptimizer))
-			{
-				// Multivariate optimization, without bounds.
-				PointValuePair outcome = runSimplex(objective, startPoint);
-				objective.setGeometryPoint(outcome.getPoint());
-			}
-			else if (optimizerType.equals(
-					BaseObjectiveFunction.OptimizerType.MultiStartOptimizer))
+			if (objective.isMultiStart())
 			{
 				// Make the startPoint from the optimization result of a
 				// DIRECT/BOBYQA run.
@@ -179,6 +152,30 @@ public class ObjectiveFunctionOptimizer
 				{
 					objective.setGeometryPoint(outcome.getPoint());
 				}
+			}
+			else if (optimizerType
+					.equals(BaseObjectiveFunction.OptimizerType.BrentOptimizer))
+			{
+				// Univariate optimization.
+				UnivariatePointValuePair outcome = runBrent(objective,
+						startPoint);
+				double[] geometry = new double[1];
+				geometry[0] = outcome.getPoint();
+				objective.setGeometryPoint(geometry);
+			}
+			else if (optimizerType.equals(
+					BaseObjectiveFunction.OptimizerType.PowellOptimizer))
+			{
+				// Multivariate optimization, without bounds.
+				PointValuePair outcome = runPowell(objective, startPoint);
+				objective.setGeometryPoint(outcome.getPoint());
+			}
+			else if (optimizerType.equals(
+					BaseObjectiveFunction.OptimizerType.SimplexOptimizer))
+			{
+				// Multivariate optimization, without bounds.
+				PointValuePair outcome = runSimplex(objective, startPoint);
+				objective.setGeometryPoint(outcome.getPoint());
 			}
 			else if (optimizerType
 					.equals(BaseObjectiveFunction.OptimizerType.CMAESOptimizer))
@@ -217,8 +214,7 @@ public class ObjectiveFunctionOptimizer
 		}
 		catch (OperationCancelledException e)
 		{
-			if (optimizerType.equals(
-					BaseObjectiveFunction.OptimizerType.MultiStartOptimizer))
+			if (objective.isMultiStart())
 			{
 				System.out.println("\nOptimization cancelled.\n");
 				return false;

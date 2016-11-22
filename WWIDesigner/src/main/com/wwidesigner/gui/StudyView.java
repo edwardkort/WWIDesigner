@@ -58,6 +58,7 @@ import com.jidesoft.tree.TreeUtils;
 import com.wwidesigner.geometry.Instrument;
 import com.wwidesigner.gui.util.DataOpenException;
 import com.wwidesigner.gui.util.HoleNumberMismatchException;
+import com.wwidesigner.gui.util.OptimizerMismatchException;
 import com.wwidesigner.modelling.SketchInstrument;
 import com.wwidesigner.note.Fingering;
 import com.wwidesigner.optimization.Constraints;
@@ -398,7 +399,7 @@ public class StudyView extends DataViewPane implements EventSubscriber
 			showException(ex);
 		}
 	}
-	
+
 	public void cancelOptimization()
 	{
 		study.cancelOptimization();
@@ -497,7 +498,8 @@ public class StudyView extends DataViewPane implements EventSubscriber
 			// Put in to show an understandable error.
 			if (fingering == null)
 			{
-				throw new Exception("Cannot retrieve a selected fingering.  Select a fingering on the turning panel.");
+				throw new Exception(
+						"Cannot retrieve a selected fingering.  Select a fingering on the turning panel.");
 			}
 			study.graphNote(fingering);
 		}
@@ -642,6 +644,11 @@ public class StudyView extends DataViewPane implements EventSubscriber
 		{
 			exceptionType = "Operation cancelled";
 			messageType = MessageDialogRequest.WARNING_STYLE;
+		}
+		else if (exception instanceof OptimizerMismatchException)
+		{
+			exceptionType = "Operation cancelled";
+			messageType = MessageDialogRequest.ERROR_STYLE;
 		}
 		else
 		{

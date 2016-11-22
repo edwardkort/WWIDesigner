@@ -160,7 +160,7 @@ public class ObjectiveFunctionOptimizer
 				// Make the startPoint from the optimization result of a
 				// DIRECT/BOBYQA run.
 				PointValuePair outcome;
-				MultivariateOptimizer optimizer = new DIRECT1Optimizer(6.0e-6);
+				MultivariateOptimizer optimizer = new DIRECTCOptimizer(6.0e-6);
 				outcome = runDirect(optimizer, objective, startPoint);
 				System.out.println(
 						"After global optimizer, error: " + outcome.getValue());

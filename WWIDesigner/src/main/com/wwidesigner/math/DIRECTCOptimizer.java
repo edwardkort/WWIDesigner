@@ -35,7 +35,19 @@ import org.apache.commons.math3.util.FastMath;
  * convex hull), or pick hyperrectangles with smallest function values close to
  * current best point (pruned to monotone, but not necessarily convex, hull).
  * For the latter, DIRECT-C uses a simple bin sort to sort hyperrectangles by
- * distance from the target point, and find the POH with lowest function value.
+ * distance from the target point, and find the POH with lowest function value
+ * in each bin.
+ * 
+ * This algorithm takes inspiration from the multi-level DIRECT-HD optimizer
+ * described in:
+ * 
+ *		Arash Tavassoli, Kambiz Haji Hajikolaei, Soheil Sadeqi, G. Gary Wang,
+ *		and Erik Kjeang, "Modification of DIRECT for high-dimensional design problems,"
+ *		Engineering Optimization, 2013, Taylor and Francis,
+ *		DOI:10.1080/0305215X.2013.800057
+ *
+ * Unlike DIRECT-HD, DIRECT-C does not shrink the constraint bounds, and so
+ * it does not require a diversification routine. 
  */
 public class DIRECTCOptimizer extends DIRECT1Optimizer
 {

@@ -32,13 +32,16 @@ import com.wwidesigner.modelling.CentDeviationEvaluator;
 import com.wwidesigner.modelling.EvaluatorInterface;
 import com.wwidesigner.modelling.InstrumentCalculator;
 import com.wwidesigner.modelling.InstrumentTuner;
-import com.wwidesigner.modelling.ReactanceEvaluator;
 import com.wwidesigner.modelling.SimpleInstrumentTuner;
 import com.wwidesigner.modelling.SimpleReedCalculator;
 import com.wwidesigner.note.Tuning;
 import com.wwidesigner.optimization.BoreDiameterObjectiveFunction;
 import com.wwidesigner.optimization.BoreObjectiveFunction;
 import com.wwidesigner.optimization.BorePositionObjectiveFunction;
+import com.wwidesigner.optimization.GlobalBoreObjectiveFunction;
+import com.wwidesigner.optimization.GlobalHoleAndBoreObjectiveFunction;
+import com.wwidesigner.optimization.GlobalHoleObjectiveFunction;
+import com.wwidesigner.optimization.GlobalHolePositionObjectiveFunction;
 import com.wwidesigner.optimization.HoleAndBoreDiameterObjectiveFunction;
 import com.wwidesigner.optimization.HoleAndBoreObjectiveFunction;
 import com.wwidesigner.optimization.HoleAndBorePositionObjectiveFunction;
@@ -53,7 +56,6 @@ import com.wwidesigner.optimization.HoleSizeObjectiveFunction;
 import com.wwidesigner.optimization.LengthObjectiveFunction;
 import com.wwidesigner.optimization.HolePositionObjectiveFunction.BoreLengthAdjustmentType;
 import com.wwidesigner.optimization.bind.OptimizationBindFactory;
-import com.wwidesigner.optimization.multistart.GridRangeProcessor;
 import com.wwidesigner.util.Constants.TemperatureType;
 import com.wwidesigner.util.BindFactory;
 import com.wwidesigner.util.PhysicalParameters;
@@ -74,14 +76,17 @@ public class ReedStudyModel extends StudyModel
 	public static final String HOLESPACE_OPT_SUB_CATEGORY_ID = "4. Hole Spacing Optimizer";
 	public static final String HOLE_OPT_SUB_CATEGORY_ID = "5. Hole Size+Spacing Optimizer";
 	public static final String CONE_OPT_SUB_CATEGORY_ID = "6. Conical Bore Optimizer";
-	public static final String HOLE_CONE_OPT_SUB_CATEGORY_ID = "7. Hole and Conical Bore Optimizer";
-	public static final String BORE_DIAMETER_OPT_SUB_CATEGORY_ID = "8. Bore Diameter Optimizer";
-	public static final String HOLE_BOREDIAMETER_OPT_SUB_CATEGORY_ID = "9. Hole and Bore Diameter Optimizer";
-	public static final String BORE_POSITION_OPT_SUB_CATEGORY_ID = "A. Bore Point Position Optimizer";
-	public static final String HOLE_BOREPOSITION_OPT_SUB_CATEGORY_ID = "B. Hole + Bore Position Optimizer";
-	public static final String BORE_OPT_SUB_CATEGORY_ID = "C. Bore Point Optimizer";
+	public static final String BORE_DIAMETER_OPT_SUB_CATEGORY_ID = "7. Bore Diameter Optimizer";
+	public static final String BORE_POSITION_OPT_SUB_CATEGORY_ID = "8. Bore Point Position Optimizer";
+	public static final String BORE_OPT_SUB_CATEGORY_ID = "9. Bore Point Optimizer";
+	public static final String HOLE_CONE_OPT_SUB_CATEGORY_ID = "A. Hole and Conical Bore Optimizer";
+	public static final String HOLE_BOREDIAMETER_OPT_SUB_CATEGORY_ID = "B. Hole and Bore Diameter Optimizer";
+	public static final String HOLE_BOREPOSITION_OPT_SUB_CATEGORY_ID = "C. Hole + Bore Position Optimizer";
 	public static final String HOLE_AND_BORE_OPT_SUB_CATEGORY_ID = "D. Hole + Bore Point Optimizer";
-	public static final String ROUGH_CUT_OPT_SUB_CATEGORY_ID = "Rough-Cut Optimizer";
+	public static final String GLOBAL_HOLE_OPT_SUB_CATEGORY_ID = "E. Global Hole Size+Spacing Optimizer";
+	public static final String GLOBAL_BORE_OPT_SUB_CATEGORY_ID = "F. Global Bore Point Optimizer";
+	public static final String GLOBAL_HOLE_AND_BORE_OPT_SUB_CATEGORY_ID
+									= "G. Global Hole + Bore Point Optimizer";
 
 	// Default minimum and maximum bore length, in meters
 	// (actually, position of bottom bore point).
@@ -165,9 +170,15 @@ public class ReedStudyModel extends StudyModel
 		optimizers.addSub(HOLE_AND_BORE_OPT_SUB_CATEGORY_ID, null);
 		objectiveFunctionNames.put(HOLE_AND_BORE_OPT_SUB_CATEGORY_ID,
 				HoleAndBoreObjectiveFunction.class.getSimpleName());
-		optimizers.addSub(ROUGH_CUT_OPT_SUB_CATEGORY_ID, null);
-		objectiveFunctionNames.put(ROUGH_CUT_OPT_SUB_CATEGORY_ID,
-				HolePositionObjectiveFunction.class.getSimpleName());
+		optimizers.addSub(GLOBAL_HOLE_OPT_SUB_CATEGORY_ID, null);
+		objectiveFunctionNames.put(GLOBAL_HOLE_OPT_SUB_CATEGORY_ID,
+				GlobalHoleObjectiveFunction.class.getSimpleName());
+		optimizers.addSub(GLOBAL_BORE_OPT_SUB_CATEGORY_ID, null);
+		objectiveFunctionNames.put(GLOBAL_BORE_OPT_SUB_CATEGORY_ID,
+				GlobalBoreObjectiveFunction.class.getSimpleName());
+		optimizers.addSub(GLOBAL_HOLE_AND_BORE_OPT_SUB_CATEGORY_ID, null);
+		objectiveFunctionNames.put(GLOBAL_HOLE_AND_BORE_OPT_SUB_CATEGORY_ID,
+				GlobalHoleAndBoreObjectiveFunction.class.getSimpleName());
 		categories.add(optimizers);
 	}
 
@@ -292,10 +303,19 @@ public class ReedStudyModel extends StudyModel
 				break;
 
 			case "HolePositionObjectiveFunction":
+			case "GlobalHolePositionObjectiveFunction":
 				evaluator = new CentDeviationEvaluator(calculator,
 						getInstrumentTuner());
-				objective = new HolePositionObjectiveFunction(calculator,
-						tuning, evaluator, BoreLengthAdjustmentType.PRESERVE_BELL);
+				if (objectiveFunctionClass.equals("GlobalHolePositionObjectiveFunction"))
+				{
+					objective = new GlobalHolePositionObjectiveFunction(calculator,
+							tuning, evaluator, BoreLengthAdjustmentType.PRESERVE_BELL);
+				}
+				else
+				{
+					objective = new HolePositionObjectiveFunction(calculator,
+							tuning, evaluator, BoreLengthAdjustmentType.PRESERVE_BELL);
+				}
 				nrDimensions = objective.getNrDimensions();
 				// Bounds are overall length, and hole separations, expressed in meters.
 				lowerBound = new double[nrDimensions];
@@ -325,31 +345,23 @@ public class ReedStudyModel extends StudyModel
 					lowerBound[6] = MIN_THUMB_HOLE_SPACING;
 				}
 
-				// For a rough-cut optimization, use multi-start optimization.
-				// Optimize reactance in the first stage. Although this is
-				// inaccurate, since it seeks fmax rather than nominal playing
-				// frequency, it is much faster.
-
-				if (optimizer == ROUGH_CUT_OPT_SUB_CATEGORY_ID)
-				{
-					objective.setRunTwoStageOptimization(true);
-					objective.setFirstStageEvaluator(
-							new ReactanceEvaluator(calculator));
-					int nrOfStarts = 4 * numberOfHoles;
-					GridRangeProcessor rangeProcessor = new GridRangeProcessor(
-							lowerBound, upperBound, null, nrOfStarts);
-					objective.setRangeProcessor(rangeProcessor);
-					objective.setMaxEvaluations(nrOfStarts
-							* objective.getMaxEvaluations());
-				}
 				break;
 
 			case "HoleObjectiveFunction":
+			case "GlobalHoleObjectiveFunction":
 			default:
 				evaluator = new CentDeviationEvaluator(calculator,
 						getInstrumentTuner());
-				objective = new HoleObjectiveFunction(calculator, tuning,
-						evaluator, BoreLengthAdjustmentType.PRESERVE_BELL);
+				if (objectiveFunctionClass.equals("GlobalHoleObjectiveFunction"))
+				{
+					objective = new GlobalHoleObjectiveFunction(calculator, tuning,
+							evaluator, BoreLengthAdjustmentType.PRESERVE_BELL);
+				}
+				else
+				{
+					objective = new HoleObjectiveFunction(calculator, tuning,
+							evaluator, BoreLengthAdjustmentType.PRESERVE_BELL);
+				}
 				nrDimensions = objective.getNrDimensions();
 				// Separation and diameter bounds, expressed in meters.
 				lowerBound = new double[nrDimensions];
@@ -577,10 +589,19 @@ public class ReedStudyModel extends StudyModel
 				break;
 
 			case "BoreObjectiveFunction":
+			case "GlobalBoreObjectiveFunction":
 				evaluator = new CentDeviationEvaluator(calculator,
 						getInstrumentTuner());
-				objective = new BoreObjectiveFunction(calculator, tuning,
-						evaluator, 2);
+				if (objectiveFunctionClass.equals("GlobalBoreObjectiveFunction"))
+				{
+					objective = new GlobalBoreObjectiveFunction(calculator, tuning,
+							evaluator, 2);
+				}
+				else
+				{
+					objective = new BoreObjectiveFunction(calculator, tuning,
+							evaluator, 2);
+				}
 				nrDimensions = objective.getNrDimensions();
 				// First half are bore positions, second half are bore diameters.
 				lowerBound = new double[nrDimensions];
@@ -602,10 +623,19 @@ public class ReedStudyModel extends StudyModel
 				break;
 
 			case "HoleAndBoreObjectiveFunction":
+			case "GlobalHoleAndBoreObjectiveFunction":
 				evaluator = new CentDeviationEvaluator(calculator,
 						getInstrumentTuner());
-				objective = new HoleAndBoreObjectiveFunction(calculator,
-						tuning, evaluator, 2);
+				if (objectiveFunctionClass.equals("GlobalHoleAndBoreObjectiveFunction"))
+				{
+					objective = new GlobalHoleAndBoreObjectiveFunction(calculator,
+							tuning, evaluator, 2);
+				}
+				else
+				{
+					objective = new HoleAndBoreObjectiveFunction(calculator,
+							tuning, evaluator, 2);
+				}
 				nrDimensions = objective.getNrDimensions();
 				// Separation bounds and diameter bounds, expressed in meters,
 				// and bore position ratios.

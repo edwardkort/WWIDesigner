@@ -35,7 +35,6 @@ import com.wwidesigner.modelling.FminEvaluator;
 import com.wwidesigner.modelling.InstrumentCalculator;
 import com.wwidesigner.modelling.InstrumentTuner;
 import com.wwidesigner.modelling.LinearVInstrumentTuner;
-import com.wwidesigner.modelling.ReactanceEvaluator;
 import com.wwidesigner.modelling.WhistleCalculator;
 import com.wwidesigner.note.Tuning;
 import com.wwidesigner.optimization.AirstreamLengthObjectiveFunction;
@@ -44,6 +43,7 @@ import com.wwidesigner.optimization.BasicTaperObjectiveFunction;
 import com.wwidesigner.optimization.BetaObjectiveFunction;
 import com.wwidesigner.optimization.Constraints;
 import com.wwidesigner.optimization.GlobalHoleAndTaperObjectiveFunction;
+import com.wwidesigner.optimization.GlobalHoleObjectiveFunction;
 import com.wwidesigner.optimization.GlobalHolePositionObjectiveFunction;
 import com.wwidesigner.optimization.HoleAndTaperObjectiveFunction;
 import com.wwidesigner.optimization.HoleObjectiveFunction;
@@ -76,7 +76,8 @@ public class WhistleStudyModel extends StudyModel
 	public static final String TAPER_OPT_SUB_CATEGORY_ID = "7. Taper Optimizer";
 	public static final String HOLE_TAPER_OPT_SUB_CATEGORY_ID = "8. Hole and Taper Optimizer";
 	public static final String GLOBAL_HOLESPACE_OPT_SUB_CATEGORY_ID = "A. Hole Spacing Global Optimizer";
-	public static final String GLOBAL_HOLE_TAPER_OPT_SUB_CATEGORY_ID = "B. Hole and Taper Global Optimizer";
+	public static final String GLOBAL_HOLE_OPT_SUB_CATEGORY_ID = "B. Hole Size+Spacing Global Optimizer";
+	public static final String GLOBAL_HOLE_TAPER_OPT_SUB_CATEGORY_ID = "C. Hole and Taper Global Optimizer";
 
 	// Default minimum hole diameter, in meters.
 	public static final double MIN_HOLE_DIAMETER = 0.0040;
@@ -139,6 +140,9 @@ public class WhistleStudyModel extends StudyModel
 		optimizers.addSub(GLOBAL_HOLESPACE_OPT_SUB_CATEGORY_ID, null);
 		objectiveFunctionNames.put(GLOBAL_HOLESPACE_OPT_SUB_CATEGORY_ID,
 				GlobalHolePositionObjectiveFunction.class.getSimpleName());
+		optimizers.addSub(GLOBAL_HOLE_OPT_SUB_CATEGORY_ID, null);
+		objectiveFunctionNames.put(GLOBAL_HOLE_OPT_SUB_CATEGORY_ID,
+				GlobalHoleObjectiveFunction.class.getSimpleName());
 		optimizers.addSub(GLOBAL_HOLE_TAPER_OPT_SUB_CATEGORY_ID, null);
 		objectiveFunctionNames.put(GLOBAL_HOLE_TAPER_OPT_SUB_CATEGORY_ID,
 				GlobalHoleAndTaperObjectiveFunction.class.getSimpleName());
@@ -285,16 +289,8 @@ public class WhistleStudyModel extends StudyModel
 						getInstrumentTuner());
 				if (objectiveFunctionClass.equals("GlobalHolePositionObjectiveFunction"))
 				{
-					// For a rough-cut optimization, use DIRECT global optimizer.
-					// Optimize reactance in the first stage. Although this is
-					// inaccurate, since it seeks fmax rather than nominal playing
-					// frequency, it is much faster.
-
 					objective = new GlobalHolePositionObjectiveFunction(calculator,
 							tuning, evaluator, BoreLengthAdjustmentType.MOVE_BOTTOM);
-					objective.setRunTwoStageOptimization(true);
-					objective.setFirstStageEvaluator(
-							new ReactanceEvaluator(calculator));
 				}
 				else
 				{
@@ -329,11 +325,20 @@ public class WhistleStudyModel extends StudyModel
 				break;
 
 			case "HoleObjectiveFunction":
+			case "GlobalHoleObjectiveFunction":
 			default:
 				evaluator = new CentDeviationEvaluator(calculator,
 						getInstrumentTuner());
-				objective = new HoleObjectiveFunction(calculator, tuning,
-						evaluator);
+				if (objectiveFunctionClass.equals("GlobalHoleObjectiveFunction"))
+				{
+					objective = new GlobalHoleObjectiveFunction(calculator, tuning,
+							evaluator, BoreLengthAdjustmentType.PRESERVE_TAPER);
+				}
+				else
+				{
+					objective = new HoleObjectiveFunction(calculator, tuning,
+							evaluator);
+				}
 				// Separation and diameter bounds, expressed in meters.
 				lowerBound = new double[2 * numberOfHoles + 1];
 				upperBound = new double[2 * numberOfHoles + 1];

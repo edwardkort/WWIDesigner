@@ -198,8 +198,18 @@ public class ObjectiveFunctionOptimizer
 						+ outcome.getValue());
 
 				// Use BOBYQA to refine global optimum found.
-				outcome = runBobyqa(objective, outcome.getPoint());
-				objective.setGeometryPoint(outcome.getPoint());
+				PointValuePair outcome2 = runBobyqa(objective, outcome.getPoint());
+				if (outcome.getValue() < outcome2.getValue())
+				{
+					// Don't use second-stage optimum if it isn't better.
+					System.out.println("Second-stage optimizer found optimum "
+							+ outcome2.getValue());
+					objective.setGeometryPoint(outcome.getPoint());
+				}
+				else
+				{
+					objective.setGeometryPoint(outcome2.getPoint());
+				}
 			}
 			else
 			{
@@ -501,7 +511,7 @@ public class ObjectiveFunctionOptimizer
 	protected static PointValuePair runBobyqa(BaseObjectiveFunction objective,
 			double[] startPoint) throws TooManyEvaluationsException
 	{
-		double trustRegion = objective.getInitialTrustRegionRadius();
+		double trustRegion = objective.getInitialTrustRegionRadius(startPoint);
 		double stoppingTrustRegion = objective.getStoppingTrustRegionRadius();
 		BOBYQAOptimizer optimizer = new BOBYQAOptimizer(
 				objective.getNrInterpolations(), trustRegion,

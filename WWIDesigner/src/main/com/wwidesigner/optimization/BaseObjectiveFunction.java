@@ -332,7 +332,7 @@ public abstract class BaseObjectiveFunction
 	}
 
 	/**
-	 * From the bounds and the initial value, determine the maximum feasible
+	 * From the bounds and the initial value, determine a recommended
 	 * value for the initial trust region radius.
 	 */
 	public double getInitialTrustRegionRadius()
@@ -352,35 +352,41 @@ public abstract class BaseObjectiveFunction
 	}
 
 	/**
-	 * From the bounds and the initial value, determine the maximum feasible
-	 * value for the initial trust region radius.
+	 * From the bounds and the initial value, determine a recommended value for
+	 * the initial trust region radius: about one tenth of the greatest expected
+	 * change to a variable, which we take as the difference
+	 * upperBound - lowerBound, with a minimum value of half the smallest
+	 * difference upperBound - lowerBound (excluding nearly-equal bounds).
 	 */
 	public double getInitialTrustRegionRadius(double[] initial)
 	{
-		double minRadius = 1.0;
-		double minDimensionRadius;
+		double maxExpectedChange;
+		double minRadius;
+		double boundDifference;
 
+		maxExpectedChange = 0.0;
+		minRadius = 1.0e-6;
 		for (int i = 0; i < nrDimensions; ++i)
 		{
-			// For each dimension, the radius should not be more than
-			// the distance from the initial point to either bound,
-			// but let it be at least 10% of the distance
-			// between the bounds.
-			minDimensionRadius = initial[i] - lowerBounds[i];
-			if (minDimensionRadius > upperBounds[i] - initial[i])
+			boundDifference = upperBounds[i] - lowerBounds[i];
+			if (boundDifference > 1.0e-7
+					&& 0.5 * boundDifference < minRadius)
 			{
-				minDimensionRadius = upperBounds[i] - initial[i];
+				minRadius = 0.5 * boundDifference;
 			}
-			if (minDimensionRadius < 0.1 * (upperBounds[i] - lowerBounds[i]))
+			if (boundDifference > maxExpectedChange)
 			{
-				minDimensionRadius = 0.1 * (upperBounds[i] - lowerBounds[i]);
-			}
-			if (minDimensionRadius < minRadius)
-			{
-				minRadius = minDimensionRadius;
+				maxExpectedChange = boundDifference;
 			}
 		}
-		initialTrustRegionRadius = minRadius;
+		if (minRadius > 0.1 * maxExpectedChange)
+		{
+			initialTrustRegionRadius = minRadius;
+		}
+		else
+		{
+			initialTrustRegionRadius = 0.1 * maxExpectedChange;
+		}
 
 		return initialTrustRegionRadius;
 	}

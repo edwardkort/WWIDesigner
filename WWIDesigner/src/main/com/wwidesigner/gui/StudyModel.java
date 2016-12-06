@@ -23,6 +23,7 @@ import java.io.File;
 import java.io.StringWriter;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -891,6 +892,66 @@ public abstract class StudyModel implements CategoryType
 		}
 		Constraints constraints = objective.getConstraints();
 		constraints.setConstraintsName("Blank");
+		String xmlConstraints = marshal(constraints);
+
+		return xmlConstraints;
+	}
+
+	public String getNarrowedConstraints(double fraction) throws Exception
+	{
+		// Retrieve the current constraints.
+		BaseObjectiveFunction objective = getObjectiveFunction(
+				BaseObjectiveFunction.OPTIMIZATION_INTENT);
+		// For the case of a cancelled hole-grouping.
+		if (objective == null)
+		{
+			return null;
+		}
+		double[] centrePoint = objective.getGeometryPoint();
+		Constraints constraints = objective.getConstraints();
+		double[] upperBound = Arrays.copyOf(constraints.getUpperBounds(), centrePoint.length);
+		double[] lowerBound = Arrays.copyOf(constraints.getLowerBounds(), centrePoint.length);
+		double newWidth;
+		if (fraction >= 1.0)
+		{
+			// Return a copy of the existing constraints.
+			return marshal(constraints);
+		}
+		for (int i = 0; i < centrePoint.length; ++i)
+		{
+			// Widen bounds if necessary to include current point.
+			if (centrePoint[i] > upperBound[i])
+			{
+				upperBound[i] = centrePoint[i];
+			}
+			if (centrePoint[i] < lowerBound[i])
+			{
+				lowerBound[i] = centrePoint[i];
+			}
+			newWidth = fraction * (upperBound[i] - lowerBound[i]);
+			// Narrow bounds to new width, putting centrePoint
+			// as close to centre as possible without exceeding bounds.
+			if (centrePoint[i] - 0.5 * newWidth <= lowerBound[i])
+			{
+				upperBound[i] = lowerBound[i] + newWidth;
+			}
+			else if (centrePoint[i] + 0.5 * newWidth >= upperBound[i])
+			{
+				lowerBound[i] = upperBound[i] - newWidth;
+			}
+			else
+			{
+				lowerBound[i] = centrePoint[i] - 0.5 * newWidth;
+				upperBound[i] = centrePoint[i] + 0.5 * newWidth;
+			}
+		}
+		constraints.setUpperBounds(upperBound);
+		constraints.setLowerBounds(lowerBound);
+		if (constraints.getConstraintsName().length() <= 9
+			|| ! constraints.getConstraintsName().substring(0, 9).equals("Narrowed "))
+		{
+			constraints.setConstraintsName("Narrowed " + constraints.getConstraintsName());
+		}
 		String xmlConstraints = marshal(constraints);
 
 		return xmlConstraints;

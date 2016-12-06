@@ -123,6 +123,7 @@ public class WIDesigner extends FileBasedApplication implements EventSubscriber
 	static final String SAVE_AS_CONSTRAINTS_ACTION_ID = "Save-as constraints...";
 	static final String CREATE_DEFAULT_CONSTRAINTS_ACTION_ID = "Create default constraints";
 	static final String CREATE_BLANK_CONSTRAINTS_ACTION_ID = "Create blank constraints";
+	static final String CREATE_NARROWED_CONSTRAINTS_ACTION_ID = "Create narrowed constraints";
 
 	protected boolean isWarnOnDirtyClose = false;
 
@@ -210,6 +211,7 @@ public class WIDesigner extends FileBasedApplication implements EventSubscriber
 		addConstraintsSaveAs();
 		addConstraintsCreateDefault();
 		addConstraintsCreateBlank();
+		addConstraintsCreateNarrowed();
 
 		// Remove New in File menu and toolbar: it just creates a blank text
 		// file - of no current use.
@@ -320,6 +322,9 @@ public class WIDesigner extends FileBasedApplication implements EventSubscriber
 					menuItem = group.addMenuItem(action);
 					action = menuBarsUI
 							.getAction(CREATE_BLANK_CONSTRAINTS_ACTION_ID);
+					menuItem = group.addMenuItem(action);
+					action = menuBarsUI
+							.getAction(CREATE_NARROWED_CONSTRAINTS_ACTION_ID);
 					menuItem = group.addMenuItem(action);
 				}
 				else if (menuID == WINDOW_MENU_ID)
@@ -574,6 +579,33 @@ public class WIDesigner extends FileBasedApplication implements EventSubscriber
 			}
 		};
 		getActionMap().put(CREATE_BLANK_CONSTRAINTS_ACTION_ID, action);
+		action.setEnabled(false);
+	}
+
+	protected void addConstraintsCreateNarrowed()
+	{
+		final Activity createConstraintsActivity = new Activity(
+				CREATE_NARROWED_CONSTRAINTS_ACTION_ID)
+		{
+
+			@Override
+			public void activityPerformed() throws Exception
+			{
+				StudyView studyView = getStudyView();
+				if (studyView != null)
+				{
+					studyView.getNarrowedConstraints();
+				}
+			}
+		};
+		Action action = new ActivityAction(createConstraintsActivity)
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				getActivityManager().run(createConstraintsActivity);
+			}
+		};
+		getActionMap().put(CREATE_NARROWED_CONSTRAINTS_ACTION_ID, action);
 		action.setEnabled(false);
 	}
 
@@ -1357,6 +1389,11 @@ public class WIDesigner extends FileBasedApplication implements EventSubscriber
 				action.setEnabled((Boolean) e.getSource());
 			}
 			action = getActionMap().get(CREATE_BLANK_CONSTRAINTS_ACTION_ID);
+			if (action != null)
+			{
+				action.setEnabled((Boolean) e.getSource());
+			}
+			action = getActionMap().get(CREATE_NARROWED_CONSTRAINTS_ACTION_ID);
 			if (action != null)
 			{
 				action.setEnabled((Boolean) e.getSource());

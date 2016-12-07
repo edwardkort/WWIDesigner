@@ -889,7 +889,7 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 		embouchureHoleButton = new JRadioButton("Embouchure Hole");
 		singleReedButton = new JRadioButton("Single Reed");
 		doubleReedButton = new JRadioButton("Double Reed");
-		lipReedButton = new JRadioButton("Brass");
+		lipReedButton = new JRadioButton("Lip Reed (Brass)");
 		fippleButton.setSelected(true);
 		mouthpieceTypeGroup = new ButtonGroup();
 		mouthpieceTypeGroup.add(fippleButton);

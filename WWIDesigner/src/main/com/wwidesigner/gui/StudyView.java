@@ -73,7 +73,6 @@ import com.wwidesigner.util.OperationCancelledException;
 public class StudyView extends DataViewPane implements EventSubscriber
 {
 	private static final long serialVersionUID = 1L;
-	private static final double DEFAULT_CONSTRAINT_NARROWING = 0.7;
 
 	private JTree tree;
 	private StudyModel study;
@@ -376,24 +375,6 @@ public class StudyView extends DataViewPane implements EventSubscriber
 			String xmlConstraints = study.getBlankConstraints(
 					getApplication().getApplicationUIManager().getWindowsUI()
 							.getDialogParent());
-			// For the cancelled hole-grouping scenario
-			if (xmlConstraints != null)
-			{
-				addNewDataModel(xmlConstraints);
-			}
-		}
-		catch (Exception ex)
-		{
-			showException(ex);
-		}
-	}
-
-	public void getNarrowedConstraints()
-	{
-		try
-		{
-			String xmlConstraints = study.getNarrowedConstraints(
-					DEFAULT_CONSTRAINT_NARROWING);
 			// For the cancelled hole-grouping scenario
 			if (xmlConstraints != null)
 			{

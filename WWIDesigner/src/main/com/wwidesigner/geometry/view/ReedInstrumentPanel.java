@@ -35,9 +35,10 @@ public class ReedInstrumentPanel extends InstrumentPanel
 	{
 		if (instrument != null && instrument.getMouthpiece() != null
 				&& instrument.getMouthpiece().getSingleReed() == null
-				&& instrument.getMouthpiece().getDoubleReed() == null)
+				&& instrument.getMouthpiece().getDoubleReed() == null
+				&& instrument.getMouthpiece().getLipReed() == null)
 		{
-			// Use default mouthpiece if this is not a cane reed mouthpiece.
+			// Use default mouthpiece if this is not a reed mouthpiece.
 			super.layoutMouthpieceComponents();
 		}
 		super.loadData(instrument);
@@ -51,7 +52,6 @@ public class ReedInstrumentPanel extends InstrumentPanel
 		mouthpiecePanel.removeAll();
 		mouthpieceTypeGroup.remove(fippleButton);
 		mouthpieceTypeGroup.remove(embouchureHoleButton);
-		mouthpieceTypeGroup.remove(lipReedButton);
 
 		gbc.anchor = GridBagConstraints.NORTHWEST;
 		gbc.gridy = 0;
@@ -72,6 +72,11 @@ public class ReedInstrumentPanel extends InstrumentPanel
 		gbc.gridwidth = 1;
 		mouthpiecePanel.add(singleReedButton, gbc);
 		gbc.gridx = 1;
+		mouthpiecePanel.add(lipReedButton, gbc);
+
+		++gbc.gridy;
+		gbc.gridx = 0;
+		gbc.gridwidth = 1;
 		mouthpiecePanel.add(doubleReedButton, gbc);
 
 		gbc.gridwidth = 1;

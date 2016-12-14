@@ -61,4 +61,10 @@ public class HoleAndBorePositionObjectiveFunction extends
 		constraints.setConstraintsName("Default");
 	}
 
+	@Override
+	public double getStoppingTrustRegionRadius()
+	{
+		return 0.9e-6;
+	}
+
 }

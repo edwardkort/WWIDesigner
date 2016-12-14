@@ -16,6 +16,7 @@ import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
 import org.apache.commons.math3.complex.Complex;
+import org.apache.commons.math3.util.FastMath;
 
 import com.jidesoft.chart.Chart;
 import com.jidesoft.chart.Legend;
@@ -205,6 +206,51 @@ public class PlayingRangeSpectrum
 		});
 	}
 
+	protected void plotImpedanceMagnitude(final boolean exitOnClose)
+	{
+		SwingUtilities.invokeLater(new Runnable()
+		{
+			public void run()
+			{
+				JFrame frame = new JFrame("Impedance Spectrum for " + mName);
+				if (exitOnClose)
+				{
+					frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+				}
+				frame.setSize(800, 600);
+				DefaultChartModel modelMagnitude = new DefaultChartModel("Magnitude");
+				DefaultChartModel modelPhase = new DefaultChartModel("Phase");
+				for (Map.Entry<Double, Complex> point : mImpedance.entrySet())
+				{
+					double x = point.getKey();
+					double z = point.getValue().abs();
+					double phi = point.getValue().getArgument();
+					modelMagnitude.addPoint(x, FastMath.log10(z));
+					modelPhase.addPoint(x, phi);
+				}
+				Chart chart = new Chart();
+				chart.setAutoRanging(true);
+				chart.setAutoRanger(new ZeroAlignedAutoRanger());
+				Axis magnitudeAxis = chart.getYAxis();
+				magnitudeAxis.setLabel("Impedance");
+				Axis phaseAxis = new Axis("Phase");
+				phaseAxis.setPlacement(AxisPlacement.TRAILING);
+				chart.addYAxis(phaseAxis);
+				ChartStyle styleMagnitude = new ChartStyle(Color.blue, false, true);
+				ChartStyle stylePhase = new ChartStyle(Color.red, false, true);
+				chart.addModel(modelMagnitude, magnitudeAxis, styleMagnitude);
+				chart.addModel(modelPhase, phaseAxis, stylePhase);
+				chart.getXAxis().setLabel("Frequency");
+				chart.setTitle("Impedance Spectrum");
+				Legend legend = new Legend(chart);
+				chart.addDrawable(legend);
+				legend.setLocation(540, 420);
+				frame.setContentPane(chart);
+				frame.setVisible(true);
+			}
+		});
+	}
+
 	protected void plotPlayingRange(final boolean exitOnClose)
 	{
 		SwingUtilities.invokeLater(new Runnable()
@@ -354,7 +400,7 @@ public class PlayingRangeSpectrum
 		prevPrevLoopGain = 0.;
 
 		calcImpedance(calculator, fingering, freqStart, freqEnd, numberPoints);
-		// plotImpedanceSpectrum();
+		// plotImpedanceMagnitude(exitOnClose);
 		printLoopGainMaxima();
 		plotPlayingRange(exitOnClose);
 

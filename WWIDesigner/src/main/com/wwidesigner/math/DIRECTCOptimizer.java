@@ -21,6 +21,7 @@ package com.wwidesigner.math;
 
 import java.util.Map.Entry;
 
+import org.apache.commons.math3.optim.PointValuePair;
 import org.apache.commons.math3.util.FastMath;
 
 /**
@@ -120,6 +121,14 @@ public class DIRECTCOptimizer extends DIRECT1Optimizer
 		{
 			relativeDistance[i] = FastMath.pow(1.7, i - relativeDistance.length);
 		}
+	}
+	
+	@Override
+	protected PointValuePair doOptimize()
+	{
+		this.iterationOfLastVariant = 0;
+		this.nrOfVariantIterations = 0;
+		return super.doOptimize();
 	}
 
 	@Override
@@ -255,6 +264,7 @@ public class DIRECTCOptimizer extends DIRECT1Optimizer
 				// Checked all rectangles with same diameter as nearest.
 				// Add nearest to hull, pruning to convex hull.
 				nhull = pruneHullLargeAndNear(target, nearest.getKey(), nDist, nhull, useConvexHull);
+				checkHullLength(nhull);
 				hull[nhull++] = new Rectangle(nearest);
 			
 				// Start search for nearest rectangle at new diameter.
@@ -264,6 +274,7 @@ public class DIRECTCOptimizer extends DIRECT1Optimizer
 		}
 
 		nhull = pruneHullLargeAndNear(target, nearest.getKey(), nDist, nhull, useConvexHull);
+		checkHullLength(nhull);
 		hull[nhull++] = new Rectangle(nearest);
 
 		return nhull;
@@ -416,6 +427,7 @@ public class DIRECTCOptimizer extends DIRECT1Optimizer
 					}
 					nhull = it2 + 1;
 				}
+				checkHullLength(nhull);
 				hull[nhull++] = lowest[i];
 			}
 		}

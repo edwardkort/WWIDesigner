@@ -20,6 +20,8 @@ import org.apache.commons.math3.util.FastMath;
  */
 public class StandardOptimizerTest
 {
+	protected final static int MAX_EVALUATIONS = 2000000;
+
 	MultivariateOptimizer optimizer;
 
 	public StandardOptimizerTest(MultivariateOptimizer optimizer)
@@ -29,9 +31,24 @@ public class StandardOptimizerTest
 	
 	public abstract static class OptimizerTestFunction implements MultivariateFunction
 	{
+		protected String name;
+		protected int evaluations;
+		protected double[] lowerBound;
+		protected double[] upperBound;
+
+		public String getName()
+		{
+			return name;
+		}
+	
 		public int getEvaluations()
 		{
 			return evaluations;
+		}
+		
+		public int getDimension()
+		{
+			return lowerBound.length;
 		}
 
 		public double[] getStartPoint()
@@ -57,10 +74,6 @@ public class StandardOptimizerTest
 			return upperBound;
 		}
 
-		protected int evaluations;
-		protected double[] lowerBound;
-		protected double[] upperBound;
-		
 		public OptimizerTestFunction(double[] lowerBound, double[] upperBound)
 		{
 			this.lowerBound = lowerBound;
@@ -78,16 +91,20 @@ public class StandardOptimizerTest
 			Double targetFunctionValue)
 	{
 		PointValuePair outcome;
-		long startTime = System.currentTimeMillis();
+		System.out.println(objective.getName() + "[" + objective.getDimension()
+				+ "] with " + optimizer.getClass().getSimpleName() + ":");
 
+		long startTime = System.currentTimeMillis();
 		outcome = optimizer.optimize(
 				GoalType.MINIMIZE,
 				new ObjectiveFunction(objective),
-				new MaxEval(50000),
+				new MaxEval(MAX_EVALUATIONS),
 				MaxIter.unlimited(),
 				new InitialGuess(objective.getStartPoint()),
 				new DIRECTOptimizer.TargetFunctionValue(targetFunctionValue),
 				new SimpleBounds(objective.getLowerBound(), objective.getUpperBound()));
+		long elapsedTime = System.currentTimeMillis() - startTime;
+		double elapsedSeconds = 0.001 * (double) elapsedTime;
 
 		System.out.print("  Performed ");
 		System.out.print(optimizer.getEvaluations());
@@ -102,8 +119,6 @@ public class StandardOptimizerTest
 			System.out.printf(" %9.6f", outcome.getPoint()[i]);
 		}
 		System.out.println();
-		long elapsedTime = System.currentTimeMillis() - startTime;
-		double elapsedSeconds = 0.001 * (double) elapsedTime;
 		System.out.print("  Elapsed time: ");
 		System.out.printf("%4.2f", elapsedSeconds);
 		System.out.println(" seconds.");
@@ -111,36 +126,80 @@ public class StandardOptimizerTest
 		return outcome;
 	}
 
-	public class RosenbrockFunction extends OptimizerTestFunction
+	public static class RosenbrockFunction extends OptimizerTestFunction
 	{
 		public RosenbrockFunction(double[] lowerBound,
 				double[] upperBound)
 		{
 			super(lowerBound, upperBound);
+			this.name = "Rosenbrock";
 		}
 
 		@Override
 		public double value(double[] point)
 		{
 			++ evaluations;
-			double a = point[1] - point[0] * point[0];
-			double b = 1 - point[0];
-			return (100 * a*a + b*b);
+			double sum = 0;
+			double a, b;
+			for (int i = 0; i < getDimension() - 1; ++i)
+			{
+				a = point[i + 1] - point[i] * point[i];
+				b = 1.0d - point[i];
+				sum += 100.0d * a * a + b * b;
+			}
+			return sum;
 		}
 	}
 
-	public class HartmanFunction extends OptimizerTestFunction
+	/**
+	 * Rosenbrock function with dimensions of markedly different scales,
+	 * making it a challenge to trust region optimizers.
+	 *
+	 */
+	public static class ScaledRosenbrockFunction extends OptimizerTestFunction
+	{
+		public ScaledRosenbrockFunction(double[] lowerBound,
+				double[] upperBound)
+		{
+			super(lowerBound, upperBound);
+			this.name = "Scaled Rosenbrock";
+			for (int i = 0; i < getDimension(); ++i)
+			{
+				this.lowerBound[i] *= (i + 1.0d) * (i + 1.0d);
+				this.upperBound[i] *= (i + 1.0d) * (i + 1.0d);
+			}
+		}
+
+		@Override
+		public double value(double[] point)
+		{
+			++ evaluations;
+			double sum = 0.0d;
+			double x1, x2, a, b;
+			for (int i = 1; i < getDimension(); ++i)
+			{
+				x2 = point[i] / ((i + 1.0d) * (i + 1.0d));
+				x1 = point[i - 1] / (1.0d * i * i);
+				a = x2 - x1 * x1;
+				b = 1.0d - x1;
+				sum += 100.0d * a * a + b * b;
+			}
+			return sum;
+		}
+	}
+
+	public static class HartmanFunction extends OptimizerTestFunction
 	{
 		protected final double[][] a;
 		protected final double[][] p;
 		protected final double[] c;
 
-		public HartmanFunction(int n, double[] lowerBound,
-				double[] upperBound)
+		public HartmanFunction(double[] lowerBound, double[] upperBound)
 		{
 			super(lowerBound, upperBound);
+			this.name = "Hartman";
 			c = new double[]{1.0, 1.2, 3.0, 3.2};
-			if (n == 3)
+			if (getDimension() == 3)
 			{
 				a = new double[][]
 						{{ 3.00,  0.10,  3.00,  0.10},
@@ -153,7 +212,6 @@ public class StandardOptimizerTest
 			}
 			else
 			{
-				assert n == 6;
 				a = new double[][]
 						{{10.00,  0.05,  3.00, 17.00},
 					     { 3.00, 10.00,  3.50,  8.00},
@@ -191,7 +249,7 @@ public class StandardOptimizerTest
 		}
 	}
 
-	public class ShekelFunction extends OptimizerTestFunction
+	public static class ShekelFunction extends OptimizerTestFunction
 	{
 		protected final int m;
 		protected final double[][] a;
@@ -202,6 +260,7 @@ public class StandardOptimizerTest
 		{
 			super(lowerBound, upperBound);
 			this.m = m;
+			this.name = "Shekel " + this.m;
 			c = new double[]{0.1, 0.2, 0.2, 0.4, 0.4, 0.6, 0.3, 0.7, 0.5, 0.5};
 			a = new double[][]
 					{ {4.0, 4.0, 4.0, 4.0},
@@ -239,12 +298,13 @@ public class StandardOptimizerTest
 		}
 	}
 
-	public class GoldsteinPriceFunction extends OptimizerTestFunction
+	public static class GoldsteinPriceFunction extends OptimizerTestFunction
 	{
 		public GoldsteinPriceFunction(double[] lowerBound,
 				double[] upperBound)
 		{
 			super(lowerBound, upperBound);
+			this.name = "Goldstein-Price";
 		}
 
 		@Override
@@ -260,4 +320,88 @@ public class StandardOptimizerTest
 			return ((1 + a12 * a2) * (30 + b12 * b2));
 		}
 	}
+
+	public static class RastriginFunction extends OptimizerTestFunction
+	{
+		public final double waveCoeff;
+
+		public RastriginFunction(double[] lowerBound,
+				double[] upperBound)
+		{
+			super(lowerBound, upperBound);
+			this.waveCoeff = 10.0;
+			this.name = "Rastrigin";
+		}
+
+		public RastriginFunction(double waveCoeff, double[] lowerBound,
+				double[] upperBound)
+		{
+			super(lowerBound, upperBound);
+			this.waveCoeff = waveCoeff;
+			this.name = "Rastrigin";
+		}
+
+		@Override
+		public double value(double[] point)
+		{
+			++ evaluations;
+			double sum = waveCoeff * getDimension();
+			for (int i = 0; i < getDimension(); ++i)
+			{
+				sum += point[i] * point[i] - waveCoeff * FastMath.cos(2.0 * FastMath.PI * point[i]);
+			}
+			return sum;
+		}
+	}
+
+	public static class AckleyFunction extends OptimizerTestFunction
+	{
+		public AckleyFunction(double[] lowerBound,
+				double[] upperBound)
+		{
+			super(lowerBound, upperBound);
+			this.name = "Ackley";
+		}
+
+		@Override
+		public double value(double[] point)
+		{
+			++ evaluations;
+			double cosSum = 0.0;
+			double sphereSum = 0.0;
+			for (int i = 0; i < getDimension() - 1; ++i)
+			{
+				cosSum += FastMath.cos(2.0 * FastMath.PI * point[i]);
+				sphereSum += point[i] * point[i];
+			}
+			return 20.0 + FastMath.E - FastMath.exp(cosSum / getDimension())
+					- 20.0 * FastMath.exp(-0.2 * FastMath.sqrt(sphereSum / getDimension()));
+		}
+	}
+
+	public static class SkewedAckleyFunction extends OptimizerTestFunction
+	{
+		public SkewedAckleyFunction(double[] lowerBound,
+				double[] upperBound)
+		{
+			super(lowerBound, upperBound);
+			this.name = "Skewed Ackley";
+		}
+
+		@Override
+		public double value(double[] point)
+		{
+			++ evaluations;
+			double cosSum = 0.0;
+			double sphereSum = 0.0;
+			for (int i = 0; i < getDimension() - 1; ++i)
+			{
+				cosSum += FastMath.cos(2.0 * FastMath.PI * point[i] * (i + 1.0) / getDimension());
+				sphereSum += point[i] * point[i];
+			}
+			return 20.0 + FastMath.E - FastMath.exp(cosSum / getDimension())
+					- 20.0 * FastMath.exp(-0.2 * FastMath.sqrt(sphereSum / getDimension()));
+		}
+	}
+
 }

@@ -514,6 +514,7 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 
 	protected TreeMap<RectangleKey, RectangleValue> rtree;
 	protected Rectangle[] hull;	// array to store convex hull
+	protected boolean isXConverged;		// Set by dividePotentiallyOptimal if small rectangles.
 
 	/** {@inheritDoc} */
 	@Override
@@ -521,6 +522,7 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 	{
 		currentBest = new PointValuePair(getStartPoint(), Double.MAX_VALUE, true);
 		iterationOfLastImprovement = 0;
+		int nrPromising;
 
 		// Validity checks.
 		setup();
@@ -530,9 +532,9 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 		do
 		{
 			incrementIterationCount();
+			nrPromising = dividePotentiallyOptimal(convergenceDiameter);
 		}
-		while (dividePotentiallyOptimal(convergenceDiameter)
-				&& (targetFunctionValue == null || currentBest.getValue() > targetFunctionValue));
+		while (! hasConverged(nrPromising));
 
 		if (getGoalType() == GoalType.MAXIMIZE)
 		{
@@ -542,7 +544,27 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 
 		return currentBest;
 	}
-	
+
+	protected boolean hasConverged(int nrPromising)
+	{
+		if (targetFunctionValue != null && currentBest.getValue() <= targetFunctionValue)
+		{
+			// Function value is at or below the target.
+			return true;
+		}
+		if (! isXConverged)
+		{
+			// Current best rectangle isn't small enough.
+			return false;
+		}
+		if (nrPromising == 0
+				&& getIterations() >= iterationOfLastImprovement + 1 + getLowerBound().length)
+		{
+			return true;
+		}
+		return getIterations() >= iterationOfLastImprovement + convergedIterationsThreshold;
+	}
+
 	public PointValuePair getCurrentBest()
 	{
 		if (getGoalType() == GoalType.MAXIMIZE)
@@ -654,6 +676,10 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 	 */
 	protected double thresholdDiameter(double convergenceThreshold, int dimension)
 	{
+		if (convergenceThreshold <= 0.0)
+		{
+			return 0.0;
+		}
 		// Round the threshold down to the next smaller power of 1/3.
 		// Rectangle is small when *all* sides are this size.
 		double iterations = FastMath.ceil(FastMath.log(THIRD,convergenceThreshold));
@@ -982,16 +1008,19 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 
 	/**
 	 * Search for rectangles that might contain better global minimizers,
-	 * and divide them.
-	 * @return true if x threshold has not yet been reached;
-	 *				there is more work to be done.
+	 * and divide them.  Set isXConverged to indicate whether the POH
+	 * include a small rectangle.
+	 * @return number of rectangle divisions that showed promise of further
+	 * improvement.
 	 */
-	protected boolean dividePotentiallyOptimal(double convergenceDiameter)
+	protected int dividePotentiallyOptimal(double convergenceDiameter)
 	{
 		int i;
 		int nhull;
+		@SuppressWarnings("unused")
 		int nrSmall = 0;	// Number of POH too small to be worth dividing.
 		int nrPromisingDivisions = 0;
+		isXConverged = false;
 
 		nhull = getPotentiallyOptimal(allowDuplicatesInHull);
 		
@@ -1002,6 +1031,7 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 			{
 				// Rectangle already smaller than required accuracy.
 				// Not worth dividing.
+				isXConverged = true;
 				++nrSmall;
 			}
 			else
@@ -1018,9 +1048,7 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 					+ " Current best " + currentBest.getValue());
 		}
 
-		return nrSmall < 1 
-				|| nrPromisingDivisions > 0
-					&& getIterations() < iterationOfLastImprovement + convergedIterationsThreshold;
+		return nrPromisingDivisions;
 	}
 
 	/* Convex hull algorithm, used to find the potentially optimal
@@ -1101,6 +1129,7 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 					/* equal y values, add to hull */
 					if (allow_dups)
 					{
+						checkHullLength(nhull);
 						hull[nhull++] = new Rectangle(n);
 					}
 					continue;
@@ -1149,6 +1178,7 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 				}
 				nhull = it2 + 1;
 			}
+			checkHullLength(nhull);
 			hull[nhull++] = new Rectangle(n);
 			xlast = n.getKey().getDiameter();
 			ylast = n.getKey().getfValue();
@@ -1160,6 +1190,7 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 			do
 			{
 				/* include any duplicate points at (xmax,ymaxmin) */
+				checkHullLength(nhull);
 				hull[nhull++] = new Rectangle(nmax);
 				nmax = rtree.higherEntry(nmax.getKey());
 			}
@@ -1168,6 +1199,7 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 		}
 		else
 		{
+			checkHullLength(nhull);
 			hull[nhull++] = new Rectangle(nmax);
 		}
 
@@ -1189,5 +1221,13 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 			--it2;
 		}
 		return -1;
+	}
+	
+	protected void checkHullLength(int nhull)
+	{
+		if (nhull > hull.length - 10)
+		{
+			hull = Arrays.copyOf(hull, 2 * hull.length);
+		}
 	}
 }

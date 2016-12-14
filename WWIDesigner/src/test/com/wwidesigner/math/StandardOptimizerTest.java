@@ -391,15 +391,17 @@ public class StandardOptimizerTest
 		@Override
 		public double value(double[] point)
 		{
-			++ evaluations;
+			++evaluations;
 			double cosSum = 0.0;
 			double sphereSum = 0.0;
 			for (int i = 0; i < getDimension() - 1; ++i)
 			{
-				cosSum += FastMath.cos(2.0 * FastMath.PI * point[i] * (i + 1.0) / getDimension());
+				cosSum += FastMath.cos(2.0 * FastMath.PI * point[i]
+						* (1.0 + (i + 0.0) / getDimension()));
 				sphereSum += point[i] * point[i];
 			}
-			return 20.0 + FastMath.E - FastMath.exp(cosSum / getDimension())
+			return 20.0 + FastMath.E
+					- FastMath.exp(cosSum / getDimension())
 					- 20.0 * FastMath.exp(-0.2 * FastMath.sqrt(sphereSum / getDimension()));
 		}
 	}

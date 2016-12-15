@@ -60,15 +60,15 @@ public class DirectCOptimizerTest extends StandardOptimizerTest
 	{
 		double lowerBound[] = {0.0, 0.0, 0.0};
 		double upperBound[] = {1.0, 1.0, 1.0};
-		double expected[]   = {0.1, 0.5559, 0.8522};
+		double expected[]   = {0.114614, 0.555649, 0.852547};
 		OptimizerTestFunction objective = new HartmanFunction(lowerBound, upperBound);
 
 		PointValuePair outcome = optimizationTest(objective);
 
 		// Test that optimum and optimizer point are correct.
 		// x[0] found is inaccurate.
-		Assert.assertArrayEquals("Hartman3 x is incorrect", expected, outcome.getPoint(), 0.02);
-		Assert.assertEquals("Hartman3 f(x) is incorrect", -3.8628, outcome.getValue(), 0.001);
+		Assert.assertArrayEquals("Hartman3 x is incorrect", expected, outcome.getPoint(), 0.003);
+		Assert.assertEquals("Hartman3 f(x) is incorrect", -3.86278, outcome.getValue(), 0.001);
 		Assert.assertFalse("Hartman3, too many evaluations, " +  objective.getEvaluations(),
 				objective.getEvaluations() > 190);
 	}
@@ -81,7 +81,7 @@ public class DirectCOptimizerTest extends StandardOptimizerTest
 	{
 		double lowerBound[] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 		double upperBound[] = {1.0, 1.0, 1.0, 1.0, 1.0, 1.0};
-		double expected[]   = {0.2017, 0.1500, 0.4769, 0.2753, 0.3117, 0.6573};
+		double expected[]   = {0.20169, 0.150011, 0.476874, 0.275332, 0.311652, 0.6573};
 		OptimizerTestFunction objective = new HartmanFunction(lowerBound, upperBound);
 
 		PointValuePair outcome = optimizationTest(objective);
@@ -90,7 +90,7 @@ public class DirectCOptimizerTest extends StandardOptimizerTest
 		// When dividing on only one long side at a time, performance on H6 depends greatly
 		// on the choice of *which* long side.
 		Assert.assertArrayEquals("Hartman6 x is incorrect", expected, outcome.getPoint(), 0.0021);
-		Assert.assertEquals("Hartman6 f(x) is incorrect", -3.3224, outcome.getValue(), 0.0005);
+		Assert.assertEquals("Hartman6 f(x) is incorrect", -3.32237, outcome.getValue(), 0.0005);
 		Assert.assertFalse("Hartman6, too many evaluations, " +  objective.getEvaluations(),
 				objective.getEvaluations() > 550);
 	}

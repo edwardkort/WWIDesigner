@@ -15,6 +15,16 @@ import org.apache.commons.math3.optim.nonlinear.scalar.ObjectiveFunction;
 import org.apache.commons.math3.util.FastMath;
 
 /**
+ * Objective functions from the literature, including:
+ * 
+ *    Sonja Surjanovic, Derek Bingham, "Optimization Test Functions and Datasets",
+ *    (January 2015).  Simon Fraser University.  Retrieved December 14, 2016 from
+ *    http://www.sfu.ca/~ssurjano/optimization.html.
+ * 
+ *    Molga, M., & Smutnicki, C. "Test functions for optimization needs", (2005).
+ *    Retrieved December 2016, from
+ *    http://www.zsd.ict.pwr.wroc.pl/files/docs/functions.pdf.
+ *
  * @author Burton Patkau
  * 
  */
@@ -350,6 +360,47 @@ public class StandardOptimizerTest
 			{
 				sum += point[i] * point[i] - waveCoeff * FastMath.cos(2.0 * FastMath.PI * point[i]);
 			}
+			return sum;
+		}
+	}
+
+	public static class RosenbrockRastriginFunction extends OptimizerTestFunction
+	{
+		public final double waveCoeff;
+
+		public RosenbrockRastriginFunction(double[] lowerBound,
+				double[] upperBound)
+		{
+			super(lowerBound, upperBound);
+			this.waveCoeff = 10.0;
+			this.name = "Rosenbrock-Rastrigin";
+		}
+
+		public RosenbrockRastriginFunction(double waveCoeff, double[] lowerBound,
+				double[] upperBound)
+		{
+			super(lowerBound, upperBound);
+			this.waveCoeff = waveCoeff;
+			this.name = "Rosenbrock-Rastrigin";
+		}
+
+		@Override
+		public double value(double[] point)
+		{
+			++ evaluations;
+			double sum = waveCoeff * getDimension();
+			double a, b;
+			double phi;
+			for (int i = 0; i < getDimension() - 1; ++i)
+			{
+				b = point[i];
+				a = point[i + 1] - b * b - 2.0 * b;
+				phi = 2.0 * FastMath.PI * b * (1.0 + (i + 1.0) / getDimension());
+				sum += 100.0d * a * a + b * b
+						- waveCoeff * FastMath.cos(phi);
+			}
+			phi = 2.0 * FastMath.PI * point[getDimension() - 1] * 2.0;
+			sum += - waveCoeff * FastMath.cos(phi);
 			return sum;
 		}
 	}

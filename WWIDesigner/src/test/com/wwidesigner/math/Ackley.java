@@ -17,10 +17,9 @@ import com.wwidesigner.math.StandardOptimizerTest.OptimizerTestFunction;
 public class Ackley
 {
 	public static final double CONVERGENCE_THRESHOLD = 1.6e-4;  // About 3**-8.
-	public static final int N = 14;
+	public static final int N = 16;
 	public static final double LOWER_BOUND = -30.0;
 	public static final double UPPER_BOUND = 20.0;
-	MultivariateOptimizer optimizer;
 
 	public static void main(String[] args)
 	{

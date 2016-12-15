@@ -420,7 +420,7 @@ public class StandardOptimizerTest
 			++ evaluations;
 			double cosSum = 0.0;
 			double sphereSum = 0.0;
-			for (int i = 0; i < getDimension() - 1; ++i)
+			for (int i = 0; i < getDimension(); ++i)
 			{
 				cosSum += FastMath.cos(2.0 * FastMath.PI * point[i]);
 				sphereSum += point[i] * point[i];
@@ -445,7 +445,7 @@ public class StandardOptimizerTest
 			++evaluations;
 			double cosSum = 0.0;
 			double sphereSum = 0.0;
-			for (int i = 0; i < getDimension() - 1; ++i)
+			for (int i = 0; i < getDimension(); ++i)
 			{
 				cosSum += FastMath.cos(2.0 * FastMath.PI * point[i]
 						* (1.0 + (i + 0.0) / getDimension()));

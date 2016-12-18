@@ -130,33 +130,48 @@ public class DIRECTCOptimizer extends DIRECT1Optimizer
 		this.nrOfVariantIterations = 0;
 		return super.doOptimize();
 	}
-
-	@Override
-	protected int getPotentiallyOptimal(boolean allow_dups)
+	
+	protected int selectVariant()
 	{
-		int discr = (getIterations() - iterationOfLastImprovement) % (iterationIntervalNoImprovement);
-		if ((discr == 0 
-				&& iterationOfLastVariant + iterationIntervalNoImprovement <= getIterations())
-			|| (iterationOfLastVariant + iterationIntervalMax <= getIterations()))
+		if (iterationOfLastVariant + iterationIntervalNoImprovement > getIterations())
 		{
+			// Too soon to use a variant.
+			return 0;
+		}
+		if (iterationOfLastImprovement + iterationIntervalNoImprovement <= getIterations()
+			|| iterationOfLastVariant + iterationIntervalMax <= getIterations())
+		{
+			// No improvement since last variant, or no variant for some time.
 			iterationOfLastVariant = getIterations();
 			++ nrOfVariantIterations;
 			if (nrOfVariantIterations % 3 == 1)
 			{
-				if (DISPLAY_PROGRESS)
-				{
-					System.out.println("DIRECT: select low value POH near current best");
-				}
-				return getPotentiallyOptimalNearByValue(currentBest.getPoint(), false);
+				return 2;
 			}
-			else
+			return 1;
+		}
+		return 0;
+	}
+
+	@Override
+	protected int getPotentiallyOptimal(boolean allow_dups)
+	{
+		int variant = selectVariant();
+		if (variant == 2)
+		{
+			if (DISPLAY_PROGRESS)
 			{
-				if (DISPLAY_PROGRESS)
-				{
-					System.out.println("DIRECT: select large POH near current best");
-				}
-				return getPotentiallyOptimalLargeAndNear(currentBest.getPoint(), true);
+				System.out.println("DIRECT: select low value POH near current best");
 			}
+			return getPotentiallyOptimalNearByValue(currentBest.getPoint(), false);
+		}
+		if (variant == 1)
+		{
+			if (DISPLAY_PROGRESS)
+			{
+				System.out.println("DIRECT: select large POH near current best");
+			}
+			return getPotentiallyOptimalLargeAndNear(currentBest.getPoint(), true);
 		}
 		return super.getPotentiallyOptimal(allow_dups);
 

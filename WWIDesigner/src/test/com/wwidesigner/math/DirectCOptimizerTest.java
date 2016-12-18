@@ -92,7 +92,7 @@ public class DirectCOptimizerTest extends StandardOptimizerTest
 		Assert.assertArrayEquals("Hartman6 x is incorrect", expected, outcome.getPoint(), 0.0021);
 		Assert.assertEquals("Hartman6 f(x) is incorrect", -3.32237, outcome.getValue(), 0.0005);
 		Assert.assertFalse("Hartman6, too many evaluations, " +  objective.getEvaluations(),
-				objective.getEvaluations() > 550);
+				objective.getEvaluations() > 560);
 	}
 
 	/**
@@ -181,7 +181,7 @@ public class DirectCOptimizerTest extends StandardOptimizerTest
 	@Test
 	public final void testRastrigin()
 	{
-		final int N = 5;	// DIRECT-C can't handle more than 5.
+		final int N = 5;
 		double lowerBound[] = new double[N];
 		double upperBound[] = new double[N];
 		double expected[]   = new double[N];

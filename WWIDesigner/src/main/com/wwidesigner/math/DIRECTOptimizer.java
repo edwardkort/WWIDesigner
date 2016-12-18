@@ -550,6 +550,11 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 		if (targetFunctionValue != null && currentBest.getValue() <= targetFunctionValue)
 		{
 			// Function value is at or below the target.
+			if (DISPLAY_PROGRESS)
+			{
+				System.out.println("Finish when target function value " 
+						+ targetFunctionValue + " reached.");
+			}
 			return true;
 		}
 		if (! isXConverged)
@@ -560,9 +565,22 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 		if (nrPromising == 0
 				&& getIterations() >= iterationOfLastImprovement + 1 + getLowerBound().length)
 		{
+			if (DISPLAY_PROGRESS)
+			{
+				System.out.println("Finish after iteration with no promising divisions.");
+			}
 			return true;
 		}
-		return getIterations() >= iterationOfLastImprovement + convergedIterationsThreshold;
+		if (getIterations() >= iterationOfLastImprovement + convergedIterationsThreshold)
+		{
+			if (DISPLAY_PROGRESS)
+			{
+				System.out.println("Finish after " + convergedIterationsThreshold
+						+ " iterations with no improvement.");
+			}
+			return true;
+		}
+		return false;
 	}
 
 	public PointValuePair getCurrentBest()

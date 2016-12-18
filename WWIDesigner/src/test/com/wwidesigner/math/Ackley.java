@@ -52,6 +52,13 @@ public class Ackley
 		Arrays.fill(lowerBound, LOWER_BOUND);
 		Arrays.fill(upperBound, UPPER_BOUND);
 		Arrays.fill(expected,   0.0);
+		// Skew the bounds slightly so the problem is not as symmetric.
+		// This neutralizes the advantage DIRECT-L has by not including
+		// duplicate points in the hull.
+		for (int i = 0; i < upperBound.length; ++i)
+		{
+			upperBound[i] += 0.1 * i;
+		}
 		OptimizerTestFunction objective
 				= new StandardOptimizerTest.AckleyFunction(lowerBound, upperBound);
 

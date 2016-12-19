@@ -16,8 +16,8 @@ import com.wwidesigner.math.StandardOptimizerTest.OptimizerTestFunction;
  */
 public class RosenbrockRastrigin
 {
-	public static final double CONVERGENCE_THRESHOLD = 1.6e-4;  // About 3**-8.
-	public static final int N = 7;
+	public static final double CONVERGENCE_THRESHOLD = 3.0e-10; // About 3**-20.
+	public static final int N = 9;
 	public static final double LOWER_BOUND = -2.0;
 	public static final double UPPER_BOUND = 5.0;
 

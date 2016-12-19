@@ -17,7 +17,7 @@ import com.wwidesigner.math.StandardOptimizerTest.OptimizerTestFunction;
  */
 public class Rosenbrock
 {
-	public static final double CONVERGENCE_THRESHOLD = 1.7e-5;  // About 3**-10.
+	public static final double CONVERGENCE_THRESHOLD = 3.0e-10; // About 3**-20.
 	public static final int N = 14;
 	public static final double LOWER_BOUND = -1.0;
 	public static final double UPPER_BOUND = 2.0;
@@ -57,6 +57,10 @@ public class Rosenbrock
 		Arrays.fill(expected,   1.0);
 		OptimizerTestFunction objective
 				= new StandardOptimizerTest.RosenbrockFunction(lowerBound, upperBound);
+		for (int i = 0; i < upperBound.length; ++i)
+		{
+			upperBound[i] += 0.01 * i;
+		}
 
 		try
 		{
@@ -81,6 +85,10 @@ public class Rosenbrock
 		Arrays.fill(lowerBound, LOWER_BOUND);
 		Arrays.fill(upperBound, UPPER_BOUND);
 		Arrays.fill(expected,   1.0);
+		for (int i = 0; i < upperBound.length; ++i)
+		{
+			upperBound[i] += 0.01 * i;
+		}
 		OptimizerTestFunction objective
 				= new StandardOptimizerTest.ScaledRosenbrockFunction(lowerBound, upperBound);
 

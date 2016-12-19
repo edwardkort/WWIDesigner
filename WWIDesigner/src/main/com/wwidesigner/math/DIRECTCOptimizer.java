@@ -61,9 +61,20 @@ public class DIRECTCOptimizer extends DIRECT1Optimizer
 	 */
 	protected int iterationIntervalNoImprovement, iterationIntervalMax;
 	
+	/**
+	 * Last interation at which a variant selection strategy was used.
+	 */
 	protected int iterationOfLastVariant;
 	
-	protected int nrOfVariantIterations;
+	/**
+	 * Order in which to use variant selection strategies.
+	 */
+	protected int[] typeOfVariant;
+	
+	/**
+	 * Index into typeOfVariant.
+	 */
+	protected int nextVariantIndex;
 
 	/**
 	 * Distances from the current best point are divided into bins.
@@ -115,7 +126,8 @@ public class DIRECTCOptimizer extends DIRECT1Optimizer
 		this.iterationIntervalNoImprovement = iterationInterval;
 		this.iterationIntervalMax = 4 * iterationInterval;
 		this.iterationOfLastVariant = 0;
-		this.nrOfVariantIterations = 0;
+		this.nextVariantIndex = 0;
+		this.typeOfVariant = new int[]{ 2, 1, 1 };
 		this.relativeDistance = new double[DEFAULT_DISTANCE_BINS];
 		for (int i = 0; i < relativeDistance.length; ++i)
 		{
@@ -127,7 +139,7 @@ public class DIRECTCOptimizer extends DIRECT1Optimizer
 	protected PointValuePair doOptimize()
 	{
 		this.iterationOfLastVariant = 0;
-		this.nrOfVariantIterations = 0;
+		this.nextVariantIndex = 0;
 		return super.doOptimize();
 	}
 	
@@ -143,12 +155,11 @@ public class DIRECTCOptimizer extends DIRECT1Optimizer
 		{
 			// No improvement since last variant, or no variant for some time.
 			iterationOfLastVariant = getIterations();
-			++ nrOfVariantIterations;
-			if (nrOfVariantIterations % 3 == 1)
+			if (nextVariantIndex >= typeOfVariant.length)
 			{
-				return 2;
+				nextVariantIndex = 0;
 			}
-			return 1;
+			return typeOfVariant[nextVariantIndex++];
 		}
 		return 0;
 	}

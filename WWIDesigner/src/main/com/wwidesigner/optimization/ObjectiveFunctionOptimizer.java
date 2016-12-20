@@ -188,8 +188,8 @@ public class ObjectiveFunctionOptimizer
 					BaseObjectiveFunction.OptimizerType.DIRECTOptimizer))
 			{
 				// Multivariate DIRECT optimization, with bounds.
-				// Convergence threshold about 3^-11.
-				MultivariateOptimizer optimizer = new DIRECTCOptimizer(6.0e-6);
+				// Convergence threshold about 3^-15.
+				MultivariateOptimizer optimizer = new DIRECTCOptimizer(7.0e-8);
 				PointValuePair outcome = runDirect(optimizer, objective,
 						startPoint);
 

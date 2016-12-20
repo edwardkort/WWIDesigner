@@ -127,7 +127,7 @@ public class DIRECTCOptimizer extends DIRECT1Optimizer
 		this.iterationIntervalMax = 4 * iterationInterval;
 		this.iterationOfLastVariant = 0;
 		this.nextVariantIndex = 0;
-		this.typeOfVariant = new int[]{ 2, 1, 1 };
+		this.typeOfVariant = new int[]{ 2, 1, 1, 2, 1 };
 		this.relativeDistance = new double[DEFAULT_DISTANCE_BINS];
 		for (int i = 0; i < relativeDistance.length; ++i)
 		{
@@ -168,14 +168,6 @@ public class DIRECTCOptimizer extends DIRECT1Optimizer
 	protected int getPotentiallyOptimal(boolean allow_dups)
 	{
 		int variant = selectVariant();
-		if (variant == 2)
-		{
-			if (DISPLAY_PROGRESS)
-			{
-				System.out.println("DIRECT: select low value POH near current best");
-			}
-			return getPotentiallyOptimalNearByValue(currentBest.getPoint(), false);
-		}
 		if (variant == 1)
 		{
 			if (DISPLAY_PROGRESS)
@@ -183,6 +175,14 @@ public class DIRECTCOptimizer extends DIRECT1Optimizer
 				System.out.println("DIRECT: select large POH near current best");
 			}
 			return getPotentiallyOptimalLargeAndNear(currentBest.getPoint(), true);
+		}
+		if (variant == 2)
+		{
+			if (DISPLAY_PROGRESS)
+			{
+				System.out.println("DIRECT: select low value POH near current best");
+			}
+			return getPotentiallyOptimalNearByValue(currentBest.getPoint(), false);
 		}
 		return super.getPotentiallyOptimal(allow_dups);
 

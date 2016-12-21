@@ -5,8 +5,13 @@ package com.wwidesigner.math;
 
 import java.util.Arrays;
 
+import org.apache.commons.math3.optim.ConvergenceChecker;
+import org.apache.commons.math3.optim.PointValuePair;
+import org.apache.commons.math3.optim.SimpleValueChecker;
 import org.apache.commons.math3.optim.nonlinear.scalar.MultivariateOptimizer;
 import org.apache.commons.math3.optim.nonlinear.scalar.noderiv.BOBYQAOptimizer;
+import org.apache.commons.math3.optim.nonlinear.scalar.noderiv.CMAESOptimizer;
+import org.apache.commons.math3.random.MersenneTwister;
 
 import com.wwidesigner.math.StandardOptimizerTest.OptimizerTestFunction;
 
@@ -29,6 +34,12 @@ public class RosenbrockRastrigin
 		myTest.testOptimization(N, new DIRECTCOptimizer(CONVERGENCE_THRESHOLD));
 		myTest.testOptimization(N, new DIRECT_L_Optimizer(CONVERGENCE_THRESHOLD));
 		myTest.testOptimization(N, new BOBYQAOptimizer(2 * N + 1, 1.0, 1e-4));
+		ConvergenceChecker<PointValuePair> convergenceChecker = new SimpleValueChecker(
+				1.e-6, 1.e-14);
+		MultivariateOptimizer optimizer = new CMAESOptimizer(
+				100000, 0.01, true, 0, 0,
+				new MersenneTwister(), false, convergenceChecker);
+		myTest.testOptimization(N, optimizer);
 	}
 	
 	public RosenbrockRastrigin()

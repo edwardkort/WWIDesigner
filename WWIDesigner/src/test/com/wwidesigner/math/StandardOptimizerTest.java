@@ -12,6 +12,7 @@ import org.apache.commons.math3.optim.SimpleBounds;
 import org.apache.commons.math3.optim.nonlinear.scalar.GoalType;
 import org.apache.commons.math3.optim.nonlinear.scalar.MultivariateOptimizer;
 import org.apache.commons.math3.optim.nonlinear.scalar.ObjectiveFunction;
+import org.apache.commons.math3.optim.nonlinear.scalar.noderiv.CMAESOptimizer;
 import org.apache.commons.math3.util.FastMath;
 
 /**
@@ -84,6 +85,18 @@ public class StandardOptimizerTest
 			return upperBound;
 		}
 
+		public double[] getStdDev()
+		{
+			int dimension = getLowerBound().length;
+			double[] stdDev = new double[dimension];
+
+			for (int i = 0; i < dimension; i++) {
+				stdDev[i] = 0.5*(getUpperBound()[i] - getLowerBound()[i]);
+			}
+
+			return stdDev;
+		}
+
 		public OptimizerTestFunction(double[] lowerBound, double[] upperBound)
 		{
 			this.lowerBound = lowerBound;
@@ -112,7 +125,9 @@ public class StandardOptimizerTest
 				MaxIter.unlimited(),
 				new InitialGuess(objective.getStartPoint()),
 				new DIRECTOptimizer.TargetFunctionValue(targetFunctionValue),
-				new SimpleBounds(objective.getLowerBound(), objective.getUpperBound()));
+				new SimpleBounds(objective.getLowerBound(), objective.getUpperBound()),
+				new CMAESOptimizer.PopulationSize(4 + (int) (3 * Math.log(objective.getDimension()))),
+				new CMAESOptimizer.Sigma(objective.getStdDev()));
 		long elapsedTime = System.currentTimeMillis() - startTime;
 		double elapsedSeconds = 0.001 * (double) elapsedTime;
 
@@ -389,18 +404,25 @@ public class StandardOptimizerTest
 		{
 			++ evaluations;
 			double sum = waveCoeff * getDimension();
+			int i;
 			double a, b;
 			double phi;
-			for (int i = 0; i < getDimension() - 1; ++i)
+			for (i = 0; i < getDimension() - 1; ++i)
 			{
 				b = point[i];
 				a = point[i + 1] - b * b - 2.0 * b;
 				phi = 2.0 * FastMath.PI * b * (1.0 + (i + 1.0) / getDimension());
-				sum += 100.0d * a * a + b * b
+				sum += waveCoeff * a * a 
+						+ b * b
 						- waveCoeff * FastMath.cos(phi);
 			}
-			phi = 2.0 * FastMath.PI * point[getDimension() - 1] * 2.0;
-			sum += - waveCoeff * FastMath.cos(phi);
+			i = getDimension() - 1;
+			b = point[i];
+			a = point[0] - b * b - 2.0 * b;
+			phi = 2.0 * FastMath.PI * b * 2.0;
+			sum +=  waveCoeff * a * a 
+					+ b * b
+					- waveCoeff * FastMath.cos(phi);
 			return sum;
 		}
 	}

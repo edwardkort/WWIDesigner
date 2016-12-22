@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns2:constraints xmlns:ns2="http://www.wwidesigner.com/Constraints">
+    <constraintsName>Hole dimension constraints for sample chanter</constraintsName>
+    <objectiveDisplayName>Hole position and size optimizer</objectiveDisplayName>
+    <objectiveFunctionName>HoleObjectiveFunction</objectiveFunctionName>
+    <numberOfHoles>8</numberOfHoles>
+    <constraint>
+        <displayName>Bore length</displayName>
+        <category>Hole position</category>
+        <type>DIMENSIONAL</type>
+        <lowerBound>0.28</lowerBound>
+        <upperBound>0.4</upperBound>
+    </constraint>
+    <constraint>
+        <displayName>Thumb (top) to T1 distance</displayName>
+        <category>Hole position</category>
+        <type>DIMENSIONAL</type>
+        <lowerBound>2.0E-4</lowerBound>
+        <upperBound>0.025</upperBound>
+    </constraint>
+    <constraint>
+        <displayName>T1 to T2 distance</displayName>
+        <category>Hole position</category>
+        <type>DIMENSIONAL</type>
+        <lowerBound>0.012</lowerBound>
+        <upperBound>0.032</upperBound>
+    </constraint>
+    <constraint>
+        <displayName>T2 to T3 distance</displayName>
+        <category>Hole position</category>
+        <type>DIMENSIONAL</type>
+        <lowerBound>0.012</lowerBound>
+        <upperBound>0.032</upperBound>
+    </constraint>
+    <constraint>
+        <displayName>T3 to B1 distance</displayName>
+        <category>Hole position</category>
+        <type>DIMENSIONAL</type>
+        <lowerBound>0.012</lowerBound>
+        <upperBound>0.06</upperBound>
+    </constraint>
+    <constraint>
+        <displayName>B1 to B2 distance</displayName>
+        <category>Hole position</category>
+        <type>DIMENSIONAL</type>
+        <lowerBound>0.012</lowerBound>
+        <upperBound>0.032</upperBound>
+    </constraint>
+    <constraint>
+        <displayName>B2 to B3 distance</displayName>
+        <category>Hole position</category>
+        <type>DIMENSIONAL</type>
+        <lowerBound>0.012</lowerBound>
+        <upperBound>0.032</upperBound>
+    </constraint>
+    <constraint>
+        <displayName>B3 to B4 (bottom) distance</displayName>
+        <category>Hole position</category>
+        <type>DIMENSIONAL</type>
+        <lowerBound>0.012</lowerBound>
+        <upperBound>0.032</upperBound>
+    </constraint>
+    <constraint>
+        <displayName>B4 (bottom) to bore end distance</displayName>
+        <category>Hole position</category>
+        <type>DIMENSIONAL</type>
+        <lowerBound>0.012</lowerBound>
+        <upperBound>0.1</upperBound>
+    </constraint>
+    <constraint>
+        <displayName>Thumb (top) diameter</displayName>
+        <category>Hole size</category>
+        <type>DIMENSIONAL</type>
+        <lowerBound>0.0032</lowerBound>
+        <upperBound>0.004</upperBound>
+    </constraint>
+    <constraint>
+        <displayName>T1 diameter</displayName>
+        <category>Hole size</category>
+        <type>DIMENSIONAL</type>
+        <lowerBound>0.0032</lowerBound>
+        <upperBound>0.004</upperBound>
+    </constraint>
+    <constraint>
+        <displayName>T2 diameter</displayName>
+        <category>Hole size</category>
+        <type>DIMENSIONAL</type>
+        <lowerBound>0.0032</lowerBound>
+        <upperBound>0.004</upperBound>
+    </constraint>
+    <constraint>
+        <displayName>T3 diameter</displayName>
+        <category>Hole size</category>
+        <type>DIMENSIONAL</type>
+        <lowerBound>0.0032</lowerBound>
+        <upperBound>0.004</upperBound>
+    </constraint>
+    <constraint>
+        <displayName>B1 diameter</displayName>
+        <category>Hole size</category>
+        <type>DIMENSIONAL</type>
+        <lowerBound>0.0032</lowerBound>
+        <upperBound>0.004</upperBound>
+    </constraint>
+    <constraint>
+        <displayName>B2 diameter</displayName>
+        <category>Hole size</category>
+        <type>DIMENSIONAL</type>
+        <lowerBound>0.0032</lowerBound>
+        <upperBound>0.004</upperBound>
+    </constraint>
+    <constraint>
+        <displayName>B3 diameter</displayName>
+        <category>Hole size</category>
+        <type>DIMENSIONAL</type>
+        <lowerBound>0.0032</lowerBound>
+        <upperBound>0.004</upperBound>
+    </constraint>
+    <constraint>
+        <displayName>B4 (bottom) diameter</displayName>
+        <category>Hole size</category>
+        <type>DIMENSIONAL</type>
+        <lowerBound>0.0032</lowerBound>
+        <upperBound>0.004</upperBound>
+    </constraint>
+</ns2:constraints>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns2:constraints xmlns:ns2="http://www.wwidesigner.com/Constraints">
+    <constraintsName>Didjeridu constraints for bore of three nearly equal stages.</constraintsName>
+    <objectiveDisplayName>Bore Position optimizer</objectiveDisplayName>
+    <objectiveFunctionName>BorePositionObjectiveFunction</objectiveFunctionName>
+    <numberOfHoles>0</numberOfHoles>
+    <constraint>
+        <displayName>Position of bore point 7 (bottom)</displayName>
+        <category>Bore point positions</category>
+        <type>DIMENSIONAL</type>
+        <lowerBound>0.762</lowerBound>
+        <upperBound>2.54</upperBound>
+    </constraint>
+    <constraint>
+        <displayName>Relative position of bore point 3 between points 2 and 7</displayName>
+        <category>Bore point positions</category>
+        <type>DIMENSIONLESS</type>
+        <lowerBound>0.32</lowerBound>
+        <upperBound>0.35</upperBound>
+    </constraint>
+    <constraint>
+        <displayName>Relative position of bore point 4 between points 3 and 7</displayName>
+        <category>Bore point positions</category>
+        <type>DIMENSIONLESS</type>
+        <lowerBound>0.0</lowerBound>
+        <upperBound>0.01</upperBound>
+    </constraint>
+    <constraint>
+        <displayName>Relative position of bore point 5 between points 4 and 7</displayName>
+        <category>Bore point positions</category>
+        <type>DIMENSIONLESS</type>
+        <lowerBound>0.48</lowerBound>
+        <upperBound>0.52</upperBound>
+    </constraint>
+    <constraint>
+        <displayName>Relative position of bore point 6 between points 5 and 7</displayName>
+        <category>Bore point positions</category>
+        <type>DIMENSIONLESS</type>
+        <lowerBound>0.0</lowerBound>
+        <upperBound>0.01</upperBound>
+    </constraint>
+</ns2:constraints>

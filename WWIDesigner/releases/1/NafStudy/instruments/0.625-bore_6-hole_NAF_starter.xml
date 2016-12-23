@@ -4,9 +4,9 @@
     <description>Base NAF file for creating a flute in the key of C5 or thereabouts, with an 18:1 bore length to diameter ratio.</description>
     <lengthType>in</lengthType>
     <mouthpiece>
-        <position>0.18000048600052482</position>
+        <position>0.1800004860005248</position>
         <fipple>
-            <windowLength>0.18000048600052482</windowLength>
+            <windowLength>0.1800004860005248</windowLength>
             <windowWidth>0.3125005062502734</windowWidth>
             <fippleFactor>0.75</fippleFactor>
             <windwayHeight>0.03200008640009331</windwayHeight>
@@ -17,44 +17,44 @@
         <boreDiameter>0.6250010125005468</boreDiameter>
     </borePoint>
     <borePoint>
-        <borePosition>10.895797845959715</borePosition>
-        <boreDiameter>0.6250010125005462</boreDiameter>
+        <borePosition>10.890270612819148</borePosition>
+        <boreDiameter>0.6250010125005473</boreDiameter>
     </borePoint>
     <hole>
         <name>Hole 6</name>
-        <borePosition>3.0300246222883795</borePosition>
-        <diameter>0.19554508433112508</diameter>
-        <height>0.18800050760054815</height>
+        <borePosition>3.0289625158473927</borePosition>
+        <diameter>0.19741831442977711</diameter>
+        <height>0.18800050760054812</height>
     </hole>
     <hole>
         <name>Hole 5</name>
-        <borePosition>3.955828456441742</borePosition>
-        <diameter>0.2399822521885317</diameter>
-        <height>0.18800050760054815</height>
+        <borePosition>3.9623638814742583</borePosition>
+        <diameter>0.24289447102351733</diameter>
+        <height>0.18800050760054812</height>
     </hole>
     <hole>
         <name>Hole 4</name>
-        <borePosition>4.881632290595104</borePosition>
-        <diameter>0.24617057458810448</diameter>
-        <height>0.18800050760054815</height>
+        <borePosition>4.895765247101124</borePosition>
+        <diameter>0.2501158383928519</diameter>
+        <height>0.18800050760054812</height>
     </hole>
     <hole>
         <name>Hole 3</name>
-        <borePosition>5.766355744109065</borePosition>
-        <diameter>0.26402288514875755</diameter>
-        <height>0.18800050760054815</height>
+        <borePosition>5.792638312506531</borePosition>
+        <diameter>0.2714029313769036</diameter>
+        <height>0.18800050760054812</height>
     </hole>
     <hole>
         <name>Hole 2</name>
-        <borePosition>6.701437708096599</borePosition>
-        <diameter>0.25404156473424505</diameter>
-        <height>0.18800050760054815</height>
+        <borePosition>6.728878178409951</borePosition>
+        <diameter>0.2613335506578164</diameter>
+        <height>0.18800050760054812</height>
     </hole>
     <hole>
         <name>Hole 1</name>
-        <borePosition>7.636519672084134</borePosition>
-        <diameter>0.2618740657576055</diameter>
-        <height>0.18800050760054815</height>
+        <borePosition>7.665118044313371</borePosition>
+        <diameter>0.2685249737539327</diameter>
+        <height>0.18800050760054812</height>
     </hole>
     <termination>
         <flangeDiameter>1.0000016200008748</flangeDiameter>

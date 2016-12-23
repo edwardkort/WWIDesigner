@@ -29,58 +29,58 @@ without the two always-open bottom holes.</description>
         <boreDiameter>4.8</boreDiameter>
     </borePoint>
     <borePoint>
-        <borePosition>320.0</borePosition>
+        <borePosition>322.3</borePosition>
         <boreDiameter>4.8</boreDiameter>
     </borePoint>
     <hole>
         <name>Thumb</name>
-        <borePosition>93.7</borePosition>
+        <borePosition>91.9</borePosition>
         <diameter>4.0</diameter>
         <height>5.5</height>
     </hole>
     <hole>
         <name>T1</name>
-        <borePosition>115.9002</borePosition>
+        <borePosition>116.9</borePosition>
         <diameter>4.0</diameter>
         <height>5.5</height>
     </hole>
     <hole>
         <name>T2</name>
-        <borePosition>130.2</borePosition>
+        <borePosition>130.8</borePosition>
         <diameter>4.0</diameter>
         <height>5.5</height>
     </hole>
     <hole>
         <name>T3</name>
-        <borePosition>155.6</borePosition>
+        <borePosition>153.8</borePosition>
         <diameter>4.0</diameter>
         <height>5.5</height>
     </hole>
     <hole>
         <name>B1</name>
-        <borePosition>181.0</borePosition>
+        <borePosition>183.6</borePosition>
         <diameter>3.2</diameter>
         <height>5.5</height>
     </hole>
     <hole>
         <name>B2</name>
-        <borePosition>206.4</borePosition>
+        <borePosition>206.0</borePosition>
         <diameter>4.8</diameter>
         <height>5.5</height>
     </hole>
     <hole>
         <name>B3</name>
-        <borePosition>238.1</borePosition>
+        <borePosition>238.0</borePosition>
         <diameter>4.0</diameter>
         <height>5.5</height>
     </hole>
     <hole>
         <name>B4</name>
-        <borePosition>268.30019999999996</borePosition>
+        <borePosition>269.2</borePosition>
         <diameter>3.2</diameter>
         <height>5.5</height>
     </hole>
     <termination>
-        <flangeDiameter>15.900008586000002</flangeDiameter>
+        <flangeDiameter>15.9</flangeDiameter>
     </termination>
 </ns2:instrument>

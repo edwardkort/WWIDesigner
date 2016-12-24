@@ -44,6 +44,7 @@ public class DefaultHoleCalculator extends HoleCalculator
 
 	public DefaultHoleCalculator()
 	{
+		this.mFudgeFactor = 1.0;
 	}
 
 	public DefaultHoleCalculator(double fudgeFactor)
@@ -56,6 +57,10 @@ public class DefaultHoleCalculator extends HoleCalculator
 	 * 
 	 * @see com.wwidesigner.geometry.HoleCalculator#calcTransferMatrix(double,
 	 * com.wwidesigner.util.PhysicalParameters)
+	 *
+	 * Reference:
+	 * Antoine Lefebvre, Computational Acoustic Methods for the Design of
+     * Woodwind Instruments.  Ph.D. thesis, McGill University, 2010.
 	 */
 	public TransferMatrix calcTransferMatrix_2010(Hole hole, double waveNumber,
 			PhysicalParameters parameters)
@@ -224,7 +229,7 @@ public class DefaultHoleCalculator extends HoleCalculator
 		// Complex A = Complex.ONE.add(B.multiply(C)).sqrt();
 		TransferMatrix result = new TransferMatrix(A, B, C, A);
 
-		// assert result.determinant() == Complex.valueOf(1.0, 0.0);
+		// assert result.determinant() == Complex.ONE;
 
 		return result;
 	}

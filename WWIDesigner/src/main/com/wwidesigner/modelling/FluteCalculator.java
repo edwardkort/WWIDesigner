@@ -22,7 +22,7 @@ import com.wwidesigner.geometry.Instrument;
 import com.wwidesigner.geometry.calculation.FluteMouthpieceCalculator;
 import com.wwidesigner.geometry.calculation.SimpleBoreSectionCalculator;
 import com.wwidesigner.geometry.calculation.UnflangedEndCalculator;
-import com.wwidesigner.geometry.calculation.WhistleHoleCalculator;
+import com.wwidesigner.geometry.calculation.DefaultHoleCalculator;
 import com.wwidesigner.util.PhysicalParameters;
 
 public class FluteCalculator extends DefaultInstrumentCalculator
@@ -31,14 +31,14 @@ public class FluteCalculator extends DefaultInstrumentCalculator
 			PhysicalParameters physicalParams)
 	{
 		super(instrument, new FluteMouthpieceCalculator(),
-				new UnflangedEndCalculator(), new WhistleHoleCalculator(),
+				new UnflangedEndCalculator(), new DefaultHoleCalculator(),
 				new SimpleBoreSectionCalculator(), physicalParams);
 	}
 
 	public FluteCalculator()
 	{
 		super(new FluteMouthpieceCalculator(),
-				new UnflangedEndCalculator(), new WhistleHoleCalculator(),
+				new UnflangedEndCalculator(), new DefaultHoleCalculator(),
 				new SimpleBoreSectionCalculator());
 	}
 }

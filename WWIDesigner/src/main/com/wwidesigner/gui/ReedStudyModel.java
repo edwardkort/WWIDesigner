@@ -70,26 +70,26 @@ import com.wwidesigner.util.PhysicalParameters;
 public class ReedStudyModel extends StudyModel
 {
 	// Named constants for the standard set of optimizers.
-	public static final String CALIBRATOR_SUB_CATEGORY_ID = "1. Reed Calibrator";
+	public static final String CALIBRATOR_SUB_CATEGORY_ID = "01. Reed Calibrator";
 	// Reed calibrator optimizes both alpha and beta.
-	public static final String LENGTH_OPT_SUB_CATEGORY_ID = "2. Length Optimizer";
-	public static final String HOLESIZE_OPT_SUB_CATEGORY_ID = "3. Hole Size Optimizer";
-	public static final String HOLESPACE_OPT_SUB_CATEGORY_ID = "4. Hole Spacing Optimizer";
-	public static final String HOLE_OPT_SUB_CATEGORY_ID = "5. Hole Size+Spacing Optimizer";
-	public static final String CONE_OPT_SUB_CATEGORY_ID = "6. Conical Bore Optimizer";
-	public static final String BORE_DIAMETER_OPT_SUB_CATEGORY_ID = "7. Bore Diameter Optimizer";
-	public static final String BORE_POSITION_OPT_SUB_CATEGORY_ID = "8. Bore Point Position Optimizer";
-	public static final String BORE_OPT_SUB_CATEGORY_ID = "9. Bore Point Optimizer";
-	public static final String HOLE_CONE_OPT_SUB_CATEGORY_ID = "A. Hole and Conical Bore Optimizer";
-	public static final String HOLE_BOREDIAMETER_OPT_SUB_CATEGORY_ID = "B. Hole and Bore Diameter Optimizer";
-	public static final String HOLE_BOREPOSITION_OPT_SUB_CATEGORY_ID = "C. Hole + Bore Position Optimizer";
-	public static final String HOLE_AND_BORE_OPT_SUB_CATEGORY_ID = "D. Hole + Bore Point Optimizer";
-	public static final String GLOBAL_HOLE_OPT_SUB_CATEGORY_ID = "E. Global Hole Size+Spacing Optimizer";
-	public static final String GLOBAL_BORE_OPT_SUB_CATEGORY_ID = "F. Global Bore Point Optimizer";
+	public static final String LENGTH_OPT_SUB_CATEGORY_ID = "02. Length Optimizer";
+	public static final String HOLESIZE_OPT_SUB_CATEGORY_ID = "03. Hole Size Optimizer";
+	public static final String HOLESPACE_OPT_SUB_CATEGORY_ID = "04. Hole Spacing Optimizer";
+	public static final String HOLE_OPT_SUB_CATEGORY_ID = "05. Hole Size+Spacing Optimizer";
+	public static final String CONE_OPT_SUB_CATEGORY_ID = "06. Conical Bore Optimizer";
+	public static final String BORE_DIAMETER_OPT_SUB_CATEGORY_ID = "07. Bore Diameter Optimizer";
+	public static final String BORE_POSITION_OPT_SUB_CATEGORY_ID = "08. Bore Point Position Optimizer";
+	public static final String BORE_OPT_SUB_CATEGORY_ID = "09. Bore Point Optimizer";
+	public static final String HOLE_CONE_OPT_SUB_CATEGORY_ID = "10. Hole and Conical Bore Optimizer";
+	public static final String HOLE_BOREDIAMETER_OPT_SUB_CATEGORY_ID = "11. Hole and Bore Diameter Optimizer";
+	public static final String HOLE_BOREPOSITION_OPT_SUB_CATEGORY_ID = "12. Hole + Bore Position Optimizer";
+	public static final String HOLE_AND_BORE_OPT_SUB_CATEGORY_ID = "13. Hole + Bore Point Optimizer";
+	public static final String GLOBAL_HOLE_OPT_SUB_CATEGORY_ID = "14. Global Hole Size+Spacing Optimizer";
+	public static final String GLOBAL_BORE_OPT_SUB_CATEGORY_ID = "15. Global Bore Point Optimizer";
 	public static final String GLOBAL_HOLE_BOREDIAMETER_OPT_SUB_CATEGORY_ID
-									= "G. Global Hole + Bore Diameter Optimizer";
+									= "16. Global Hole + Bore Diameter Optimizer";
 	public static final String GLOBAL_HOLE_AND_BORE_OPT_SUB_CATEGORY_ID
-									= "H. Global Hole + Bore Point Optimizer";
+									= "17. Global Hole + Bore Point Optimizer";
 
 	// Default minimum and maximum bore length, in meters
 	// (actually, position of bottom bore point).

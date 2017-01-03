@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns2:constraints xmlns:ns2="http://www.wwidesigner.com/Constraints">
+    <constraintsName>2 groups, 1-1/4" max spacing</constraintsName>
+    <objectiveDisplayName>Single taper, grouped hole</objectiveDisplayName>
+    <objectiveFunctionName>SingleTaperHoleGroupFromTopObjectiveFunction</objectiveFunctionName>
+    <numberOfHoles>6</numberOfHoles>
+    <constraint>
+        <displayName>Bore length</displayName>
+        <category>Hole position</category>
+        <type>DIMENSIONAL</type>
+        <lowerBound>0.1905</lowerBound>
+        <upperBound>0.6985</upperBound>
+    </constraint>
+    <constraint>
+        <displayName>Ratio, from splitting edge, of top-hole position to bore length</displayName>
+        <category>Hole position</category>
+        <type>DIMENSIONLESS</type>
+        <lowerBound>0.25</lowerBound>
+        <upperBound>1.0</upperBound>
+    </constraint>
+    <constraint>
+        <displayName>Group 1 (Hole 6 (top), Hole 5, Hole 4) spacing</displayName>
+        <category>Hole position</category>
+        <type>DIMENSIONAL</type>
+        <lowerBound>0.02032</lowerBound>
+        <upperBound>0.03175</upperBound>
+    </constraint>
+    <constraint>
+        <displayName>Hole 4 to Hole 3 distance</displayName>
+        <category>Hole position</category>
+        <type>DIMENSIONAL</type>
+        <lowerBound>0.02032</lowerBound>
+        <upperBound>0.06985</upperBound>
+    </constraint>
+    <constraint>
+        <displayName>Group 2 (Hole 3, Hole 2, Hole 1 (bottom)) spacing</displayName>
+        <category>Hole position</category>
+        <type>DIMENSIONAL</type>
+        <lowerBound>0.02032</lowerBound>
+        <upperBound>0.03175</upperBound>
+    </constraint>
+    <constraint>
+        <displayName>Hole 6 (top) diameter</displayName>
+        <category>Hole size</category>
+        <type>DIMENSIONAL</type>
+        <lowerBound>0.0015875</lowerBound>
+        <upperBound>0.0127</upperBound>
+    </constraint>
+    <constraint>
+        <displayName>Hole 5 diameter</displayName>
+        <category>Hole size</category>
+        <type>DIMENSIONAL</type>
+        <lowerBound>0.003175</lowerBound>
+        <upperBound>0.0127</upperBound>
+    </constraint>
+    <constraint>
+        <displayName>Hole 4 diameter</displayName>
+        <category>Hole size</category>
+        <type>DIMENSIONAL</type>
+        <lowerBound>0.003175</lowerBound>
+        <upperBound>0.0127</upperBound>
+    </constraint>
+    <constraint>
+        <displayName>Hole 3 diameter</displayName>
+        <category>Hole size</category>
+        <type>DIMENSIONAL</type>
+        <lowerBound>0.003175</lowerBound>
+        <upperBound>0.0127</upperBound>
+    </constraint>
+    <constraint>
+        <displayName>Hole 2 diameter</displayName>
+        <category>Hole size</category>
+        <type>DIMENSIONAL</type>
+        <lowerBound>0.003175</lowerBound>
+        <upperBound>0.0127</upperBound>
+    </constraint>
+    <constraint>
+        <displayName>Hole 1 (bottom) diameter</displayName>
+        <category>Hole size</category>
+        <type>DIMENSIONAL</type>
+        <lowerBound>0.003175</lowerBound>
+        <upperBound>0.0127</upperBound>
+    </constraint>
+    <constraint>
+        <displayName>Bore diameter ratio (top/bottom)</displayName>
+        <category>Single bore taper</category>
+        <type>DIMENSIONLESS</type>
+        <lowerBound>0.8</lowerBound>
+        <upperBound>1.2</upperBound>
+    </constraint>
+    <constraint>
+        <displayName>Taper start (from top), fraction of bore length</displayName>
+        <category>Single bore taper</category>
+        <type>DIMENSIONLESS</type>
+        <lowerBound>0.0</lowerBound>
+        <upperBound>1.0</upperBound>
+    </constraint>
+    <constraint>
+        <displayName>Taper length, fraction of bore below start</displayName>
+        <category>Single bore taper</category>
+        <type>DIMENSIONLESS</type>
+        <lowerBound>0.0</lowerBound>
+        <upperBound>1.0</upperBound>
+    </constraint>
+    <holeGroups>
+        <holeGroup>
+            <holeIdx>0</holeIdx>
+            <holeIdx>1</holeIdx>
+            <holeIdx>2</holeIdx>
+        </holeGroup>
+        <holeGroup>
+            <holeIdx>3</holeIdx>
+            <holeIdx>4</holeIdx>
+            <holeIdx>5</holeIdx>
+        </holeGroup>
+    </holeGroups>
+</ns2:constraints>

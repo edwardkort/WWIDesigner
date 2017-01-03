@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns2:tuning xmlns:ns2="http://www.wwidesigner.com/Tuning">
+    <name>D2 didgeridoo with D3 trumpet</name>
+    <comment></comment>
+    <numberOfHoles>0</numberOfHoles>
+    <fingering>
+        <note>
+            <name>Fundamental</name>
+            <frequency>73.42</frequency>
+        </note>
+        <optimizationWeight>1</optimizationWeight>
+    </fingering>
+    <fingering>
+        <note>
+            <name>1st trumpet</name>
+            <frequency>146.83</frequency>
+        </note>
+        <optimizationWeight>1</optimizationWeight>
+    </fingering>
+</ns2:tuning>

@@ -1,0 +1,160 @@
+Release notes for v2.0.0
+
+This is an major-version upgrade to v1.1.0. Please read INSTALL_README for
+installation details.
+
+v2.0.0 changes
+Enhancements:
+Added a new instrument type, reed instruments. This includes single and
+  double reed instruments, and lip-reed instruments like the didgeridoo.
+  Enhanced optimizer support for the more "interesting" bore profiles
+  common to such instruments is also provided. See
+  https://github.com/edwardkort/WWIDesigner/wiki/Working-with-the-Reed-Study-Model
+Included a spreadsheet to assist calibration of a reed mouthpiece across
+  multiple tubes or instruments. See ReedStudy/instruments/Calibration.xlsx in
+  the distribution.
+Added a number of instructional pages to the Wiki. See
+   https://github.com/edwardkort/WWIDesigner/wiki
+Added the ability to cancel long-running optimizations.
+Removed the "Vary all dimensions" from the NAF multi-start optimization options.
+  A scenario could not be found in which it converged to a better solution than
+  the "Vary first bound variable" option (renamed to "Vary bore length").
+Introduced a number of base optimizers, in particular the DIRECT family.
+Automatically select the last file in a Study category when all the others
+  have been removed.
+Increased the precision of unit-of-measure conversions.
+For the workhorse base optimizer, BOBYQA, removed its dependency on the 
+  initial instrument geometry in determining its convergence criteria.
+Updated the NAF instrument sample files so that the pentatonic-minor tunings
+  are in line with minor tweaks in the NAF tuning calculators.
+Upgraded JIDE libraries to v3.6.16 (was v3.6.12).
+Bugs fixed:
+Issue #41: It was possible to configure the UI so that the menu bar was lost;
+  it was very hard to recover from this configuration change. Now the menu
+  bar cannot be removed.
+Issue #50: It was possible to specify a terminal flange diameter smaller than
+  the terminal bore diameter - a physical impossibility. A validity check is
+  now in place.
+Issue #51: Occasionally the application would lock up when trying to report
+  a logical error (missing selection, etc.). This was a threading issue that
+  has been resolved.
+Issues #52 and #53: In v1.0.6, in order to speed up multi-start optimizations
+  for the NAF, each start used a very fast tuning evaluator - until the final
+  optimization, which used a slower but accurate tuning evaluator. For very
+  flat solution spaces, it was found that this strategy did not always find
+  the best solution. Now, only the accurate tuning evaluator is used throughout.
+  To recover most of the speed lost with this evaluator, a preprocessing step
+  (with a DIRECT optimizer) refines the initial flute geometry used by the
+  optimizer steps.
+Open bugs:
+Issue #22: Save As with validation errors changes view name without saving.
+  This is a threading bug in the JIDE application framework. It has been
+  reported to JideSoft with no resolution to date.
+Issue #59: Save as ... using same name as an existing file locks up application.
+  This is a nasty bug also in the JIDE application framework. If you have a file
+  open in WIDesigner, do NOT invoke a "Save as ..." of another file using the
+  same name - even if saving it to another directory. This bug has been
+  reported to JideSoft with no resolution to date.
+If you have problems tabbing between radio button groups (the reed instrument
+  panel and the Options dialog), update to the latest version of the JRE
+  (at least JRE 1.8.0_60).
+      
+
+v1.0.7 changes
+Bugs fixed: none
+Enhancements:
+  Added note spectrum graphing capabilities. See
+  https://github.com/edwardkort/WWIDesigner/wiki/Reading-the-Note-Spectrum-Graph
+  for details.
+
+v1.0.6 changes
+Bugs fixed:
+Issue #26: Added checking to Instrument.checkValidity to
+  enforce physical limitations on instrument geometry.
+Issue #33: Step changes in bore profile throw divide-by-zero
+  exceptions. At several levels, step changes are trapped and
+  converted to very small-length tapers.	
+Issue #35: NAF taper optimizers do not behave well in
+  multi-start optimizations. Headspace was not being handles
+  correctly during the optimization.
+Enhancements
+Issue #31: Explicit support for a hemispherical bore top.
+  Added a button in the NAF instrument view that creates the
+  bore points for a hemispherical bore top. Created two new
+  taper optimizers (hole grouping and no grouping) that create
+  a hemispherical bore top as part of the optimization process.
+Issue #36: Multi-start optimization is too slow for NAF taper
+  optimizers. Set multi-start to use a less accurate but much
+  faster evaluation method for each start, doing a final
+  optimization, with the best start, using the accurate
+  evaluation method.  
+
+v1.0.5 changes
+Bugs fixed:
+Issue #20: The Enter key no longer activates the default
+  button in dialog boxes.
+Issue #21: Instrument and tuning validation report only first
+  error found.
+Issue #23: New menu item and toolbar button create a blank
+  text file of no current use
+Issue #24: Mac functionality and Look and Feel. Caveats:
+  1. The Look and Feel for Macs has been set to cross-platform
+     in order to display cell lines in tables, make the Hole
+     Group Creation dialog usable, and the warning/information
+     dialogs readable.
+  2. The standard toolbar components (Open, Save, etc.) are not
+     displayed, only the custom toolbar. Since toolbars are not
+     part of the standard Mac interface, this issue is not
+     considered important.
+  3. The naming of new, unsaved files (from an optimization run
+     or from Create default/blank constraints) is a bit
+     inconsistent, starting with "Untitled" and then skipping
+     to "Untitled5" or "Untitled3" respectively.
+Issue #25: Save button disabled without explanation when
+  instrument or tuning not fully populated.
+Issue #27: There is no trap in StudyModel for a no-variable
+  optimization.
+Issue #28: Multi-start optimization does not respect optimizer
+  choice.
+Issue #29: Cannot see Termination Flange Diameter in NAF
+  Instrument view after latest check-ins.
+Issue #30: For the NAF, incorrect activation of Constraints
+  menu items. Activation strategy:
+  1. Open constraints - active if instrument and optimizer are
+     selected in Study, and Constraints directory is set.
+  2. Save-as constraints - active if constraints have focus in
+     data view and Constraints directory is set.
+  3. Create default - active is instrument and optimizer are
+     selected in Study; no requirement that Constraints directory
+     is set.
+  4. Create blank - as Create default above.
+Enhancements:
+  For the NAF, univariate optimizer has been change to the Brent
+    optimizer: faster, and converges better.
+
+v1.0.4 changes
+Bugs fixed:
+Issue #9: In Instrument view, mouthpiece values have a 
+  different L&F than table values.
+Issue #13: Tuning File Wizard, tuning page does not allow
+  fingering page load unless fingering has a name.
+Enhancements: none
+
+v1.0.3 changes
+Bugs fixed:
+Modified the NafStudy sample instruments to more
+  accurately reflect tuning calculation changes in
+  v1.0.2.
+Deleted legacy constraints for NafStudyModel in
+  single-taper, hole-grouping optimizer. 
+Enhancements: none
+
+v1.0.2 changes
+Bugs fixed:
+Issue #10: Warn on dirty flag is not persisted between sessions.
+  The flag state is now store in the application preferences.
+Issue #12: NAF headspace calculation gives incorrect results.
+  The calculation parameters have been tweeked to more
+  accurately calculate the tuning for common bore profiles.
+  
+Enhancements:

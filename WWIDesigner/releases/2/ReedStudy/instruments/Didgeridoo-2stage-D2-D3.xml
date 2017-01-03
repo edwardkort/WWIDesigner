@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns2:instrument xmlns:ns2="http://www.wwidesigner.com/Instrument">
+    <name>D2 didgeridoo with D3 trumpet</name>
+    <description>2-stage stepped bore didgeridoo, first overtone tuned to octave above fundamental</description>
+    <lengthType>in</lengthType>
+    <mouthpiece>
+        <position>0.0</position>
+        <lipReed>
+            <alpha>1.003</alpha>
+        </lipReed>
+        <beta>0.14</beta>
+    </mouthpiece>
+    <borePoint>
+        <borePosition>0.0</borePosition>
+        <boreDiameter>1.312</boreDiameter>
+    </borePoint>
+    <borePoint>
+        <borePosition>1.0</borePosition>
+        <boreDiameter>1.312</boreDiameter>
+    </borePoint>
+    <borePoint>
+        <borePosition>31.14802575791036</borePosition>
+        <boreDiameter>1.312</boreDiameter>
+    </borePoint>
+    <borePoint>
+        <borePosition>31.15254159279961</borePosition>
+        <boreDiameter>2.125</boreDiameter>
+    </borePoint>
+    <borePoint>
+        <borePosition>61.1865700598361</borePosition>
+        <boreDiameter>2.125</boreDiameter>
+    </borePoint>
+    <termination>
+        <flangeDiameter>2.2</flangeDiameter>
+    </termination>
+</ns2:instrument>

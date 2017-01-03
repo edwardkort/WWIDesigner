@@ -14,12 +14,13 @@ Steps in making a release:
 	a. Change the Class-Path root for the jar files to the
 		naming above
 	b. Change the Implementation-Version to the release version
-2. If this is a minor version release, create the 
+2. Update the version number in gui/images/about.html.
+3. If this is a minor version release, create the 
 	lib-<Major#>.<Minor#> directory with the necessary jars. I
 	use the Export->runnable jar wizard with the Copy option to
 	do this.
-3. Copy to a temp directory called WIDesigner-<Major#>.<Minor#>
-	a. The lib directory from step 2
+4. Copy to a temp directory called WIDesigner-<Major#>.<Minor#>
+	a. The lib directory from step 3
 	b. constraints directory
 	c. NafStudy directory
 	d. WhistleStudy directory, etc.
@@ -27,22 +28,22 @@ Steps in making a release:
 	f. Release notes and other text files, as appropriate
 	g. WIDesigner-<Major#>.<Minor#>.<Patch#>.jar, created by
 		WIDesigner.jardesc using the manifest from step 1
-4. Zip the directory created in step 3 using normal compression.
+5. Zip the directory created in step 4 using normal compression.
 	Call this zip file WIDesigner-<Major#>.<Minor#>.<Patch#>.zip
-5. Create a Checksums--<Major#>.<Minor#>.<Patch#>.txt file. Using
-	your favorite hash tool, calculate MD5, SHA-1, and SHA-256 
+6. Create a Checksums--<Major#>.<Minor#>.<Patch#>.txt file. Using
+	your favorite hash tool (certutil), calculate MD5, SHA-1, and SHA-256 
 	hashes and copy them to this file. If this is not the first
 	release of this minor version, also include the hashes for
-	the jar created in step 3-g
-6. Copy the files created in steps 2, 3-f, 3-g (if not the first
-	minor version release), any other newly created files in step 3),
-	4, and 5 to the Releases/<Major#> directory in the project 
+	the jar created in step 4-g
+7. Copy the files created in steps 3, 4-f, 4-g (if not the first
+	minor version release), any other newly created files in step 4),
+	5, and 6 to the Releases/<Major#> directory in the project 
 	for version control.
-7. Do a commit/push with the annotated tag v<Major#>.<Minor#>.<Patch#>
-8. Create a release, adding binaries:
+8. Do a commit/push with the annotated tag v<Major#>.<Minor#>.<Patch#>
+9. Create a release, adding binaries:
 	a. Any READMEs and release notes
 	b. Checksums file
-	c. Zip file (step 4)
-	d. If not the first minor release, the jar file (step 3-g).
+	c. Zip file (step 5)
+	d. If not the first minor release, the jar file (step 4-g).
 
 Smile!

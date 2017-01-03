@@ -1,0 +1,37 @@
+Hello all,
+
+WIDesigner v2.0.0 has just been published. This is a major-version upgrade to v1.1.0. 
+
+Enhancements in this release:
+Added a new instrument type, reed instruments. This includes single and double reed instruments, and lip-reed instruments like the didgeridoo.
+Enhanced optimizer support for the more "interesting" bore profiles common to such instruments is also provided. See
+  https://github.com/edwardkort/WWIDesigner/wiki/Working-with-the-Reed-Study-Model
+Included a spreadsheet to assist calibration of a reed mouthpiece across multiple tubes or instruments. See ReedStudy/instruments/Calibration.xlsx in the distribution.
+Added a number of instructional pages to the Wiki. See
+   https://github.com/edwardkort/WWIDesigner/wiki
+Added the ability to cancel long-running optimizations.
+Removed the "Vary all dimensions" from the NAF multi-start optimization options. A scenario could not be found in which it converged to a better solution than the "Vary first bound variable" option (renamed to "Vary bore length").
+Introduced a number of base optimizers, in particular the DIRECT family.
+Automatically select the last file in a Study category when all the others have been removed.
+Increased the precision of unit-of-measure conversions.
+For the workhorse base optimizer, BOBYQA, removed its dependency on the initial instrument geometry in determining its convergence criteria.
+Updated the NAF instrument sample files so that the pentatonic-minor tunings are in line with minor tweaks in the NAF tuning calculators.
+Upgraded JIDE libraries to v3.6.16 (was v3.6.12).
+
+A handful of bugs were also fixed.
+
+Please see INSTALL_README.txt on the release page for installation instructions.
+
+Links that you will find useful:
+Entry point to the on-line documentation:
+https://github.com/edwardkort/WWIDesigner/wiki/Using-WIDesigner
+Entry point to the YouTube videos:
+https://github.com/edwardkort/WWIDesigner/wiki/WIDesigner-Video-Tutorials
+Download page:
+https://github.com/edwardkort/WWIDesigner/releases/latest
+Issues page:
+https://github.com/edwardkort/WWIDesigner/issues
+
+Enjoy,
+Edward Kort
+Wood Wind

@@ -346,7 +346,7 @@ public class WIDesigner extends FileBasedApplication implements EventSubscriber
 
 				// Prevent menuBar from being hidden.
 				JMenuBar menuBar = menuBarsUI.getMenuBar(menu);
-				if (menuBar instanceof DockableBar)
+				if (menuBar != null && menuBar instanceof DockableBar)
 				{
 					((DockableBar) menuBar).setHidable(false);
 				}

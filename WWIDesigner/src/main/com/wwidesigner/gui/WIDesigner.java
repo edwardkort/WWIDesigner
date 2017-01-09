@@ -346,7 +346,8 @@ public class WIDesigner extends FileBasedApplication implements EventSubscriber
 
 				// Prevent menuBar from being hidden.
 				JMenuBar menuBar = menuBarsUI.getMenuBar(menu);
-				if (menuBar != null && menuBar instanceof DockableBar)
+				if (menuBar != null && menuBar instanceof DockableBar
+						&& menuBar.getMenuCount() > 0)
 				{
 					((DockableBar) menuBar).setHidable(false);
 				}
@@ -732,9 +733,9 @@ public class WIDesigner extends FileBasedApplication implements EventSubscriber
 			}
 		};
 		message = "Calculating optimized instrument.\nThis may take several minutes.\nPlease be patient.";
-		optActivity.addProgressListener(new BlockingProgressListener( optActivity,
-				getApplicationUIManager().getWindowsUI(), "Optimizing",
-				message));
+		optActivity.addProgressListener(new BlockingProgressListener(
+				optActivity, getApplicationUIManager().getWindowsUI(),
+				"Optimizing", message));
 		action = new ActivityAction(optActivity)
 		{
 			@Override
@@ -1218,12 +1219,12 @@ public class WIDesigner extends FileBasedApplication implements EventSubscriber
 		protected boolean isRunning;
 
 		/**
-		 * Construct a BlockingProgressListener with a Cancel button,
-		 * for an activity that supports parentActivity.cancel().
+		 * Construct a BlockingProgressListener with a Cancel button, for an
+		 * activity that supports parentActivity.cancel().
 		 */
-		protected BlockingProgressListener(Activity parentActivity, 
-				ApplicationWindowsUI windowsUI,
-				String activityName, String message)
+		protected BlockingProgressListener(Activity parentActivity,
+				ApplicationWindowsUI windowsUI, String activityName,
+				String message)
 		{
 			this(windowsUI, activityName, message);
 			this.parentActivity = parentActivity;
@@ -1250,12 +1251,12 @@ public class WIDesigner extends FileBasedApplication implements EventSubscriber
 			{
 				// Use JOptionPane and JDialog instead of MessageDialogRequest,
 				// because we need to call dispose() when the activity ends.
-				JOptionPane optionPane = new JOptionPane(message, 
+				JOptionPane optionPane = new JOptionPane(message,
 						JOptionPane.PLAIN_MESSAGE, JOptionPane.DEFAULT_OPTION);
 				if (parentActivity == null)
 				{
 					// No buttons.
-					Object options[] = { };
+					Object options[] = {};
 					optionPane.setOptions(options);
 				}
 				else
@@ -1264,10 +1265,11 @@ public class WIDesigner extends FileBasedApplication implements EventSubscriber
 					Object options[] = { "Cancel" };
 					optionPane.setOptions(options);
 				}
-				dialog = optionPane.createDialog(windowsUI.getDialogParent(), activityName);
+				dialog = optionPane.createDialog(windowsUI.getDialogParent(),
+						activityName);
 				Object selection = null;
 				isRunning = true;
-				while (isRunning && (selection == null 
+				while (isRunning && (selection == null
 						|| selection == JOptionPane.UNINITIALIZED_VALUE))
 				{
 					dialog.setVisible(true);

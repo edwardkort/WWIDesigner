@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <ns2:temperament xmlns:ns2="http://www.wwidesigner.com/Tuning">
-    <name>12-Tone Equal Temperament</name>
-    <comment>Chromatic two-octave equal temperament.</comment>
+    <name>Equal Temperament</name>
+    <comment>Two-octave diatonic Equal Temperament, with flattened seventh.</comment>
     <ratio>1.0</ratio>
     <ratio>1.122462048</ratio>
     <ratio>1.25992105</ratio>

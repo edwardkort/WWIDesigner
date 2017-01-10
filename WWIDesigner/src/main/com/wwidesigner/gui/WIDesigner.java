@@ -321,6 +321,14 @@ public class WIDesigner extends FileBasedApplication implements EventSubscriber
 					action = menuBarsUI
 							.getAction(CREATE_BLANK_CONSTRAINTS_ACTION_ID);
 					menuItem = group.addMenuItem(action);
+
+					// Prevent menuBar from being hidden.
+					JMenuBar menuBar = menuBarsUI.getMenuBar(menu);
+					if (menuBar instanceof DockableBar)
+					{
+						System.out.println("In config");
+						((DockableBar) menuBar).setHidable(false);
+					}
 				}
 				else if (menuID == WINDOW_MENU_ID)
 				{
@@ -342,16 +350,6 @@ public class WIDesigner extends FileBasedApplication implements EventSubscriber
 					group.addMenuItem(cbItem);
 					group.insertSeparator(3);
 					group.insertSeparator(6);
-				}
-
-				// Prevent menuBar from being hidden.
-				if (menu != null)
-				{
-					JMenuBar menuBar = menuBarsUI.getMenuBar(menu);
-					if (menuBar instanceof DockableBar)
-					{
-						((DockableBar) menuBar).setHidable(false);
-					}
 				}
 			}
 		});

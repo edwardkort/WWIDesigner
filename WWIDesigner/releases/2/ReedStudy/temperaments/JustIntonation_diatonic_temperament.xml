@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns2:temperament xmlns:ns2="http://www.wwidesigner.com/Tuning">
+    <name>Just Intonation</name>
+    <comment>Two-octave diatonic Just Intonation, with flattened second (ET) and flattened seventh.</comment>
+    <ratio>1.0</ratio>
+    <ratio>1.06</ratio>
+    <ratio>1.125</ratio>
+    <ratio>1.25</ratio>
+    <ratio>1.3333333333333333</ratio>
+    <ratio>1.5</ratio>
+    <ratio>1.6666666666666667</ratio>
+    <ratio>1.7777777777777778</ratio>
+    <ratio>1.875</ratio>
+    <ratio>2.0</ratio>
+    <ratio>2.25</ratio>
+    <ratio>2.5</ratio>
+    <ratio>2.6666666666666667</ratio>
+    <ratio>3.0</ratio>
+    <ratio>3.3333333333333333</ratio>
+    <ratio>3.5555555555555556</ratio>
+    <ratio>3.75</ratio>
+    <ratio>4.0</ratio>
+</ns2:temperament>

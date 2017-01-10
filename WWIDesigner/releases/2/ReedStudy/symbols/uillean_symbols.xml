@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns2:scaleSymbolList xmlns:ns2="http://www.wwidesigner.com/Tuning">
+    <name>Scientific Symbols for Uilleann pipes</name>
+    <comment>The scientific symbols for two-octave uilleann pipe concert-pitch scale.</comment>
+    <scaleSymbol>D4</scaleSymbol>
+    <scaleSymbol>Eb4</scaleSymbol>
+    <scaleSymbol>E4</scaleSymbol>
+    <scaleSymbol>F#4</scaleSymbol>
+    <scaleSymbol>G4</scaleSymbol>
+    <scaleSymbol>A4</scaleSymbol>
+    <scaleSymbol>B4</scaleSymbol>
+    <scaleSymbol>C5</scaleSymbol>
+    <scaleSymbol>C#5</scaleSymbol>
+    <scaleSymbol>D5</scaleSymbol>
+    <scaleSymbol>Eb5</scaleSymbol>
+    <scaleSymbol>E5</scaleSymbol>
+    <scaleSymbol>F#5</scaleSymbol>
+    <scaleSymbol>G5</scaleSymbol>
+    <scaleSymbol>A5</scaleSymbol>
+    <scaleSymbol>B5</scaleSymbol>
+</ns2:scaleSymbolList>

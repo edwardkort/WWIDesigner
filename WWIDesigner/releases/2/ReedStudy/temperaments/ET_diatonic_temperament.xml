@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <ns2:temperament xmlns:ns2="http://www.wwidesigner.com/Tuning">
     <name>Equal Temperament</name>
-    <comment>Two-octave diatonic Equal Temperament, with flattened seventh.</comment>
+    <comment>Two-octave diatonic Equal Temperament, with flattened second and flattened seventh.</comment>
     <ratio>1.0</ratio>
+    <ratio>1.059463094</ratio>
     <ratio>1.122462048</ratio>
     <ratio>1.25992105</ratio>
     <ratio>1.334839854</ratio>
@@ -11,6 +12,7 @@
     <ratio>1.781797436</ratio>
     <ratio>1.887748625</ratio>
     <ratio>2.0</ratio>
+    <ratio>2.118926189</ratio>
     <ratio>2.244924097</ratio>
     <ratio>2.519842096</ratio>
     <ratio>2.669679708</ratio>

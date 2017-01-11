@@ -13,13 +13,11 @@ import javax.swing.ImageIcon;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JDialog;
 import javax.swing.JMenu;
-import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JTextPane;
 import javax.swing.UIManager;
 
-import com.jidesoft.action.DockableBar;
 import com.jidesoft.app.framework.ApplicationVetoException;
 import com.jidesoft.app.framework.BasicDataModel;
 import com.jidesoft.app.framework.DataModel;
@@ -152,7 +150,7 @@ public class WIDesigner extends FileBasedApplication implements EventSubscriber
 
 		// Set behaviour
 		getApplicationUIManager().setUseJideDockingFramework(true);
-		getApplicationUIManager().setUseJideActionFramework(true);
+		getApplicationUIManager().setUseJideActionFramework(false);
 		getApplicationUIManager().getToolBarsUI().setUsesToolBars(true);
 		addApplicationFeature(new AutoInstallActionsFeature());
 		setExitApplicationOnLastDataView(false);
@@ -321,14 +319,6 @@ public class WIDesigner extends FileBasedApplication implements EventSubscriber
 					action = menuBarsUI
 							.getAction(CREATE_BLANK_CONSTRAINTS_ACTION_ID);
 					menuItem = group.addMenuItem(action);
-
-					// Prevent menuBar from being hidden.
-					JMenuBar menuBar = menuBarsUI.getMenuBar(menu);
-					if (menuBar instanceof DockableBar)
-					{
-						System.out.println("In config");
-						((DockableBar) menuBar).setHidable(false);
-					}
 				}
 				else if (menuID == WINDOW_MENU_ID)
 				{

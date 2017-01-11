@@ -212,6 +212,10 @@ public class WIDesigner extends FileBasedApplication implements EventSubscriber
 		// Remove New in File menu and toolbar: it just creates a blank text
 		// file - of no current use.
 		getActionMap().remove(ActionKeys.NEW);
+
+		// Remove the Arrange and Cascade menu actions: not implemented on UI
+		getActionMap().remove(ActionKeys.ARRANGE_WINDOWS);
+		getActionMap().remove(ActionKeys.CASCADE_WINDOWS);
 	}
 
 	protected void addToolBar()

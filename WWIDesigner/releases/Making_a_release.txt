@@ -31,7 +31,8 @@ Steps in making a release:
 5. Zip the directory created in step 4 using normal compression.
 	Call this zip file WIDesigner-<Major#>.<Minor#>.<Patch#>.zip
 6. Create a Checksums--<Major#>.<Minor#>.<Patch#>.txt file. Using
-	your favorite hash tool (certutil), calculate MD5, SHA-1, and SHA-256 
+	your favorite hash tool (certutil -hashfile <file> [md5|sha1|sha256]),
+	calculate MD5, SHA-1, and SHA-256 
 	hashes and copy them to this file. If this is not the first
 	release of this minor version, also include the hashes for
 	the jar created in step 4-g

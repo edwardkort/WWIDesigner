@@ -1,0 +1,5 @@
+Checksums for WIDesigner-2.0.1.zip
+
+MD5:		2e b8 19 bf bf ea 65 54 1d 0b 0c 25 00 b7 96 21
+SHA-1:		9e 3c 15 2f e8 45 ea 39 74 d0 9b 54 e9 e1 53 dc d0 e5 1e b8
+SHA-256:	87 32 32 86 53 36 8a 9d 14 85 b9 4e 56 87 8a b2 71 a1 fb fe a5 38 5d 9d fe a3 66 79 01 12 68 db

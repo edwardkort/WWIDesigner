@@ -1,7 +1,17 @@
-Release notes for v2.0.0
+Release notes for v2.0.1
 
-This is an major-version upgrade to v1.1.0. Please read INSTALL_README for
+This is an update to v2.0.0. Please read INSTALL_README for
 installation details.
+
+v2.0.1 changes
+Enhancements:
+Added numerous sample files in the ReedStudy folder.
+Bug fixed:
+Issue #60: This version now runs on the Mac; v2.0.0 did not.
+Issue #41: Although fixed in v2.0.0, the fix caused Issue #60.
+  In this fix, instead of preventing the Menu bar from being
+  deleted, neither the menus nor toolbars may be deleted.
+  
 
 v2.0.0 changes
 Enhancements:

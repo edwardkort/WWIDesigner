@@ -1,14 +1,13 @@
 Installation README
 
-This is a major-version upgrade distribution for WIDesigner and
-requires a full install. Such an upgrade is typically made
-when the supporting library files have changed and there are
-incompatibilities with the prior version. However, all
-of the files (instrument, tuning, and constraints) that you have
-used or made with 1.0.3 or later releases are fully compatible with this
-release.
+This is a patch update distribution for WIDesigner. But because
+a new program jar file (to fix a major Mac issue) has been
+created and several sample files have been added to the Reed
+Study, it is being distribute as a full install. All of the files
+(instrument, tuning, and constraints) that you have used or made
+with 1.0.3 or later releases are fully compatible with this release.
 
-Download WIDesigner-2.0.0. Follow the instructions in the YouTube:
+Download WIDesigner-2.0.1. Follow the instructions in the YouTube:
    http://youtu.be/nDlKJURdHfw
 
 If you normally keep your working files in the installation

@@ -66,7 +66,10 @@ public class OptimizationPreferences extends PreferencesPane
 
 	public static final String LENGTH_TYPE_OPT = "Length Type";
 	public static final String LENGTH_TYPE_DEFAULT = "IN";
-	
+
+	public static final String NUMBER_OF_STARTS = "NumStarts";
+	public static final int DEFAULT_NUMBER_OF_STARTS = 30;
+
 	public static final String WARN_ON_DIRTY_CLOSE_OPT = "Warn on dirty close";
 	public static final boolean WARN_ON_DIRTY_CLOSE_DEFAULT = false;
 
@@ -90,6 +93,9 @@ public class OptimizationPreferences extends PreferencesPane
 
 	LengthTypeComboBox lengthTypeComboBox;
 	JCheckBox optimizerBox;
+
+	JSpinner numStartsSpinner;
+	SpinnerNumberModel numStarts;
 
 	JTextField generalMessageField;
 	JTextField whistleMessageField;
@@ -127,6 +133,10 @@ public class OptimizationPreferences extends PreferencesPane
 		pressureField.setColumns(5);
 		humidityField.setColumns(5);
 		co2Field.setColumns(5);
+
+		numStarts = new SpinnerNumberModel(DEFAULT_NUMBER_OF_STARTS, 1, 50, 1);
+		numStartsSpinner = new JSpinner(numStarts);
+		numStartsSpinner.setName("Number of Starts");
 
 		constraintsDirChooser = new DirectoryChooserPanel();
 
@@ -203,6 +213,10 @@ public class OptimizationPreferences extends PreferencesPane
 		String optimizerName = myPreferences.get(OPTIMIZER_TYPE_OPT,
 				OPT_DEFAULT_NAME);
 		optimizerBox.setSelected(optimizerName.equals(OPT_DIRECT_NAME));
+
+		Number currentNumStarts = myPreferences.getInt(NUMBER_OF_STARTS,
+				DEFAULT_NUMBER_OF_STARTS);
+		numStarts.setValue(currentNumStarts);
 	}
 
 	@Override
@@ -238,8 +252,8 @@ public class OptimizationPreferences extends PreferencesPane
 		// Update the preferences, and re-set the view's study model.
 
 		myPreferences.put(STUDY_MODEL_OPT, studyName);
-		myPreferences.putInt(BLOWING_LEVEL_OPT, blowingLevel.getNumber()
-				.intValue());
+		myPreferences.putInt(BLOWING_LEVEL_OPT,
+				blowingLevel.getNumber().intValue());
 		myPreferences.putDouble(TEMPERATURE_OPT,
 				((Number) temperatureField.getValue()).doubleValue());
 		myPreferences.putDouble(PRESSURE_OPT,
@@ -255,6 +269,9 @@ public class OptimizationPreferences extends PreferencesPane
 
 		String dimensionType = lengthTypeComboBox.getSelectedLengthTypeName();
 		myPreferences.put(LENGTH_TYPE_OPT, dimensionType);
+
+		myPreferences.putInt(NUMBER_OF_STARTS,
+				numStarts.getNumber().intValue());
 
 		DataView[] views = application.getFocusedViews();
 		for (DataView view : views)
@@ -336,8 +353,8 @@ public class OptimizationPreferences extends PreferencesPane
 				}
 				catch (Exception e)
 				{
-					generalMessageField
-							.setText("Constraints directory location is not valid");
+					generalMessageField.setText(
+							"Constraints directory location is not valid");
 					generalMessageField.setForeground(Color.RED);
 					throw new ApplicationVetoException();
 				}
@@ -431,9 +448,10 @@ public class OptimizationPreferences extends PreferencesPane
 			gbc.gridx = 0;
 			gbc.gridy = 0;
 			gbc.anchor = GridBagConstraints.CENTER;
-			add(new JLabel(
-					"All NAF options are in the General Study Options tab"),
+			add(new JLabel("Number of starts for multi-Start optimizations: "),
 					gbc);
+			gbc.gridx = 1;
+			add(numStartsSpinner, gbc);
 		}
 	}
 

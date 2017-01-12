@@ -206,6 +206,10 @@ public class NafStudyModel extends StudyModel
 		{
 			preferredOptimizerType = BaseObjectiveFunction.OptimizerType.DIRECTOptimizer;
 		}
+
+		numberOfStarts = newPreferences.getInt(
+				OptimizationPreferences.NUMBER_OF_STARTS,
+				OptimizationPreferences.DEFAULT_NUMBER_OF_STARTS);
 	}
 
 	/**
@@ -799,17 +803,19 @@ public class NafStudyModel extends StudyModel
 			{
 				GridRangeProcessor rangeProcessor = new GridRangeProcessor(
 						objective.getLowerBounds(), objective.getUpperBounds(),
-						new int[] { 0 }, 30);
+						new int[] { 0 }, numberOfStarts);
 				objective.setRangeProcessor(rangeProcessor);
-				objective.setMaxEvaluations(30 * objective.getMaxEvaluations());
+				objective.setMaxEvaluations(
+						numberOfStarts * objective.getMaxEvaluations());
 			}
 			else if (multiStartSelected == VARY_ALL_MULTI_START_SUB_CATEGORY_ID)
 			{
 				GridRangeProcessor rangeProcessor = new GridRangeProcessor(
 						objective.getLowerBounds(), objective.getUpperBounds(),
-						null, 30);
+						null, numberOfStarts);
 				objective.setRangeProcessor(rangeProcessor);
-				objective.setMaxEvaluations(30 * objective.getMaxEvaluations());
+				objective.setMaxEvaluations(
+						numberOfStarts * objective.getMaxEvaluations());
 			}
 		}
 

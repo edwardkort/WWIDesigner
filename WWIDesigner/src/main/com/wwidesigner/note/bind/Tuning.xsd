@@ -118,6 +118,8 @@
 				<xsd:element name="openHole" type="xsd:boolean"
 					maxOccurs="unbounded" minOccurs="0" />
 			</xsd:sequence>
+			<xsd:element name="openEnd" type="xsd:boolean"
+				minOccurs="0" />
 			<xsd:element name="optimizationWeight" type="xsd:integer"
 				minOccurs="0" />
 		</xsd:sequence>
@@ -163,6 +165,8 @@
 												<xsd:element name="openHole" type="xsd:boolean"
 													maxOccurs="unbounded" minOccurs="0" />
 											</xsd:sequence>
+											<xsd:element name="openEnd" type="xsd:boolean"
+												minOccurs="0" />
 											<xsd:element name="optimizationWeight" type="xsd:integer"
 												minOccurs="0" />
 										</xsd:sequence>

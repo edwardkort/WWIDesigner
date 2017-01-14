@@ -12,6 +12,12 @@ import com.wwidesigner.util.InvalidFieldHandler;
 public class Termination extends BorePoint implements TerminationInterface
 {
 	protected double flangeDiameter;
+	protected boolean openEnd;
+	
+	public Termination()
+	{
+		this.openEnd = true;
+	}
 
 	/**
 	 * @return the flangeDiameter
@@ -28,6 +34,29 @@ public class Termination extends BorePoint implements TerminationInterface
 	public void setFlangeDiameter(double flangeDiameter)
 	{
 		this.flangeDiameter = flangeDiameter;
+	}
+
+	/**
+	 * @return the openEnd
+	 */
+	public boolean isOpenEnd()
+	{
+		return openEnd;
+	}
+
+	/**
+	 * @param openEnd - the openEnd property value to set
+	 */
+	public void setOpenEnd(Boolean openEnd)
+	{
+		if (openEnd == null)
+		{
+			this.openEnd = true;
+		}
+		else
+		{
+			this.openEnd = openEnd;
+		}
 	}
 
 	public void convertDimensions(double multiplier)

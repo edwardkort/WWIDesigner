@@ -69,7 +69,7 @@ public class FingeringRenderer extends JPanel implements TableCellRenderer,
 	protected float strokeWidth = NORMAL_STROKE_WIDTH;
 	protected Color strokeColor = NORMAL_COLOR;
 	protected List<DataChangedListener> dataChangedListeners;
-	private boolean enableDataChanges = false;
+	protected boolean enableDataChanges = false;
 
 	public FingeringRenderer(int numHoles)
 	{
@@ -86,6 +86,7 @@ public class FingeringRenderer extends JPanel implements TableCellRenderer,
 	protected void createHoles(int numHoles)
 	{
 		setHoleSize();
+		removeAll();
 		mHoles = new JRadioButton[numHoles];
 		for (int i = 0; i < numHoles; i++)
 		{

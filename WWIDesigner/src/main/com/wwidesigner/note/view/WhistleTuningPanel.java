@@ -1,3 +1,21 @@
+/**
+ * JPanel to display and edit tuning data, including up to 6 columns of tabular data.
+ * 
+ * Copyright (C) 2016, Edward Kort, Antoine Lefebvre, Burton Patkau.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.wwidesigner.note.view;
 
 import javax.swing.table.DefaultTableModel;
@@ -9,9 +27,11 @@ import com.wwidesigner.note.FingeringPattern;
 import com.wwidesigner.note.Note;
 
 /**
- * A panel that displays five columns of data from a Tuning: Note name, note
- * frequency, minimum tuning frequency, maximum tuning frequency, and fingering
- * pattern
+ * JPanel to display and edit all available Tuning data, including up to six
+ * columns of tabular data: Note name, note frequency, minimum tuning frequency,
+ * maximum tuning frequency, fingering pattern, and optimization weight. For
+ * fingering pattern, uses alternate renderer and editor to include open/closed
+ * end flag if any such flags are present in the Tuning.
  * 
  * @author Edward N. Kort
  *
@@ -200,11 +220,18 @@ public class WhistleTuningPanel extends TuningPanel
 	public void resetTableData(int numRows)
 	{
 		super.resetTableData(numRows);
+		renderer = new FingeringRenderer(numberOfHoles);
+		renderer.addDataChangedListener(this);
+		TableColumn column = fingeringList.getColumn("Fingering");
+		column.setCellRenderer(renderer);
+		column.setCellEditor(new FingeringEditor());
+		column.setPreferredWidth(renderer.getPreferredSize().width);
+		column.setMinWidth(renderer.getMinimumSize().width);
 		if (numberOfColumns != 5)
 		{
 			return;
 		}
-		TableColumn column = fingeringList.getColumn("Min Freq");
+		column = fingeringList.getColumn("Min Freq");
 		if (column != null)
 		{
 			column.setCellRenderer(new DoubleCellRenderer(2));
@@ -243,6 +270,16 @@ public class WhistleTuningPanel extends TuningPanel
 			numberOfColumns = 4;
 		}
 		super.loadData(fingerings, suppressChangeEvent);
+		if (hasClosableEnd(fingerings))
+		{
+			renderer = new FingeringWithEndRenderer(numberOfHoles);
+			renderer.addDataChangedListener(this);
+			TableColumn column = fingeringList.getColumn("Fingering");
+			column.setCellRenderer(renderer);
+			column.setCellEditor(new FingeringWithEndEditor());
+			column.setPreferredWidth(renderer.getPreferredSize().width);
+			column.setMinWidth(renderer.getMinimumSize().width);
+		}
 	}
 
 	/**
@@ -260,6 +297,21 @@ public class WhistleTuningPanel extends TuningPanel
 				{
 					return true;
 				}
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Test whether a tuning has open/closed end data.
+	 */
+	static protected boolean hasClosableEnd(FingeringPattern fingerings)
+	{
+		for (Fingering fingering : fingerings.getFingering())
+		{
+			if (fingering.getOpenEnd() != null)
+			{
+				return true;
 			}
 		}
 		return false;

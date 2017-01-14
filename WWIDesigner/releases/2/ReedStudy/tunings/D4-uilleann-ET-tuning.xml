@@ -6,7 +6,7 @@
     <fingering>
         <note>
             <name>D4</name>
-            <frequency>293.6647678932374</frequency>
+            <frequency>293.66</frequency>
         </note>
         <openHole>false</openHole>
         <openHole>false</openHole>
@@ -16,12 +16,13 @@
         <openHole>false</openHole>
         <openHole>false</openHole>
         <openHole>false</openHole>
+        <openEnd>true</openEnd>
         <optimizationWeight>1</optimizationWeight>
     </fingering>
     <fingering>
         <note>
             <name>Eb4</name>
-            <frequency>311.126955986473</frequency>
+            <frequency>311.13</frequency>
         </note>
         <openHole>false</openHole>
         <openHole>false</openHole>
@@ -31,12 +32,13 @@
         <openHole>false</openHole>
         <openHole>false</openHole>
         <openHole>true</openHole>
+        <openEnd>false</openEnd>
         <optimizationWeight>1</optimizationWeight>
     </fingering>
     <fingering>
         <note>
             <name>E4</name>
-            <frequency>329.62755679488794</frequency>
+            <frequency>329.63</frequency>
         </note>
         <openHole>false</openHole>
         <openHole>false</openHole>
@@ -46,12 +48,13 @@
         <openHole>false</openHole>
         <openHole>true</openHole>
         <openHole>true</openHole>
+        <openEnd>false</openEnd>
         <optimizationWeight>1</optimizationWeight>
     </fingering>
     <fingering>
         <note>
             <name>F#4</name>
-            <frequency>369.99442271205396</frequency>
+            <frequency>369.99</frequency>
         </note>
         <openHole>false</openHole>
         <openHole>false</openHole>
@@ -61,12 +64,13 @@
         <openHole>true</openHole>
         <openHole>false</openHole>
         <openHole>false</openHole>
+        <openEnd>false</openEnd>
         <optimizationWeight>1</optimizationWeight>
     </fingering>
     <fingering>
         <note>
             <name>G4</name>
-            <frequency>391.9954358995529</frequency>
+            <frequency>392.0</frequency>
         </note>
         <openHole>false</openHole>
         <openHole>false</openHole>
@@ -76,6 +80,7 @@
         <openHole>true</openHole>
         <openHole>false</openHole>
         <openHole>false</openHole>
+        <openEnd>false</openEnd>
         <optimizationWeight>1</optimizationWeight>
     </fingering>
     <fingering>
@@ -91,12 +96,13 @@
         <openHole>false</openHole>
         <openHole>false</openHole>
         <openHole>false</openHole>
+        <openEnd>false</openEnd>
         <optimizationWeight>1</optimizationWeight>
     </fingering>
     <fingering>
         <note>
             <name>B4</name>
-            <frequency>493.8833012132933</frequency>
+            <frequency>493.88</frequency>
         </note>
         <openHole>false</openHole>
         <openHole>false</openHole>
@@ -106,12 +112,13 @@
         <openHole>false</openHole>
         <openHole>false</openHole>
         <openHole>false</openHole>
+        <openEnd>false</openEnd>
         <optimizationWeight>1</optimizationWeight>
     </fingering>
     <fingering>
         <note>
             <name>C5</name>
-            <frequency>523.2511304757055</frequency>
+            <frequency>523.25</frequency>
         </note>
         <openHole>false</openHole>
         <openHole>true</openHole>
@@ -121,12 +128,13 @@
         <openHole>true</openHole>
         <openHole>false</openHole>
         <openHole>false</openHole>
+        <openEnd>false</openEnd>
         <optimizationWeight>1</optimizationWeight>
     </fingering>
     <fingering>
         <note>
             <name>C#5</name>
-            <frequency>554.3652618014031</frequency>
+            <frequency>554.37</frequency>
         </note>
         <openHole>false</openHole>
         <openHole>true</openHole>
@@ -136,12 +144,13 @@
         <openHole>false</openHole>
         <openHole>false</openHole>
         <openHole>false</openHole>
+        <openEnd>false</openEnd>
         <optimizationWeight>1</optimizationWeight>
     </fingering>
     <fingering>
         <note>
             <name>D5</name>
-            <frequency>587.3295357864748</frequency>
+            <frequency>587.33</frequency>
         </note>
         <openHole>true</openHole>
         <openHole>false</openHole>
@@ -151,12 +160,13 @@
         <openHole>false</openHole>
         <openHole>false</openHole>
         <openHole>false</openHole>
+        <openEnd>false</openEnd>
         <optimizationWeight>1</optimizationWeight>
     </fingering>
     <fingering>
         <note>
             <name>Eb5</name>
-            <frequency>622.253911972946</frequency>
+            <frequency>622.25</frequency>
         </note>
         <openHole>false</openHole>
         <openHole>false</openHole>
@@ -166,12 +176,13 @@
         <openHole>false</openHole>
         <openHole>false</openHole>
         <openHole>true</openHole>
+        <openEnd>false</openEnd>
         <optimizationWeight>1</optimizationWeight>
     </fingering>
     <fingering>
         <note>
             <name>E5</name>
-            <frequency>659.2551138834407</frequency>
+            <frequency>659.26</frequency>
         </note>
         <openHole>false</openHole>
         <openHole>false</openHole>
@@ -181,12 +192,13 @@
         <openHole>false</openHole>
         <openHole>true</openHole>
         <openHole>true</openHole>
+        <openEnd>false</openEnd>
         <optimizationWeight>1</optimizationWeight>
     </fingering>
     <fingering>
         <note>
             <name>F#5</name>
-            <frequency>739.9888442494489</frequency>
+            <frequency>739.99</frequency>
         </note>
         <openHole>false</openHole>
         <openHole>false</openHole>
@@ -196,12 +208,13 @@
         <openHole>true</openHole>
         <openHole>false</openHole>
         <openHole>false</openHole>
+        <openEnd>false</openEnd>
         <optimizationWeight>1</optimizationWeight>
     </fingering>
     <fingering>
         <note>
             <name>G5</name>
-            <frequency>783.9908717991058</frequency>
+            <frequency>783.99</frequency>
         </note>
         <openHole>false</openHole>
         <openHole>false</openHole>
@@ -211,6 +224,7 @@
         <openHole>true</openHole>
         <openHole>false</openHole>
         <openHole>false</openHole>
+        <openEnd>false</openEnd>
         <optimizationWeight>1</optimizationWeight>
     </fingering>
     <fingering>
@@ -226,12 +240,13 @@
         <openHole>false</openHole>
         <openHole>false</openHole>
         <openHole>false</openHole>
+        <openEnd>false</openEnd>
         <optimizationWeight>1</optimizationWeight>
     </fingering>
     <fingering>
         <note>
             <name>B5</name>
-            <frequency>987.7666024265866</frequency>
+            <frequency>987.77</frequency>
         </note>
         <openHole>false</openHole>
         <openHole>false</openHole>
@@ -241,6 +256,7 @@
         <openHole>false</openHole>
         <openHole>false</openHole>
         <openHole>false</openHole>
+        <openEnd>false</openEnd>
         <optimizationWeight>1</optimizationWeight>
     </fingering>
 </ns2:tuning>

@@ -15,10 +15,12 @@ public class Fingering implements Serializable
 {
 	protected Note note;
 	protected List<Boolean> openHole;
+	protected Boolean openEnd;
 	protected Integer optimizationWeight;
 
 	public Fingering()
 	{
+		this.openEnd = null;
 	}
 
 	public Fingering(int numberOfHoles)
@@ -103,6 +105,10 @@ public class Fingering implements Serializable
 				holeString += "X";
 			}
 		}
+		if (openEnd != null && ! openEnd)
+		{
+			holeString += "]";
+		}
 		return holeString;
 	}
 
@@ -121,6 +127,22 @@ public class Fingering implements Serializable
 		}
 
 		return num;
+	}
+
+	/**
+	 * @return the openEnd state in the fingering
+	 */
+	public Boolean getOpenEnd()
+	{
+		return openEnd;
+	}
+
+	/**
+	 * @param openEnd the openEnd state to set
+	 */
+	public void setOpenEnd(Boolean openEnd)
+	{
+		this.openEnd = openEnd;
 	}
 
 	/**

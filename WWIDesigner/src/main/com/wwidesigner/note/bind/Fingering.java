@@ -32,6 +32,8 @@ import javax.xml.bind.annotation.XmlType;
  *         &lt;sequence>
  *           &lt;element name="openHole" type="{http://www.w3.org/2001/XMLSchema}boolean" maxOccurs="unbounded" minOccurs="0"/>
  *         &lt;/sequence>
+ *         &lt;element name="openEnd" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="0"/>
+ *         &lt;element name="optimizationWeight" type="{http://www.w3.org/2001/XMLSchema}integer" minOccurs="0"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -41,13 +43,14 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "Fingering", propOrder = { "note", "openHole", "optimizationWeight" })
+@XmlType(name = "Fingering", propOrder = { "note", "openHole", "openEnd", "optimizationWeight" })
 public class Fingering
 {
 
 	protected Note note;
 	@XmlElement(type = Boolean.class)
 	protected List<Boolean> openHole;
+	protected Boolean openEnd;
 	protected Integer optimizationWeight;
 
 	/**
@@ -111,6 +114,22 @@ public class Fingering
 	public void setOpenHole(List<Boolean> openHole)
 	{
 		this.openHole = openHole;
+	}
+
+	/**
+	 * @return the openEnd state in the fingering
+	 */
+	public Boolean getOpenEnd()
+	{
+		return openEnd;
+	}
+
+	/**
+	 * @param openEnd the openEnd state to set
+	 */
+	public void setOpenEnd(Boolean openEnd)
+	{
+		this.openEnd = openEnd;
 	}
 
 	public Integer getOptimizationWeight()

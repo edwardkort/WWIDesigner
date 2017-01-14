@@ -16,6 +16,7 @@
         <openHole>false</openHole>
         <openHole>false</openHole>
         <openHole>false</openHole>
+        <openEnd>true</openEnd>
         <optimizationWeight>1</optimizationWeight>
     </fingering>
     <fingering>
@@ -31,6 +32,7 @@
         <openHole>false</openHole>
         <openHole>false</openHole>
         <openHole>true</openHole>
+        <openEnd>false</openEnd>
         <optimizationWeight>1</optimizationWeight>
     </fingering>
     <fingering>
@@ -46,6 +48,7 @@
         <openHole>false</openHole>
         <openHole>true</openHole>
         <openHole>true</openHole>
+        <openEnd>false</openEnd>
         <optimizationWeight>1</optimizationWeight>
     </fingering>
     <fingering>
@@ -61,6 +64,7 @@
         <openHole>true</openHole>
         <openHole>false</openHole>
         <openHole>false</openHole>
+        <openEnd>false</openEnd>
         <optimizationWeight>1</optimizationWeight>
     </fingering>
     <fingering>
@@ -76,6 +80,7 @@
         <openHole>true</openHole>
         <openHole>false</openHole>
         <openHole>false</openHole>
+        <openEnd>false</openEnd>
         <optimizationWeight>1</optimizationWeight>
     </fingering>
     <fingering>
@@ -91,6 +96,7 @@
         <openHole>false</openHole>
         <openHole>false</openHole>
         <openHole>false</openHole>
+        <openEnd>false</openEnd>
         <optimizationWeight>1</optimizationWeight>
     </fingering>
     <fingering>
@@ -106,6 +112,7 @@
         <openHole>false</openHole>
         <openHole>false</openHole>
         <openHole>false</openHole>
+        <openEnd>false</openEnd>
         <optimizationWeight>1</optimizationWeight>
     </fingering>
     <fingering>
@@ -121,6 +128,7 @@
         <openHole>true</openHole>
         <openHole>false</openHole>
         <openHole>false</openHole>
+        <openEnd>false</openEnd>
         <optimizationWeight>1</optimizationWeight>
     </fingering>
     <fingering>
@@ -136,6 +144,7 @@
         <openHole>false</openHole>
         <openHole>false</openHole>
         <openHole>false</openHole>
+        <openEnd>false</openEnd>
         <optimizationWeight>1</optimizationWeight>
     </fingering>
     <fingering>
@@ -151,6 +160,7 @@
         <openHole>false</openHole>
         <openHole>false</openHole>
         <openHole>false</openHole>
+        <openEnd>false</openEnd>
         <optimizationWeight>1</optimizationWeight>
     </fingering>
     <fingering>
@@ -166,6 +176,7 @@
         <openHole>false</openHole>
         <openHole>false</openHole>
         <openHole>true</openHole>
+        <openEnd>true</openEnd>
         <optimizationWeight>1</optimizationWeight>
     </fingering>
     <fingering>
@@ -181,6 +192,7 @@
         <openHole>false</openHole>
         <openHole>true</openHole>
         <openHole>true</openHole>
+        <openEnd>true</openEnd>
         <optimizationWeight>1</optimizationWeight>
     </fingering>
     <fingering>
@@ -196,6 +208,7 @@
         <openHole>true</openHole>
         <openHole>false</openHole>
         <openHole>false</openHole>
+        <openEnd>false</openEnd>
         <optimizationWeight>1</optimizationWeight>
     </fingering>
     <fingering>
@@ -211,6 +224,7 @@
         <openHole>true</openHole>
         <openHole>false</openHole>
         <openHole>false</openHole>
+        <openEnd>false</openEnd>
         <optimizationWeight>1</optimizationWeight>
     </fingering>
     <fingering>
@@ -226,6 +240,7 @@
         <openHole>false</openHole>
         <openHole>false</openHole>
         <openHole>false</openHole>
+        <openEnd>false</openEnd>
         <optimizationWeight>1</optimizationWeight>
     </fingering>
     <fingering>
@@ -241,6 +256,7 @@
         <openHole>false</openHole>
         <openHole>false</openHole>
         <openHole>false</openHole>
+        <openEnd>false</openEnd>
         <optimizationWeight>1</optimizationWeight>
     </fingering>
     <fingering>
@@ -256,6 +272,7 @@
         <openHole>false</openHole>
         <openHole>false</openHole>
         <openHole>false</openHole>
+        <openEnd>false</openEnd>
         <optimizationWeight>1</optimizationWeight>
     </fingering>
     <fingering>
@@ -271,6 +288,7 @@
         <openHole>false</openHole>
         <openHole>false</openHole>
         <openHole>false</openHole>
+        <openEnd>false</openEnd>
         <optimizationWeight>1</optimizationWeight>
     </fingering>
 </ns2:tuning>

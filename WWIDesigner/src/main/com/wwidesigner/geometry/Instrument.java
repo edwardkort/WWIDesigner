@@ -642,5 +642,6 @@ public class Instrument implements InstrumentInterface
 			boolean isOpen = openHoleIterator.next();
 			iHole.setOpenHole(isOpen);
 		}
+		getTermination().setOpenEnd(fingering.getOpenEnd());
 	}
 }

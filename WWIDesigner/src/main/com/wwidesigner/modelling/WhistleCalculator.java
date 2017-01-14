@@ -24,7 +24,7 @@ import com.wwidesigner.geometry.Instrument;
 import com.wwidesigner.geometry.calculation.DefaultHoleCalculator;
 import com.wwidesigner.geometry.calculation.SimpleBoreSectionCalculator;
 import com.wwidesigner.geometry.calculation.SimpleFippleMouthpieceCalculator;
-import com.wwidesigner.geometry.calculation.UnflangedEndCalculator;
+import com.wwidesigner.geometry.calculation.UnflangedClosableEndCalculator;
 import com.wwidesigner.note.Fingering;
 import com.wwidesigner.util.PhysicalParameters;
 
@@ -42,14 +42,14 @@ public class WhistleCalculator extends DefaultInstrumentCalculator
 			PhysicalParameters physicalParams)
 	{
 		super(instrument, new SimpleFippleMouthpieceCalculator(),
-				new UnflangedEndCalculator(), new DefaultHoleCalculator(),
+				new UnflangedClosableEndCalculator(), new DefaultHoleCalculator(),
 				new SimpleBoreSectionCalculator(), physicalParams);
 	}
 
 	public WhistleCalculator()
 	{
 		super(new SimpleFippleMouthpieceCalculator(),
-				new UnflangedEndCalculator(), new DefaultHoleCalculator(),
+				new UnflangedClosableEndCalculator(), new DefaultHoleCalculator(),
 				new SimpleBoreSectionCalculator());
 	}
 	

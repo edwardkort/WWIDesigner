@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns2:instrument xmlns:ns2="http://www.wwidesigner.com/Instrument">
+    <name>Tabor Pipe</name>
+    <description>Draft 3-hole tabor pipe, alto A</description>
+    <lengthType>mm</lengthType>
+    <mouthpiece>
+        <position>0.0</position>
+        <fipple>
+            <windowLength>5.0</windowLength>
+            <windowWidth>7.0</windowWidth>
+            <fippleFactor>1.0</fippleFactor>
+            <windowHeight>2.0</windowHeight>
+            <windwayLength>24.0</windwayLength>
+            <windwayHeight>1.6</windwayHeight>
+        </fipple>
+        <beta>0.4</beta>
+    </mouthpiece>
+    <borePoint>
+        <borePosition>0.0</borePosition>
+        <boreDiameter>11.9</boreDiameter>
+    </borePoint>
+    <borePoint>
+        <borePosition>363.82276037016584</borePosition>
+        <boreDiameter>11.9</boreDiameter>
+    </borePoint>
+    <hole>
+        <borePosition>257.0449503295048</borePosition>
+        <diameter>5.613693927833912</diameter>
+        <height>2.0</height>
+    </hole>
+    <hole>
+        <borePosition>281.600590991308</borePosition>
+        <diameter>9.1</diameter>
+        <height>2.0</height>
+    </hole>
+    <hole>
+        <borePosition>316.0767760737932</borePosition>
+        <diameter>9.1</diameter>
+        <height>2.0</height>
+    </hole>
+    <termination>
+        <flangeDiameter>15.9</flangeDiameter>
+    </termination>
+</ns2:instrument>

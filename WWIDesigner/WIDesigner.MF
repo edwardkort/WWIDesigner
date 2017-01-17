@@ -9,6 +9,6 @@ Class-Path: . lib-2.0/commons-beanutils-1.8.3.jar lib-2.0/commons-lang-2.6.jar l
  .jar lib-2.0/jide-dock.jar lib-2.0/jide-dialogs.jar
 Main-Class: com.wwidesigner.gui.WIDesigner
 Implementation-Title: WIDesigner
-Implementation-Version: 2.0.1
+Implementation-Version: 2.0.2
 Bundle-Description: WIDesigner (Woodwind Instrument Designer) is a Java
  application to facilitate the design of woodwind instruments.

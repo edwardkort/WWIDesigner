@@ -21,7 +21,7 @@ package com.wwidesigner.modelling;
 import com.wwidesigner.geometry.Instrument;
 import com.wwidesigner.geometry.calculation.FluteMouthpieceCalculator;
 import com.wwidesigner.geometry.calculation.SimpleBoreSectionCalculator;
-import com.wwidesigner.geometry.calculation.UnflangedClosableEndCalculator;
+import com.wwidesigner.geometry.calculation.UnflangedEndCalculator;
 import com.wwidesigner.geometry.calculation.DefaultHoleCalculator;
 import com.wwidesigner.util.PhysicalParameters;
 
@@ -31,14 +31,14 @@ public class FluteCalculator extends DefaultInstrumentCalculator
 			PhysicalParameters physicalParams)
 	{
 		super(instrument, new FluteMouthpieceCalculator(),
-				new UnflangedClosableEndCalculator(), new DefaultHoleCalculator(),
+				new UnflangedEndCalculator(), new DefaultHoleCalculator(),
 				new SimpleBoreSectionCalculator(), physicalParams);
 	}
 
 	public FluteCalculator()
 	{
 		super(new FluteMouthpieceCalculator(),
-				new UnflangedClosableEndCalculator(), new DefaultHoleCalculator(),
+				new UnflangedEndCalculator(), new DefaultHoleCalculator(),
 				new SimpleBoreSectionCalculator());
 	}
 }

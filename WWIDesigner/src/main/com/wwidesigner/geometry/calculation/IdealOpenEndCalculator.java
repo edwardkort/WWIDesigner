@@ -18,9 +18,13 @@ public class IdealOpenEndCalculator extends TerminationCalculator
 	 * @see com.wwidesigner.geometry.TerminationCalculator#calcStateVector(double, com.wwidesigner.util.PhysicalParameters)
 	 */
 	@Override
-	public StateVector calcStateVector(Termination termination, double wave_number,
-			PhysicalParameters params)
+	public StateVector calcStateVector(Termination termination,
+			boolean isOpen, double wave_number, PhysicalParameters params)
 	{
+		if (! isOpen)
+		{
+			return StateVector.ClosedEnd();
+		}
 		return StateVector.OpenEnd();
 	}
 

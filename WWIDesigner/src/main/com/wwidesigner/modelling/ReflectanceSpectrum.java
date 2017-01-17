@@ -67,7 +67,6 @@ public class ReflectanceSpectrum
 			int nfreq, Fingering fingering, PhysicalParameters physicalParams)
 	{
 		currentFingering = fingering;
-		calculator.setFingering(fingering);
 		mSpectrum = new TreeMap<Double, Complex>();
 		mMinima = new ArrayList<Double>();
 		mMaxima = new ArrayList<Double>();
@@ -81,7 +80,7 @@ public class ReflectanceSpectrum
 		for (int i = 0; i < nfreq; ++i)
 		{
 			double freq = freqStart + i * freqStep;
-			Complex reflectance = calculator.calcReflectionCoefficient(freq);
+			Complex reflectance = calculator.calcReflectionCoefficient(freq, fingering);
 
 			setDataPoint(freq, reflectance);
 

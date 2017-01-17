@@ -143,14 +143,13 @@ public class PlayingRangeSpectrum
 		{
 			actuals.add(myNote.getFrequency());
 		}
-		calculator.setFingering(fingering);
 		mImpedance = new TreeMap<Double, Complex>();
 		mGain = new TreeMap<Double, Double>();
 		double freqStep = (freqEnd - freqStart) / (nfreq - 1);
 		for (int i = 0; i < nfreq; ++i)
 		{
 			double freq = freqStart + i * freqStep;
-			Complex zAc = calculator.calcZ(freq);
+			Complex zAc = calculator.calcZ(freq, fingering);
 			Double gain = calculator.calcGain(freq, zAc);
 			setDataPoint(freq, zAc, gain);
 		}

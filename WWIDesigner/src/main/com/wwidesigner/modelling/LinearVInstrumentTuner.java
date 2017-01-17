@@ -206,16 +206,15 @@ public class LinearVInstrumentTuner extends InstrumentTuner
 		double fmax, fmin;
 		double vMax, vMin;
 
-		calculator.setFingering(noteLow);
-		PlayingRange range = new PlayingRange(calculator);
+		PlayingRange range = new PlayingRange(calculator, noteLow);
 		try 
 		{
 			// Find playing range for lowest note.
 			fmax = range.findXZero(fLow);
 			fmin = range.findFmin(fmax);
 			// Interpolate a velocity within this playing range.
-			vMax = velocity(fmax,windowLength,calculator.calcZ(fmax));
-			vMin = velocity(fmin,windowLength,calculator.calcZ(fmin));
+			vMax = velocity(fmax,windowLength,calculator.calcZ(fmax, noteLow));
+			vMin = velocity(fmin,windowLength,calculator.calcZ(fmin, noteLow));
 			vLow = vMax - BottomFraction * (vMax - vMin);
 		}
 		catch ( NoPlayingRange e )
@@ -227,14 +226,14 @@ public class LinearVInstrumentTuner extends InstrumentTuner
 		// For velocity interpolation, use fmax as the nominal low frequency.
 		fLow = fmax;
 
-		calculator.setFingering(noteHigh);
+		range.setFingering(noteHigh);
 		try
 		{
 			// Find the playing range for the highest note.
 			fmax = range.findXZero(fHigh);
 			fmin = range.findFmin(fmax);
-			vMax = velocity(fmax,windowLength,calculator.calcZ(fmax));
-			vMin = velocity(fmin,windowLength,calculator.calcZ(fmin));
+			vMax = velocity(fmax,windowLength,calculator.calcZ(fmax, noteHigh));
+			vMin = velocity(fmin,windowLength,calculator.calcZ(fmin, noteHigh));
 			vHigh = vMax - TopFraction * (vMax - vMin);
 		}
 		catch ( NoPlayingRange e )

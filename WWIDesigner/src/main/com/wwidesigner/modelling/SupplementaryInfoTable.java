@@ -98,10 +98,11 @@ public class SupplementaryInfoTable extends DefaultTableModel
 	 * cf. Arthur D. Yaghjian, Steven R. Best, "Impedance, Bandwidth, and Q of Antennas,"
 	 * IEEE Transactions on Antennas and Propagation, V 53, n 4, April 2005.
 	 */
-	protected static double Q(double freq, Complex z, InstrumentCalculator calculator)
+	protected static double Q(double freq, Complex z, InstrumentCalculator calculator,
+			Fingering fingering)
 	{
 		double freqPlus = freq * (1+DeltaF);
-		Complex zPlus = calculator.calcZ(freqPlus);
+		Complex zPlus = calculator.calcZ(freqPlus, fingering);
 		return 0.25*(freq+freqPlus)
 				* (zPlus.getImaginary()/zPlus.getReal() - z.getImaginary()/z.getReal())
 				/ (freqPlus - freq);
@@ -192,11 +193,10 @@ public class SupplementaryInfoTable extends DefaultTableModel
 			values[colNr++] = formatted2(freq);
 			if (freq != null)
 			{
-				calculator.setFingering(fingerings.get(i));
-				z = calculator.calcZ(freq);
+				z = calculator.calcZ(freq, fingerings.get(i));
 				values[colNr++] = format_sci.format(z.getImaginary());
-				values[colNr++] = formatted(calculator.calcGain(freq));
-				values[colNr++] = formatted(Q(freq, z, calculator));
+				values[colNr++] = formatted(calculator.calcGain(freq, z));
+				values[colNr++] = formatted(Q(freq, z, calculator, fingerings.get(i)));
 				if (windowLength != null)
 				{
 					// Although speed is nominally in m/s, and flow rate

@@ -105,9 +105,10 @@ public class PlotPlayingRanges
 	 * @param freq - frequency at which to calculate y value.
 	 * @return y value.
 	 */
-	protected static double yValue(InstrumentCalculator calculator, double freq)
+	protected static double yValue(InstrumentCalculator calculator, double freq,
+			Fingering fingering)
 	{
-		Complex z = calculator.calcZ(freq);
+		Complex z = calculator.calcZ(freq, fingering);
 		return z.getImaginary()/z.getReal();
 	}
 
@@ -185,7 +186,6 @@ public class PlotPlayingRanges
 			{
 				lowestF = tgt.getFrequency();
 			}
-			calculator.setFingering(predFingering);
 			if (useActuals && tgt.getFrequencyMax() != null)
 			{
 				frequencyMax = tgt.getFrequencyMax();
@@ -204,7 +204,7 @@ public class PlotPlayingRanges
 			}
 			if ( frequencyMin != null )
 			{
-				y = yValue(calculator, frequencyMin);
+				y = yValue(calculator, frequencyMin, predFingering);
 				if ( y < minY )
 				{
 					minY = y;
@@ -216,7 +216,7 @@ public class PlotPlayingRanges
 			}
 			if ( frequencyMax != null )
 			{
-				y = yValue(calculator, frequencyMax);
+				y = yValue(calculator, frequencyMax, predFingering);
 				if ( y < minY )
 				{
 					minY = y;
@@ -277,11 +277,11 @@ public class PlotPlayingRanges
 			{
 				frequencyMin = pred.getFrequencyMin();
 			}
-			calculator.setFingering(predFingering);
+
 			if ( tgt.getFrequency() != null )
 			{
 				f = tgt.getFrequency();
-				y = yValue(calculator, f);
+				y = yValue(calculator, f, predFingering);
 				y = clamp(y,minY,maxY);
 				if (frequencyMax != null && f > frequencyMax)
 				{
@@ -321,14 +321,14 @@ public class PlotPlayingRanges
 			if ( pred.getFrequency() != null
 				&& ( tgt.getFrequency() == null || pred.getFrequency() != tgt.getFrequency() ) )
 			{
-				y = yValue(calculator, pred.getFrequency());
+				y = yValue(calculator, pred.getFrequency(), predFingering);
 				y = clamp(y,minY,maxY);
 				nominalModel.addPoint(pred.getFrequency(), y);
 			}
 			if ( frequencyMin != null )
 			{
 				f = frequencyMin;
-				y = yValue(calculator, f);
+				y = yValue(calculator, f, predFingering);
 				y = clamp(y,minY,maxY);
 				if (isMarkerNote)
 				{
@@ -342,7 +342,7 @@ public class PlotPlayingRanges
 			if ( frequencyMax != null )
 			{
 				f = frequencyMax;
-				y = yValue(calculator, f);
+				y = yValue(calculator, f, predFingering);
 				y = clamp(y,minY,maxY);
 				if (isMarkerNote)
 				{
@@ -360,7 +360,7 @@ public class PlotPlayingRanges
 				f = frequencyMin;
 				for (int i = 0; i <= 32; i++ )
 				{
-					y = yValue(calculator, f);
+					y = yValue(calculator, f, predFingering);
 					rangeModel.addPoint(f, y);
 					f += step;
 				}
@@ -381,7 +381,7 @@ public class PlotPlayingRanges
 				f = pred.getFrequency();
 				for (int i = 0; i <= 32; i++ )
 				{
-					y = yValue(calculator, f);
+					y = yValue(calculator, f, predFingering);
 					y = clamp(y,minY,maxY);
 					rangeModel.addPoint(f, y);
 					f += step;

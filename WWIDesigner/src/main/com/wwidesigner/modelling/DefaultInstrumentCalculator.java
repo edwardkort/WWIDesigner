@@ -30,6 +30,7 @@ import com.wwidesigner.geometry.calculation.MouthpieceCalculator;
 import com.wwidesigner.geometry.calculation.TerminationCalculator;
 import com.wwidesigner.math.StateVector;
 import com.wwidesigner.math.TransferMatrix;
+import com.wwidesigner.note.Fingering;
 import com.wwidesigner.util.PhysicalParameters;
 
 /**
@@ -71,15 +72,22 @@ public class DefaultInstrumentCalculator extends InstrumentCalculator
 	    super();
 	}
 
-	private StateVector calcInputStateVector(double freq)
+	private StateVector calcInputStateVector(double freq, Fingering fingering)
 	{
 		double waveNumber = params.calcWaveNumber(freq);
+		int nextHoleIndex = fingering.getOpenHole().size() - 1;
 
 		// Start with the state vector of the termination,
 		// and multiply by transfer matrices of each hole and bore segment
 		// from the termination up to and including the mouthpiece.
 
-		StateVector sv = terminationCalculator.calcStateVector(instrument.getTermination(), waveNumber, params);
+		boolean isOpenEnd = true;
+		if (fingering.getOpenEnd() != null && ! fingering.getOpenEnd())
+		{
+			isOpenEnd = false;
+		}
+		StateVector sv = terminationCalculator.calcStateVector(instrument.getTermination(),
+				isOpenEnd, waveNumber, params);
 		TransferMatrix tm;
 		for (int componentNr = instrument.getComponents().size() - 1; componentNr >= 0; --componentNr)
 		{
@@ -94,6 +102,7 @@ public class DefaultInstrumentCalculator extends InstrumentCalculator
 			{
 				assert component instanceof Hole;
 				tm = holeCalculator.calcTransferMatrix((Hole) component,
+						fingering.getOpenHole().get(nextHoleIndex--),
 						waveNumber, params);
 			}
 			sv = tm.multiply(sv);
@@ -105,9 +114,9 @@ public class DefaultInstrumentCalculator extends InstrumentCalculator
 	}
 	
 	@Override
-	public Complex calcReflectionCoefficient(double frequency)
+	public Complex calcReflectionCoefficient(double frequency, Fingering fingering)
 	{
-		StateVector sv = calcInputStateVector(frequency);
+		StateVector sv = calcInputStateVector(frequency, fingering);
 		
 		double headRadius = instrument.getMouthpiece().getBoreDiameter() / 2.;
 		
@@ -124,9 +133,9 @@ public class DefaultInstrumentCalculator extends InstrumentCalculator
 	 * com.wwidesigner.util.PhysicalParameters)
 	 */
 	@Override
-	public Complex calcZ(double freq)
+	public Complex calcZ(double freq, Fingering fingering)
 	{
-		return calcInputStateVector(freq).getImpedance();
+		return calcInputStateVector(freq, fingering).getImpedance();
 	}
 
 	@Override

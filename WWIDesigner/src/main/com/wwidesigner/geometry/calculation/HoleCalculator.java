@@ -14,6 +14,6 @@ import com.wwidesigner.util.PhysicalParameters;
 public abstract class HoleCalculator
 {
 	public abstract TransferMatrix calcTransferMatrix(Hole hole,
-			double waveNumber, PhysicalParameters parameters);
+			boolean isOpen, double waveNumber, PhysicalParameters parameters);
 
 }

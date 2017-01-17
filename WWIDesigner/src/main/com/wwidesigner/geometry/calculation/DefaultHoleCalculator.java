@@ -62,8 +62,8 @@ public class DefaultHoleCalculator extends HoleCalculator
 	 * Antoine Lefebvre, Computational Acoustic Methods for the Design of
      * Woodwind Instruments.  Ph.D. thesis, McGill University, 2010.
 	 */
-	public TransferMatrix calcTransferMatrix_2010(Hole hole, double waveNumber,
-			PhysicalParameters parameters)
+	public TransferMatrix calcTransferMatrix_2010(Hole hole, boolean isOpen,
+			double waveNumber, PhysicalParameters parameters)
 	{
 		double radius = mFudgeFactor * hole.getDiameter() / 2;
 		double boreRadius = hole.getBoreDiameter() / 2;
@@ -83,7 +83,7 @@ public class DefaultHoleCalculator extends HoleCalculator
 
 		// Complex Gamma = Complex.I.multiply(wave_number);
 
-		if (hole.isOpenHole()) // open
+		if (isOpen) // open
 		{
 			double kb = waveNumber * radius;
 			double ka = waveNumber * boreRadius;
@@ -143,8 +143,8 @@ public class DefaultHoleCalculator extends HoleCalculator
 	 * Soc. Am. V. 131 (n. 4), April 2012.
 	 */
 	@Override
-	public TransferMatrix calcTransferMatrix(Hole hole, double waveNumber,
-			PhysicalParameters parameters)
+	public TransferMatrix calcTransferMatrix(Hole hole, boolean isOpen,
+			double waveNumber, PhysicalParameters parameters)
 	{
 		double radius = mFudgeFactor * hole.getDiameter() / 2;
 		double boreRadius = hole.getBoreDiameter() / 2;
@@ -164,7 +164,7 @@ public class DefaultHoleCalculator extends HoleCalculator
 
 		// Complex Gamma = Complex.I.multiply(wave_number);
 
-		if (hole.isOpenHole()) // open
+		if (isOpen)
 		{
 			double kb = waveNumber * radius;
 			double ka = waveNumber * boreRadius;

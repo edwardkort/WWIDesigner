@@ -50,7 +50,6 @@ public class ImpedanceSpectrumPlot
 			Fingering fingering = tuning.getFingering().get(7);
 
 			instrument.convertToMetres();
-			instrument.setOpenHoles(fingering);
 
 			double freqRange = 1.1;
 			int numberOfFrequencies = 10000;
@@ -63,7 +62,7 @@ public class ImpedanceSpectrumPlot
 					freqEnd, numberOfFrequencies, fingering, params);
 			impSpectrum.plotImpedanceSpectrum();
 
-			Complex fluteImpedance = calculator.calcZ(targetFreq);
+			Complex fluteImpedance = calculator.calcZ(targetFreq, fingering);
 			String outStr = "Flute impedance: " + fluteImpedance.getReal()
 					+ ", " + fluteImpedance.getImaginary() + "at " + targetFreq
 					+ " Hz";

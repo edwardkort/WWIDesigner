@@ -26,7 +26,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.wwidesigner.geometry.calculation.Tube;
-import com.wwidesigner.note.Fingering;
 import com.wwidesigner.util.Constants.LengthType;
 import com.wwidesigner.util.InvalidFieldException;
 import com.wwidesigner.util.InvalidFieldHandler;
@@ -631,17 +630,5 @@ public class Instrument implements InstrumentInterface
 		});
 
 		return sortedPositions;
-	}
-
-	public void setOpenHoles(Fingering fingering)
-	{
-		List<Boolean> openHoles = fingering.getOpenHole();
-		Iterator<Boolean> openHoleIterator = openHoles.iterator();
-		for (Hole iHole : hole)
-		{
-			boolean isOpen = openHoleIterator.next();
-			iHole.setOpenHole(isOpen);
-		}
-		getTermination().setOpenEnd(fingering.getOpenEnd());
 	}
 }

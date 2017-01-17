@@ -21,8 +21,12 @@ public class FlangedEndCalculator extends TerminationCalculator
 	 */
 	@Override
 	public StateVector calcStateVector(Termination termination,
-			double wave_number, PhysicalParameters params)
+			boolean isOpen, double wave_number, PhysicalParameters params)
 	{
+		if (! isOpen)
+		{
+			return StateVector.ClosedEnd();
+		}
 		Complex Zend = Tube.calcZflanged(params.calcFrequency(wave_number),
 				0.5*termination.getBoreDiameter(), params);
 		return new StateVector( Zend, Complex.ONE );

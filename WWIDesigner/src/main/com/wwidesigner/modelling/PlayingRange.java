@@ -70,6 +70,9 @@ public class PlayingRange
 	// A calculator for the instrument being modeled.
 	protected InstrumentCalculator calculator;
 
+	// Fingering for the current note being modeled.
+	protected Fingering fingering;
+
 	// Classes used to find solutions.
 	
 	/**
@@ -110,7 +113,7 @@ public class PlayingRange
 
 		public double value(double f)
 		{
-			Complex z = calculator.calcZ(f);
+			Complex z = calculator.calcZ(f, fingering);
 			return z.getImaginary() - targetX;
 		}
 
@@ -148,7 +151,7 @@ public class PlayingRange
 
 		public double value(double f)
 		{
-			return calculator.calcGain(f) - targetGain;
+			return calculator.calcGain(f, fingering) - targetGain;
 		}
 	}
 
@@ -185,7 +188,7 @@ public class PlayingRange
 
 		public double value(double f)
 		{
-			Complex z = calculator.calcZ(f);
+			Complex z = calculator.calcZ(f, fingering);
 			return z.getImaginary()/z.getReal() - targetRatio;
 		}
 	}
@@ -223,7 +226,7 @@ public class PlayingRange
 
 		public double value(double f)
 		{
-			Complex z = calculator.calcZ(f);
+			Complex z = calculator.calcZ(f, fingering);
 			return z.abs() - targetMagnitude;
 		}
 	}
@@ -258,22 +261,7 @@ public class PlayingRange
 	public PlayingRange(InstrumentCalculator calculator, Fingering fingering)
 	{
 		this.calculator = calculator;
-		this.calculator.setFingering(fingering);
-		this.reactance = new Reactance();
-		this.zMagnitude = new ZMagnitude();
-		this.gainOne = new Gain();
-		this.zRatio = new ZRatio();
-		this.solver = new BrentSolver();
-		this.optimizer = new BrentOptimizer(0.0001, 0.0001);	// Approximate minimum is sufficient.
-	}
-
-	/**
-	 * Construct a playing-range calculator for the current instrument fingering.
-	 * @param calculator
-	 */
-	public PlayingRange(InstrumentCalculator calculator)
-	{
-		this.calculator = calculator;
+		this.fingering = fingering;
 		this.reactance = new Reactance();
 		this.zMagnitude = new ZMagnitude();
 		this.gainOne = new Gain();
@@ -315,13 +303,13 @@ public class PlayingRange
 				double[] bracket = {-1.0,0.0};
 				return bracket;
 			}
-			zLower = calculator.calcZ(lowerFreq);
+			zLower = calculator.calcZ(lowerFreq, fingering);
 		}
 
 		// Search up until function(upperFreq) > 0.
 
 		upperFreq = lowerFreq + stepSize;
-		zUpper = calculator.calcZ(upperFreq);
+		zUpper = calculator.calcZ(upperFreq, fingering);
 		
 		while (function.value(zUpper) <= 0.0)
 		{
@@ -337,7 +325,7 @@ public class PlayingRange
 				double[] bracket = {-1.0,0.0};
 				return bracket;
 			}
-			zUpper = calculator.calcZ(upperFreq);
+			zUpper = calculator.calcZ(upperFreq, fingering);
 		}
 
 		double[] bracket = {lowerFreq, upperFreq};
@@ -377,13 +365,13 @@ public class PlayingRange
 				double[] bracket = {-1.0,0.0};
 				return bracket;
 			}
-			zUpper = calculator.calcZ(upperFreq);
+			zUpper = calculator.calcZ(upperFreq, fingering);
 		}
 
 		// Search down until function(lowerFreq) < 0.
 
 		lowerFreq = upperFreq - stepSize;
-		zLower = calculator.calcZ(lowerFreq);
+		zLower = calculator.calcZ(lowerFreq, fingering);
 		
 		while (function.value(zLower) >= 0.0)
 		{
@@ -399,7 +387,7 @@ public class PlayingRange
 				double[] bracket = {-1.0,0.0};
 				return bracket;
 			}
-			zLower = calculator.calcZ(lowerFreq);
+			zLower = calculator.calcZ(lowerFreq, fingering);
 		}
 
 		double[] bracket = {lowerFreq, upperFreq};
@@ -426,7 +414,7 @@ public class PlayingRange
 			throws NoPlayingRange
 	{
 		double freq = nearFreq;
-		Complex zNear = calculator.calcZ(freq);
+		Complex zNear = calculator.calcZ(freq, fingering);
 		double limitFreq;
 		double [] upwardBracket;
 		double [] downwardBracket;
@@ -437,7 +425,7 @@ public class PlayingRange
 			// adjust the frequency slightly.
 			// We don't know whether slope is positive or negative.
 			freq = freq * 0.999;
-			zNear = calculator.calcZ(freq);
+			zNear = calculator.calcZ(freq, fingering);
 		}
 		
 		if (function.value(zNear) < 0.0)
@@ -572,7 +560,7 @@ public class PlayingRange
 		// Upper bound on fmin is fmax.
 		// findFmax ensures Im(Z(fmax)) == 0.0.
 		double lowerFreq = fmax;
-		Complex z_lo = calculator.calcZ(fmax);
+		Complex z_lo = calculator.calcZ(fmax, fingering);
 		double g_lo = calculator.calcGain(lowerFreq,z_lo);
 		double ratio = z_lo.getImaginary()/z_lo.getReal();
 		double minRatio = ratio + 1.0;
@@ -593,7 +581,7 @@ public class PlayingRange
 			{
 				throw new NoPlayingRange(fmax);
 			}
-			z_lo = calculator.calcZ(lowerFreq);
+			z_lo = calculator.calcZ(lowerFreq, fingering);
 			g_lo = calculator.calcGain(lowerFreq,z_lo);
 			ratio = z_lo.getImaginary()/z_lo.getReal();
 		}
@@ -699,4 +687,15 @@ public class PlayingRange
 		return freqOfMin;
 	}
     */
+
+	public Fingering getFingering()
+	{
+		return fingering;
+	}
+
+	public void setFingering(Fingering fingering)
+	{
+		this.fingering = fingering;
+	}
+
 }

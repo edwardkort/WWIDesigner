@@ -8,7 +8,6 @@ public class Hole implements ComponentInterface, BorePointInterface
 	protected double height;
 	protected double position;
 	protected double diameter;
-	protected boolean openHole;
 	protected Double innerCurvatureRadius;
 	protected Key key;
 
@@ -58,23 +57,6 @@ public class Hole implements ComponentInterface, BorePointInterface
 	public void setHeight(double height)
 	{
 		this.height = height;
-	}
-
-	/**
-	 * @return the openHole
-	 */
-	public boolean isOpenHole()
-	{
-		return openHole;
-	}
-
-	/**
-	 * @param openHole
-	 *            the openHole to set
-	 */
-	public void setOpenHole(boolean openHole)
-	{
-		this.openHole = openHole;
 	}
 
 	/**

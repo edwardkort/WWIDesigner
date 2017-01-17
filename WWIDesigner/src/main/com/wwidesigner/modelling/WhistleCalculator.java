@@ -24,7 +24,7 @@ import com.wwidesigner.geometry.Instrument;
 import com.wwidesigner.geometry.calculation.DefaultHoleCalculator;
 import com.wwidesigner.geometry.calculation.SimpleBoreSectionCalculator;
 import com.wwidesigner.geometry.calculation.SimpleFippleMouthpieceCalculator;
-import com.wwidesigner.geometry.calculation.UnflangedClosableEndCalculator;
+import com.wwidesigner.geometry.calculation.UnflangedEndCalculator;
 import com.wwidesigner.note.Fingering;
 import com.wwidesigner.util.PhysicalParameters;
 
@@ -42,14 +42,14 @@ public class WhistleCalculator extends DefaultInstrumentCalculator
 			PhysicalParameters physicalParams)
 	{
 		super(instrument, new SimpleFippleMouthpieceCalculator(),
-				new UnflangedClosableEndCalculator(), new DefaultHoleCalculator(),
+				new UnflangedEndCalculator(), new DefaultHoleCalculator(),
 				new SimpleBoreSectionCalculator(), physicalParams);
 	}
 
 	public WhistleCalculator()
 	{
 		super(new SimpleFippleMouthpieceCalculator(),
-				new UnflangedClosableEndCalculator(), new DefaultHoleCalculator(),
+				new UnflangedEndCalculator(), new DefaultHoleCalculator(),
 				new SimpleBoreSectionCalculator());
 	}
 	
@@ -64,8 +64,7 @@ public class WhistleCalculator extends DefaultInstrumentCalculator
 	public double predictV(Fingering fingering)
 	{
 		double freq = fingering.getNote().getFrequency();
-		instrument.setOpenHoles(fingering);
-		return predictV(freq);
+		return predictV(freq, calcZ(freq, fingering));
 	}
 
 	/**
@@ -79,21 +78,7 @@ public class WhistleCalculator extends DefaultInstrumentCalculator
 	 */
 	public double predictV(double freq, Fingering fingering)
 	{
-		instrument.setOpenHoles(fingering);
-		return predictV(freq);
-	}
-
-	/**
-	 * Predict the windway velocity required to produce
-	 * a specified frequency for the instrument's current fingering.
-	 * Result valid only if the nominal frequency is within a playing range
-	 * (not checked).
-	 * @param freq
-	 * @return predicted windway velocity
-	 */
-	public double predictV(double freq)
-	{
-		return predictV(freq, calcZ(freq));
+		return predictV(freq, calcZ(freq, fingering));
 	}
 
 	/**

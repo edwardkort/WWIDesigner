@@ -11,8 +11,12 @@ public class ThickFlangedOpenEndCalculator extends TerminationCalculator
 {
 	@Override
 	public StateVector calcStateVector(Termination termination,
-			double wave_number, PhysicalParameters params)
+			boolean isOpen, double wave_number, PhysicalParameters params)
 	{
+		if (! isOpen)
+		{
+			return StateVector.ClosedEnd();
+		}
 		Complex P = calcZ(termination, wave_number, params).multiply(
 				params.calcZ0(termination.getBoreDiameter() / 2.));
 

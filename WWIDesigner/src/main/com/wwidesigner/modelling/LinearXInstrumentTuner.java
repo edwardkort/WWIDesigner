@@ -161,13 +161,12 @@ public class LinearXInstrumentTuner extends InstrumentTuner
 		double fmax, fmin;
 		Complex z;
 
-		calculator.setFingering(noteLow);
-		PlayingRange range = new PlayingRange(calculator);
+		PlayingRange range = new PlayingRange(calculator, noteLow);
 		try 
 		{
 			fmax = range.findXZero(fLow);
 			fmin = range.findFmin(fmax);
-			z = calculator.calcZ(fmin);
+			z = calculator.calcZ(fmin, noteLow);
 			xLow = BottomFraction * z.getImaginary();
 		}
 		catch ( NoPlayingRange e )
@@ -177,12 +176,12 @@ public class LinearXInstrumentTuner extends InstrumentTuner
 		}
 		fLow = fmax;	// Nominal frequency for our interpolation.
 		
-		calculator.setFingering(noteHigh);
+		range.setFingering(noteHigh);
 		try
 		{
 			fmax = range.findXZero(fHigh);
 			fmin = range.findFmin(fmax);
-			z = calculator.calcZ(fmin);
+			z = calculator.calcZ(fmin, noteHigh);
 			xHigh = TopFraction * z.getImaginary();
 		}
 		catch ( NoPlayingRange e )

@@ -239,7 +239,8 @@ public class StudyView extends DataViewPane implements EventSubscriber
 		boolean canGraphNote = false;
 		String selectedInstrumentName;
 		selectedInstrumentName = study.getSelectedInstrumentName();
-		isInstrumentSelected = selectedInstrumentName != null;
+		isInstrumentSelected = (selectedInstrumentName != null
+				&& selectedInstrumentName != "");
 		if (isInstrumentSelected)
 		{
 			canDoTuning = study.canTune();

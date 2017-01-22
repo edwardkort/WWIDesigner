@@ -89,7 +89,7 @@
 	<fingering>
 		<note>
 			<name>D</name>
-			<frequency>1165.4/frequency>
+			<frequency>1165.4</frequency>
 		</note>
 		<openHole>false</openHole><openHole>false</openHole><openHole>false</openHole>
 		<openHole>false</openHole><openHole>true</openHole><openHole>true</openHole>

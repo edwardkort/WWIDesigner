@@ -1,60 +1,59 @@
-<?xml version="1.0" encoding="utf-8"?>
-<wii:instrument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xmlns:wii="http://www.wwidesigner.com/Instrument"
-         xsi:schemaLocation="http://www.wwidesigner.com/Instrument ../Instrument.xsd ">
-	<name>Bb Fife</name>
-	<description>6-hole maple fife, cylindrical bore, Bb.
-		Positions measured from far left-hand end, above the cork.
-	</description>
-	<lengthType>mm</lengthType>
-	<mouthpiece>
-		<position>83.5</position>
-		<embouchureHole>
-			<innerDiameter>9.6</innerDiameter>
-			<outerDiameter>9.6</outerDiameter>
-			<height>4.8</height>
-		</embouchureHole>
-		<beta>0.4</beta>
-	</mouthpiece>
-	<borePoint>
-		<borePosition>73.5</borePosition>
-		<boreDiameter>12.4</boreDiameter>
-	</borePoint>
-	<borePoint>
-		<borePosition>420.5</borePosition>
-		<boreDiameter>12.4</boreDiameter>
-	</borePoint>
-	<hole>
-		<borePosition>234.0</borePosition>
-		<diameter>6.2</diameter>
-		<height>4.2</height>
-	</hole>
-	<hole>
-		<borePosition>257.0</borePosition>
-		<diameter>7.0</diameter>
-		<height>4.1</height>
-	</hole>
-	<hole>
-		<borePosition>281.0</borePosition>
-		<diameter>7.0</diameter>
-		<height>3.9</height>
-	</hole>
-	<hole>
-		<borePosition>314.0</borePosition>
-		<diameter>6.2</diameter>
-		<height>3.6</height>
-	</hole>
-	<hole>
-		<borePosition>335.5</borePosition>
-		<diameter>8.1</diameter>
-		<height>3.3</height>
-	</hole>
-	<hole>
-		<borePosition>360.5</borePosition>
-		<diameter>6.4</diameter>
-		<height>3.0</height>
-	</hole>
-	<termination>
-		<flangeDiameter>17.5</flangeDiameter>
-	</termination>
-</wii:instrument>
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns2:instrument xmlns:ns2="http://www.wwidesigner.com/Instrument">
+    <name>Bb Fife</name>
+    <description>6-hole maple fife, cylindrical bore, in Bb.
+Positions measured from far left-hand end, above the cork.</description>
+    <lengthType>mm</lengthType>
+    <mouthpiece>
+        <position>83.5</position>
+        <embouchureHole>
+            <length>9.6</length>
+            <width>9.6</width>
+            <height>4.8</height>
+            <airstreamLength>3.9</airstreamLength>
+            <airstreamHeight>1.5</airstreamHeight>
+        </embouchureHole>
+        <beta>0.255</beta>
+    </mouthpiece>
+    <borePoint>
+        <borePosition>73.5</borePosition>
+        <boreDiameter>12.4</boreDiameter>
+    </borePoint>
+    <borePoint>
+        <borePosition>420.5</borePosition>
+        <boreDiameter>12.4</boreDiameter>
+    </borePoint>
+    <hole>
+        <borePosition>234.0</borePosition>
+        <diameter>6.2</diameter>
+        <height>4.2</height>
+    </hole>
+    <hole>
+        <borePosition>257.0</borePosition>
+        <diameter>7.0</diameter>
+        <height>4.1</height>
+    </hole>
+    <hole>
+        <borePosition>281.0</borePosition>
+        <diameter>7.0</diameter>
+        <height>3.9</height>
+    </hole>
+    <hole>
+        <borePosition>314.0</borePosition>
+        <diameter>6.2</diameter>
+        <height>3.6</height>
+    </hole>
+    <hole>
+        <borePosition>335.5</borePosition>
+        <diameter>8.1</diameter>
+        <height>3.3</height>
+    </hole>
+    <hole>
+        <borePosition>360.5</borePosition>
+        <diameter>6.4</diameter>
+        <height>3.0</height>
+    </hole>
+    <termination>
+        <flangeDiameter>17.5</flangeDiameter>
+    </termination>
+</ns2:instrument>

@@ -692,10 +692,30 @@ public class StudyView extends DataViewPane implements EventSubscriber
 	class TreeNodeWithToolTips extends DefaultMutableTreeNode
 	{
 		private String toolTip;
+		private String displayName;
 
 		public TreeNodeWithToolTips(Object userObject)
 		{
 			super(userObject);
+
+			if (userObject != null)
+			{
+				String key = (String) userObject;
+				if (key.contains(File.separator))
+				{
+					displayName = key
+							.substring(key.lastIndexOf(File.separator) + 1);
+					setToolTip(key);
+				}
+				else
+				{
+					displayName = key;
+				}
+			}
+			else
+			{
+				displayName = new String();
+			}
 		}
 
 		public void setToolTip(String tip)
@@ -706,6 +726,12 @@ public class StudyView extends DataViewPane implements EventSubscriber
 		public String getToolTip()
 		{
 			return toolTip;
+		}
+
+		@Override
+		public String toString()
+		{
+			return displayName;
 		}
 	}
 }

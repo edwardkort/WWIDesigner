@@ -5,6 +5,7 @@ package com.wwidesigner.note;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -127,6 +128,30 @@ public class Fingering implements Serializable
 		}
 
 		return num;
+	}
+
+	
+	/**
+	 * Change the number of holes in this fingering; add open holes
+	 * at the bottom to increase number of holes, or remove holes
+	 * from the bottom to decrease number of holes.
+	 * @param numberOfHoles
+	 */
+	public void setNumberOfHoles(int numberOfHoles)
+	{
+		boolean[] newOpenHoles = new boolean[numberOfHoles];
+		Arrays.fill(newOpenHoles, true);
+		if (openHole != null)
+		{
+			for (int i = 0; i < openHole.size() && i < numberOfHoles; ++i)
+			{
+				if (openHole.get(i) != null && !openHole.get(i))
+				{
+					newOpenHoles[i] = false;
+				}
+			}
+		}
+		setOpenHoles(newOpenHoles);
 	}
 
 	/**

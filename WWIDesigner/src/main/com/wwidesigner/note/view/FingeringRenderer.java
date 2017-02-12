@@ -83,7 +83,7 @@ public class FingeringRenderer extends JPanel implements TableCellRenderer,
 		this(0);
 	}
 
-	protected void createHoles(int numHoles)
+	public void createHoles(int numHoles)
 	{
 		setHoleSize();
 		removeAll();

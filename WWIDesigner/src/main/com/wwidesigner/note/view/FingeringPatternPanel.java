@@ -310,9 +310,33 @@ public class FingeringPatternPanel extends JPanel implements FocusListener,
 		{
 			return false;
 		}
-		numberOfHoles = newNumberOfHoles;
-		resetTableData(1);
+		updateNumberOfHoles(newNumberOfHoles);
 		return true;
+	}
+	
+	protected void updateNumberOfHoles(int numHoles)
+	{
+		stopTableEditing();
+		numberOfHoles = numHoles;
+		TableColumn column = fingeringList.getColumn("Fingering");
+		column.setMinWidth(10);
+		renderer.createHoles(numberOfHoles);
+		column.setPreferredWidth(renderer.getPreferredSize().width);
+		column.setMinWidth(renderer.getMinimumSize().width);
+		fingeringList.setRowHeight(renderer.getPreferredSize().height);
+
+		DefaultTableModel model = (DefaultTableModel) fingeringList.getModel();
+
+		for (int i = 0; i < model.getRowCount(); i++)
+		{
+			Fingering value = getRowData(model, i);
+			if (value != null)
+			{
+				value.setNumberOfHoles(numHoles);
+			}
+		}
+
+		areFingeringsPopulated();
 	}
 
 	protected boolean isFingeringPopulated(Fingering fingering)

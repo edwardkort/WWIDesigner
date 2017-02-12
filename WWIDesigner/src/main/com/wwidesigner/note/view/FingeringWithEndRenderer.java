@@ -48,7 +48,7 @@ public class FingeringWithEndRenderer extends FingeringRenderer
 	}
 
 	@Override
-	protected void createHoles(int numHoles)
+	public void createHoles(int numHoles)
 	{
 		super.createHoles(numHoles);
 		mEnd = new JRadioButton();

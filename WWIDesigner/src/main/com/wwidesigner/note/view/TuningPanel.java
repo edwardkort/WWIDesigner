@@ -32,8 +32,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableColumn;
-
 import com.jidesoft.grid.JideTable;
 import com.wwidesigner.gui.util.DoubleCellRenderer;
 import com.wwidesigner.gui.util.NoOpTransferHandler;
@@ -222,22 +220,25 @@ public class TuningPanel extends FingeringPatternPanel
 	@Override
 	protected Fingering getRowData(DefaultTableModel model, int row)
 	{
-		Note note = new Note();
-		String name = (String) model.getValueAt(row, 0);
-		if (name == null || name.trim().length() == 0)
-		{
-			// Skip lines with no name.
-			return null;
-		}
-		note.setName(name.trim());
-		Double freq = (Double) model.getValueAt(row, 1);
-		note.setFrequency(freq);
 		Fingering value = (Fingering) model.getValueAt(row,
 				fingeringColumnIdx);
-		if (value != null)
+		if (value == null)
 		{
-			value.setNote(note);
+			return null;
 		}
+		Note note = new Note();
+		String name = (String) model.getValueAt(row, 0);
+		if (name == null)
+		{
+			note.setName("");
+		}
+		else
+		{
+			note.setName(name.trim());
+		}
+		Double freq = (Double) model.getValueAt(row, 1);
+		note.setFrequency(freq);
+		value.setNote(note);
 		return value;
 	}
 	
@@ -264,24 +265,6 @@ public class TuningPanel extends FingeringPatternPanel
 		nameWidget.setTransferHandler(new NoOpTransferHandler());
 		descriptionWidget.setTransferHandler(new NoOpTransferHandler());
 		numberOfHolesWidget.setTransferHandler(new NoOpTransferHandler());
-	}
-
-	public void resetFingeringColumn(int numberOfHoles)
-	{
-		stopTableEditing();
-		setNumberOfHoles(numberOfHoles);
-		FingeringRenderer renderer = new FingeringRenderer(numberOfHoles);
-		TableColumn column = fingeringList.getColumn("Fingering");
-		column.setPreferredWidth(renderer.getPreferredSize().width);
-		column.setMinWidth(renderer.getMinimumSize().width);
-		fingeringList.setRowHeight(renderer.getPreferredSize().height);
-		DefaultTableModel model = (DefaultTableModel) fingeringList.getModel();
-		int numRows = model.getRowCount();
-		for (int row = 0; row < numRows; row++)
-		{
-			model.setValueAt(new Fingering(numberOfHoles), row,
-					fingeringColumnIdx);
-		}
 	}
 
 }

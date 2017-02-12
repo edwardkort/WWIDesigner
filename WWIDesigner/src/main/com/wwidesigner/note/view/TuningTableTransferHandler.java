@@ -58,7 +58,7 @@ public class TuningTableTransferHandler extends TransferHandler
 				int targetNumberOfHoles = targetFingering.getNumberOfHoles();
 				if (sourceNumberOfHoles != targetNumberOfHoles)
 				{
-					tuningPanel.resetFingeringColumn(sourceNumberOfHoles);
+					tuningPanel.setNumberOfHoles(sourceNumberOfHoles);
 				}
 			}
 			int numberOfHoles = tuningPanel.getNumberOfHoles();

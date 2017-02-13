@@ -42,6 +42,7 @@ public class Fingering implements Serializable
 			{
 				addOpenHole(new Boolean(hole));
 			}
+			this.openEnd = fingering.getOpenEnd();
 		}
 	}
 

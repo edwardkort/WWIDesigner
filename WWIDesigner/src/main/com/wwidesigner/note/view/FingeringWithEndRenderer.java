@@ -59,7 +59,15 @@ public class FingeringWithEndRenderer extends FingeringRenderer
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.anchor = GridBagConstraints.WEST;
 		gbc.gridy = 0;
-		gbc.insets = new Insets(0, 10, 0, 0);
+		if (numHoles > 0)
+		{
+			gbc.insets = new Insets(0, 8, 0, 0);
+		}
+		else
+		{
+			gbc.insets = new Insets(0, 40, 0, 0);
+		}
+		gbc.weightx = 1.0;
 		gbc.gridx = numHoles;
 		add(mEnd, gbc);
 	}
@@ -85,7 +93,7 @@ public class FingeringWithEndRenderer extends FingeringRenderer
 	public Dimension getPreferredSize()
 	{
 		Dimension size = super.getPreferredSize();
-		size.setSize(size.getWidth() + 10 + mHoleLength, size.getHeight());
+		size.setSize(size.getWidth() + mHoleLength, size.getHeight());
 		return size;
 	}
 

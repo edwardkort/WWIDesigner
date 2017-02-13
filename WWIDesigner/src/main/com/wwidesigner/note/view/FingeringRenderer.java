@@ -100,10 +100,14 @@ public class FingeringRenderer extends JPanel implements TableCellRenderer,
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.anchor = GridBagConstraints.WEST;
 		gbc.gridy = 0;
-		gbc.insets = new Insets(0, 15, 0, 0); // For first hole only.
+		gbc.insets = new Insets(0, 30, 0, 0); // For first hole only.
 		for (int i = 0; i < mHoles.length; i++)
 		{
 			gbc.gridx = i;
+			if (i == mHoles.length - 1)
+			{
+				gbc.weightx = 0.1;
+			}
 			add(mHoles[i], gbc);
 			gbc.insets = new Insets(0, 0, 0, 0);
 		}
@@ -234,11 +238,11 @@ public class FingeringRenderer extends JPanel implements TableCellRenderer,
 	@Override
 	public Dimension getPreferredSize()
 	{
-		// Make minimum width equal to a 4-hole flute.
+		// Make minimum width equal to a 2-hole flute.
 		int numHoles = mHoles.length;
-		if (numHoles < 4)
+		if (numHoles < 2)
 		{
-			numHoles = 4;
+			numHoles = 2;
 		}
 		int width = numHoles * mHoleLength + 45;
 		int height = mHoleHeight + 14;

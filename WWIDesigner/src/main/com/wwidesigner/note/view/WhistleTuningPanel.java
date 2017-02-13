@@ -217,16 +217,10 @@ public class WhistleTuningPanel extends TuningPanel
 	}
 
 	@Override
-	public void resetTableData(int numRows)
+	public void resetTableData(int numRows, boolean hasClosableEnd)
 	{
-		super.resetTableData(numRows);
-		renderer = new FingeringRenderer(numberOfHoles);
-		renderer.addDataChangedListener(this);
-		TableColumn column = fingeringList.getColumn("Fingering");
-		column.setCellRenderer(renderer);
-		column.setCellEditor(new FingeringEditor());
-		column.setPreferredWidth(renderer.getPreferredSize().width);
-		column.setMinWidth(renderer.getMinimumSize().width);
+		super.resetTableData(numRows, hasClosableEnd);
+		TableColumn column;
 		if (numberOfColumns != 5)
 		{
 			return;
@@ -249,10 +243,10 @@ public class WhistleTuningPanel extends TuningPanel
 	@Override
 	public void loadData(FingeringPattern fingerings, boolean suppressChangeEvent)
 	{
-		if (numberOfColumns < 5 && hasMinMax(fingerings))
+		if (numberOfColumns < 5 && fingerings.hasMinMax())
 		{
 			// If the tuning has min or max frequency data, display it.
-			if (numberOfColumns == 4 || hasWeights(fingerings))
+			if (numberOfColumns == 4 || fingerings.hasWeights())
 			{
 				// Display weights if they were already displayed,
 				// or the tuning has non-trivial optimization weights.
@@ -264,73 +258,12 @@ public class WhistleTuningPanel extends TuningPanel
 			}
 			fingeringColumnIdx = 4;
 		}
-		else if (numberOfColumns == 3 && hasWeights(fingerings))
+		else if (numberOfColumns == 3 && fingerings.hasWeights())
 		{
 			// If the tuning has non-trivial optimization weights, display them last.
 			numberOfColumns = 4;
 		}
 		super.loadData(fingerings, suppressChangeEvent);
-		if (hasClosableEnd(fingerings))
-		{
-			renderer = new FingeringWithEndRenderer(numberOfHoles);
-			renderer.addDataChangedListener(this);
-			TableColumn column = fingeringList.getColumn("Fingering");
-			column.setCellRenderer(renderer);
-			column.setCellEditor(new FingeringWithEndEditor());
-			column.setPreferredWidth(renderer.getPreferredSize().width);
-			column.setMinWidth(renderer.getMinimumSize().width);
-		}
-	}
-
-	/**
-	 * Test whether a tuning has min/max frequency data.
-	 */
-	static protected boolean hasMinMax(FingeringPattern fingerings)
-	{
-		for (Fingering fingering : fingerings.getFingering())
-		{
-			Note note = fingering.getNote();
-			if (note != null)
-			{
-				if (note.getFrequencyMin() != null
-					|| note.getFrequencyMax() != null)
-				{
-					return true;
-				}
-			}
-		}
-		return false;
-	}
-
-	/**
-	 * Test whether a tuning has open/closed end data.
-	 */
-	static protected boolean hasClosableEnd(FingeringPattern fingerings)
-	{
-		for (Fingering fingering : fingerings.getFingering())
-		{
-			if (fingering.getOpenEnd() != null)
-			{
-				return true;
-			}
-		}
-		return false;
-	}
-
-	/**
-	 * Test whether a tuning has non-trivial optimization weights.
-	 */
-	static protected boolean hasWeights(FingeringPattern fingerings)
-	{
-		for (Fingering fingering : fingerings.getFingering())
-		{
-			if (fingering.getOptimizationWeight() != null
-					&& fingering.getOptimizationWeight() != 1)
-			{
-				return true;
-			}
-		}
-		return false;
 	}
 
 	@Override

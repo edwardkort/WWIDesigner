@@ -61,8 +61,7 @@ public class FingeringPatternPage extends AbstractWizardPage implements
 		super(
 				"Fingering Pattern",
 				"Select or create the fingerings used in the scale. "
-						+ "Set the number of holes before creating a New fingering pattern. "
-						+ "Click on a fingering to initial editing (red outline); "
+						+ "Click on a fingering to start editing hole states (indicated by blue outline). "
 						+ "Hit Esc to cancel editing, Enter to accept edits.");
 		this.parent = parent;
 		createWizardContent();
@@ -122,7 +121,7 @@ public class FingeringPatternPage extends AbstractWizardPage implements
 			{
 				fingeringPanel.setName(null);
 				fingeringPanel.setDescription(null);
-				fingeringPanel.resetTableData(1);
+				fingeringPanel.resetTableData(1, false);
 			}
 		});
 		newButton.setEnabled(true);
@@ -184,7 +183,7 @@ public class FingeringPatternPage extends AbstractWizardPage implements
 	private void loadFingeringButtons()
 	{
 		JPanel panel = new JPanel();
-		panel.setLayout(new GridLayout(4, 0, 10, 10));
+		panel.setLayout(new GridLayout(5, 0, 10, 10));
 		JButton button = new JButton("Delete selected");
 		button.addActionListener(new ActionListener()
 		{
@@ -235,6 +234,17 @@ public class FingeringPatternPage extends AbstractWizardPage implements
 				fingeringPanel.insertFingeringBelowSelection();
 			}
 
+		});
+
+		button = new JButton("Add/Remove Closable End");
+		panel.add(button);
+		button.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent event)
+			{
+				fingeringPanel.setClosableEnd(!fingeringPanel.getClosableEnd());
+			}
 		});
 
 		GridBagConstraints gbc = new GridBagConstraints();

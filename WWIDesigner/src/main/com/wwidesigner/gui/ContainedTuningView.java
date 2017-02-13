@@ -103,6 +103,17 @@ public class ContainedTuningView extends ContainedXmlView implements DataChanged
 		});
 		buttonPanel.add(button);
 
+		button = new JButton("Add/Remove Closable End");
+		button.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent event)
+			{
+				tuningPanel.setClosableEnd(!tuningPanel.getClosableEnd());
+			}
+		});
+		buttonPanel.add(button);
+
 		gbc.anchor = GridBagConstraints.SOUTHWEST;
 		gbc.gridx = 1;
 		gbc.weightx = 0.0;

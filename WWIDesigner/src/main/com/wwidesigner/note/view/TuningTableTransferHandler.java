@@ -51,6 +51,8 @@ public class TuningTableTransferHandler extends TransferHandler
 			int numColumns = dropData.get(0).size();
 			if (numColumns == 1) // Handle number of holes in source and target
 			{
+				// Importing a fingering.  Check for changes in number of holes,
+				// and for closable end.
 				Fingering sourceFingering = (Fingering) dropData.get(0).get(0);
 				int sourceNumberOfHoles = sourceFingering.getNumberOfHoles();
 				Fingering targetFingering = (Fingering) model
@@ -59,6 +61,11 @@ public class TuningTableTransferHandler extends TransferHandler
 				if (sourceNumberOfHoles != targetNumberOfHoles)
 				{
 					tuningPanel.setNumberOfHoles(sourceNumberOfHoles);
+				}
+				if (sourceFingering.getOpenEnd() != null
+						&& targetFingering.getOpenEnd() == null)
+				{
+					tuningPanel.setClosableEnd(true);
 				}
 			}
 			int numberOfHoles = tuningPanel.getNumberOfHoles();
@@ -71,10 +78,12 @@ public class TuningTableTransferHandler extends TransferHandler
 				}
 				if (numColumns == 1)
 				{
+					// Import a fingering
 					model.setValueAt(rowData.get(0), row++, 2);
 				}
 				else if (numColumns == 2)
 				{
+					// Import a note
 					model.setValueAt(rowData.get(0), row, 0);
 					model.setValueAt(rowData.get(1), row++, 1);
 				}

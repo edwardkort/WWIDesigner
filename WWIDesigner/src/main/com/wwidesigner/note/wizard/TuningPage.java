@@ -182,7 +182,7 @@ public class TuningPage extends AbstractWizardPage implements
 			{
 				tuningPanel.setName(null);
 				tuningPanel.setDescription(null);
-				tuningPanel.resetTableData(1);
+				tuningPanel.resetTableData(1, false);
 			}
 		});
 		newButton.setEnabled(true);

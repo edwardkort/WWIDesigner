@@ -195,7 +195,7 @@ public class FingeringPatternPanel extends JPanel implements FocusListener,
 			stopTableEditing();
 			fingeringList.getModel().removeTableModelListener(this);
 			renderer.setEnableDataChanges(false);
-			resetTableData(0);
+			resetTableData(0, fingerings.hasClosableEnd());
 			DefaultTableModel model = (DefaultTableModel) fingeringList
 					.getModel();
 			for (Fingering fingering : fingerings.getFingering())
@@ -337,6 +337,69 @@ public class FingeringPatternPanel extends JPanel implements FocusListener,
 		}
 
 		areFingeringsPopulated();
+	}
+	
+	public boolean getClosableEnd()
+	{
+		TableColumn column = fingeringList.getColumn("Fingering");
+		if (column.getCellRenderer() instanceof FingeringWithEndRenderer)
+		{
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * Set whether this fingering pattern allows closed ends.
+	 * 
+	 * @param hasClosableEnd - <code>true</code> to render with closable end,
+	 * <code>false</code> to render without closable end and remove openEnd
+	 * from all fingerings in this pattern.
+	 */
+	public void setClosableEnd(boolean hasClosableEnd)
+	{
+		stopTableEditing();
+		TableColumn column = fingeringList.getColumn("Fingering");
+		column.setMinWidth(10);
+		if (hasClosableEnd)
+		{
+			renderer = new FingeringWithEndRenderer(numberOfHoles);
+		}
+		else
+		{
+			renderer = new FingeringRenderer(numberOfHoles);
+		}
+		renderer.addDataChangedListener(this);
+		column.setCellRenderer(renderer);
+		if (hasClosableEnd)
+		{
+			column.setCellEditor(new FingeringWithEndEditor());
+		}
+		else
+		{
+			column.setCellEditor(new FingeringEditor());
+		}
+		column.setPreferredWidth(renderer.getPreferredSize().width);
+		column.setMinWidth(renderer.getMinimumSize().width);
+
+		DefaultTableModel model = (DefaultTableModel) fingeringList.getModel();
+
+		for (int i = 0; i < model.getRowCount(); i++)
+		{
+			Fingering value = getRowData(model, i);
+			if (value != null)
+			{
+				if (value.getOpenEnd() == null && hasClosableEnd)
+				{
+					value.setOpenEnd(true);
+				}
+				else if (value.getOpenEnd() != null && !hasClosableEnd)
+				{
+					value.setOpenEnd(null);
+				}
+			}
+		}
+
 	}
 
 	protected boolean isFingeringPopulated(Fingering fingering)
@@ -605,7 +668,7 @@ public class FingeringPatternPanel extends JPanel implements FocusListener,
 
 		DefaultTableModel model = new DefaultTableModel();
 		fingeringList = new JideTable(model);
-		resetTableData(0);
+		resetTableData(0, false);
 		fingeringList.setAutoscrolls(true);
 		JScrollPane scrollPane = new JScrollPane(fingeringList);
 		scrollPane.setBorder(new LineBorder(Color.BLACK));
@@ -658,17 +721,31 @@ public class FingeringPatternPanel extends JPanel implements FocusListener,
 		}
 	}
 
-	public void resetTableData(int numRows)
+	public void resetTableData(int numRows, boolean hasClosableEnd)
 	{
 		stopTableEditing();
 		DefaultTableModel model = (DefaultTableModel) fingeringList.getModel();
 		model.setDataVector(new Object[0][numberOfColumns], columnNames());
 		fingeringList.setFillsGrids(false);
-		renderer = new FingeringRenderer(numberOfHoles);
+		if (hasClosableEnd)
+		{
+			renderer = new FingeringWithEndRenderer(numberOfHoles);
+		}
+		else
+		{
+			renderer = new FingeringRenderer(numberOfHoles);
+		}
 		renderer.addDataChangedListener(this);
 		TableColumn column = fingeringList.getColumn("Fingering");
 		column.setCellRenderer(renderer);
-		column.setCellEditor(new FingeringEditor());
+		if (hasClosableEnd)
+		{
+			column.setCellEditor(new FingeringWithEndEditor());
+		}
+		else
+		{
+			column.setCellEditor(new FingeringEditor());
+		}
 		column.setPreferredWidth(renderer.getPreferredSize().width);
 		column.setMinWidth(renderer.getMinimumSize().width);
 		fingeringList.setRowHeight(renderer.getPreferredSize().height);

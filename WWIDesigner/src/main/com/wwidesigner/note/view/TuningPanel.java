@@ -104,9 +104,9 @@ public class TuningPanel extends FingeringPatternPanel
 	}
 
 	@Override
-	public void resetTableData(int numRows)
+	public void resetTableData(int numRows, boolean hasClosableEnd)
 	{
-		super.resetTableData(numRows);
+		super.resetTableData(numRows, hasClosableEnd);
 		fingeringList.getColumn("Frequency").setCellRenderer(
 				new DoubleCellRenderer(4));
 	}
@@ -196,7 +196,7 @@ public class TuningPanel extends FingeringPatternPanel
 
 		DefaultTableModel model = getTableModel();
 		fingeringList = new JideTable(model);
-		resetTableData(0);
+		resetTableData(0, false);
 		fingeringList.setAutoscrolls(true);
 		JScrollPane scrollPane = new JScrollPane(fingeringList);
 		scrollPane.setBorder(new LineBorder(Color.BLACK));

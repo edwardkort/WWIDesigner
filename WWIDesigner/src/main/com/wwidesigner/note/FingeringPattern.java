@@ -129,4 +129,55 @@ public class FingeringPattern
 		fingering.add(newFingering);
 	}
 
+	/**
+	 * Test whether this fingering pattern has any min/max frequency data.
+	 */
+	public boolean hasMinMax()
+	{
+		for (Fingering fingering : this.fingering)
+		{
+			Note note = fingering.getNote();
+			if (note != null)
+			{
+				if (note.getFrequencyMin() != null
+					|| note.getFrequencyMax() != null)
+				{
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Test whether this fingering pattern has any open/closed end data.
+	 */
+	public boolean hasClosableEnd()
+	{
+		for (Fingering fingering : this.fingering)
+		{
+			if (fingering.getOpenEnd() != null)
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Test whether this fingering pattern has any non-trivial optimization weights.
+	 */
+	public boolean hasWeights()
+	{
+		for (Fingering fingering : this.fingering)
+		{
+			if (fingering.getOptimizationWeight() != null
+					&& fingering.getOptimizationWeight() != 1)
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+
 }

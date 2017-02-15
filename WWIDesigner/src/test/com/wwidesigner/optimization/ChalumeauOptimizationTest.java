@@ -10,8 +10,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.List;
 
-import org.junit.Test;
-
 import com.wwidesigner.geometry.BorePoint;
 import com.wwidesigner.geometry.Hole;
 import com.wwidesigner.geometry.Instrument;

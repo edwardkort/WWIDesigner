@@ -252,7 +252,6 @@ public class ScaleSymbolPage extends AbstractWizardPage implements
 		});
 
 		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.anchor = GridBagConstraints.CENTER;
 		gbc.anchor = GridBagConstraints.SOUTH;
 		gbc.insets = new Insets(0, 0, 20, 0);
 		gbc.gridx = 1;

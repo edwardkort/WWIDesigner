@@ -118,7 +118,7 @@ public class TuningPage extends AbstractWizardPage implements
 		panel.add(tuningPanel, gbc);
 
 		JPanel buttonPanel = new JPanel();
-		buttonPanel.setLayout(new GridLayout(3, 1));
+		buttonPanel.setLayout(new GridLayout(2, 2, 10, 10));
 		JButton button = new JButton("Add row above selection");
 		button.addActionListener(new ActionListener()
 		{
@@ -155,6 +155,17 @@ public class TuningPage extends AbstractWizardPage implements
 				tuningPanel.deleteSelectedFingerings();
 			}
 
+		});
+		buttonPanel.add(button);
+
+		button = new JButton("Add/Remove Closable End");
+		button.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent event)
+			{
+				tuningPanel.setClosableEnd(!tuningPanel.getClosableEnd());
+			}
 		});
 		buttonPanel.add(button);
 

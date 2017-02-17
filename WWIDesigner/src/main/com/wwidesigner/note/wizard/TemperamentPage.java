@@ -296,10 +296,10 @@ public class TemperamentPage extends AbstractWizardPage implements
 		gbc.gridwidth = 2;
 		panel.add(button, gbc);
 
-		gbc.anchor = GridBagConstraints.CENTER;
+		gbc.anchor = GridBagConstraints.SOUTH;
+		gbc.insets = new Insets(0, 10, 20, 0);
 		gbc.gridx = 1;
 		gbc.gridy = 2;
-		gbc.insets = new Insets(0, 10, 0, 0);
 		contentPanel.add(panel, gbc);
 	}
 

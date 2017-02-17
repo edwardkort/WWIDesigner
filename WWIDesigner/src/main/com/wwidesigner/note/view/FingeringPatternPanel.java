@@ -23,6 +23,8 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
@@ -61,9 +63,9 @@ import com.wwidesigner.note.FingeringPattern;
 import com.wwidesigner.note.bind.NoteBindFactory;
 import com.wwidesigner.util.BindFactory;
 
-public class FingeringPatternPanel extends JPanel implements FocusListener,
-		TableModelListener, DataPopulatedProvider, DataChangedProvider,
-		DataChangedListener, KeyListener
+public class FingeringPatternPanel extends JPanel
+		implements FocusListener, TableModelListener, DataPopulatedProvider,
+		DataChangedProvider, DataChangedListener, KeyListener, ActionListener
 {
 	public static final String NEW_EVENT_ID = "newData";
 	public static final String SAVE_EVENT_ID = "saveData";
@@ -131,8 +133,8 @@ public class FingeringPatternPanel extends JPanel implements FocusListener,
 			BindFactory bindery = NoteBindFactory.getInstance();
 			try
 			{
-				fingerings = (FingeringPattern) bindery
-						.unmarshalXml(file, true);
+				fingerings = (FingeringPattern) bindery.unmarshalXml(file,
+						true);
 				if (fingerings != null)
 				{
 					loadData(fingerings, false);
@@ -215,6 +217,12 @@ public class FingeringPatternPanel extends JPanel implements FocusListener,
 	}
 
 	@Override
+	public void actionPerformed(ActionEvent event)
+	{
+		processWidget(event.getSource());
+	}
+
+	@Override
 	public void focusGained(FocusEvent event)
 	{
 	}
@@ -222,16 +230,21 @@ public class FingeringPatternPanel extends JPanel implements FocusListener,
 	@Override
 	public void focusLost(FocusEvent event)
 	{
+		processWidget(event.getSource());
+	}
+
+	protected void processWidget(Object source)
+	{
 		boolean isDataChanged = false;
-		if (event.getSource().equals(numberOfHolesWidget))
+		if (numberOfHolesWidget.equals(source))
 		{
 			isDataChanged = validateNumberOfHoles();
 		}
-		else if (event.getSource().equals(nameWidget))
+		else if (nameWidget.equals(source))
 		{
 			isDataChanged = isNamePopulated();
 		}
-		else if (event.getSource().equals(descriptionWidget))
+		else if (descriptionWidget.equals(source))
 		{
 			isDataChanged = isDescriptionChanged();
 		}
@@ -313,7 +326,7 @@ public class FingeringPatternPanel extends JPanel implements FocusListener,
 		updateNumberOfHoles(newNumberOfHoles);
 		return true;
 	}
-	
+
 	protected void updateNumberOfHoles(int numHoles)
 	{
 		stopTableEditing();
@@ -338,7 +351,7 @@ public class FingeringPatternPanel extends JPanel implements FocusListener,
 
 		areFingeringsPopulated();
 	}
-	
+
 	public boolean getClosableEnd()
 	{
 		TableColumn column = fingeringList.getColumn("Fingering");
@@ -352,9 +365,10 @@ public class FingeringPatternPanel extends JPanel implements FocusListener,
 	/**
 	 * Set whether this fingering pattern allows closed ends.
 	 * 
-	 * @param hasClosableEnd - <code>true</code> to render with closable end,
-	 * <code>false</code> to render without closable end and remove openEnd
-	 * from all fingerings in this pattern.
+	 * @param hasClosableEnd
+	 *            - <code>true</code> to render with closable end,
+	 *            <code>false</code> to render without closable end and remove
+	 *            openEnd from all fingerings in this pattern.
 	 */
 	public void setClosableEnd(boolean hasClosableEnd)
 	{
@@ -558,8 +572,8 @@ public class FingeringPatternPanel extends JPanel implements FocusListener,
 		FingeringPattern fingerings = new FingeringPattern();
 		fingerings.setName(nameWidget.getText());
 		fingerings.setComment(descriptionWidget.getText());
-		fingerings.setNumberOfHoles(Integer.parseInt(numberOfHolesWidget
-				.getText()));
+		fingerings.setNumberOfHoles(
+				Integer.parseInt(numberOfHolesWidget.getText()));
 		fingerings.setFingering(getTableData());
 
 		return fingerings;
@@ -640,6 +654,7 @@ public class FingeringPatternPanel extends JPanel implements FocusListener,
 
 		numberOfHolesWidget = new JTextField(3);
 		numberOfHolesWidget.addFocusListener(this);
+		numberOfHolesWidget.addActionListener(this);
 		numberOfHolesWidget.setDocument(new IntegerDocument());
 		numberOfHolesWidget.setHorizontalAlignment(JTextField.RIGHT);
 		numberOfHolesWidget.setMargin(new Insets(2, 4, 2, 4));

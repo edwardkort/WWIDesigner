@@ -1,14 +1,14 @@
 Manifest-Version: 1.0
-Class-Path: . lib-2.0/commons-beanutils-1.8.3.jar lib-2.0/commons-lang-2.6.jar lib-2.0/
- commons-logging-1.1.1.jar lib-2.0/commons-math3-3.5.jar lib-2.0/
- dozer-5.3.2.jar lib-2.0/batik-awt-util.jar lib-2.0/jide-charts.jar lib-2.0/
- jide-common.jar lib-2.0/jide-editor.jar lib-2.0/jide-grids.jar lib-2.0/
- jide-shortcut.jar lib-2.0/jide-jdaf.jar lib-2.0/jlfgr-1_0.jar lib-2.0/
- jdaf-wizard.jar lib-2.0/slf4j-api-1.6.6.jar lib-2.0/slf4j-nop-1.6.6
- .jar lib-2.0/jide-action.jar lib-2.0/jide-components
- .jar lib-2.0/jide-dock.jar lib-2.0/jide-dialogs.jar
+Class-Path: . lib-2.1/commons-beanutils-1.8.3.jar lib-2.1/commons-lang-2.6.jar lib-2.1/
+ commons-logging-1.1.1.jar lib-2.1/commons-math3-3.5.jar lib-2.1/
+ dozer-5.3.2.jar lib-2.1/batik-awt-util.jar lib-2.1/jide-charts.jar lib-2.1/
+ jide-common.jar lib-2.1/jide-editor.jar lib-2.1/jide-grids.jar lib-2.1/
+ jide-shortcut.jar lib-2.1/jide-jdaf.jar lib-2.1/jlfgr-1_0.jar lib-2.1/
+ jdaf-wizard.jar lib-2.1/slf4j-api-1.6.6.jar lib-2.1/slf4j-nop-1.6.6
+ .jar lib-2.1/jide-action.jar lib-2.1/jide-components
+ .jar lib-2.1/jide-dock.jar lib-2.1/jide-dialogs.jar
 Main-Class: com.wwidesigner.gui.WIDesigner
 Implementation-Title: WIDesigner
-Implementation-Version: 2.0.2
+Implementation-Version: 2.1.0
 Bundle-Description: WIDesigner (Woodwind Instrument Designer) is a Java
  application to facilitate the design of woodwind instruments.

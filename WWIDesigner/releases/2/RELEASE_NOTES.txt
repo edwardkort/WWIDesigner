@@ -1,7 +1,31 @@
-Release notes for v2.0.1
+Release notes for v2.1.0
 
-This is an update to v2.0.0. Please read INSTALL_README for
+This is an upgrade to v2.0.1. Please read INSTALL_README for
 installation details.
+
+v2.1.0 changes
+Enhancements:
+Issue #56: Support closing the end of the bore for certain notes.
+Issue #62: Added a preference and spinner on the NafStudy tab of the
+  Options dialog, and use the value for the number of starts in the
+  NafStudy in the range [1, 50]. 
+Issue #65: For flutes and whistles, the ability to add holes is now included
+  in the tuning file editor of the main application. Because this is a very
+  rare scenario for NAFs, this ability has not been exposed for the NAF study.
+  However, in the Tuning Wizard, additional holes may be added to the foot of
+  an instrument for an existing tuning file (or a de novo one). For the NAF,
+  this scenario is more common: adding tuning/direction holes to an existing
+  design.
+Bug fixes:
+Issue #59: Save as ... using same name as an existing file locks up application.
+  The fix required a new third-party library.  
+Issue #61: Two menu items under the Window menu, Arrange and Cascade, are never
+  enabled. Removed those menu items. 
+Issue #63: The Graph note spectrum action is enabled whenever a tuning is selected.
+  This throws an exception if an instrument is not selected. The action should not
+  be enabled unless both an instrument and tuning are selected.
+Issue #64: Save as dialog for XML files shows .xml.xml. The fix required a new
+  third-party library.
 
 v2.0.1 changes
 Enhancements:

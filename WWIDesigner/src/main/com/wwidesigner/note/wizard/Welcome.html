@@ -1,43 +1,46 @@
-<p>In the context of WWIDesigner, a <b>Tuning</b> represents the notes (symbols and frequencies) and associated fingerings (open and closed holes) for a particular instrument.
-This wizard guides you in the specification of a <b>Tuning</b> and all of the optional persistable, reusable components that make up that <b>Tuning</b>.
-</p><p>The <i><b>Scale Symbols Page</b></i> supports the specification of the <b>Scale Symbol Set</b>, the arbitrary symbols that identify each note. 
+<p>In the context of WIDesigner, a <b>Tuning</b> represents the notes (symbols and frequencies) and associated fingerings (open and closed holes) for a particular instrument.
+This wizard guides you through the specification of a <b>Tuning</b> through persistable, reusable components that make up that <b>Tuning</b>.
+</p>
+<p>The <i><b>Scale Symbols Page</b></i> supports the specification of the <b>Scale Symbol Set</b>,
+the text strings that name each note. 
 Each symbol may be any length and content. On this page, you may create a set <i>de novo</i>, use as a starting 
-point a number of common Western symbol sets, or load one from a saved file. And the output from this page 
+point a number of common Western symbol sets, or load a set from a saved file. The output from this page 
 can be saved to a file and/or used in subsequent pages. A valid <b>Scale Symbol Set</b>, to be saved, must 
 contain a name and at least one symbol; to be used in the <i><b>Scale with Intervals Page</b></i>, it does
 not need a name.</p>
 <p>The <b><i>Musical Temperament Page</i></b> supports the specification of the <b>Temperament</b>, the intervals that separate the 
-notes of a scale - defined as a frequency ratio relative to the root note. As in the prior page, you may 
-create <i>de novo</i>, load from a couple of Western-standard, or load from file the initial <b>Temperament</b>, saving 
-and/or using the <b>Temperament</b>. A valid <b>Temperament</b> must contain,  to be saved, a name and at least one ratio; to be used in the <i><b>Scales with Intervals Page</b></i>,
+notes of a scale, specifying for each note its frequency ratio relative to a reference note. As in the prior page, you may 
+create <i>de novo</i>, load either of two standard Western temperaments, or load an initial <b>Temperament</b>, then save 
+and/or use the <b>Temperament</b> on a subsequent page.
+To be saved, a <b>Temperament</b> must include a name and at least one ratio; to be used on the <i><b>Scales with Intervals Page</b></i>,
 it does not need a name.</p>
 <p>The <b><i>Scale with Intervals Page</i></b> supports the specification of a <b>Scale with Intervals</b>, which is the merging of 
 a <b>Scale Symbol Set</b> and a <b>Temperament</b> (Intervals). Both the <b>Symbols</b> and <b>Temperament</b> can be loaded from their 
 respective page or from a file, created <i>de novo</i> (but not saved), and modified. <b>The Scale with Intervals</b> may be 
 created <i>de novo</i>, or by dragging and dropping selected symbols and ratios from the surrounding respective tables. 
-Currently, a <b>Scale with Intervals</b> can not be persisted, only used in subsequent pages. A valid <b>Scale with Intervals</b>
+Currently, a <b>Scale with Intervals</b> can not be saved to a file, only used on a subsequent page. A valid <b>Scale with Intervals</b>
 contains at least one note with both a symbol and ratio.</p>
 <p>The <b><i>Scale with Frequencies Page</i></b> supports the specification of a <b>Scale with Frequencies</b>, 
 which is a set of notes each defined by a symbol and a frequency (in Hz). A <b>Scale with Frequencies</b> may
 be created in a number of ways: <i>de novo</i>, entering values directly in the Notes table; by loading an 
-existing <b>Scale</b> file and optionally modifying it; or by calculating the frequencies based on the intervals
-in a <b>Scale with Intervals</b> and a reference note in that scale with a specified frequency. A <b>Scale with Frequencies</b>
+existing <b>Scale</b> file and optionally modifying it; or by calculating the frequencies from the intervals
+in a <b>Scale with Intervals</b> and the absolute frequency of a reference note in that scale. A <b>Scale with Frequencies</b>
 may be saved if it has a name and at least one note with a symbol and frequency. To be used in subsequent pages, a <b>Scale
 with Frequencies</b> does not need a name</p>
 <p>The <i><b>Fingering Pattern Page</b></i> supports the specification of a <b>Fingering Pattern</b>, the set of <b>Fingerings</b>
 used for a given instrument. Each <b>Fingering</b> is the specification of open and closed holes for a particular note (to be 
-set in subsequent pages). A <b>Fingering Pattern</b> may be created <i>de novo</i>, or from an existing <b>Fingering Pattern</b>
-file. In order to create a <b>Fingering Pattern</b> <i>de novo</i>, the number of holes for this instrument must first be set.
+defined on a subsequent page). A <b>Fingering Pattern</b> may be created <i>de novo</i>, or from an existing <b>Fingering Pattern</b>
+file. To create a <b>Fingering Pattern</b> <i>de novo</i>, first set the number of holes for the instrument.
 A closed hole has a dark center, an open hole has a clear center. A <b>Fingering</b> that is being edited has a red border;
 to accept the edits, either press &lt;TAB&gt;, &lt;ENTER&gt;, or click on another <b>Fingering</b>; &lt;ESC&gt; cancels the
 edit. A selected <b>Fingering</b> has either a red or black border. A <b>Fingering Pattern</b> may be saved if it has a name and
 at least one <b>Fingering</b>; to be used in subsequent pages, it need not have a name.</p>
 <p>The <i><b>Scale with Frequencies and Fingerings Page</b></i> creates a <b>Tuning</b>, which is the merging of a <b>Scale
-with Frequencies</b> and a <b>Fingering Pattern</b>. A <b>Tuning</b> is central to WWIDesigner, used as a goal in instrument
-geometry optimization and to evaluate the tuning of and instrument. A <b>Tuning</b> may be created <i>de novo</i>, by loading
-(and modifying) an existing <b>Tuning</b> file, or (through drag-and-drop) by merging selected notes (from the <b>Scale</b>
-table) and selected fingerings (from the <b>Fingerings</b> table). Before performing drag-and-drop operations, a <b>Tuning</b> will
-have to be created by either loading an existing <b>Tuning</b> file, or by specifying the number of holes and clicking the New button.
+with Frequencies</b> and a <b>Fingering Pattern</b>. A <b>Tuning</b> is central to WIDesigner, used as a goal in instrument
+geometry optimization and to evaluate the tuning of an instrument. A <b>Tuning</b> may be created <i>de novo</i>, by loading
+(and modifying) an existing <b>Tuning</b> file, or by merging selected notes (from the <b>Scale</b>
+table) and selected fingerings (from the <b>Fingerings</b> table) through drag-and-drop. Before performing drag-and-drop operations,
+create a <b>Tuning</b> either by loading an existing <b>Tuning</b> file, or by specifying the number of holes and clicking the New button.
 The creation and editing of fingerings in the <b>Tuning</b>
 table follow the same guidelines as in the <i><b>Fingering Pattern Page</b></i>. To be saved, a <b>Tuning</b> must have a name
 and at least one fingering (a zero-hole fingering is fine) with symbol and frequency.</p>

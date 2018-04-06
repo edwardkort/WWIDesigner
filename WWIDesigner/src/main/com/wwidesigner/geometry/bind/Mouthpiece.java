@@ -99,7 +99,7 @@ import javax.xml.bind.annotation.XmlType;
  *         &lt;element name="beta" minOccurs="0">
  *           &lt;simpleType>
  *             &lt;restriction base="{http://www.w3.org/2001/XMLSchema}double">
- *               &lt;minExclusive value="0"/>
+ *               &lt;minExclusive value="-1"/>
  *             &lt;/restriction>
  *           &lt;/simpleType>
  *         &lt;/element>

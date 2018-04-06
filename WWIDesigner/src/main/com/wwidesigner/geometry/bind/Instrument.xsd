@@ -318,7 +318,7 @@
 				</xsd:annotation>
 				<xsd:simpleType>
 					<xsd:restriction base="xsd:double">
-						<xsd:minInclusive value="0"></xsd:minInclusive>
+						<xsd:minInclusive value="-1"></xsd:minInclusive>
 					</xsd:restriction>
 				</xsd:simpleType>
 			</xsd:element>

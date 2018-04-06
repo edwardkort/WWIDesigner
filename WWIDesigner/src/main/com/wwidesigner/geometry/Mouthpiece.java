@@ -439,7 +439,8 @@ public class Mouthpiece implements ComponentInterface, MouthpieceInterface,
 		}
 		if (beta != null && beta < 0.0)
 		{
-			handler.logError("Beta, if specified, must be zero or more.");
+			// For now, allow negative beta.
+			// handler.logError("Beta, if specified, must be zero or more.");
 		}
 	}
 

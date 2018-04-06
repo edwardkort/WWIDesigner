@@ -111,6 +111,7 @@ public class TuningPage extends AbstractWizardPage implements
 		panel.add(createTuningButtons(), gbc);
 
 		tuningPanel = new TuningPanel(360);
+		tuningPanel.resetTableData(1, false);
 		addDataPopulatedListener(this);
 		gbc.gridx = 0;
 		gbc.gridy = 2;

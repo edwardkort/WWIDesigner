@@ -144,6 +144,7 @@ public class FingeringPatternPage extends AbstractWizardPage implements
 	private void loadFingeringPanel()
 	{
 		fingeringPanel = new FingeringPatternPanel();
+		fingeringPanel.resetTableData(1, false);
 		addDataPopulatedListener(this);
 
 		GridBagConstraints gbc = new GridBagConstraints();

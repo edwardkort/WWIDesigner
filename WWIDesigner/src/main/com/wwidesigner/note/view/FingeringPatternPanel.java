@@ -57,7 +57,7 @@ import com.wwidesigner.gui.util.DataPopulatedListener;
 import com.wwidesigner.gui.util.DataPopulatedProvider;
 import com.wwidesigner.gui.util.IntegerDocument;
 import com.wwidesigner.gui.util.NoOpTransferHandler;
-import com.wwidesigner.gui.util.TableSourceRowTransferHandler;
+import com.wwidesigner.gui.util.TableSourceTransferHandler;
 import com.wwidesigner.note.Fingering;
 import com.wwidesigner.note.FingeringPattern;
 import com.wwidesigner.note.bind.NoteBindFactory;
@@ -870,7 +870,7 @@ public class FingeringPatternPanel extends JPanel
 	protected void configureDragAndDrop()
 	{
 		fingeringList.setDragEnabled(true);
-		fingeringList.setTransferHandler(new TableSourceRowTransferHandler());
+		fingeringList.setTransferHandler(new TableSourceTransferHandler());
 		nameWidget.setTransferHandler(new NoOpTransferHandler());
 		descriptionWidget.setTransferHandler(new NoOpTransferHandler());
 	}

@@ -1,16 +1,16 @@
 package com.wwidesigner.note.view;
 
 import java.awt.datatransfer.DataFlavor;
-import java.util.ArrayList;
-import java.util.List;
-
+import java.awt.datatransfer.Transferable;
+import java.util.Arrays;
 import javax.swing.JTable;
 import javax.swing.TransferHandler;
 import javax.swing.table.DefaultTableModel;
-
+import com.wwidesigner.gui.util.ArrayTransferable;
+import com.wwidesigner.gui.util.TableTransferHandler;
 import com.wwidesigner.note.Fingering;
 
-public class TuningTableTransferHandler extends TransferHandler
+public class TuningTableTransferHandler extends TableTransferHandler
 {
 	private TuningPanel tuningPanel;
 
@@ -20,13 +20,6 @@ public class TuningTableTransferHandler extends TransferHandler
 	}
 
 	@Override
-	public boolean canImport(TransferHandler.TransferSupport info)
-	{
-		return true;
-	}
-
-	@SuppressWarnings("rawtypes")
-	@Override
 	public boolean importData(TransferHandler.TransferSupport info)
 	{
 		if (!canImport(info))
@@ -34,130 +27,174 @@ public class TuningTableTransferHandler extends TransferHandler
 			return false;
 		}
 
-		try
-		{
-			JTable table = (JTable) info.getComponent();
-			DefaultTableModel model = (DefaultTableModel) table.getModel();
-			JTable.DropLocation dl = (JTable.DropLocation) info
-					.getDropLocation();
-			int row = dl.getRow();
-			List<? extends List> dropData = getDropData(info);
+		// Find the target for the import.
 
-			if (dropData.size() == 0)
+		int row, column;
+		JTable table = (JTable) info.getComponent();
+		DefaultTableModel model = (DefaultTableModel) table.getModel();
+		if (info.isDrop())
+		{
+			JTable.DropLocation dl = (JTable.DropLocation) info.getDropLocation();
+			row = dl.getRow();
+			column = dl.getColumn();
+		}
+		else
+		{
+			int[] selectedRows = table.getSelectedRows();
+			int[] selectedCols = table.getSelectedColumns();
+			Arrays.sort(selectedRows);
+			Arrays.sort(selectedCols);
+			row = selectedRows[0];
+			column = selectedCols[0];
+		}
+
+		// Determine what is being imported.
+
+		Transferable source = info.getTransferable();
+		Class<?> colClass = table.getColumnClass(column);
+		DataFlavor dataFlavor;
+
+		if (source.isDataFlavorSupported(ArrayTransferable.TABLE_FLAVOUR))
+		{
+			// Import data has multiple columns.
+			dataFlavor = ArrayTransferable.TABLE_FLAVOUR;
+		}
+		else if (colClass.equals(Double.class))
+		{
+			dataFlavor = ArrayTransferable.DOUBLES_FLAVOUR;
+		}
+		else if (colClass.equals(Fingering.class))
+		{
+			dataFlavor = ArrayTransferable.FINGERINGS_FLAVOUR;
+		}
+		else
+		{
+			dataFlavor= ArrayTransferable.STRINGS_FLAVOUR; 
+		}
+		
+		if (! info.isDataFlavorSupported(dataFlavor))
+		{
+			// Primary flavor not supported.  Try converting from String.
+			if (! info.isDataFlavorSupported(DataFlavor.stringFlavor))
 			{
 				return false;
 			}
-
-			int numColumns = dropData.get(0).size();
-			if (numColumns == 1) // Handle number of holes in source and target
+			try
 			{
-				// Importing a fingering.  Check for changes in number of holes,
-				// and for closable end.
-				Fingering sourceFingering = (Fingering) dropData.get(0).get(0);
-				int sourceNumberOfHoles = sourceFingering.getNumberOfHoles();
-				Fingering targetFingering = (Fingering) model
-						.getValueAt(row, 2);
-				int targetNumberOfHoles = targetFingering.getNumberOfHoles();
-				if (sourceNumberOfHoles != targetNumberOfHoles)
-				{
-					tuningPanel.setNumberOfHoles(sourceNumberOfHoles);
-				}
-				if (sourceFingering.getOpenEnd() != null
-						&& targetFingering.getOpenEnd() == null)
-				{
-					tuningPanel.setClosableEnd(true);
-				}
+				source = new ArrayTransferable((String) source.getTransferData(DataFlavor.stringFlavor));
 			}
-			int numberOfHoles = tuningPanel.getNumberOfHoles();
-			for (List rowData : dropData)
+			catch (Exception ex)
 			{
-				if (row >= model.getRowCount())
-				{
-					model.insertRow(row, new Object[] { null, null,
-							new Fingering(numberOfHoles) });
-				}
-				if (numColumns == 1)
-				{
-					// Import a fingering
-					model.setValueAt(rowData.get(0), row++, 2);
-				}
-				else if (numColumns == 2)
-				{
-					// Import a note
-					model.setValueAt(rowData.get(0), row, 0);
-					model.setValueAt(rowData.get(1), row++, 1);
-				}
+				return false;
+			}
+			if (source.isDataFlavorSupported(ArrayTransferable.TABLE_FLAVOUR))
+			{
+				// Import data has multiple columns.
+				dataFlavor = ArrayTransferable.TABLE_FLAVOUR;
+			}
+			else if (! source.isDataFlavorSupported(dataFlavor))
+			{
+				return false;
 			}
 		}
-		catch (Exception ex)
+
+		// Retrieve the data.
+
+		Object[] data;
+		try
+		{
+			data = (Object[]) source.getTransferData(dataFlavor);
+		}
+		catch (Exception e)
 		{
 			return false;
 		}
 
-		return true;
-	}
+		if (data == null || data.length == 0)
+		{
+			return false;
+		}
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	protected List<? extends List> getDropData(
-			TransferHandler.TransferSupport info)
-	{
-		ArrayList goodData = new ArrayList<ArrayList>();
+		// Handle number of holes in source and target
+
+		if (colClass == Fingering.class && dataFlavor == ArrayTransferable.FINGERINGS_FLAVOUR)
+		{
+			// Importing a single fingering column.  Check for changes in number of holes,
+			// and for closable end.
+			Fingering sourceFingering = (Fingering) data[0];
+			int sourceNumberOfHoles = sourceFingering.getNumberOfHoles();
+			Fingering targetFingering = (Fingering) model
+					.getValueAt(row, column);
+			int targetNumberOfHoles = targetFingering.getNumberOfHoles();
+			if (sourceNumberOfHoles != targetNumberOfHoles)
+			{
+				tuningPanel.setNumberOfHoles(sourceNumberOfHoles);
+			}
+			if (sourceFingering.getOpenEnd() != null
+					&& targetFingering.getOpenEnd() == null)
+			{
+				tuningPanel.setClosableEnd(true);
+			}
+		}
+
+		// Check the data type of all elements before changing any table cells.
+
+		for (Object datum : data)
+		{
+			if (dataFlavor == ArrayTransferable.TABLE_FLAVOUR)
+			{
+				Object[] rowData = (Object[]) datum;
+				int col;
+				// Check for type compatibility of all columns before pasting any columns.
+				for (col = 0; col < rowData.length; ++ col)
+				{
+					if (! rowData[col].getClass().equals(table.getColumnClass(column + col)))
+					{
+						return false;
+					}
+				}
+			}
+			else
+			{
+				if (! datum.getClass().equals(colClass))
+				{
+					return false;
+				}
+			}
+		}
+
+		// Load the data in the table.
+
 		try
 		{
-			Object[] data = (Object[]) info.getTransferable().getTransferData(
-					new DataFlavor(Object[].class, Object[].class.getName()));
-			if (data == null || data.length == 0)
-			{
-				return goodData;
-			}
 			for (Object datum : data)
 			{
-				Object[] row = (Object[]) datum;
-				if (row == null)
+				if (row >= model.getRowCount())
 				{
-					continue;
+					model.insertRow(row, tuningPanel.emptyRow());
 				}
-				// No check for different row lengths
-				int numColumns = row.length;
-				// A fingering
-				if (numColumns == 1)
+				if (dataFlavor == ArrayTransferable.TABLE_FLAVOUR)
 				{
-					Object cellDatum = row[0];
-					if (cellDatum != null && cellDatum instanceof Fingering)
+					Object[] rowData = (Object[]) datum;
+					int col;
+					for (col = 0; col < rowData.length; ++ col)
 					{
-						ArrayList goodRow = new ArrayList();
-						goodRow.add(cellDatum);
-						goodData.add(goodRow);
+						model.setValueAt(rowData[col], row, column + col);
 					}
 				}
-				// A note
-				else if (numColumns == 2)
+				else
 				{
-					ArrayList goodRow = new ArrayList();
-					try
-					{
-						String cell0 = (String) row[0];
-						if (cell0 != null && cell0.length() > 0)
-						{
-							goodRow.add(cell0);
-							Double cell1 = (Double) row[1];
-							goodRow.add(cell1);
-							goodData.add(goodRow);
-						}
-					}
-					catch (Exception e)
-					{
-						e.getMessage();
-					}
+					model.setValueAt(datum, row, column);
 				}
+				++row;
 			}
 		}
-		catch (Exception ex)
+		catch (Exception e)
 		{
-			ex.getMessage();
+			return false;
 		}
-
-		return goodData;
+		
+		return true;
 	}
 
 }

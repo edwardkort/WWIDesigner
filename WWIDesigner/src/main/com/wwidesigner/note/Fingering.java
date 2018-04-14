@@ -21,11 +21,18 @@ public class Fingering implements Serializable
 
 	public Fingering()
 	{
+		this.note = null;
+		this.openHole = null;
 		this.openEnd = null;
+		this.optimizationWeight = null;
 	}
 
 	public Fingering(int numberOfHoles)
 	{
+		this.note = null;
+		this.openHole = null;
+		this.openEnd = null;
+		this.optimizationWeight = null;
 		for (int i = 0; i < numberOfHoles; i++)
 		{
 			addOpenHole(true);
@@ -96,9 +103,13 @@ public class Fingering implements Serializable
 	public String toString()
 	{
 		String holeString = "";
-		for (boolean holeOpen : openHole)
+		for (int i = 0; i < openHole.size(); ++i)
 		{
-			if (holeOpen)
+			if (openHole.size() >= 6 && i == openHole.size()/2)
+			{
+				holeString += " ";
+			}
+			if (openHole.get(i))
 			{
 				holeString += "O";
 			}
@@ -107,9 +118,16 @@ public class Fingering implements Serializable
 				holeString += "X";
 			}
 		}
-		if (openEnd != null && ! openEnd)
+		if (openEnd != null)
 		{
-			holeString += "]";
+			if (openEnd)
+			{
+				holeString += "_";
+			}
+			else
+			{
+				holeString += "]";
+			}
 		}
 		return holeString;
 	}
@@ -194,6 +212,36 @@ public class Fingering implements Serializable
 	public void setOptimizationWeight(Integer optimizationWeight)
 	{
 		this.optimizationWeight = optimizationWeight;
+	}
+	
+	public static Fingering valueOf(String s)
+	{
+		if (! s.matches("^[XOxo][XOxo ]*(_|]|)$"))
+		{
+			throw new ClassCastException("String does not represent a fingering pattern");
+		}
+		Fingering fingering = new Fingering();
+		for (int i = 0; i < s.length(); ++i)
+		{
+			if (s.charAt(i) == 'O' || s.charAt(i) == 'o')
+			{
+				fingering.addOpenHole(true);
+			}
+			else if (s.charAt(i) == 'X' || s.charAt(i) == 'x')
+			{
+				fingering.addOpenHole(false);
+			}
+		}
+		if (s.charAt(s.length() - 1) == '_')
+		{
+			fingering.setOpenEnd(true);
+		}
+		else if (s.charAt(s.length() - 1) == ']')
+		{
+			fingering.setOpenEnd(false);
+		}
+
+		return fingering;
 	}
 
 }

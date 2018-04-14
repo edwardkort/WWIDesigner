@@ -1,4 +1,4 @@
-/* Class used for transferring a single column to a table. */
+/** Class used for transferring a single column to a table. */
 package com.wwidesigner.gui.util;
 
 import java.awt.datatransfer.DataFlavor;
@@ -46,14 +46,18 @@ public class TableTransferHandler extends JideTableTransferHandler
 		}
 		if (colClass.equals(String.class))
 		{
+			if (info.isDataFlavorSupported(ArrayTransferable.STRINGS_FLAVOUR))
+			{
+				return true;
+			}
+
 			if (info.isDataFlavorSupported(ArrayTransferable.DOUBLES_FLAVOUR)
 					|| info.isDataFlavorSupported(ArrayTransferable.FINGERINGS_FLAVOUR))
 			{
 				// Don't allow Doubles or Fingerings to be dropped on string columns.
 				return false;
 			}
-			return info.isDataFlavorSupported(ArrayTransferable.STRINGS_FLAVOUR)
-					|| info.isDataFlavorSupported(DataFlavor.stringFlavor);
+			return info.isDataFlavorSupported(DataFlavor.stringFlavor);
 		}
 		return false;
 	}
@@ -61,11 +65,6 @@ public class TableTransferHandler extends JideTableTransferHandler
 	@Override
 	public boolean importData(TransferHandler.TransferSupport info)
 	{
-		if (!canImport(info))
-		{
-			return false;
-		}
-
 		// Find the target for the import.
 
 		int row, column;
@@ -87,7 +86,7 @@ public class TableTransferHandler extends JideTableTransferHandler
 			column = selectedCols[0];
 		}
 		
-		// Determine what is being imported.
+		// Determine what is being imported, and check compatibility.
 
 		Class<?> colClass = table.getColumnClass(column);
 		DataFlavor dataFlavor = ArrayTransferable.STRINGS_FLAVOUR;

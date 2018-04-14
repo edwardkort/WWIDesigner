@@ -1,3 +1,4 @@
+/** Class used for transferring one or more columns of data to a table on a TuningPanel. */
 package com.wwidesigner.note.view;
 
 import java.awt.datatransfer.DataFlavor;
@@ -22,11 +23,6 @@ public class TuningTableTransferHandler extends TableTransferHandler
 	@Override
 	public boolean importData(TransferHandler.TransferSupport info)
 	{
-		if (!canImport(info))
-		{
-			return false;
-		}
-
 		// Find the target for the import.
 
 		int row, column;
@@ -48,7 +44,7 @@ public class TuningTableTransferHandler extends TableTransferHandler
 			column = selectedCols[0];
 		}
 
-		// Determine what is being imported.
+		// Determine what is being imported, and check compatibility.
 
 		Transferable source = info.getTransferable();
 		Class<?> colClass = table.getColumnClass(column);

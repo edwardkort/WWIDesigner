@@ -1,10 +1,12 @@
-/* Encapsulate data transferred by copy or drag from a tabular data structure such as a JTable. */
+/** Encapsulate data transferred by copy or drag from a tabular data structure such as a JTable. */
 package com.wwidesigner.gui.util;
 
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
+import java.util.Arrays;
+
 import com.wwidesigner.note.Fingering;
 
 public class ArrayTransferable implements Transferable
@@ -13,6 +15,12 @@ public class ArrayTransferable implements Transferable
 	public static DataFlavor DOUBLES_FLAVOUR = new DataFlavor(Double[].class, "Double array");
 	public static DataFlavor FINGERINGS_FLAVOUR = new DataFlavor(Fingering[].class, "Fingering array");
 	public static DataFlavor TABLE_FLAVOUR = new DataFlavor(Object[][].class, "Table matrix");
+	
+	// Regular expressions to match specific data types.
+	// Our syntax for Double is more restrictive than Double.valueOf():
+	// requires a decimal point with preceding digits, and no exponent.
+	private static String DOUBLE_MATCH_STRING = "^(\\+|-|)[0-9]+\\.[0-9]*$";
+	private static String FINGERING_MATCH_STRING = "^[XOxo][XOxo ]*(_|]|)$";
 	
 	private DataFlavor[] supportedFlavors;
 	private Object[] data;
@@ -79,9 +87,10 @@ public class ArrayTransferable implements Transferable
 	 */
 	public ArrayTransferable(String tableString)
 	{
-		String[] rows = tableString.split("\r?\n");
+		String[] rows = tableString.split("(\r\n|\n|\r)");
 		int colCount = 1;
 		int rowNr;
+		DataFlavor dataFlavour = null;
 		String[][] data = new String[rows.length][1];
 		for (rowNr = 0; rowNr < rows.length; ++rowNr)
 		{
@@ -90,12 +99,63 @@ public class ArrayTransferable implements Transferable
 			{
 				colCount = data[rowNr].length;
 			}
+			if (colCount == 1 )
+			{
+				if ((dataFlavour == null || dataFlavour == DOUBLES_FLAVOUR)
+					&& data[rowNr][0].matches(DOUBLE_MATCH_STRING))
+				{
+					dataFlavour = DOUBLES_FLAVOUR;
+				}
+				else if ((dataFlavour == null || dataFlavour == FINGERINGS_FLAVOUR)
+						&& data[rowNr][0].matches(FINGERING_MATCH_STRING))
+				{
+					dataFlavour = FINGERINGS_FLAVOUR;
+				}
+				else
+				{
+					dataFlavour = STRINGS_FLAVOUR;
+				}
+			}
+			else
+			{
+				dataFlavour = TABLE_FLAVOUR;
+			}
 		}
 		if (colCount > 1)
 		{
+			// Pad all rows to the same number of columns.
+			for (rowNr = 0; rowNr < rows.length; ++rowNr)
+			{
+				if (data[rowNr].length != colCount)
+				{
+					data[rowNr] = Arrays.copyOf(data[rowNr], colCount);
+				}
+			}
 			this.data = data;
 			supportedFlavors = new DataFlavor[2];
 			supportedFlavors[0] = TABLE_FLAVOUR;
+			supportedFlavors[1] = DataFlavor.stringFlavor;
+		}
+		else if (dataFlavour == DOUBLES_FLAVOUR)
+		{
+			this.data = new Double[rows.length];
+			for (rowNr = 0; rowNr < rows.length; ++rowNr)
+			{
+				this.data[rowNr] = Double.valueOf(data[rowNr][0]);
+			}
+			supportedFlavors = new DataFlavor[2];
+			supportedFlavors[0] = DOUBLES_FLAVOUR;
+			supportedFlavors[1] = DataFlavor.stringFlavor;
+		}
+		else if (dataFlavour == FINGERINGS_FLAVOUR)
+		{
+			this.data = new Fingering[rows.length];
+			for (rowNr = 0; rowNr < rows.length; ++rowNr)
+			{
+				this.data[rowNr] = Fingering.valueOf(data[rowNr][0]);
+			}
+			supportedFlavors = new DataFlavor[2];
+			supportedFlavors[0] = FINGERINGS_FLAVOUR;
 			supportedFlavors[1] = DataFlavor.stringFlavor;
 		}
 		else

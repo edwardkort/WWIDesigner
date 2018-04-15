@@ -25,6 +25,7 @@ import com.wwidesigner.gui.util.DoubleCellRenderer;
 import com.wwidesigner.note.Fingering;
 import com.wwidesigner.note.FingeringPattern;
 import com.wwidesigner.note.Note;
+import com.wwidesigner.note.Tuning;
 
 /**
  * JPanel to display and edit all available Tuning data, including up to six
@@ -46,18 +47,7 @@ public class WhistleTuningPanel extends TuningPanel
 	public WhistleTuningPanel(int width, boolean withMinMax, boolean withWeight)
 	{
 		super( width );
-		if (withMinMax)
-		{
-			this.numberOfColumns = 5;
-		}
-		else
-		{
-			this.numberOfColumns = 3;
-		}
-		if (withWeight)
-		{
-			++this.numberOfColumns;
-		}
+		setNumberOfColumns(withMinMax, withWeight);
 	}
 
 	public WhistleTuningPanel(int width)
@@ -75,6 +65,23 @@ public class WhistleTuningPanel extends TuningPanel
 		super();
 		numberOfColumns = 3;
 		fingeringColumnIdx = 2;
+	}
+	
+	protected void setNumberOfColumns(boolean withMinMax, boolean withWeight)
+	{
+		if (withMinMax)
+		{
+			this.numberOfColumns = 5;
+		}
+		else
+		{
+			this.numberOfColumns = 3;
+		}
+		fingeringColumnIdx = this.numberOfColumns - 1;
+		if (withWeight)
+		{
+			++this.numberOfColumns;
+		}
 	}
 
 	@Override
@@ -220,11 +227,11 @@ public class WhistleTuningPanel extends TuningPanel
 	public void resetTableData(int numRows, boolean hasClosableEnd)
 	{
 		super.resetTableData(numRows, hasClosableEnd);
-		TableColumn column;
-		if (numberOfColumns != 5)
+		if (! hasMinMax())
 		{
 			return;
 		}
+		TableColumn column;
 		column = fingeringList.getColumn("Min Freq");
 		if (column != null)
 		{
@@ -276,21 +283,69 @@ public class WhistleTuningPanel extends TuningPanel
 			{
 				if (columnIndex == 0)
 				{
+					// First column is the note symbol.
 					return String.class;
 				}
 				else if (columnIndex == fingeringColumnIdx)
 				{
+					// Fingering pattern is last or second-last column.
 					return Fingering.class;
 				}
 				else if (columnIndex == getColumnCount() - 1)
 				{
+					// Last column, if not fingering pattern, is optimization weight.
 					return Integer.class;
 				}
+				// Everything else is a frequency.
 				return Double.class;
 			}
 		};
 
 		return model;
+	}
+
+	/**
+	 * Re-build this panel, adding or removing columns for min and max frequency
+	 * and optimization weight.
+	 */
+	public void reloadData(boolean withMinMax, boolean withWeight)
+	{
+		Tuning tuning = getData();
+		if (! withMinMax || ! withWeight)
+		{
+			// Delete existing min/max or weight data from the tuning.
+			for (Fingering fingering : tuning.getFingering())
+			{
+				if (! withMinMax && fingering.getNote() != null)
+				{
+					fingering.getNote().setFrequencyMin(null);
+					fingering.getNote().setFrequencyMax(null);
+				}
+				if (! withWeight)
+				{
+					fingering.setOptimizationWeight(null);
+				}
+			}
+		}
+		setNumberOfColumns(withMinMax, withWeight);
+		fingeringList.setModel(getTableModel());
+		loadData(tuning, false);
+	}
+
+	/**
+	 * Test whether this panel has min/max frequency columns.
+	 */
+	public boolean hasMinMax()
+	{
+		return numberOfColumns >= 5;
+	}
+
+	/**
+	 * Test whether this panel has an optimization weight column.
+	 */
+	public boolean hasWeights()
+	{
+		return numberOfColumns == 4 || numberOfColumns == 6;
 	}
 
 }

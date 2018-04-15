@@ -36,20 +36,21 @@ import com.wwidesigner.gui.util.DataChangedListener;
 import com.wwidesigner.note.Fingering;
 import com.wwidesigner.note.Tuning;
 import com.wwidesigner.note.bind.NoteBindFactory;
-import com.wwidesigner.note.view.TuningPanel;
 import com.wwidesigner.note.view.WhistleTuningPanel;
 import com.wwidesigner.util.BindFactory;
 
 public class ContainedTuningView extends ContainedXmlView implements DataChangedListener
 {
-	protected TuningPanel tuningPanel;	// For raw tuning data.
+	protected WhistleTuningPanel tuningPanel;	// For raw tuning data.
 	protected JPanel myPanel;			// For tuningPanel and editing buttons.
+	
+	protected static int DEFAULT_TABLE_WIDTH = 490;
 
 	public ContainedTuningView(DataViewPane parent)
 	{
 		super(parent);
 
-		tuningPanel = new WhistleTuningPanel( 490 );
+		tuningPanel = new WhistleTuningPanel(DEFAULT_TABLE_WIDTH);
 		tuningPanel.addDataChangedListener(this);
 		myPanel = new JPanel();
 		myPanel.setLayout(new GridBagLayout());
@@ -61,7 +62,7 @@ public class ContainedTuningView extends ContainedXmlView implements DataChanged
 		myPanel.add(tuningPanel, gbc);
 
 		JPanel buttonPanel = new JPanel();
-		buttonPanel.setLayout(new GridLayout(4, 1));
+		buttonPanel.setLayout(new GridLayout(6, 1));
 		JButton button;
 
 		button = new JButton("Add row above selection");
@@ -100,6 +101,32 @@ public class ContainedTuningView extends ContainedXmlView implements DataChanged
 				tuningPanel.deleteSelectedFingerings();
 			}
 
+		});
+		buttonPanel.add(button);
+
+		button = new JButton("Add/Delete Min/Max Data");
+		button.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent event)
+			{
+				boolean hasMinMax = tuningPanel.hasMinMax();
+				boolean hasWeights = tuningPanel.hasWeights();
+				tuningPanel.reloadData(! hasMinMax, hasWeights);
+			}
+		});
+		buttonPanel.add(button);
+
+		button = new JButton("Add/Delete Weights");
+		button.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent event)
+			{
+				boolean hasMinMax = tuningPanel.hasMinMax();
+				boolean hasWeights = tuningPanel.hasWeights();
+				tuningPanel.reloadData(hasMinMax, ! hasWeights);
+			}
 		});
 		buttonPanel.add(button);
 

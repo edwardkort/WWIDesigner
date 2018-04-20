@@ -48,7 +48,7 @@ import com.jidesoft.grid.JideTable;
 import com.wwidesigner.gui.util.DataPopulatedEvent;
 import com.wwidesigner.gui.util.DataPopulatedListener;
 import com.wwidesigner.gui.util.DoubleCellRenderer;
-import com.wwidesigner.gui.util.NoOpTransferHandler;
+import com.wwidesigner.gui.util.NoDropTextTransferHandler;
 import com.wwidesigner.gui.util.NumericTableModel;
 import com.wwidesigner.gui.util.TableSourceRowTransferHandler;
 import com.wwidesigner.note.Scale;
@@ -458,8 +458,8 @@ public class ScalePanel extends JPanel implements KeyListener,
 	{
 		noteTable.setDragEnabled(true);
 		noteTable.setTransferHandler(new TableSourceRowTransferHandler());
-		nameWidget.setTransferHandler(new NoOpTransferHandler());
-		descriptionWidget.setTransferHandler(new NoOpTransferHandler());
+		nameWidget.setTransferHandler(new NoDropTextTransferHandler());
+		descriptionWidget.setTransferHandler(new NoDropTextTransferHandler());
 	}
 
 	public void setTableCellSelectionEnabled(boolean editable)

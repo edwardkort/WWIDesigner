@@ -34,7 +34,7 @@ import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableModel;
 import com.jidesoft.grid.JideTable;
 import com.wwidesigner.gui.util.DoubleCellRenderer;
-import com.wwidesigner.gui.util.NoOpTransferHandler;
+import com.wwidesigner.gui.util.NoDropTextTransferHandler;
 import com.wwidesigner.gui.util.NumericTableModel;
 import com.wwidesigner.note.Fingering;
 import com.wwidesigner.note.Note;
@@ -262,9 +262,9 @@ public class TuningPanel extends FingeringPatternPanel
 	protected void configureDragAndDrop()
 	{
 		fingeringList.setTransferHandler(new TuningTableTransferHandler(this));
-		nameWidget.setTransferHandler(new NoOpTransferHandler());
-		descriptionWidget.setTransferHandler(new NoOpTransferHandler());
-		numberOfHolesWidget.setTransferHandler(new NoOpTransferHandler());
+		nameWidget.setTransferHandler(new NoDropTextTransferHandler());
+		descriptionWidget.setTransferHandler(new NoDropTextTransferHandler());
+		numberOfHolesWidget.setTransferHandler(new NoDropTextTransferHandler());
 	}
 
 }

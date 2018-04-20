@@ -29,7 +29,7 @@ import javax.swing.table.DefaultTableModel;
 import com.jidesoft.grid.JideTable;
 import com.wwidesigner.gui.util.DataPopulatedEvent;
 import com.wwidesigner.gui.util.DataPopulatedListener;
-import com.wwidesigner.gui.util.NoOpTransferHandler;
+import com.wwidesigner.gui.util.NoDropTextTransferHandler;
 import com.wwidesigner.gui.util.TableSourceTransferHandler;
 import com.wwidesigner.note.ScaleSymbolList;
 import com.wwidesigner.note.bind.NoteBindFactory;
@@ -394,8 +394,8 @@ public class ScaleSymbolListPanel extends JPanel implements KeyListener,
 	{
 		symbolList.setDragEnabled(true);
 		symbolList.setTransferHandler(new TableSourceTransferHandler());
-		nameWidget.setTransferHandler(new NoOpTransferHandler());
-		descriptionWidget.setTransferHandler(new NoOpTransferHandler());
+		nameWidget.setTransferHandler(new NoDropTextTransferHandler());
+		descriptionWidget.setTransferHandler(new NoDropTextTransferHandler());
 	}
 
 }

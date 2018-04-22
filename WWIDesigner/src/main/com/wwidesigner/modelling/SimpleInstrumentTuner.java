@@ -33,6 +33,10 @@ public class SimpleInstrumentTuner extends InstrumentTuner
 	@Override
 	public Double predictedFrequency(Fingering fingering)
 	{
+		if (fingering.getNote() == null || fingering.getNote().getFrequency() == null)
+		{
+			return null;
+		}
 		PlayingRange range = new PlayingRange(calculator, fingering);
 		try {
 			return range.findXZero(fingering.getNote().getFrequency());

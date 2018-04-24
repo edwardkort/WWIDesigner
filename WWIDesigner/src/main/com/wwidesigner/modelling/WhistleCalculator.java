@@ -116,4 +116,11 @@ public class WhistleCalculator extends DefaultInstrumentCalculator
         return freq * windowLength / strouhal;
 	}
 
+	@Override
+	public boolean isCompatible(Instrument instrument)
+	{
+		return instrument != null && instrument.getMouthpiece() != null
+				&& instrument.getMouthpiece().getFipple() != null;
+	}
+
 }

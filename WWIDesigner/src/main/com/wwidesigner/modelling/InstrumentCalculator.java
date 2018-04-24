@@ -112,6 +112,17 @@ public abstract class InstrumentCalculator
 		this.holeCalculator = holeCalculator;
 		this.boreSectionCalculator = boreSectionCalculator;
 	}
+	
+	/**
+	 * Test whether an instrument is compatible with this calculator.
+	 * Calculation results are unpredictable if this calculator is used with an
+	 * incompatible instrument.
+	 * 
+	 * @param instrument
+	 * @return true if the specified instrument is compatible with this
+	 *         calculator.
+	 */
+	public abstract boolean isCompatible(Instrument instrument);
 
 	/**
 	 * @param instrument

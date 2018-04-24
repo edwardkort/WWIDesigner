@@ -25,4 +25,12 @@ public class SimpleReedCalculator extends DefaultInstrumentCalculator
 				new ThickFlangedOpenEndCalculator(),
 				new DefaultHoleCalculator(), new SimpleBoreSectionCalculator());
 	}
+
+	@Override
+	public boolean isCompatible(Instrument instrument)
+	{
+		return instrument != null && instrument.getMouthpiece() != null
+				&& instrument.getMouthpiece().isPressureNode();
+	}
+	
 }

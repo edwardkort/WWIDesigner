@@ -58,6 +58,7 @@ import com.jidesoft.tree.TreeUtils;
 import com.wwidesigner.geometry.Instrument;
 import com.wwidesigner.gui.util.DataOpenException;
 import com.wwidesigner.gui.util.HoleNumberMismatchException;
+import com.wwidesigner.gui.util.InstrumentTypeException;
 import com.wwidesigner.gui.util.OptimizerMismatchException;
 import com.wwidesigner.modelling.SketchInstrument;
 import com.wwidesigner.note.Fingering;
@@ -646,9 +647,10 @@ public class StudyView extends DataViewPane implements EventSubscriber
 			exceptionType = "Operation cancelled";
 			messageType = MessageDialogRequest.WARNING_STYLE;
 		}
-		else if (exception instanceof OptimizerMismatchException)
+		else if (exception instanceof OptimizerMismatchException
+				|| exception instanceof InstrumentTypeException)
 		{
-			exceptionType = "Operation cancelled";
+			exceptionType = "Incorrect selection";
 			messageType = MessageDialogRequest.ERROR_STYLE;
 		}
 		else

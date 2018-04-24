@@ -398,6 +398,7 @@ public class NafStudyModel extends StudyModel
 			tuning = new Tuning();
 		}
 		InstrumentCalculator calculator = getCalculator();
+		testInstrumentType(instrument, calculator);
 		calculator.setInstrument(instrument);
 		EvaluatorInterface evaluator = new CentDeviationEvaluator(calculator);
 		int numberOfHoles = instrument.getHole().size();
@@ -992,17 +993,12 @@ public class NafStudyModel extends StudyModel
 	// on predicted tuning, rather than target tuning.
 	public void calculateSupplementaryInfo(String title) throws Exception
 	{
-		InstrumentTuner tuner = getInstrumentTuner();
+		InstrumentTuner tuner = initializeTuner();
 
 		Category category = this.getCategory(INSTRUMENT_CATEGORY_ID);
 		String instrumentName = category.getSelectedSub();
-		tuner.setInstrument(getInstrument());
-
 		category = getCategory(TUNING_CATEGORY_ID);
 		String tuningName = category.getSelectedSub();
-		tuner.setTuning(getTuning());
-
-		tuner.setCalculator(getCalculator());
 
 		SupplementaryInfoTable table = new SupplementaryInfoTable(
 				title + ": " + instrumentName + "/" + tuningName);

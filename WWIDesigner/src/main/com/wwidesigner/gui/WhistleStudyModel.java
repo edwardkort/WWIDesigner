@@ -222,6 +222,7 @@ public class WhistleStudyModel extends StudyModel
 			tuning = new Tuning();
 		}
 		InstrumentCalculator calculator = getCalculator();
+		testInstrumentType(instrument, calculator);
 		calculator.setInstrument(instrument);
 
 		Category optimizerCategory = getCategory(OPTIMIZER_CATEGORY_ID);

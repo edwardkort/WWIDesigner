@@ -48,5 +48,13 @@ public class NAFCalculator extends DefaultInstrumentCalculator
 //		setHoleCalculator(new WhistleHoleCalculator());
 		setBoreSectionCalculator(new SimpleBoreSectionCalculator());
 	}
+
+	@Override
+	public boolean isCompatible(Instrument instrument)
+	{
+		return instrument != null && instrument.getMouthpiece() != null
+				&& instrument.getMouthpiece().getFipple() != null;
+	}
+
 }
 

@@ -43,6 +43,7 @@ import com.wwidesigner.geometry.bind.GeometryBindFactory;
 import com.wwidesigner.geometry.view.InstrumentComparisonTable;
 import com.wwidesigner.gui.util.DataOpenException;
 import com.wwidesigner.gui.util.HoleNumberMismatchException;
+import com.wwidesigner.gui.util.InstrumentTypeException;
 import com.wwidesigner.gui.util.OptimizerMismatchException;
 import com.wwidesigner.modelling.InstrumentCalculator;
 import com.wwidesigner.modelling.InstrumentTuner;
@@ -791,20 +792,37 @@ public abstract class StudyModel implements CategoryType
 		return isSpecified;
 
 	}
+	
+	protected void testInstrumentType(Instrument instrument, InstrumentCalculator calculator) throws Exception
+	{
+		if (! calculator.isCompatible(instrument))
+		{
+			throw new InstrumentTypeException("The " + getDisplayName()
+					+ " is not compatible with the selected instrument."
+					+ "\nChoose a different instrument, or change the Study option.");
+		}
+	}
+	
+	protected InstrumentTuner initializeTuner() throws Exception
+	{
+		InstrumentTuner tuner = getInstrumentTuner();
+		Instrument instrument = getInstrument();
+		InstrumentCalculator calculator = getCalculator();
+		testInstrumentType(instrument, calculator);
+		tuner.setInstrument(instrument);
+		tuner.setTuning(getTuning());
+		tuner.setCalculator(calculator);
+		return tuner;
+	}
 
 	public void calculateTuning(String title) throws Exception
 	{
-		InstrumentTuner tuner = getInstrumentTuner();
+		InstrumentTuner tuner = initializeTuner();
 
 		Category category = this.getCategory(INSTRUMENT_CATEGORY_ID);
 		String instrumentName = category.getSelectedSub();
-		tuner.setInstrument(getInstrument());
-
 		category = getCategory(TUNING_CATEGORY_ID);
 		String tuningName = category.getSelectedSub();
-		tuner.setTuning(getTuning());
-
-		tuner.setCalculator(getCalculator());
 
 		tuner.showTuning(title + ": " + instrumentName + "/" + tuningName,
 				false);
@@ -812,17 +830,12 @@ public abstract class StudyModel implements CategoryType
 
 	public void calculateSupplementaryInfo(String title) throws Exception
 	{
-		InstrumentTuner tuner = getInstrumentTuner();
+		InstrumentTuner tuner = initializeTuner();
 
 		Category category = this.getCategory(INSTRUMENT_CATEGORY_ID);
 		String instrumentName = category.getSelectedSub();
-		tuner.setInstrument(getInstrument());
-
 		category = getCategory(TUNING_CATEGORY_ID);
 		String tuningName = category.getSelectedSub();
-		tuner.setTuning(getTuning());
-
-		tuner.setCalculator(getCalculator());
 
 		SupplementaryInfoTable table = new SupplementaryInfoTable(
 				title + ": " + instrumentName + "/" + tuningName);
@@ -832,17 +845,12 @@ public abstract class StudyModel implements CategoryType
 
 	public void graphTuning(String title) throws Exception
 	{
-		InstrumentTuner tuner = getInstrumentTuner();
+		InstrumentTuner tuner = initializeTuner();
 
 		Category category = this.getCategory(INSTRUMENT_CATEGORY_ID);
 		String instrumentName = category.getSelectedSub();
-		tuner.setInstrument(getInstrument());
-
 		category = getCategory(TUNING_CATEGORY_ID);
 		String tuningName = category.getSelectedSub();
-		tuner.setTuning(getTuning());
-
-		tuner.setCalculator(getCalculator());
 
 		tuner.plotTuning(title + ": " + instrumentName + "/" + tuningName,
 				false);
@@ -858,6 +866,7 @@ public abstract class StudyModel implements CategoryType
 					+ instrument.getHole().size() + " holes.");
 		}
 		InstrumentCalculator calculator = getCalculator();
+		testInstrumentType(instrument, calculator);
 		calculator.setInstrument(instrument);
 		PlayingRangeSpectrum spectrum = new PlayingRangeSpectrum();
 		spectrum.plot(calculator, fingering, SPECTRUM_FREQUENCY_BELOW,

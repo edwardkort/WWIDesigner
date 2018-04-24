@@ -153,4 +153,11 @@ public class DefaultInstrumentCalculator extends InstrumentCalculator
 		return gain;
 	}
 
+	@Override
+	public boolean isCompatible(Instrument instrument)
+	{
+		// This default calculator is not specific to any type of instrument.
+		return true;
+	}
+
 }

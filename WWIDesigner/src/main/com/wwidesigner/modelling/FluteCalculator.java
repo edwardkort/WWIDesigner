@@ -41,4 +41,12 @@ public class FluteCalculator extends DefaultInstrumentCalculator
 				new UnflangedEndCalculator(), new DefaultHoleCalculator(),
 				new SimpleBoreSectionCalculator());
 	}
+
+	@Override
+	public boolean isCompatible(Instrument instrument)
+	{
+		return instrument != null && instrument.getMouthpiece() != null
+				&& instrument.getMouthpiece().getEmbouchureHole() != null;
+	}
+
 }

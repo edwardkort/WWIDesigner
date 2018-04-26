@@ -13,6 +13,7 @@ import com.wwidesigner.geometry.Hole;
 import com.wwidesigner.geometry.Instrument;
 import com.wwidesigner.geometry.PositionInterface;
 import com.wwidesigner.geometry.bind.GeometryBindFactory;
+import com.wwidesigner.gui.util.InstrumentTypeException;
 import com.wwidesigner.modelling.EvaluatorInterface;
 import com.wwidesigner.modelling.InstrumentCalculator;
 import com.wwidesigner.modelling.SimpleInstrumentTuner;
@@ -102,6 +103,11 @@ public class AbstractOptimizationTest
 	protected void setup() throws Exception
 	{
 		instrument = getInstrumentFromXml();
+		if (! calculator.isCompatible(instrument))
+		{
+			throw new InstrumentTypeException("The instrument in " + inputInstrumentXML
+					+ " is not compatible with this test.");
+		}
 		calculator.setInstrument(instrument);
 		calculator.setPhysicalParameters(params);
 		instrument.convertToMetres();

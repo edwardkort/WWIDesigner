@@ -14,6 +14,7 @@ import com.wwidesigner.geometry.BorePoint;
 import com.wwidesigner.geometry.Hole;
 import com.wwidesigner.geometry.Instrument;
 import com.wwidesigner.geometry.bind.GeometryBindFactory;
+import com.wwidesigner.gui.util.InstrumentTypeException;
 import com.wwidesigner.modelling.EvaluatorInterface;
 import com.wwidesigner.modelling.InstrumentCalculator;
 import com.wwidesigner.modelling.ReflectionEvaluator;
@@ -49,6 +50,11 @@ public class ChalumeauOptimizationTest
 		Instrument instrument = getInstrumentFromXml(inputInstrumentXML);
 		InstrumentCalculator calculator = new SimpleReedCalculator(instrument,
 				parameters);
+		if (! calculator.isCompatible(instrument))
+		{
+			throw new InstrumentTypeException("The instrument in " + inputInstrumentXML
+					+ " is not compatible with this test.");
+		}
 		instrument.convertToMetres();
 
 		Tuning tuning = getTuningFromXml(inputTuningXML);

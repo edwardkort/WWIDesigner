@@ -17,6 +17,7 @@ import org.junit.Test;
 
 import com.wwidesigner.geometry.Instrument;
 import com.wwidesigner.geometry.bind.GeometryBindFactory;
+import com.wwidesigner.gui.util.InstrumentTypeException;
 import com.wwidesigner.modelling.WhistleCalculator;
 import com.wwidesigner.note.Note;
 import com.wwidesigner.note.Tuning;
@@ -58,6 +59,11 @@ public class InstrumentImpedanceTest
 					98.4, 100, 0.04);
 			Instrument instrument = getInstrumentFromXml(inputInstrumentXML);
 			InstrumentCalculator calculator = new WhistleCalculator(instrument,params);
+			if (! calculator.isCompatible(instrument))
+			{
+				throw new InstrumentTypeException("The instrument in " + inputInstrumentXML
+						+ " is not compatible with this test.");
+			}
 			Tuning tuning = getTuningFromXml(inputTuningXML);
 			PrintWriter pw = new PrintWriter( System.out );
 			List<Fingering>  noteList = tuning.getFingering();

@@ -36,6 +36,12 @@ public class NafPanel extends InstrumentPanel
 	}
 
 	@Override
+	protected void configureWidgets()
+	{
+		HOLE_TABLE_WIDTH = 400;
+	}
+
+	@Override
 	protected void layoutWidgets()
 	{
 		setLayout(new GridBagLayout());
@@ -99,7 +105,7 @@ public class NafPanel extends InstrumentPanel
 	@Override
 	protected Mouthpiece getMouthpiece()
 	{
-		if (! fippleButton.isSelected())
+		if (!fippleButton.isSelected())
 		{
 			return super.getMouthpiece();
 		}

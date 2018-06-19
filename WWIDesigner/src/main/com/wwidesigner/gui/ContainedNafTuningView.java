@@ -24,7 +24,7 @@ public class ContainedNafTuningView extends ContainedXmlView implements
 	{
 		super(parent);
 
-		tuningPanel = new TuningWithWeightsPanel(450);
+		tuningPanel = new TuningWithWeightsPanel(500);
 		tuningPanel.addDataChangedListener(this);
 		scrollPane = new JScrollPane(tuningPanel);
 		scrollPane.setBorder(null);

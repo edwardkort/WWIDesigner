@@ -25,7 +25,7 @@ public class HemisphericalBoreHead
 		BorePoint point = new BorePoint();
 		// Make top point
 		point.setBorePosition(origin);
-		point.setBoreDiameter(0.00001); // Bore diameter must be non-zero
+		point.setBoreDiameter(0.00001d); // Bore diameter must be non-zero
 		borePoints.add(point);
 
 		for (int i = 1; i <= NUM_HEMI_POINTS; i++)
@@ -36,7 +36,7 @@ public class HemisphericalBoreHead
 			point.setBoreDiameter(boreDiameter);
 			double position = (headDiameter - Math.sqrt(headDiameter
 					* headDiameter - boreDiameter * boreDiameter))
-					/ 2. + origin;
+					/ 2.d + origin;
 			point.setBorePosition(position);
 			borePoints.add(point);
 		}
@@ -61,9 +61,9 @@ public class HemisphericalBoreHead
 			BorePoint point = (BorePoint) sortedPoints[i];
 			double position = point.getBorePosition();
 			double diameter = point.getBoreDiameter();
-			if ((position - topPosition) >= diameter / 2.)
+			if ((position - topPosition) >= diameter / 2.d)
 			{
-				hemiTopPoint.setBorePosition(diameter / 2. + topPosition);
+				hemiTopPoint.setBorePosition(diameter / 2.d + topPosition);
 				hemiTopPoint.setBoreDiameter(diameter);
 				break;
 			}

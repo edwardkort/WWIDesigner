@@ -87,7 +87,7 @@ public class Mouthpiece implements ComponentInterface, MouthpieceInterface,
 	{
 		this.beta = beta;
 		// For instruments without beta, calculate a gain factor with a default beta.
-		double nominalBeta = 0.35;
+		double nominalBeta = 0.35d;
 		if (this.beta != null)
 		{
 			nominalBeta = this.beta;
@@ -95,9 +95,9 @@ public class Mouthpiece implements ComponentInterface, MouthpieceInterface,
 
 		if (this.fipple != null && this.fipple.windwayHeight != null)
 		{
-			this.gainFactor = (8.0
+			this.gainFactor = (8.0d
 					* this.fipple.windwayHeight
-					* Math.sqrt(2.0 * this.fipple.windwayHeight
+					* Math.sqrt(2.0d * this.fipple.windwayHeight
 							/ this.fipple.windowLength)
 					* Math.exp(nominalBeta * this.fipple.windowLength
 							/ this.fipple.windwayHeight)
@@ -105,9 +105,9 @@ public class Mouthpiece implements ComponentInterface, MouthpieceInterface,
 		}
 		else if (this.embouchureHole != null)
 		{
-			this.gainFactor = (8.0
+			this.gainFactor = (8.0d
 					* this.embouchureHole.airstreamHeight
-					* Math.sqrt(2.0 * this.embouchureHole.airstreamHeight
+					* Math.sqrt(2.0d * this.embouchureHole.airstreamHeight
 							/ this.embouchureHole.airstreamLength)
 					* Math.exp(nominalBeta * this.embouchureHole.airstreamLength
 							/ this.embouchureHole.airstreamHeight)
@@ -145,8 +145,8 @@ public class Mouthpiece implements ComponentInterface, MouthpieceInterface,
 			this.beta = this.fipple.windwayHeight
 					/ this.fipple.windowLength
 					* Math.log(this.gainFactor
-							/ (8.0 * this.fipple.windwayHeight)
-							* Math.sqrt(0.5 * this.fipple.windowLength
+							/ (8.0d * this.fipple.windwayHeight)
+							* Math.sqrt(0.5d * this.fipple.windowLength
 									/ this.fipple.windwayHeight)
 							* (this.fipple.windowLength * this.fipple.windowWidth));
 		}
@@ -156,8 +156,8 @@ public class Mouthpiece implements ComponentInterface, MouthpieceInterface,
 				this.beta = this.embouchureHole.airstreamHeight
 						/ this.embouchureHole.airstreamLength
 						* Math.log(this.gainFactor
-								/ (8.0 * this.embouchureHole.airstreamHeight)
-								* Math.sqrt(0.5 * this.embouchureHole.airstreamLength
+								/ (8.0d * this.embouchureHole.airstreamHeight)
+								* Math.sqrt(0.5d * this.embouchureHole.airstreamLength
 										/ this.embouchureHole.airstreamHeight)
 								* (this.embouchureHole.length * this.embouchureHole.airstreamLength));
 			}
@@ -351,7 +351,7 @@ public class Mouthpiece implements ComponentInterface, MouthpieceInterface,
 			return this.embouchureHole.airstreamLength;
 		}
 		// Return an arbitrary length, of a plausible magnitude.
-		return 0.5 * this.boreDiameter;
+		return 0.5d * this.boreDiameter;
 	}
 
 	public void convertDimensions(double multiplier)
@@ -397,7 +397,7 @@ public class Mouthpiece implements ComponentInterface, MouthpieceInterface,
 		}
 		else if (isPressureNode())
 		{
-			if (minPosition != null && (minPosition > position || minPosition + 0.0001 < position))
+			if (minPosition != null && (minPosition > position || minPosition + 0.0001d < position))
 			{
 				handler.logError("The mouthpiece position must be the lowest bore position.");
 			}
@@ -520,8 +520,8 @@ public class Mouthpiece implements ComponentInterface, MouthpieceInterface,
 		/**
 		 * Set the length of the air stream from the player's lips
 		 * to the edge of the embouchure hole.
-		 * @param height
-		 *            the height to set
+		 * @param length
+		 *            the length to set
 		 */
 		public void setAirstreamLength(double length)
 		{

@@ -46,7 +46,7 @@ public class Termination extends BorePoint implements TerminationInterface
 		{
 			handler.logError("Termination flange diameter must be specified.");
 		}
-		else if (flangeDiameter < 0.0)
+		else if (flangeDiameter < 0.0d)
 		{
 			handler.logError("Termination flange diameter must be positive.");
 		}

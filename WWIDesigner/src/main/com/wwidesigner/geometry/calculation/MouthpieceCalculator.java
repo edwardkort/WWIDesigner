@@ -35,9 +35,9 @@ public class MouthpieceCalculator
 		// and a pure closed end for a pressure-node mouthpiece.
 		if (mouthpiece.isPressureNode())
 		{
-			double headRadius = 0.5 * mouthpiece.getBoreDiameter();
+			double headRadius = 0.5d * mouthpiece.getBoreDiameter();
 			double z0 = parameters.calcZ0(headRadius);
-	        return new TransferMatrix(Complex.ZERO, new Complex(z0, 0), Complex.ONE, Complex.ZERO);
+	        return new TransferMatrix(Complex.ZERO, new Complex(z0, 0d), Complex.ONE, Complex.ZERO);
 		}
 		return TransferMatrix.makeIdentity();
 	}

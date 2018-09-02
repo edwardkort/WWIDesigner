@@ -41,7 +41,7 @@ public class BoreSection implements ComponentInterface
 	}
 
 	/**
-	 * @param mLeftRadius
+	 * @param leftRadius
 	 *            the mLeftRadius to set
 	 */
 	public void setLeftRadius(double leftRadius)
@@ -50,7 +50,7 @@ public class BoreSection implements ComponentInterface
 	}
 
 	/**
-	 * @param mRightRadius
+	 * @param rightRadius
 	 *            the mRightRadius to set
 	 */
 	public void setRightRadius(double rightRadius)

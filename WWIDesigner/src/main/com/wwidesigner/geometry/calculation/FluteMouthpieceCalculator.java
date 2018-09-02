@@ -106,13 +106,13 @@ public class FluteMouthpieceCalculator extends MouthpieceCalculator
 		// Model for use in absence of blade height measurement.
 		double windowHeight = mouthpiece.getEmbouchureHole().getHeight();
 		double Xw = physicalParams.getRho() * freq/effSize
-				* ( 4.30 + 2.87 * windowHeight/effSize );
+				* ( 4.30d + 2.87d * windowHeight/effSize );
 		
 		// Resistance modeled as radiation resistance from end of bore,
 		// plus short cylindrical tube with same area as window.
-		double radius = 0.5 * mouthpiece.getBoreDiameter();
+		double radius = 0.5d * mouthpiece.getBoreDiameter();
 		double Rw = Tube.calcR(freq, radius, physicalParams)
-			  + physicalParams.getRho() * 0.0184 * FastMath.sqrt(freq)*windowHeight
+			  + physicalParams.getRho() * 0.0184d * FastMath.sqrt(freq)*windowHeight
 				/ (effSize*effSize*effSize);
 		return new Complex(Rw,Xw);
 	}
@@ -156,13 +156,13 @@ public class FluteMouthpieceCalculator extends MouthpieceCalculator
 	{
 		double freq = physicalParams.calcFrequency(waveNumber);
 		double compliance = calcHeadspaceVolume(headspace)
-				/ (physicalParams.getGamma()*physicalParams.getPressure()*1.0e3);
-		return new StateVector(Complex.ONE, new Complex(0.0, 2.0*Math.PI*freq*compliance));
+				/ (physicalParams.getGamma()*physicalParams.getPressure()*1.0e3d);
+		return new StateVector(Complex.ONE, new Complex(0.0d, 2.0d*Math.PI*freq*compliance));
 	}
 
 	protected double calcHeadspaceVolume(List<BoreSection> headspace)
 	{
-		double volume = 0.;
+		double volume = 0.d;
 		for (BoreSection section : headspace)
 		{
 			volume += getSectionVolume(section);
@@ -174,7 +174,7 @@ public class FluteMouthpieceCalculator extends MouthpieceCalculator
 	{
 		double leftRadius = section.getLeftRadius();
 		double rightRadius = section.getRightRadius();
-		double volume = Math.PI / 3.0
+		double volume = Math.PI / 3.0d
 				* section.getLength()
 				* (leftRadius * leftRadius + leftRadius * rightRadius + rightRadius
 						* rightRadius);

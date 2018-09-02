@@ -51,11 +51,11 @@ public class SimpleReedMouthpieceCalculator extends MouthpieceCalculator
 		}
 
 		double freq = parameters.calcFrequency(waveNumber);
-		double alpha = 0.0;
+		double alpha = 0.0d;
 		Double beta = mouthpiece.getBeta();
 		if (beta == null)
 		{
-			beta = 0.0;
+			beta = 0.0d;
 		}
 //		double reedResonance = 440.0;
 		if (mouthpiece.getSingleReed() != null)
@@ -74,12 +74,12 @@ public class SimpleReedMouthpieceCalculator extends MouthpieceCalculator
 			beta = - beta;
 		}
 
-		double headRadius = 0.5 * mouthpiece.getBoreDiameter();
+		double headRadius = 0.5d * mouthpiece.getBoreDiameter();
 		double z0 = parameters.calcZ0(headRadius);
-		double X = alpha*1.0e-3*freq + beta;
+		double X = alpha*1.0e-3d*freq + beta;
         TransferMatrix closedEnd = new TransferMatrix(
-        		new Complex(0.0, X), new Complex(z0, 0.0), 
-        		new Complex(1.0, 0.0), Complex.ZERO);
+        		new Complex(0.0d, X), new Complex(z0, 0.0d), 
+        		new Complex(1.0d, 0.0d), Complex.ZERO);
 		return closedEnd;
 	}
 	

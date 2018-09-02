@@ -34,8 +34,8 @@ public class Hole implements ComponentInterface, BorePointInterface
 	}
 
 	/**
-	 * @param radius
-	 *            the radius to set
+	 * @param diameter
+	 *            the diameter to set
 	 */
 	public void setDiameter(double diameter)
 	{

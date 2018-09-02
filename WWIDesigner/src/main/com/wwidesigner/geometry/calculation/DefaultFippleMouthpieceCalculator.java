@@ -49,18 +49,18 @@ public class DefaultFippleMouthpieceCalculator extends MouthpieceCalculator
 		// temperature and humidity, all that a NAF maker is likely to measure.
 		mParams = new SimplePhysicalParameters(parameters);
 
-		double radius = 0.5*mouthpiece.getBoreDiameter();
+		double radius = 0.5d*mouthpiece.getBoreDiameter();
 		double z0 = parameters.calcZ0(radius);
 		double omega = waveNumber * parameters.getSpeedOfSound();
 		double k_delta_l = calcKDeltaL(mouthpiece, omega, z0);
 		// Add a series resistance for radiation loss.
-		double r_rad = Tube.calcR(omega/(2*Math.PI), radius, parameters);
+		double r_rad = Tube.calcR(omega/(2d*Math.PI), radius, parameters);
 		double cos_kl = FastMath.cos(k_delta_l);
 		double sin_kl = FastMath.sin(k_delta_l);
 
 		Complex A = new Complex(cos_kl, r_rad * sin_kl / z0);
-		Complex B = new Complex(0., 1.).multiply(sin_kl * z0).add(r_rad * cos_kl);
-		Complex C = new Complex(0., 1.).multiply(sin_kl / z0);
+		Complex B = new Complex(0.d, 1.d).multiply(sin_kl * z0).add(r_rad * cos_kl);
+		Complex C = new Complex(0.d, 1.d).multiply(sin_kl / z0);
 		Complex D = new Complex(cos_kl);
 		return new TransferMatrix(A, B, C, D);
 	}
@@ -68,7 +68,7 @@ public class DefaultFippleMouthpieceCalculator extends MouthpieceCalculator
 	protected double calcKDeltaL(Mouthpiece mouthpiece, double omega, double z0)
 	{
 		double result = Math
-				.atan(1.0 / (z0 * (calcJYE(mouthpiece, omega) + calcJYC(
+				.atan(1.0d / (z0 * (calcJYE(mouthpiece, omega) + calcJYC(
 						mouthpiece, omega))));
 
 		return result;
@@ -86,7 +86,7 @@ public class DefaultFippleMouthpieceCalculator extends MouthpieceCalculator
 	{
 		double gamma = AIR_GAMMA; // mParams.getGamma();
 		double speedOfSound = mParams.getSpeedOfSound();
-		double v = 2. * calcHeadspaceVolume(mouthpiece);
+		double v = 2.d * calcHeadspaceVolume(mouthpiece);
 
 		double result = -(omega * v) / (gamma * speedOfSound * speedOfSound);
 
@@ -95,13 +95,13 @@ public class DefaultFippleMouthpieceCalculator extends MouthpieceCalculator
 
 	protected double calcHeadspaceVolume(Mouthpiece mouthpiece)
 	{
-		double volume = 0.;
+		double volume = 0.d;
 		for (BoreSection section : mouthpiece.getHeadspace())
 		{
 			volume += getSectionVolume(section);
 		}
 
-		return volume * 2.0; // Multiplier reset using a more accurate headspace
+		return volume * 2.0d; // Multiplier reset using a more accurate headspace
 								// representation, and verified with a
 								// square-end flute with better intonation than
 								// the Ken Light flute that was originally used.
@@ -116,7 +116,7 @@ public class DefaultFippleMouthpieceCalculator extends MouthpieceCalculator
 		double volume = Math.PI
 				* length
 				* (leftRadius * leftRadius + leftRadius * rightRadius + rightRadius
-						* rightRadius) / 3.;
+						* rightRadius) / 3.d;
 
 		return volume;
 	}
@@ -128,7 +128,7 @@ public class DefaultFippleMouthpieceCalculator extends MouthpieceCalculator
 		double fippleFactor = getScaledFippleFactor(mouthpiece);
 
 		double effectiveArea = windowLength * windowWidth;
-		double equivDiameter = 2. * Math.sqrt(effectiveArea / Math.PI)
+		double equivDiameter = 2.d * Math.sqrt(effectiveArea / Math.PI)
 				* fippleFactor;
 
 		return equivDiameter;
@@ -142,7 +142,7 @@ public class DefaultFippleMouthpieceCalculator extends MouthpieceCalculator
 			windwayHeight = DEFAULT_WINDWAY_HEIGHT;
 		}
 
-		double ratio = Math.pow(DEFAULT_WINDWAY_HEIGHT / windwayHeight, 1. / 3);
+		double ratio = Math.pow(DEFAULT_WINDWAY_HEIGHT / windwayHeight, 1.d / 3d);
 		double scaledFippleFactor;
 		if (mouthpiece.getFipple().getFippleFactor() == null)
 		{

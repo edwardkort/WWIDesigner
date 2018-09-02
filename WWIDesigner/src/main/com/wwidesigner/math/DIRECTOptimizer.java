@@ -119,7 +119,7 @@ import org.apache.commons.math3.util.FastMath;
  *		D. R. Jones, C. D. Perttunen, and B. E. Stuckmann,
  *		"Lipschitzian optimization without the lipschitz constant,"
  *		J. Optimization Theory and Applications, vol. 79, p. 157 (1993).
- *<br/>
+ *<br>
  * This implementation supports two convergence criteria:
  *<ul> 
  *<li>The constructor specifies a relative convergence threshold
@@ -1086,7 +1086,7 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 	 * at the largest x value of such points.
 	 *
 	 * @return the number of points in the hull, with pointers
-	 * stored in hull[i] (should be an array of length >= t->N).
+	 * stored in hull[i] (should be an array of length &gt;= t-&gt;N).
 	 */
 	protected int getPotentiallyOptimal(boolean allow_dups)
 	{

@@ -377,8 +377,8 @@ public class Instrument implements InstrumentInterface
 
 	/**
 	 * Creates the instrument Components (BoreSection and filled-out Holes) from
-	 * the raw BorePoints and Holes. <br/>
-	 * Pre: this instrument is valid. <br/>
+	 * the raw BorePoints and Holes. <br>
+	 * Pre: this instrument is valid. <br>
 	 * Post: getComponents returns a list of bore sections, holes and the
 	 * mouthpiece, sorted by increasing position.
 	 */
@@ -425,7 +425,7 @@ public class Instrument implements InstrumentInterface
 
 	/**
 	 * Pre: this instrument is valid and updateComponents has been called since
-	 * the last change to the geometry. <br/>
+	 * the last change to the geometry. <br>
 	 * Post: getComponents returns a list of bore sections, holes and the
 	 * mouthpiece, sorted by increasing position.
 	 * 

@@ -40,19 +40,19 @@ public interface Constants
 			switch (this)
 			{
 				case MM:
-					multiplier = 0.001;
+					multiplier = 0.001d;
 					break;
 				case CM:
-					multiplier = 0.01;
+					multiplier = 0.01d;
 					break;
 				case IN:
-					multiplier = 0.0254;
+					multiplier = 0.0254d;
 					break;
 				case FT:
-					multiplier = 0.3048;
+					multiplier = 0.3048d;
 					break;
 				default:
-					multiplier = 1.;
+					multiplier = 1.d;
 			}
 
 			return multiplier;
@@ -64,16 +64,16 @@ public interface Constants
 			switch (this)
 			{
 				case MM:
-					multiplier = 1000.;
+					multiplier = 1000.d;
 					break;
 				case CM:
-					multiplier = 100.;
+					multiplier = 100.d;
 					break;
 				case IN:
-					multiplier = 39.370078740157484;
+					multiplier = 39.370078740157484d;
 					break;
 				case FT:
-					multiplier = 3.2808398950131233;
+					multiplier = 3.2808398950131233d;
 					break;
 				default:
 					multiplier = 1.;
@@ -107,23 +107,23 @@ public interface Constants
 		}
 	}
 
-	double P_AIR = 101325.0; // Dry air pressure, Pa.
-	double P_V = 0.0; // Vapour pressure, Pa.
-	double R_AIR = 287.05; // Gas constant air.
-	double R_V = 461.495; // Gas constant water vapour.
-	double GAMMA = 1.4017; // The ratio of specific heats of air.
-	double KAPPA = 2.6118e-2; // The thermal conductivity of air.
-	double C_P = 1.0063e3; // The specific heat of air at constant pressure.
-	double NU = 0.8418; // Prandtl number.
+	double P_AIR = 101325.0d; // Dry air pressure, Pa.
+	double P_V = 0.0d; // Vapour pressure, Pa.
+	double R_AIR = 287.05d; // Gas constant air.
+	double R_V = 461.495d; // Gas constant water vapour.
+	double GAMMA = 1.4017d; // The ratio of specific heats of air.
+	double KAPPA = 2.6118e-2d; // The thermal conductivity of air.
+	double C_P = 1.0063e3d; // The specific heat of air at constant pressure.
+	double NU = 0.8418d; // Prandtl number.
 
-	double CENT_FACTOR = 1.00057778951;
+	double CENT_FACTOR = 1.00057778951d;
 	// Multiply freq by CENT_FACTOR^r to raise by r cents.
 	int CENTS_IN_SEMITONE = 100;
 	int CENTS_IN_OCTAVE = 1200;
 	int A_SEMITONE = 9;
-	double A440 = 440.0;
+	double A440 = 440.0d;
 
-	double LOG2 = Math.log(2);
-	double BIG_DBL = 1e10;
+	double LOG2 = Math.log(2d);
+	double BIG_DBL = 1e10d;
 
 }

@@ -124,7 +124,7 @@ public class BorePoint implements BorePointInterface
 		double positionFraction = (afterPoint.getBorePosition() - position)
 				/ (afterPoint.getBorePosition() - beforePoint.getBorePosition());
 
-		return afterPoint.getBoreDiameter() * (1. - positionFraction)
+		return afterPoint.getBoreDiameter() * (1d - positionFraction)
 				+ beforePoint.getBoreDiameter() * positionFraction;
 	}
 

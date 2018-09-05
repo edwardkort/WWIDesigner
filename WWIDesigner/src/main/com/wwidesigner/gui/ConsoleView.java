@@ -38,6 +38,7 @@ import com.jidesoft.app.framework.gui.DataViewPane;
 public class ConsoleView extends DataViewPane
 {
 	JTextArea textArea;
+	private PrintStream out2;
 
 	protected void initializeComponents()
 	{
@@ -111,7 +112,7 @@ public class ConsoleView extends DataViewPane
 				write(b, 0, b.length);
 			}
 		};
-		PrintStream out2 = new PrintStream(out, true);
+		out2 = new PrintStream(out, true);
 		System.setOut(out2);
 		System.setErr(out2);
 	}

@@ -4,6 +4,7 @@
 package com.wwidesigner.util;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 
 import org.custommonkey.xmlunit.Diff;
@@ -27,12 +28,18 @@ public class XmlDiff extends Diff
 
 	public XmlDiff(File controlFile, File testFile) throws Exception
 	{
-		super(new FileReader(controlFile), new FileReader(testFile));
+		super(createFileReader(controlFile), createFileReader(testFile));
 		XMLUnit.setNormalizeWhitespace(true);
 		SimpleDiffListener sdiff = new SimpleDiffListener();
 		FloatingPointTolerantDifferenceListener fdiff = new FloatingPointTolerantDifferenceListener(
 				sdiff, numberTolerance);
 		overrideDifferenceListener(fdiff);
+	}
+
+	private static FileReader createFileReader(File testFile)
+			throws FileNotFoundException
+	{
+		return new FileReader(testFile);
 	}
 
 	class SimpleDiffListener implements DifferenceListener

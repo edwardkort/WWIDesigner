@@ -64,6 +64,7 @@ public abstract class BindFactory
 	protected String packagePath;
 	protected String schema;
 	private static BufferedReader reader;
+	private Writer writer;
 
 	public BindFactory()
 	{
@@ -149,7 +150,7 @@ public abstract class BindFactory
 
 	public void marshalToXml(Object input, File outputXml) throws Exception
 	{
-		Writer writer = new FileWriter(outputXml);
+		writer = new FileWriter(outputXml);
 		marshalToXml(input, writer);
 	}
 

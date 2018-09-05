@@ -111,7 +111,8 @@ public class ConsoleView extends DataViewPane
 				write(b, 0, b.length);
 			}
 		};
-		System.setOut(new PrintStream(out, true));
-		System.setErr(new PrintStream(out, true));
+		PrintStream out2 = new PrintStream(out, true);
+		System.setOut(out2);
+		System.setErr(out2);
 	}
 }

@@ -210,7 +210,7 @@ public class BorePositionObjectiveFunction extends BaseObjectiveFunction
 			pointNr = borePointNr(dimension);
 			borePoint = (BorePoint) sortedPoints[pointNr - 1];
 			borePoint.setBorePosition(priorBorePosition
-					+ point[dimension] * (lastBorePosition - priorBorePosition));;
+					+ point[dimension] * (lastBorePosition - priorBorePosition));
 			priorBorePosition = borePoint.getBorePosition();
 		}
 		calculator.getInstrument().updateComponents();

@@ -1367,7 +1367,7 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 			col.setCellRenderer(renderer);
 		}
 		table.setFillsGrids(false);
-		table.setAutoResizeMode(JideTable.AUTO_RESIZE_ALL_COLUMNS);
+		table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
 		table.setFillsRight(true);
 		table.setCellSelectionEnabled(true);
 		if (numRows > 0)

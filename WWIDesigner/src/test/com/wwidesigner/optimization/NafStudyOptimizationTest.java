@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
+import com.wwidesigner.gui.CategoryType;
 import com.wwidesigner.gui.NafStudyModel;
 
 public class NafStudyOptimizationTest extends PerturbedInstrumentOptimization
@@ -22,7 +23,7 @@ public class NafStudyOptimizationTest extends PerturbedInstrumentOptimization
 
 		NafStudyModel myStudy = new NafStudyModel(null);
 		myStudy.getParams().setProperties(22.2, 101.325, 45, 0.000390);
-		myStudy.setCategorySelection(NafStudyModel.OPTIMIZER_CATEGORY_ID,
+		myStudy.setCategorySelection(CategoryType.OPTIMIZER_CATEGORY_ID,
 				NafStudyModel.GROUP_OPT_SUB_CATEGORY_ID);
 
 		setStudyModel(myStudy);

@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.prefs.Preferences;
 
 import com.jidesoft.app.framework.file.FileDataModel;
+import com.jidesoft.dialog.StandardDialog;
 import com.wwidesigner.geometry.Instrument;
 import com.wwidesigner.geometry.view.HoleGroupSpacingDialog;
 import com.wwidesigner.geometry.view.InstrumentComparisonTable;
@@ -830,7 +831,7 @@ public class NafStudyModel extends StudyModel
 		spacingDialog.pack();
 		spacingDialog.setVisible(true);
 		if (spacingDialog
-				.getDialogResult() == HoleGroupSpacingDialog.RESULT_AFFIRMED)
+				.getDialogResult() == StandardDialog.RESULT_AFFIRMED)
 		{
 			return spacingDialog.getHoleSpacingGroups();
 		}

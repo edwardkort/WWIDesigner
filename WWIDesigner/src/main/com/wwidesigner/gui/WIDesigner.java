@@ -1061,7 +1061,7 @@ public class WIDesigner extends FileBasedApplication implements EventSubscriber
 					}
 
 					action = getActionMap().get(GRAPH_NOTE_ACTION_ID);
-					if (StudyModel.INSTRUMENT_CATEGORY_ID
+					if (CategoryType.INSTRUMENT_CATEGORY_ID
 							.equals(model.getSemanticName()))
 					{
 						setCompareInstrumentAction(model.getName(), true);
@@ -1125,7 +1125,7 @@ public class WIDesigner extends FileBasedApplication implements EventSubscriber
 		else
 		{
 			DataModel otherModel = getFocusedModel();
-			if (otherModel == null || !StudyModel.INSTRUMENT_CATEGORY_ID
+			if (otherModel == null || !CategoryType.INSTRUMENT_CATEGORY_ID
 					.equals(otherModel.getSemanticName()))
 			{
 				action.setEnabled(false);

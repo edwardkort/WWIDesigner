@@ -25,6 +25,7 @@ import com.jidesoft.app.framework.gui.DialogEvent;
 import com.jidesoft.app.framework.gui.DialogRequest;
 import com.jidesoft.app.framework.gui.FileDialogRequest;
 import com.wwidesigner.geometry.Instrument;
+import com.wwidesigner.gui.CategoryType;
 import com.wwidesigner.gui.StudyModel;
 import com.wwidesigner.note.Tuning;
 import com.wwidesigner.optimization.Constraints;
@@ -123,7 +124,7 @@ public class FileOpenDialogPreviewPane extends DialogAdapter
 				StringBuilder sb = new StringBuilder();
 				switch (category)
 				{
-					case StudyModel.INSTRUMENT_CATEGORY_ID:
+					case CategoryType.INSTRUMENT_CATEGORY_ID:
 						Instrument instrument = StudyModel
 								.getInstrument(fileContents);
 						sb.append("<b>XML type:</b><br/>");
@@ -135,7 +136,7 @@ public class FileOpenDialogPreviewPane extends DialogAdapter
 						sb.append("<br/><b>Number of holes:</b><br/>");
 						sb.append(instrument.getHole().size());
 						break;
-					case StudyModel.TUNING_CATEGORY_ID:
+					case CategoryType.TUNING_CATEGORY_ID:
 						Tuning tuning = StudyModel.getTuning(fileContents);
 						sb.append("<b>XML type:</b><br/>");
 						sb.append(category);
@@ -146,7 +147,7 @@ public class FileOpenDialogPreviewPane extends DialogAdapter
 						sb.append("<br/><b>Number of holes:</b><br/>");
 						sb.append(tuning.getNumberOfHoles());
 						break;
-					case StudyModel.CONSTRAINTS_CATEGORY_ID:
+					case CategoryType.CONSTRAINTS_CATEGORY_ID:
 						Constraints constraints = StudyModel
 								.getConstraints(fileContents);
 						sb.append("<b>XML type:</b><br/>");

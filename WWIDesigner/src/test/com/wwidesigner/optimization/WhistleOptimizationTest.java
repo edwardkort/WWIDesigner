@@ -9,6 +9,7 @@ import org.junit.Test;
 import com.wwidesigner.geometry.BorePoint;
 import com.wwidesigner.geometry.Instrument;
 import com.wwidesigner.geometry.PositionInterface;
+import com.wwidesigner.gui.CategoryType;
 import com.wwidesigner.gui.StudyModel;
 import com.wwidesigner.gui.WhistleStudyModel;
 
@@ -33,7 +34,7 @@ public class WhistleOptimizationTest extends PerturbedInstrumentOptimization
 		WhistleStudyModel myStudy = new WhistleStudyModel();
 		myStudy.getParams().setProperties(27.0, 98.4, 100, 0.040);
 		myStudy.setBlowingLevel(4);
-		myStudy.setCategorySelection(WhistleStudyModel.OPTIMIZER_CATEGORY_ID,
+		myStudy.setCategorySelection(CategoryType.OPTIMIZER_CATEGORY_ID,
 				WhistleStudyModel.HOLE_OPT_SUB_CATEGORY_ID);
 		
 		setStudyModel(myStudy);
@@ -51,7 +52,7 @@ public class WhistleOptimizationTest extends PerturbedInstrumentOptimization
 		testOptimization("Optimize instrument after 5% shrink...", 0.5);
 		assertEquals("Residual error incorrect", 1.0, study.getFinalNorm()/finalNorm, 0.01);
 
-		myStudy.setCategorySelection(WhistleStudyModel.OPTIMIZER_CATEGORY_ID,
+		myStudy.setCategorySelection(CategoryType.OPTIMIZER_CATEGORY_ID,
 				WhistleStudyModel.HOLESIZE_OPT_SUB_CATEGORY_ID);
 		perturbInstrument(1.0,1.0,1.10);
 		testOptimization("Optimize instrument from 10% larger holes...", 0.5);
@@ -67,7 +68,7 @@ public class WhistleOptimizationTest extends PerturbedInstrumentOptimization
 		WhistleStudyModel myStudy = new WhistleStudyModel();
 		myStudy.getParams().setProperties(27.0, 98.4, 100, 0.040);
 		myStudy.setBlowingLevel(4);
-		myStudy.setCategorySelection(WhistleStudyModel.OPTIMIZER_CATEGORY_ID,
+		myStudy.setCategorySelection(CategoryType.OPTIMIZER_CATEGORY_ID,
 				WhistleStudyModel.GLOBAL_HOLESPACE_OPT_SUB_CATEGORY_ID);
 		
 		setStudyModel(myStudy);
@@ -80,7 +81,7 @@ public class WhistleOptimizationTest extends PerturbedInstrumentOptimization
 		String xmlOptimized = study.optimizeInstrument();
 		replaceInstrument(originalInstrument.getName(), xmlOptimized);
 
-		study.setCategorySelection(WhistleStudyModel.OPTIMIZER_CATEGORY_ID,
+		study.setCategorySelection(CategoryType.OPTIMIZER_CATEGORY_ID,
 				WhistleStudyModel.HOLE_OPT_SUB_CATEGORY_ID);
 		Instrument optimizedInstrument = StudyModel.getInstrument(study.optimizeInstrument());
 		

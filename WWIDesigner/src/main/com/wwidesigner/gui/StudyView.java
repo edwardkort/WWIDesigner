@@ -129,8 +129,8 @@ public class StudyView extends DataViewPane implements EventSubscriber
 						String category = (String) parentNode.getUserObject();
 						study.setCategorySelection(category,
 								(String) node.getUserObject());
-						if (StudyModel.INSTRUMENT_CATEGORY_ID.equals(category)
-								|| StudyModel.TUNING_CATEGORY_ID
+						if (CategoryType.INSTRUMENT_CATEGORY_ID.equals(category)
+								|| CategoryType.TUNING_CATEGORY_ID
 										.equals(category))
 						{
 							try

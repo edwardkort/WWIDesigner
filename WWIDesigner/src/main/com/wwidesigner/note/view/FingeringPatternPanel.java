@@ -41,6 +41,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.ListSelectionModel;
+import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
@@ -656,7 +657,7 @@ public class FingeringPatternPanel extends JPanel
 		numberOfHolesWidget.addFocusListener(this);
 		numberOfHolesWidget.addActionListener(this);
 		numberOfHolesWidget.setDocument(new IntegerDocument());
-		numberOfHolesWidget.setHorizontalAlignment(JTextField.RIGHT);
+		numberOfHolesWidget.setHorizontalAlignment(SwingConstants.RIGHT);
 		numberOfHolesWidget.setMargin(new Insets(2, 4, 2, 4));
 		numberOfHolesWidget.setText("0");
 		gbc.gridy = 1;

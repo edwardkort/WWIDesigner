@@ -2,7 +2,7 @@ package com.wwidesigner.gui.util;
 
 import java.text.DecimalFormat;
 
-import javax.swing.JLabel;
+import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 
 public class DoubleCellRenderer extends DefaultTableCellRenderer
@@ -12,7 +12,7 @@ public class DoubleCellRenderer extends DefaultTableCellRenderer
 	public DoubleCellRenderer(int fractionalDigits)
 	{
 		this.fractionalDigits = fractionalDigits;
-		setHorizontalAlignment(JLabel.CENTER);
+		setHorizontalAlignment(SwingConstants.CENTER);
 	}
 
 	public void setValue(Object value)

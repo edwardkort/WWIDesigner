@@ -34,8 +34,8 @@ public class ScaleSymbolPage extends AbstractWizardPage implements
 {
 	private JPanel contentPanel;
 	private JScrollPane scrollPane;
-	private ScaleSymbolListPanel symbolPanel;
-	private TuningWizardDialog parent;
+	ScaleSymbolListPanel symbolPanel;
+	TuningWizardDialog parent;
 	private JButton saveButton;
 	private boolean isInitialized;
 

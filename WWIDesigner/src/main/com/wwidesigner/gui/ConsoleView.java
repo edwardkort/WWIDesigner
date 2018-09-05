@@ -37,7 +37,7 @@ import com.jidesoft.app.framework.gui.DataViewPane;
  */
 public class ConsoleView extends DataViewPane
 {
-	private JTextArea textArea;
+	JTextArea textArea;
 
 	protected void initializeComponents()
 	{
@@ -73,7 +73,7 @@ public class ConsoleView extends DataViewPane
 		System.out.println();
 	}
 
-	private void updateTextArea(final String text)
+	void updateTextArea(final String text)
 	{
 		SwingUtilities.invokeLater(new Runnable()
 		{

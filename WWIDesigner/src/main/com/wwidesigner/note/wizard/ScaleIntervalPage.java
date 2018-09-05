@@ -36,10 +36,10 @@ public class ScaleIntervalPage extends AbstractWizardPage implements
 {
 	private JPanel contentPanel;
 	private JScrollPane scrollPane;
-	private ScaleIntervalPanel scaleIntervalPanel;
-	private ScaleSymbolListPanel symbolsPanel;
-	private TemperamentPanel temperamentPanel;
-	private TuningWizardDialog parent;
+	ScaleIntervalPanel scaleIntervalPanel;
+	ScaleSymbolListPanel symbolsPanel;
+	TemperamentPanel temperamentPanel;
+	TuningWizardDialog parent;
 	private boolean isInitialized;
 	private JButton updateFromSymbolPageButton;
 	private JButton updateFromTemperamentPageButton;

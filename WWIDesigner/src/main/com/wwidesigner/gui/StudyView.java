@@ -75,8 +75,8 @@ public class StudyView extends DataViewPane implements EventSubscriber
 {
 	private static final long serialVersionUID = 1L;
 
-	private JTree tree;
-	private StudyModel study;
+	JTree tree;
+	StudyModel study;
 
 	@Override
 	protected void initializeComponents()

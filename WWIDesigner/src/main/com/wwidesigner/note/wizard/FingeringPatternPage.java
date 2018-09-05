@@ -50,8 +50,8 @@ public class FingeringPatternPage extends AbstractWizardPage implements
 {
 	private JPanel contentPanel;
 	private JScrollPane scrollPane;
-	private FingeringPatternPanel fingeringPanel;
-	private TuningWizardDialog parent;
+	FingeringPatternPanel fingeringPanel;
+	TuningWizardDialog parent;
 	private JButton newButton;
 	private JButton saveButton;
 	private boolean isInitialized;

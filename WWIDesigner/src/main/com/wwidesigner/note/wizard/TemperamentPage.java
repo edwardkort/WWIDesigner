@@ -33,8 +33,8 @@ public class TemperamentPage extends AbstractWizardPage implements
 {
 	private JPanel contentPanel;
 	private JScrollPane scrollPane;
-	private TemperamentPanel tempPanel;
-	private TuningWizardDialog parent;
+	TemperamentPanel tempPanel;
+	TuningWizardDialog parent;
 	private JButton saveButton;
 	private boolean isInitialized;
 

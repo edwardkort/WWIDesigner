@@ -32,7 +32,7 @@ import com.wwidesigner.optimization.Constraints;
 
 public class FileOpenDialogPreviewPane extends DialogAdapter
 {
-	private XmlPreview preview = new XmlPreview();
+	XmlPreview preview = new XmlPreview();
 	private PreviewPanel previewPanel = new PreviewPanel();
 	private final int previewWidth = 200;
 

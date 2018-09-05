@@ -15,7 +15,7 @@ import javax.swing.WindowConstants;
 
 public class DirectoryChooserPanel extends JPanel
 {
-	private JTextField textField;
+	JTextField textField;
 	private JButton button;
 	String directoryPath;
 

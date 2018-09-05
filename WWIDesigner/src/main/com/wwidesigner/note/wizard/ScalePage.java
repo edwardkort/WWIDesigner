@@ -50,17 +50,16 @@ public class ScalePage extends AbstractWizardPage implements DataProvider,
 {
 	private JPanel contentPanel;
 	private JScrollPane scrollPane;
-	private ScaleIntervalPanel scaleIntervalPanel;
-	private TuningWizardDialog parent;
+	ScaleIntervalPanel scaleIntervalPanel;
+	TuningWizardDialog parent;
 	private boolean isInitialized;
 	private JButton updateFromIntervalsPageButton;
-	@SuppressWarnings("rawtypes")
-	private JComboBox noteSelector;
-	private JTextField frequencyField;
-	private ScalePanel scalePanel;
+	@SuppressWarnings("rawtypes") JComboBox noteSelector;
+	JTextField frequencyField;
+	ScalePanel scalePanel;
 	private JButton createScaleButton;
 	private JButton saveButton;
-	private boolean isRefNoteSelected;
+	boolean isRefNoteSelected;
 	private boolean isRefFrequencySet;
 
 	public ScalePage(TuningWizardDialog parent)

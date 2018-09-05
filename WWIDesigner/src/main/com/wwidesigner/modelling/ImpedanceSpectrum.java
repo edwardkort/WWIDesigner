@@ -32,7 +32,7 @@ public class ImpedanceSpectrum
 	/**
 	 * Holds impedance spectrum (created by calcImpedance()).
 	 */
-	private Map<Double, Complex> mSpectrum;
+	Map<Double, Complex> mSpectrum;
 
 	/**
 	 * Holds impedance minima.

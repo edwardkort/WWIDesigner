@@ -56,10 +56,10 @@ public class TuningPage extends AbstractWizardPage implements
 {
 	private JPanel contentPanel;
 	private JScrollPane scrollPane;
-	private TuningPanel tuningPanel;
-	private ScalePanel scalePanel;
-	private FingeringPatternPanel fingeringPanel;
-	private TuningWizardDialog parent;
+	TuningPanel tuningPanel;
+	ScalePanel scalePanel;
+	FingeringPatternPanel fingeringPanel;
+	TuningWizardDialog parent;
 	private boolean isInitialized;
 	private JButton updateFromScalePageButton;
 	private JButton updateFromFingeringPageButton;

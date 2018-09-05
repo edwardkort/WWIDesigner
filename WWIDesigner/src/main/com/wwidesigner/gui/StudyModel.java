@@ -291,7 +291,7 @@ public abstract class StudyModel implements CategoryType
 	 */
 	protected static class Category
 	{
-		private String name;
+		String name;
 		private Map<String, Object> subs;
 		private String selectedSub;
 		private Map<String, String> toolTips = new HashMap<String, String>();

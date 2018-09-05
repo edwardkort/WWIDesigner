@@ -38,11 +38,11 @@ import com.wwidesigner.optimization.Constraints;
 
 public class ConstraintsPanel extends JPanel implements DataChangedProvider
 {
-	private Constraints constraints;
+	Constraints constraints;
 	private GridBagConstraints gbc = new GridBagConstraints();
 	private int gridy = 0;
-	private int dimensionalDecimalPrecision;
-	private int dimensionlessDecimalPrecision = 4;
+	int dimensionalDecimalPrecision;
+	int dimensionlessDecimalPrecision = 4;
 	private List<DataChangedListener> dataChangedListeners;
 	private Dimension panelDimension = new Dimension(780, 150);
 	private int[] columnWidth = new int[] { 500, 110, 85, 85 };
@@ -425,7 +425,7 @@ public class ConstraintsPanel extends JPanel implements DataChangedProvider
 		}
 	}
 
-	private void fireDataChangedEvent()
+	void fireDataChangedEvent()
 	{
 		DataChangedEvent event = new DataChangedEvent(this);
 		for (DataChangedListener listener : dataChangedListeners)

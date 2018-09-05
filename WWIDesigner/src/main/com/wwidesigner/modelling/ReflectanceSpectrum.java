@@ -35,7 +35,7 @@ public class ReflectanceSpectrum
 	/**
 	 * Holds reflectance spectrum (created by calcReflectance().
 	 */
-	private Map<Double, Complex> mSpectrum;
+	Map<Double, Complex> mSpectrum;
 
 	/**
 	 * Holds squared reflectance angle minima.
@@ -52,7 +52,7 @@ public class ReflectanceSpectrum
 	 */
 	private List<Double> mMagnitudeMinima;
 
-	private Fingering currentFingering;
+	Fingering currentFingering;
 
 	/**
 	 * Add or replace a point in the spectrum.

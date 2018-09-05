@@ -35,6 +35,7 @@ public class FileOpenDialogPreviewPane extends DialogAdapter
 	XmlPreview preview = new XmlPreview();
 	private PreviewPanel previewPanel = new PreviewPanel();
 	private final int previewWidth = 200;
+	private static BufferedReader reader;
 
 	@Override
 	public void dialogShowing(DialogEvent event)
@@ -187,7 +188,7 @@ public class FileOpenDialogPreviewPane extends DialogAdapter
 		try
 		{
 			StringBuilder sb = new StringBuilder();
-			BufferedReader reader = new BufferedReader(new FileReader(file));
+			reader = new BufferedReader(new FileReader(file));
 			String str;
 			while ((str = reader.readLine()) != null)
 			{

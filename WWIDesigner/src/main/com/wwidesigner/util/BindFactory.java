@@ -63,6 +63,7 @@ public abstract class BindFactory
 
 	protected String packagePath;
 	protected String schema;
+	private static BufferedReader reader;
 
 	public BindFactory()
 	{
@@ -233,7 +234,7 @@ public abstract class BindFactory
 
 	public static String readFile(File inputFile) throws Exception
 	{
-		BufferedReader reader = new BufferedReader(new FileReader(inputFile));
+		reader = new BufferedReader(new FileReader(inputFile));
 		String str;
 		StringBuilder strBuilder = new StringBuilder();
 		while ((str = reader.readLine()) != null)

@@ -6,6 +6,7 @@ import com.wwidesigner.note.TuningInterface;
 
 public class NafHoleSizeObjectiveFunction extends HoleSizeObjectiveFunction
 {
+	@SuppressWarnings("hiding")
 	public static final String NAME = NafHoleSizeObjectiveFunction.class
 			.getSimpleName();
 

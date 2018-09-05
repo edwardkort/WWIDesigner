@@ -6,7 +6,6 @@ package com.wwidesigner.math;
 import java.util.Arrays;
 
 import org.apache.commons.math3.optim.PointValuePair;
-import org.apache.commons.math3.optim.nonlinear.scalar.MultivariateOptimizer;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -17,7 +16,6 @@ import org.junit.Test;
 public class Direct1OptimizerTest extends StandardOptimizerTest
 {
 	public static final double CONVERGENCE_THRESHOLD = 0.005;  // About 3**-5.
-	MultivariateOptimizer optimizer;
 
 	public static void main(String[] args)
 	{

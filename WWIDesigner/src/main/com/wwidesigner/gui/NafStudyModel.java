@@ -385,6 +385,7 @@ public class NafStudyModel extends StudyModel
 	protected BaseObjectiveFunction getObjectiveFunction(
 			int objectiveFunctionIntent) throws Exception
 	{
+		int thisIntent = objectiveFunctionIntent;
 		Category optimizerCategory = getCategory(OPTIMIZER_CATEGORY_ID);
 		String optimizer = optimizerCategory.getSelectedSub();
 
@@ -454,7 +455,7 @@ public class NafStudyModel extends StudyModel
 					else
 					// Create blank constraints for the no-default scenario
 					{
-						objectiveFunctionIntent = BaseObjectiveFunction.BLANK_CONSTRAINTS_INTENT;
+						thisIntent = BaseObjectiveFunction.BLANK_CONSTRAINTS_INTENT;
 					}
 				}
 				break;
@@ -494,7 +495,7 @@ public class NafStudyModel extends StudyModel
 					else
 					// Create blank constraints for the no-default scenario
 					{
-						objectiveFunctionIntent = BaseObjectiveFunction.BLANK_CONSTRAINTS_INTENT;
+						thisIntent = BaseObjectiveFunction.BLANK_CONSTRAINTS_INTENT;
 					}
 				}
 				break;
@@ -553,7 +554,7 @@ public class NafStudyModel extends StudyModel
 					else
 					// Create blank constraints for the no-default scenario
 					{
-						objectiveFunctionIntent = BaseObjectiveFunction.BLANK_CONSTRAINTS_INTENT;
+						thisIntent = BaseObjectiveFunction.BLANK_CONSTRAINTS_INTENT;
 						holeGroups = getUserHoleGroups(numberOfHoles);
 						if (holeGroups == null)
 						{
@@ -602,7 +603,7 @@ public class NafStudyModel extends StudyModel
 					else
 					// Create blank constraints for the no-default scenario
 					{
-						objectiveFunctionIntent = BaseObjectiveFunction.BLANK_CONSTRAINTS_INTENT;
+						thisIntent = BaseObjectiveFunction.BLANK_CONSTRAINTS_INTENT;
 					}
 				}
 				break;
@@ -644,7 +645,7 @@ public class NafStudyModel extends StudyModel
 					else
 					// Create blank constraints for the no-default scenario
 					{
-						objectiveFunctionIntent = BaseObjectiveFunction.BLANK_CONSTRAINTS_INTENT;
+						thisIntent = BaseObjectiveFunction.BLANK_CONSTRAINTS_INTENT;
 					}
 				}
 				break;
@@ -705,7 +706,7 @@ public class NafStudyModel extends StudyModel
 					else
 					// Create blank constraints for the no-default scenario
 					{
-						objectiveFunctionIntent = BaseObjectiveFunction.BLANK_CONSTRAINTS_INTENT;
+						thisIntent = BaseObjectiveFunction.BLANK_CONSTRAINTS_INTENT;
 						holeGroups = getUserHoleGroups(numberOfHoles);
 						if (holeGroups == null)
 						{
@@ -773,7 +774,7 @@ public class NafStudyModel extends StudyModel
 					else
 					// Create blank constraints for the no-default scenario
 					{
-						objectiveFunctionIntent = BaseObjectiveFunction.BLANK_CONSTRAINTS_INTENT;
+						thisIntent = BaseObjectiveFunction.BLANK_CONSTRAINTS_INTENT;
 						holeGroups = getUserHoleGroups(numberOfHoles);
 						if (holeGroups == null)
 						{
@@ -786,12 +787,12 @@ public class NafStudyModel extends StudyModel
 				break;
 		}
 
-		if (objectiveFunctionIntent == BaseObjectiveFunction.DEFAULT_CONSTRAINTS_INTENT)
+		if (thisIntent == BaseObjectiveFunction.DEFAULT_CONSTRAINTS_INTENT)
 		{
 			objective.setLowerBounds(lowerBound);
 			objective.setUpperBounds(upperBound);
 		}
-		else if (objectiveFunctionIntent == BaseObjectiveFunction.OPTIMIZATION_INTENT)
+		else if (thisIntent == BaseObjectiveFunction.OPTIMIZATION_INTENT)
 		{
 			objective.setConstraintsBounds(constraints);
 			// Using different evaluators with a granular solution space can

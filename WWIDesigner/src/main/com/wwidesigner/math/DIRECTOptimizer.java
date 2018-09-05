@@ -918,20 +918,21 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 				}
 			}
 			Arrays.sort(isort, new RectangleDivisionComparator());
+			RectangleKey thisRectKey = rectKey;
 			for (i = 0; i < eligibleSides.getNrEligibleSides(); ++i) {
 				// Replace centre rectangle with smaller rectangle.
 				w[isort[i]] *= THIRD;
-				rtree.remove(rectKey);
+				rtree.remove(thisRectKey);
 				rectangle.updateLongSides();
-				rectKey = new RectangleKey(rectangleDiameter(w),
-						rectKey.getfValue());
-				rtree.put(rectKey, rectangle);
+				thisRectKey = new RectangleKey(rectangleDiameter(w),
+						thisRectKey.getfValue());
+				rtree.put(thisRectKey, rectangle);
 
 				// Insert new rectangles for side divisions.
 				new_c = Arrays.copyOf(c, c.length);
 				new_w = Arrays.copyOf(w, w.length);
 				new_c[isort[i]] = c[isort[i]] - w[isort[i]] * boundDifference[isort[i]];
-				newKey = new RectangleKey(rectKey.getDiameter(),
+				newKey = new RectangleKey(thisRectKey.getDiameter(),
 						fv[2 * isort[i]]);
 				newRect = new RectangleValue(new_c, new_w);
 				calculatePotential(newRect, rectangle.getPotential(), isort[i],
@@ -940,7 +941,7 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 				new_c = Arrays.copyOf(c, c.length);
 				new_w = Arrays.copyOf(w, w.length);
 				new_c[isort[i]] = c[isort[i]] + w[isort[i]] * boundDifference[isort[i]];
-				newKey = new RectangleKey(rectKey.getDiameter(),
+				newKey = new RectangleKey(thisRectKey.getDiameter(),
 						fv[2 * isort[i] + 1]);
 				newRect = new RectangleValue(new_c, new_w);
 				calculatePotential(newRect, rectangle.getPotential(), isort[i],

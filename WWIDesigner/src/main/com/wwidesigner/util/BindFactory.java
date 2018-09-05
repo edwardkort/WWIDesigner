@@ -75,12 +75,13 @@ public abstract class BindFactory
 	public Object unmarshalXml(String inputFileName, boolean fileInClasspath,
 			boolean toDomainObject) throws Exception
 	{
+		String fileName = inputFileName;
 		if (fileInClasspath)
 		{
-			inputFileName = getPathFromName(inputFileName);
+			fileName = getPathFromName(inputFileName);
 		}
 
-		return unmarshalXml(new File(inputFileName), toDomainObject);
+		return unmarshalXml(new File(fileName), toDomainObject);
 	}
 
 	/**

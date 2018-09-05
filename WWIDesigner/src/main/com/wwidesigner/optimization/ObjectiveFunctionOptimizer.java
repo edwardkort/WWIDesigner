@@ -482,6 +482,7 @@ public class ObjectiveFunctionOptimizer
 			BaseObjectiveFunction objective, double[] startPoint,
 			int maxEvaluations) throws TooManyEvaluationsException
 	{
+		double[] thisStartPoint = startPoint;
 		PointValuePair outcome;
 		EvaluatorInterface originalEvaluator = objective.getEvaluator();
 		if (objective.isRunTwoStageOptimization())
@@ -494,14 +495,14 @@ public class ObjectiveFunctionOptimizer
 					new SimpleBounds(objective.getLowerBounds(),
 							objective.getUpperBounds()));
 			objective.setGeometryPoint(outcome.getPoint());
-			startPoint = objective.getInitialPoint();
+			thisStartPoint = objective.getInitialPoint();
 		}
 
 		objective.setEvaluator(originalEvaluator);
 		outcome = optimizer.optimize(GoalType.MINIMIZE,
 				new ObjectiveFunction(objective),
 				new MaxEval(maxEvaluations - optimizer.getEvaluations()),
-				MaxIter.unlimited(), new InitialGuess(startPoint),
+				MaxIter.unlimited(), new InitialGuess(thisStartPoint),
 				new SimpleBounds(objective.getLowerBounds(),
 						objective.getUpperBounds()));
 

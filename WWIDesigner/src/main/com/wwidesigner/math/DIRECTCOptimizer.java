@@ -313,11 +313,12 @@ public class DIRECTCOptimizer extends DIRECT1Optimizer
 		RectangleKey t1, t2;
 		int it2;
 		double t1Dist, t2Dist;
-		while (nhull >= 1)
+		int thisNhull = nhull;
+		while (thisNhull >= 1)
 		{
-			t1 = hull[nhull - 1].getKey();
-			t1Dist = distance(hull[nhull - 1].getValue().getCentre(), target);
-			it2 = nhull - 2;
+			t1 = hull[thisNhull - 1].getKey();
+			t1Dist = distance(hull[thisNhull - 1].getValue().getCentre(), target);
+			it2 = thisNhull - 2;
 			if (t1Dist > nDistance)
 			{
 				// Not even monotone.  Keep pruning.
@@ -348,10 +349,10 @@ public class DIRECTCOptimizer extends DIRECT1Optimizer
 					break;
 				}
 			}
-			nhull = it2 + 1;
+			thisNhull = it2 + 1;
 		}
 		
-		return nhull;
+		return thisNhull;
 	}
 	
 	protected int getDistanceBin(double[] x, double[] target, double maxDistance)

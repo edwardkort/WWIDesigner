@@ -28,18 +28,17 @@ public class RosenbrockRastrigin
 
 	public static void main(String[] args)
 	{
-		RosenbrockRastrigin myTest = new RosenbrockRastrigin();
-		myTest.testOptimization(N, new DIRECTOptimizer(CONVERGENCE_THRESHOLD));
-		myTest.testOptimization(N, new DIRECT1Optimizer(CONVERGENCE_THRESHOLD));
-		myTest.testOptimization(N, new DIRECTCOptimizer(CONVERGENCE_THRESHOLD));
-		myTest.testOptimization(N, new DIRECT_L_Optimizer(CONVERGENCE_THRESHOLD));
-		myTest.testOptimization(N, new BOBYQAOptimizer(2 * N + 1, 1.0, 1e-4));
+		RosenbrockRastrigin.testOptimization(N, new DIRECTOptimizer(CONVERGENCE_THRESHOLD));
+		RosenbrockRastrigin.testOptimization(N, new DIRECT1Optimizer(CONVERGENCE_THRESHOLD));
+		RosenbrockRastrigin.testOptimization(N, new DIRECTCOptimizer(CONVERGENCE_THRESHOLD));
+		RosenbrockRastrigin.testOptimization(N, new DIRECT_L_Optimizer(CONVERGENCE_THRESHOLD));
+		RosenbrockRastrigin.testOptimization(N, new BOBYQAOptimizer(2 * N + 1, 1.0, 1e-4));
 		ConvergenceChecker<PointValuePair> convergenceChecker = new SimpleValueChecker(
 				1.e-6, 1.e-14);
 		MultivariateOptimizer optimizer = new CMAESOptimizer(
 				100000, 0.01, true, 0, 0,
 				new MersenneTwister(), false, convergenceChecker);
-		myTest.testOptimization(N, optimizer);
+		RosenbrockRastrigin.testOptimization(N, optimizer);
 	}
 	
 	public RosenbrockRastrigin()
@@ -49,7 +48,7 @@ public class RosenbrockRastrigin
 	/**
 	 * Test the optimization of the Rosenbrock-Rastrigin function.
 	 */
-	public final void testOptimization(int n, MultivariateOptimizer optimizer)
+	public final static void testOptimization(int n, MultivariateOptimizer optimizer)
 	{
 		StandardOptimizerTest test = new StandardOptimizerTest(optimizer);
 		double lowerBound[] = new double[n];

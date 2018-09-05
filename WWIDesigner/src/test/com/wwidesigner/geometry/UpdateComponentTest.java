@@ -53,7 +53,7 @@ public class UpdateComponentTest
 		}
 	}
 
-	private void printTermination(Termination termination)
+	private static void printTermination(Termination termination)
 	{
 		System.out.println("Termination:");
 		System.out.println("  Flange diameter: " + termination.getFlangeDiameter());
@@ -61,7 +61,7 @@ public class UpdateComponentTest
 		System.out.println("  Position: " + termination.getBorePosition());
 	}
 
-	private void printComponents(String title,
+	private static void printComponents(String title,
 			List<ComponentInterface> components)
 	{
 		System.out.println(title);
@@ -83,7 +83,7 @@ public class UpdateComponentTest
 
 	}
 
-	private void printHole(ComponentInterface component)
+	private static void printHole(ComponentInterface component)
 	{
 		Hole hole = (Hole)component;
 		System.out.println("Hole:");
@@ -92,7 +92,7 @@ public class UpdateComponentTest
 		System.out.println("  Bore diameter: " + hole.getBoreDiameter());
 	}
 
-	private void printBoreSection(ComponentInterface component, String indent)
+	private static void printBoreSection(ComponentInterface component, String indent)
 	{
 		BoreSection bs = (BoreSection)component;
 		System.out.println(indent + "Boresection:");
@@ -101,7 +101,7 @@ public class UpdateComponentTest
 		System.out.println(indent + "  Right radius: " + bs.getRightRadius());
 	}
 
-	private void printMouthpiece(ComponentInterface component)
+	private static void printMouthpiece(ComponentInterface component)
 	{
 		System.out.println("Mouthpiece:");
 		Mouthpiece mp = (Mouthpiece) component;

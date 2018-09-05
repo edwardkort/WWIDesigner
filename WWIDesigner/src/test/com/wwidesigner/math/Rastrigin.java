@@ -24,12 +24,11 @@ public class Rastrigin
 
 	public static void main(String[] args)
 	{
-		Rastrigin myTest = new Rastrigin();
-		myTest.testRastrigin(N, new DIRECTOptimizer(CONVERGENCE_THRESHOLD));
-		myTest.testRastrigin(N, new DIRECT1Optimizer(CONVERGENCE_THRESHOLD));
-		myTest.testRastrigin(N, new DIRECTCOptimizer(CONVERGENCE_THRESHOLD));
-		myTest.testRastrigin(N, new DIRECT_L_Optimizer(CONVERGENCE_THRESHOLD));
-		myTest.testRastrigin(N, new BOBYQAOptimizer(2 * N + 1, 1.0, 1e-4));
+		Rastrigin.testRastrigin(N, new DIRECTOptimizer(CONVERGENCE_THRESHOLD));
+		Rastrigin.testRastrigin(N, new DIRECT1Optimizer(CONVERGENCE_THRESHOLD));
+		Rastrigin.testRastrigin(N, new DIRECTCOptimizer(CONVERGENCE_THRESHOLD));
+		Rastrigin.testRastrigin(N, new DIRECT_L_Optimizer(CONVERGENCE_THRESHOLD));
+		Rastrigin.testRastrigin(N, new BOBYQAOptimizer(2 * N + 1, 1.0, 1e-4));
 	}
 	
 	public Rastrigin()
@@ -39,7 +38,7 @@ public class Rastrigin
 	/**
 	 * Test the optimization of Rastrigin's function.
 	 */
-	public final void testRastrigin(int n, MultivariateOptimizer optimizer)
+	public final static void testRastrigin(int n, MultivariateOptimizer optimizer)
 	{
 		StandardOptimizerTest test = new StandardOptimizerTest(optimizer);
 		double lowerBound[] = new double[n];

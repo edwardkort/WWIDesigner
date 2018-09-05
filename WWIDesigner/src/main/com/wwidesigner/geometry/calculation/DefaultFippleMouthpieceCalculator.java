@@ -134,7 +134,7 @@ public class DefaultFippleMouthpieceCalculator extends MouthpieceCalculator
 		return equivDiameter;
 	}
 
-	private double getScaledFippleFactor(Mouthpiece mouthpiece)
+	private static double getScaledFippleFactor(Mouthpiece mouthpiece)
 	{
 		Double windwayHeight = mouthpiece.getFipple().getWindwayHeight();
 		if (windwayHeight == null)

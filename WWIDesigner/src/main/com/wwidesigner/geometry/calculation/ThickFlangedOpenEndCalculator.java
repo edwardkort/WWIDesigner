@@ -23,7 +23,7 @@ public class ThickFlangedOpenEndCalculator extends TerminationCalculator
 		return new StateVector(P, Complex.ONE);
 	}
 
-	private Complex calcZ(Termination termination,
+	private static Complex calcZ(Termination termination,
 			double wave_number, PhysicalParameters params)
 	{
 		double a = termination.getBoreDiameter() / 2;

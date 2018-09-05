@@ -239,7 +239,7 @@ public class PhysicalParameters
 	 * This code assumes pressure of 101.0 kPa, and specific CO2 concentration.
 	 */
 	@SuppressWarnings("unused")
-	private double calculateSpeedOfSound(double ambientTemp,
+	private static double calculateSpeedOfSound(double ambientTemp,
 			double relativeHumidity)
 
 	{

@@ -104,7 +104,7 @@ public class TuningWizardDialog extends WizardDialog
 		JideSwingUtilities.globalCenterWindow(this);
 	}
 
-	private void addDataPopulatedDependency(AbstractWizardPage provider,
+	private static void addDataPopulatedDependency(AbstractWizardPage provider,
 			AbstractWizardPage listener)
 	{
 		((DataPopulatedProvider) provider)

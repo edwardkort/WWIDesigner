@@ -23,17 +23,16 @@ public class Ackley
 
 	public static void main(String[] args)
 	{
-		Ackley myTest = new Ackley();
-		myTest.testAckley(N, new DIRECTOptimizer(CONVERGENCE_THRESHOLD));
-		myTest.testSkewedAckley(N, new DIRECTOptimizer(CONVERGENCE_THRESHOLD));
-		myTest.testAckley(N, new DIRECT1Optimizer(CONVERGENCE_THRESHOLD));
-		myTest.testSkewedAckley(N, new DIRECT1Optimizer(CONVERGENCE_THRESHOLD));
-		myTest.testAckley(N, new DIRECTCOptimizer(CONVERGENCE_THRESHOLD));
-		myTest.testSkewedAckley(N, new DIRECTCOptimizer(CONVERGENCE_THRESHOLD));
-		myTest.testAckley(N, new DIRECT_L_Optimizer(CONVERGENCE_THRESHOLD));
-		myTest.testSkewedAckley(N, new DIRECT_L_Optimizer(CONVERGENCE_THRESHOLD));
-		myTest.testAckley(N, new BOBYQAOptimizer(2 * N + 1, 1.0, 1e-4));
-		myTest.testSkewedAckley(N, new BOBYQAOptimizer(2 * N + 1, 1.0, 1e-4));
+		Ackley.testAckley(N, new DIRECTOptimizer(CONVERGENCE_THRESHOLD));
+		Ackley.testSkewedAckley(N, new DIRECTOptimizer(CONVERGENCE_THRESHOLD));
+		Ackley.testAckley(N, new DIRECT1Optimizer(CONVERGENCE_THRESHOLD));
+		Ackley.testSkewedAckley(N, new DIRECT1Optimizer(CONVERGENCE_THRESHOLD));
+		Ackley.testAckley(N, new DIRECTCOptimizer(CONVERGENCE_THRESHOLD));
+		Ackley.testSkewedAckley(N, new DIRECTCOptimizer(CONVERGENCE_THRESHOLD));
+		Ackley.testAckley(N, new DIRECT_L_Optimizer(CONVERGENCE_THRESHOLD));
+		Ackley.testSkewedAckley(N, new DIRECT_L_Optimizer(CONVERGENCE_THRESHOLD));
+		Ackley.testAckley(N, new BOBYQAOptimizer(2 * N + 1, 1.0, 1e-4));
+		Ackley.testSkewedAckley(N, new BOBYQAOptimizer(2 * N + 1, 1.0, 1e-4));
 	}
 	
 	public Ackley()
@@ -43,7 +42,7 @@ public class Ackley
 	/**
 	 * Test the optimization of Ackleys's function.
 	 */
-	public final void testAckley(int n, MultivariateOptimizer optimizer)
+	public final static void testAckley(int n, MultivariateOptimizer optimizer)
 	{
 		StandardOptimizerTest test = new StandardOptimizerTest(optimizer);
 		double lowerBound[] = new double[n];
@@ -75,7 +74,7 @@ public class Ackley
 	/**
 	 * Test the optimization of Ackleys's function.
 	 */
-	public final void testSkewedAckley(int n, MultivariateOptimizer optimizer)
+	public final static void testSkewedAckley(int n, MultivariateOptimizer optimizer)
 	{
 		StandardOptimizerTest test = new StandardOptimizerTest(optimizer);
 		double lowerBound[] = new double[n];

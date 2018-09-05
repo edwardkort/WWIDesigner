@@ -25,18 +25,17 @@ public class Rosenbrock
 
 	public static void main(String[] args)
 	{
-		Rosenbrock myTest = new Rosenbrock();
-		myTest.testRosenbrock(N, new DIRECTOptimizer(CONVERGENCE_THRESHOLD));
-		myTest.testScaledRosenbrock(N, new DIRECTOptimizer(CONVERGENCE_THRESHOLD));
-		myTest.testRosenbrock(N, new DIRECT1Optimizer(CONVERGENCE_THRESHOLD));
-		myTest.testScaledRosenbrock(N, new DIRECT1Optimizer(CONVERGENCE_THRESHOLD));
-		myTest.testRosenbrock(N, new DIRECTCOptimizer(CONVERGENCE_THRESHOLD));
-		myTest.testScaledRosenbrock(N, new DIRECTCOptimizer(CONVERGENCE_THRESHOLD));
-		myTest.testRosenbrock(N, new DIRECT_L_Optimizer(CONVERGENCE_THRESHOLD));
-		myTest.testScaledRosenbrock(N, new DIRECT_L_Optimizer(CONVERGENCE_THRESHOLD));
-		myTest.testRosenbrock(N, new BOBYQAOptimizer(2 * N + 1, 1.0, 1e-4));
-		myTest.testScaledRosenbrock(N, new BOBYQAOptimizer(2 * N + 1, 1.0, 1e-4));
-		myTest.testScaledRosenbrock(N, new BOBYQAOptimizer(2 * N + 1, 1.0 * N, 1e-4 * N));
+		Rosenbrock.testRosenbrock(N, new DIRECTOptimizer(CONVERGENCE_THRESHOLD));
+		Rosenbrock.testScaledRosenbrock(N, new DIRECTOptimizer(CONVERGENCE_THRESHOLD));
+		Rosenbrock.testRosenbrock(N, new DIRECT1Optimizer(CONVERGENCE_THRESHOLD));
+		Rosenbrock.testScaledRosenbrock(N, new DIRECT1Optimizer(CONVERGENCE_THRESHOLD));
+		Rosenbrock.testRosenbrock(N, new DIRECTCOptimizer(CONVERGENCE_THRESHOLD));
+		Rosenbrock.testScaledRosenbrock(N, new DIRECTCOptimizer(CONVERGENCE_THRESHOLD));
+		Rosenbrock.testRosenbrock(N, new DIRECT_L_Optimizer(CONVERGENCE_THRESHOLD));
+		Rosenbrock.testScaledRosenbrock(N, new DIRECT_L_Optimizer(CONVERGENCE_THRESHOLD));
+		Rosenbrock.testRosenbrock(N, new BOBYQAOptimizer(2 * N + 1, 1.0, 1e-4));
+		Rosenbrock.testScaledRosenbrock(N, new BOBYQAOptimizer(2 * N + 1, 1.0, 1e-4));
+		Rosenbrock.testScaledRosenbrock(N, new BOBYQAOptimizer(2 * N + 1, 1.0 * N, 1e-4 * N));
 	}
 	
 	public Rosenbrock()
@@ -46,7 +45,7 @@ public class Rosenbrock
 	/**
 	 * Test the optimization of Rosenbrock's function.
 	 */
-	public final void testRosenbrock(int n, MultivariateOptimizer optimizer)
+	public final static void testRosenbrock(int n, MultivariateOptimizer optimizer)
 	{
 		StandardOptimizerTest test = new StandardOptimizerTest(optimizer);
 		double lowerBound[] = new double[n];
@@ -76,7 +75,7 @@ public class Rosenbrock
 	 * Test the optimization of a Rosenbrock's function,
 	 * with dimensions of different scale.
 	 */
-	public final void testScaledRosenbrock(int n, MultivariateOptimizer optimizer)
+	public final static void testScaledRosenbrock(int n, MultivariateOptimizer optimizer)
 	{
 		StandardOptimizerTest test = new StandardOptimizerTest(optimizer);
 		double lowerBound[] = new double[n];

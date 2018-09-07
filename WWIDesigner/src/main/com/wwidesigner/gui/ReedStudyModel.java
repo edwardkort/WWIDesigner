@@ -203,9 +203,9 @@ public class ReedStudyModel extends StudyModel
 		super.setPreferences(newPreferences);
 	}
 
-	public void setBlowingLevel(int blowingLevel)
+	public void setBlowingLevel(int aBlowingLevel)
 	{
-		this.blowingLevel = blowingLevel;
+		this.blowingLevel = aBlowingLevel;
 	}
 
 	@Override
@@ -271,7 +271,7 @@ public class ReedStudyModel extends StudyModel
 		int nrDimensions;
 
 		EvaluatorInterface evaluator;
-		BaseObjectiveFunction objective = null;
+		BaseObjectiveFunction aObjective = null;
 		double[] lowerBound = null;
 		double[] upperBound = null;
 
@@ -282,7 +282,7 @@ public class ReedStudyModel extends StudyModel
 		{
 			case "ReedCalibratorObjectiveFunction":
 				evaluator = new CentDeviationEvaluator(calculator, getInstrumentTuner());
-				objective = new ReedCalibratorObjectiveFunction(calculator,
+				aObjective = new ReedCalibratorObjectiveFunction(calculator,
 						tuning, evaluator);
 				lowerBound = new double[] { 0.00, 0.00 };
 				upperBound = new double[] { 10.0, 10.0 };
@@ -290,7 +290,7 @@ public class ReedStudyModel extends StudyModel
 
 			case "LengthObjectiveFunction":
 				evaluator = new BellNoteEvaluator(calculator);
-				objective = new LengthObjectiveFunction(calculator, tuning,
+				aObjective = new LengthObjectiveFunction(calculator, tuning,
 						evaluator);
 				lowerBound = new double[] { MIN_BORE_LENGTH };
 				upperBound = new double[] { MAX_BORE_LENGTH };
@@ -299,9 +299,9 @@ public class ReedStudyModel extends StudyModel
 			case "HoleSizeObjectiveFunction":
 				evaluator = new CentDeviationEvaluator(calculator,
 						getInstrumentTuner());
-				objective = new HoleSizeObjectiveFunction(calculator, tuning,
+				aObjective = new HoleSizeObjectiveFunction(calculator, tuning,
 						evaluator);
-				nrDimensions = objective.getNrDimensions();
+				nrDimensions = aObjective.getNrDimensions();
 				// Bounds are diameters, expressed in meters.
 				lowerBound = new double[nrDimensions];
 				upperBound = new double[nrDimensions];
@@ -315,15 +315,15 @@ public class ReedStudyModel extends StudyModel
 						getInstrumentTuner());
 				if (objectiveFunctionClass.equals("GlobalHolePositionObjectiveFunction"))
 				{
-					objective = new GlobalHolePositionObjectiveFunction(calculator,
+					aObjective = new GlobalHolePositionObjectiveFunction(calculator,
 							tuning, evaluator, BoreLengthAdjustmentType.PRESERVE_BELL);
 				}
 				else
 				{
-					objective = new HolePositionObjectiveFunction(calculator,
+					aObjective = new HolePositionObjectiveFunction(calculator,
 							tuning, evaluator, BoreLengthAdjustmentType.PRESERVE_BELL);
 				}
-				nrDimensions = objective.getNrDimensions();
+				nrDimensions = aObjective.getNrDimensions();
 				// Bounds are overall length, and hole separations, expressed in meters.
 				lowerBound = new double[nrDimensions];
 				upperBound = new double[nrDimensions];
@@ -361,15 +361,15 @@ public class ReedStudyModel extends StudyModel
 						getInstrumentTuner());
 				if (objectiveFunctionClass.equals("GlobalHoleObjectiveFunction"))
 				{
-					objective = new GlobalHoleObjectiveFunction(calculator, tuning,
+					aObjective = new GlobalHoleObjectiveFunction(calculator, tuning,
 							evaluator, BoreLengthAdjustmentType.PRESERVE_BELL);
 				}
 				else
 				{
-					objective = new HoleObjectiveFunction(calculator, tuning,
+					aObjective = new HoleObjectiveFunction(calculator, tuning,
 							evaluator, BoreLengthAdjustmentType.PRESERVE_BELL);
 				}
-				nrDimensions = objective.getNrDimensions();
+				nrDimensions = aObjective.getNrDimensions();
 				// Separation and diameter bounds, expressed in meters.
 				lowerBound = new double[nrDimensions];
 				upperBound = new double[nrDimensions];
@@ -409,7 +409,7 @@ public class ReedStudyModel extends StudyModel
 			case "ConicalBoreObjectiveFunction":
 				evaluator = new CentDeviationEvaluator(calculator,
 						getInstrumentTuner());
-				objective = new ConicalBoreObjectiveFunction(calculator, tuning,
+				aObjective = new ConicalBoreObjectiveFunction(calculator, tuning,
 						evaluator);
 				// Diameter at foot, in meters.
 				lowerBound = new double[] { MIN_BORE_DIAMETER };
@@ -419,9 +419,9 @@ public class ReedStudyModel extends StudyModel
 			case "HoleAndConicalBoreObjectiveFunction":
 				evaluator = new CentDeviationEvaluator(calculator,
 						getInstrumentTuner());
-				objective = new HoleAndConicalBoreObjectiveFunction(calculator,
+				aObjective = new HoleAndConicalBoreObjectiveFunction(calculator,
 						tuning, evaluator);
-				nrDimensions = objective.getNrDimensions();
+				nrDimensions = aObjective.getNrDimensions();
 				// Separation bounds and diameter bounds, expressed in meters,
 				// and bore diameter at foot, also in meters.
 				lowerBound = new double[nrDimensions];
@@ -465,9 +465,9 @@ public class ReedStudyModel extends StudyModel
 			case "BoreDiameterObjectiveFunction":
 				evaluator = new CentDeviationEvaluator(calculator,
 						getInstrumentTuner());
-				objective = new BoreDiameterObjectiveFunction(calculator, tuning,
+				aObjective = new BoreDiameterObjectiveFunction(calculator, tuning,
 						evaluator, 2);
-				nrDimensions = objective.getNrDimensions();
+				nrDimensions = aObjective.getNrDimensions();
 				// First bound is bottom bore diameter, expressed in meters.
 				// Remaining bounds are diameter ratios.
 				// Bore taper flares out toward bottom.
@@ -486,15 +486,15 @@ public class ReedStudyModel extends StudyModel
 				if (objectiveFunctionClass.equals(
 						"GlobalHoleAndBoreDiameterObjectiveFunction"))
 				{
-					objective = new GlobalHoleAndBoreDiameterObjectiveFunction(
+					aObjective = new GlobalHoleAndBoreDiameterObjectiveFunction(
 							calculator, tuning, evaluator, 2);
 				}
 				else
 				{
-					objective = new HoleAndBoreDiameterObjectiveFunction(calculator,
+					aObjective = new HoleAndBoreDiameterObjectiveFunction(calculator,
 							tuning, evaluator, 2);
 				}
-				nrDimensions = objective.getNrDimensions();
+				nrDimensions = aObjective.getNrDimensions();
 				// Separation bounds and diameter bounds, expressed in meters,
 				// bore diameter at foot, also in meters,
 				// and bore diameter ratios.
@@ -544,9 +544,9 @@ public class ReedStudyModel extends StudyModel
 			case "BorePositionObjectiveFunction":
 				evaluator = new CentDeviationEvaluator(calculator,
 						getInstrumentTuner());
-				objective = new BorePositionObjectiveFunction(calculator, tuning,
+				aObjective = new BorePositionObjectiveFunction(calculator, tuning,
 						evaluator, 2);
-				nrDimensions = objective.getNrDimensions();
+				nrDimensions = aObjective.getNrDimensions();
 				// First bound is bottom bore position, expressed in meters.
 				// Remaining bounds are fractional positions.
 				lowerBound = new double[nrDimensions];
@@ -560,9 +560,9 @@ public class ReedStudyModel extends StudyModel
 			case "HoleAndBorePositionObjectiveFunction":
 				evaluator = new CentDeviationEvaluator(calculator,
 						getInstrumentTuner());
-				objective = new HoleAndBorePositionObjectiveFunction(calculator,
+				aObjective = new HoleAndBorePositionObjectiveFunction(calculator,
 						tuning, evaluator, 2);
-				nrDimensions = objective.getNrDimensions();
+				nrDimensions = aObjective.getNrDimensions();
 				// Separation bounds and diameter bounds, expressed in meters,
 				// and bore position ratios.
 				lowerBound = new double[nrDimensions];
@@ -611,15 +611,15 @@ public class ReedStudyModel extends StudyModel
 						getInstrumentTuner());
 				if (objectiveFunctionClass.equals("GlobalBoreObjectiveFunction"))
 				{
-					objective = new GlobalBoreObjectiveFunction(calculator, tuning,
+					aObjective = new GlobalBoreObjectiveFunction(calculator, tuning,
 							evaluator, 2);
 				}
 				else
 				{
-					objective = new BoreObjectiveFunction(calculator, tuning,
+					aObjective = new BoreObjectiveFunction(calculator, tuning,
 							evaluator, 2);
 				}
-				nrDimensions = objective.getNrDimensions();
+				nrDimensions = aObjective.getNrDimensions();
 				// First half are bore positions, second half are bore diameters.
 				lowerBound = new double[nrDimensions];
 				upperBound = new double[nrDimensions];
@@ -645,15 +645,15 @@ public class ReedStudyModel extends StudyModel
 						getInstrumentTuner());
 				if (objectiveFunctionClass.equals("GlobalHoleAndBoreObjectiveFunction"))
 				{
-					objective = new GlobalHoleAndBoreObjectiveFunction(calculator,
+					aObjective = new GlobalHoleAndBoreObjectiveFunction(calculator,
 							tuning, evaluator, 2);
 				}
 				else
 				{
-					objective = new HoleAndBoreObjectiveFunction(calculator,
+					aObjective = new HoleAndBoreObjectiveFunction(calculator,
 							tuning, evaluator, 2);
 				}
-				nrDimensions = objective.getNrDimensions();
+				nrDimensions = aObjective.getNrDimensions();
 				// Separation bounds and diameter bounds, expressed in meters,
 				// and bore position ratios.
 				lowerBound = new double[nrDimensions];
@@ -737,10 +737,10 @@ public class ReedStudyModel extends StudyModel
 				}
 			}
 		}
-		objective.setLowerBounds(lowerBound);
-		objective.setUpperBounds(upperBound);
+		aObjective.setLowerBounds(lowerBound);
+		aObjective.setUpperBounds(upperBound);
 
-		return objective;
+		return aObjective;
 	}
 
 	@Override

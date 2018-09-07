@@ -60,12 +60,12 @@ public class FingeringPattern
 	}
 
 	/**
-	 * @param name
+	 * @param aName
 	 *            the name to set
 	 */
-	public void setName(String name)
+	public void setName(String aName)
 	{
-		this.name = name;
+		this.name = aName;
 	}
 
 	/**
@@ -77,12 +77,12 @@ public class FingeringPattern
 	}
 
 	/**
-	 * @param comment
+	 * @param aComment
 	 *            the comment to set
 	 */
-	public void setComment(String comment)
+	public void setComment(String aComment)
 	{
-		this.comment = comment;
+		this.comment = aComment;
 	}
 
 	/**
@@ -94,12 +94,12 @@ public class FingeringPattern
 	}
 
 	/**
-	 * @param numberOfHoles
+	 * @param aNumberOfHoles
 	 *            the numberOfHoles to set
 	 */
-	public void setNumberOfHoles(int numberOfHoles)
+	public void setNumberOfHoles(int aNumberOfHoles)
 	{
-		this.numberOfHoles = numberOfHoles;
+		this.numberOfHoles = aNumberOfHoles;
 	}
 
 	/**
@@ -115,12 +115,12 @@ public class FingeringPattern
 	}
 
 	/**
-	 * @param fingering
+	 * @param aFingering
 	 *            the fingering to set
 	 */
-	public void setFingering(List<Fingering> fingering)
+	public void setFingering(List<Fingering> aFingering)
 	{
-		this.fingering = fingering;
+		this.fingering = aFingering;
 	}
 
 	public void addFingering(Fingering newFingering)
@@ -134,9 +134,9 @@ public class FingeringPattern
 	 */
 	public boolean hasMinMax()
 	{
-		for (Fingering fingering : this.fingering)
+		for (Fingering thisFingering : this.fingering)
 		{
-			Note note = fingering.getNote();
+			Note note = thisFingering.getNote();
 			if (note != null)
 			{
 				if (note.getFrequencyMin() != null
@@ -154,9 +154,9 @@ public class FingeringPattern
 	 */
 	public boolean hasClosableEnd()
 	{
-		for (Fingering fingering : this.fingering)
+		for (Fingering thisFingering : this.fingering)
 		{
-			if (fingering.getOpenEnd() != null)
+			if (thisFingering.getOpenEnd() != null)
 			{
 				return true;
 			}
@@ -169,10 +169,10 @@ public class FingeringPattern
 	 */
 	public boolean hasWeights()
 	{
-		for (Fingering fingering : this.fingering)
+		for (Fingering thisFingering : this.fingering)
 		{
-			if (fingering.getOptimizationWeight() != null
-					&& fingering.getOptimizationWeight() != 1)
+			if (thisFingering.getOptimizationWeight() != null
+					&& thisFingering.getOptimizationWeight() != 1)
 			{
 				return true;
 			}

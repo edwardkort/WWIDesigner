@@ -186,9 +186,9 @@ public class Constraints
 		return this.constraint;
 	}
 
-	public void setConstraint(List<Constraint> constraint)
+	public void setConstraint(List<Constraint> aConstraint)
 	{
-		this.constraint = constraint;
+		this.constraint = aConstraint;
 	}
 
 	/**

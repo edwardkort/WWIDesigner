@@ -40,10 +40,10 @@ public class InstrumentComparisonTable extends DefaultTableModel
 	// Level at which we consider a difference significant.
 	protected double minDifference;
 
-	public InstrumentComparisonTable(String title, LengthType defaultLengthType)
+	public InstrumentComparisonTable(String aTitle, LengthType aDefaultLengthType)
 	{
-		this.title = title;
-		this.defaultLengthType = defaultLengthType;
+		this.title = aTitle;
+		this.defaultLengthType = aDefaultLengthType;
 		setPrecision();
 	}
 

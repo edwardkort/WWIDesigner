@@ -450,7 +450,7 @@ public class WIDesigner extends FileBasedApplication implements EventSubscriber
 			private static final long serialVersionUID = 1L;
 
 			@Override
-			public void actionPerformedDetached(ActionEvent e)
+			public void actionPerformedDetached(ActionEvent aEvent)
 			{
 				ConsoleView view = getConsoleView();
 				view.clear();
@@ -463,7 +463,7 @@ public class WIDesigner extends FileBasedApplication implements EventSubscriber
 	{
 		Action action = new GUIApplicationAction(OPEN_CONSTRAINTS_ACTION_ID)
 		{
-			public void actionPerformedDetached(ActionEvent e)
+			public void actionPerformedDetached(ActionEvent aEvent)
 			{
 				File priorStartDirectory = getLastDirectory();
 				File startDirectory = getConstraintsLeafDirectory();
@@ -491,7 +491,7 @@ public class WIDesigner extends FileBasedApplication implements EventSubscriber
 	{
 		Action action = new GUIApplicationAction(SAVE_AS_CONSTRAINTS_ACTION_ID)
 		{
-			public void actionPerformedDetached(ActionEvent e)
+			public void actionPerformedDetached(ActionEvent aEvent)
 			{
 				File priorStartDirectory = getLastDirectory();
 				try
@@ -533,7 +533,7 @@ public class WIDesigner extends FileBasedApplication implements EventSubscriber
 		};
 		Action action = new ActivityAction(createDefaultActivity)
 		{
-			public void actionPerformed(ActionEvent e)
+			public void actionPerformed(ActionEvent aEvent)
 			{
 				getActivityManager().run(createDefaultActivity);
 			}
@@ -563,7 +563,7 @@ public class WIDesigner extends FileBasedApplication implements EventSubscriber
 		action = new ActivityAction(createBlankActivity)
 		{
 			@Override
-			public void actionPerformed(ActionEvent e)
+			public void actionPerformed(ActionEvent aEvent)
 			{
 				getActivityManager().run(createBlankActivity);
 			}
@@ -618,7 +618,7 @@ public class WIDesigner extends FileBasedApplication implements EventSubscriber
 		action = new GUIApplicationAction(COMPARE_INSTRUMENT_ACTION_ID)
 		{
 			@Override
-			public void actionPerformedDetached(ActionEvent e)
+			public void actionPerformedDetached(ActionEvent aEvent)
 			{
 				StudyView studyView = getStudyView();
 				if (studyView != null)
@@ -647,7 +647,7 @@ public class WIDesigner extends FileBasedApplication implements EventSubscriber
 		action = new GUIApplicationAction(CREATE_TUNING_FILE_ACTION_ID)
 		{
 			@Override
-			public void actionPerformedDetached(ActionEvent e)
+			public void actionPerformedDetached(ActionEvent aEvent)
 			{
 				TuningWizardDialog wizard = new TuningWizardDialog(
 						getApplicationUIManager().getWindowsUI()
@@ -676,7 +676,7 @@ public class WIDesigner extends FileBasedApplication implements EventSubscriber
 		action = new GUIApplicationAction(SKETCH_INSTRUMENT_ACTION_ID)
 		{
 			@Override
-			public void actionPerformedDetached(ActionEvent e)
+			public void actionPerformedDetached(ActionEvent aEvent)
 			{
 				StudyView studyView = getStudyView();
 				if (studyView != null)
@@ -733,7 +733,7 @@ public class WIDesigner extends FileBasedApplication implements EventSubscriber
 		action = new ActivityAction(optActivity)
 		{
 			@Override
-			public void actionPerformed(ActionEvent e)
+			public void actionPerformed(ActionEvent aEvent)
 			{
 				getActivityManager().run(optActivity);
 			}
@@ -774,7 +774,7 @@ public class WIDesigner extends FileBasedApplication implements EventSubscriber
 		action = new ActivityAction(graphActivity)
 		{
 			@Override
-			public void actionPerformed(ActionEvent e)
+			public void actionPerformed(ActionEvent aEvent)
 			{
 				getActivityManager().run(graphActivity);
 			}
@@ -819,7 +819,7 @@ public class WIDesigner extends FileBasedApplication implements EventSubscriber
 		action = new ActivityAction(activity)
 		{
 			@Override
-			public void actionPerformed(ActionEvent e)
+			public void actionPerformed(ActionEvent aEvent)
 			{
 				getActivityManager().run(activity);
 			}
@@ -861,7 +861,7 @@ public class WIDesigner extends FileBasedApplication implements EventSubscriber
 		action = new ActivityAction(graphActivity)
 		{
 			@Override
-			public void actionPerformed(ActionEvent e)
+			public void actionPerformed(ActionEvent aEvent)
 			{
 				getActivityManager().run(graphActivity);
 			}
@@ -907,7 +907,7 @@ public class WIDesigner extends FileBasedApplication implements EventSubscriber
 		action = new ActivityAction(activity)
 		{
 			@Override
-			public void actionPerformed(ActionEvent e)
+			public void actionPerformed(ActionEvent aEvent)
 			{
 				getActivityManager().run(activity);
 			}
@@ -1192,9 +1192,9 @@ public class WIDesigner extends FileBasedApplication implements EventSubscriber
 					.setPage(WIDesigner.class.getResource("images/about.html"));
 			aboutText.setPreferredSize(new Dimension(400, 600));
 		}
-		catch (Exception e)
+		catch (Exception aEx)
 		{
-			System.out.println(e.getMessage());
+			System.out.println(aEx.getMessage());
 		}
 		aboutText.setEditable(false);
 
@@ -1216,30 +1216,30 @@ public class WIDesigner extends FileBasedApplication implements EventSubscriber
 		 * Construct a BlockingProgressListener with a Cancel button, for an
 		 * activity that supports parentActivity.cancel().
 		 */
-		protected BlockingProgressListener(Activity parentActivity,
-				ApplicationWindowsUI windowsUI, String activityName,
-				String message)
+		protected BlockingProgressListener(Activity aParentActivity,
+				ApplicationWindowsUI aWindowsUI, String aActivityName,
+				String aMessage)
 		{
-			this(windowsUI, activityName, message);
-			this.parentActivity = parentActivity;
+			this(aWindowsUI, aActivityName, aMessage);
+			this.parentActivity = aParentActivity;
 		}
 
 		/**
 		 * Construct a BlockingProgressListener without a Cancel button.
 		 */
-		protected BlockingProgressListener(ApplicationWindowsUI windowsUI,
-				String activityName, String message)
+		protected BlockingProgressListener(ApplicationWindowsUI aWindowsUI,
+				String aActivityName, String aMessage)
 		{
 			this.dialog = null;
-			this.windowsUI = windowsUI;
-			this.activityName = activityName;
-			this.message = message;
+			this.windowsUI = aWindowsUI;
+			this.activityName = aActivityName;
+			this.message = aMessage;
 			this.parentActivity = null;
 			this.isRunning = false;
 		}
 
 		@Override
-		public void progressStart(ProgressEvent e)
+		public void progressStart(ProgressEvent aEvent)
 		{
 			try
 			{
@@ -1280,13 +1280,13 @@ public class WIDesigner extends FileBasedApplication implements EventSubscriber
 		}
 
 		@Override
-		public void progressProgressing(ProgressEvent e)
+		public void progressProgressing(ProgressEvent aEvent)
 		{
 			// Do nothing
 		}
 
 		@Override
-		public void progressEnd(ProgressEvent e)
+		public void progressEnd(ProgressEvent aEvent)
 		{
 			try
 			{
@@ -1307,25 +1307,25 @@ public class WIDesigner extends FileBasedApplication implements EventSubscriber
 	}
 
 	@Override
-	public void doEvent(SubscriberEvent e)
+	public void doEvent(SubscriberEvent aEvent)
 	{
-		String eventName = e.getEvent();
+		String eventName = aEvent.getEvent();
 		if (TUNING_ACTIVE_EVENT_ID.equals(eventName))
 		{
 			Action action = getActionMap().get(CALCULATE_TUNING_ACTION_ID);
 			if (action != null)
 			{
-				action.setEnabled((Boolean) e.getSource());
+				action.setEnabled((Boolean) aEvent.getSource());
 			}
 			action = getActionMap().get(GRAPH_TUNING_ACTION_ID);
 			if (action != null)
 			{
-				action.setEnabled((Boolean) e.getSource());
+				action.setEnabled((Boolean) aEvent.getSource());
 			}
 			action = getActionMap().get(CALCULATE_SUPPLEMENTARY_INFO_ACTION_ID);
 			if (action != null)
 			{
-				action.setEnabled((Boolean) e.getSource());
+				action.setEnabled((Boolean) aEvent.getSource());
 			}
 		}
 		else if (OPTIMIZATION_ACTIVE_EVENT_ID.equals(eventName))
@@ -1333,7 +1333,7 @@ public class WIDesigner extends FileBasedApplication implements EventSubscriber
 			Action action = getActionMap().get(OPTIMIZE_INSTRUMENT_ACTION_ID);
 			if (action != null)
 			{
-				action.setEnabled((Boolean) e.getSource());
+				action.setEnabled((Boolean) aEvent.getSource());
 			}
 		}
 		else if (CONSTRAINTS_ACTIVE_EVENT_ID.equals(eventName))
@@ -1341,7 +1341,7 @@ public class WIDesigner extends FileBasedApplication implements EventSubscriber
 			Action action = getActionMap().get(OPEN_CONSTRAINTS_ACTION_ID);
 			if (action != null)
 			{
-				action.setEnabled((Boolean) e.getSource());
+				action.setEnabled((Boolean) aEvent.getSource());
 			}
 		}
 		else if (CONSTRAINTS_CAN_CREATE_EVENT_ID.equals(eventName))
@@ -1350,12 +1350,12 @@ public class WIDesigner extends FileBasedApplication implements EventSubscriber
 					.get(CREATE_DEFAULT_CONSTRAINTS_ACTION_ID);
 			if (action != null)
 			{
-				action.setEnabled((Boolean) e.getSource());
+				action.setEnabled((Boolean) aEvent.getSource());
 			}
 			action = getActionMap().get(CREATE_BLANK_CONSTRAINTS_ACTION_ID);
 			if (action != null)
 			{
-				action.setEnabled((Boolean) e.getSource());
+				action.setEnabled((Boolean) aEvent.getSource());
 			}
 		}
 		else if (CONSTRAINTS_SAVE_AS_ACTIVE_EVENT_ID.equals(eventName))
@@ -1363,16 +1363,16 @@ public class WIDesigner extends FileBasedApplication implements EventSubscriber
 			Action action = getActionMap().get(SAVE_AS_CONSTRAINTS_ACTION_ID);
 			if (action != null)
 			{
-				action.setEnabled((Boolean) e.getSource());
+				action.setEnabled((Boolean) aEvent.getSource());
 			}
 		}
 		else if (INSTRUMENT_SELECTED_EVENT_ID.equals(eventName))
 		{
-			setCompareInstrumentAction((String) e.getSource(), false);
+			setCompareInstrumentAction((String) aEvent.getSource(), false);
 			Action action = getActionMap().get(SKETCH_INSTRUMENT_ACTION_ID);
 			if (action != null)
 			{
-				action.setEnabled(((String) e.getSource()).length() > 0);
+				action.setEnabled(((String) aEvent.getSource()).length() > 0);
 			}
 		}
 		else if (NOTE_SELECTED_EVENT_ID.equals(eventName))
@@ -1380,7 +1380,7 @@ public class WIDesigner extends FileBasedApplication implements EventSubscriber
 			Action action = getActionMap().get(GRAPH_NOTE_ACTION_ID);
 			if (action != null)
 			{
-				action.setEnabled((Boolean) e.getSource());
+				action.setEnabled((Boolean) aEvent.getSource());
 			}
 		}
 	}
@@ -1405,7 +1405,7 @@ public class WIDesigner extends FileBasedApplication implements EventSubscriber
 						false);
 			}
 		}
-		catch (Exception e)
+		catch (Exception aEx)
 		{
 			getEventManager().publish(CONSTRAINTS_SAVE_AS_ACTIVE_EVENT_ID,
 					false);

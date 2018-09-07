@@ -26,11 +26,11 @@ public class HoleGroupSpacingDialog extends StandardDialog
 	protected int numberOfHoles;
 	protected int[][] holeGroups = null;
 
-	public HoleGroupSpacingDialog(Frame parentFrame, int numberOfHoles)
+	public HoleGroupSpacingDialog(Frame parentFrame, int aNumberOfHoles)
 	{
 		super(parentFrame, "Hole-spacing Groups", true);
 		setLocationRelativeTo(parentFrame);
-		this.numberOfHoles = numberOfHoles;
+		this.numberOfHoles = aNumberOfHoles;
 	}
 
 	@Override

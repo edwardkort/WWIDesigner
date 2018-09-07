@@ -23,9 +23,9 @@ import com.wwidesigner.geometry.view.NafPanel;
 
 public class ContainedNafView extends ContainedInstrumentView
 {
-	public ContainedNafView(DataViewPane parent)
+	public ContainedNafView(DataViewPane aParent)
 	{
-		super(parent);
+		super(aParent);
 	}
 
 	@Override

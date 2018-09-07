@@ -23,11 +23,11 @@ public class HoleSizeObjectiveFunction extends BaseObjectiveFunction
 	public static final String DISPLAY_NAME = "Hole size only";
 	public static final String NAME = HoleSizeObjectiveFunction.class.getSimpleName();
 
-	public HoleSizeObjectiveFunction(InstrumentCalculator calculator,
-			TuningInterface tuning, EvaluatorInterface evaluator)
+	public HoleSizeObjectiveFunction(InstrumentCalculator aCalculator,
+			TuningInterface tuning, EvaluatorInterface aEvaluator)
 	{
-		super(calculator, tuning, evaluator);
-		nrDimensions = calculator.getInstrument().getHole().size();
+		super(aCalculator, tuning, aEvaluator);
+		nrDimensions = aCalculator.getInstrument().getHole().size();
 		optimizerType = OptimizerType.BOBYQAOptimizer; // MultivariateOptimizer
 		if (nrDimensions == 1)
 		{

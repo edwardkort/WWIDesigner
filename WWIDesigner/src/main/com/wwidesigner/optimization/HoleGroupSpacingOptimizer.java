@@ -26,12 +26,12 @@ public class HoleGroupSpacingOptimizer extends InstrumentOptimizer
 	/**
 	 * @param inst
 	 * @param calculator
-	 * @param tuning
+	 * @param aTuning
 	 */
 	public HoleGroupSpacingOptimizer(Instrument inst,
-			InstrumentCalculator calculator, TuningInterface tuning)
+			InstrumentCalculator calculator, TuningInterface aTuning)
 	{
-		super(defaultNumberOfInterpolationPoints, inst, calculator, tuning);
+		super(defaultNumberOfInterpolationPoints, inst, calculator, aTuning);
 	}
 
 	/**

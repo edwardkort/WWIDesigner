@@ -44,12 +44,12 @@ public class ScaleIntervalPage extends AbstractWizardPage implements
 	private JButton updateFromSymbolPageButton;
 	private JButton updateFromTemperamentPageButton;
 
-	public ScaleIntervalPage(TuningWizardDialog parent)
+	public ScaleIntervalPage(TuningWizardDialog aParent)
 	{
 		super(
 				"Scale with Intervals",
 				"Drag and drop selected scale symbols and temperament intervals to create a scale with interval definitions.");
-		this.parent = parent;
+		this.parent = aParent;
 		createWizardContent();
 	}
 

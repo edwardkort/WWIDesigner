@@ -35,18 +35,18 @@ public class GlobalBoreObjectiveFunction extends BoreObjectiveFunction
 	 * Create an optimization objective function for bore point position and
 	 * diameter at existing bore points, for use with DIRECT global optimizer.
 	 * 
-	 * @param calculator
+	 * @param aCalculator
 	 * @param tuning
-	 * @param evaluator
+	 * @param aEvaluator
 	 * @param unchangedBorePoints
 	 *            - Leave diameter and position unchanged for this many bore
 	 *            points from the top of the bore.
 	 */
-	public GlobalBoreObjectiveFunction(InstrumentCalculator calculator,
-			TuningInterface tuning, EvaluatorInterface evaluator, 
+	public GlobalBoreObjectiveFunction(InstrumentCalculator aCalculator,
+			TuningInterface tuning, EvaluatorInterface aEvaluator, 
 			int unchangedBorePoints)
 	{
-		super(calculator, tuning, evaluator, unchangedBorePoints);
+		super(aCalculator, tuning, aEvaluator, unchangedBorePoints);
 		optimizerType = OptimizerType.DIRECTOptimizer;
 		maxEvaluations = 40000;
 		constraints.setObjectiveDisplayName("Bore point global optimizer");

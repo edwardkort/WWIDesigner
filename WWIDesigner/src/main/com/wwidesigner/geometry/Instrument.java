@@ -97,12 +97,12 @@ public class Instrument implements InstrumentInterface
 	}
 
 	/**
-	 * @param lengthType
+	 * @param aLengthType
 	 *            the lengthType to set
 	 */
-	public void setLengthType(LengthType lengthType)
+	public void setLengthType(LengthType aLengthType)
 	{
-		this.lengthType = lengthType;
+		this.lengthType = aLengthType;
 	}
 
 	/*
@@ -130,12 +130,12 @@ public class Instrument implements InstrumentInterface
 	}
 
 	/**
-	 * @param borePoint
+	 * @param aBorePoint
 	 *            the borePoint to set
 	 */
-	public void setBorePoint(List<BorePoint> borePoint)
+	public void setBorePoint(List<BorePoint> aBorePoint)
 	{
-		this.borePoint = borePoint;
+		this.borePoint = aBorePoint;
 	}
 
 	/*
@@ -150,9 +150,9 @@ public class Instrument implements InstrumentInterface
 	}
 
 	@Override
-	public void addBorePoint(BorePoint borePoint)
+	public void addBorePoint(BorePoint aBorePoint)
 	{
-		getBorePoint().add(borePoint);
+		getBorePoint().add(aBorePoint);
 	}
 
 	/*
@@ -180,12 +180,12 @@ public class Instrument implements InstrumentInterface
 	}
 
 	/**
-	 * @param hole
+	 * @param aHole
 	 *            the hole to set
 	 */
-	public void setHole(List<Hole> hole)
+	public void setHole(List<Hole> aHole)
 	{
-		this.hole = hole;
+		this.hole = aHole;
 	}
 
 	/*
@@ -200,9 +200,9 @@ public class Instrument implements InstrumentInterface
 	}
 
 	@Override
-	public void addHole(Hole hole)
+	public void addHole(Hole aHole)
 	{
-		getHole().add(hole);
+		getHole().add(aHole);
 	}
 
 	/*
@@ -252,16 +252,16 @@ public class Instrument implements InstrumentInterface
 	 * Converts the instrument, if not already done, to the specified
 	 * lengthType.
 	 * 
-	 * @param lengthType
+	 * @param aLengthType
 	 * @return True is a conversion is performed.
 	 */
-	public boolean convertToLengthType(LengthType lengthType)
+	public boolean convertToLengthType(LengthType aLengthType)
 	{
 		LengthType originalLengthType = getLengthType();
-		if (!originalLengthType.equals(lengthType))
+		if (!originalLengthType.equals(aLengthType))
 		{
 			convertToMetres();
-			setLengthType(lengthType);
+			setLengthType(aLengthType);
 			convertToLengthType();
 			return true;
 		}

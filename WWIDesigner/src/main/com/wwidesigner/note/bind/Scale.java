@@ -142,12 +142,12 @@ public class Scale
 	}
 
 	/**
-	 * @param note
+	 * @param aNote
 	 *            the note to set
 	 */
-	public void setNote(List<Scale.Note> note)
+	public void setNote(List<Scale.Note> aNote)
 	{
-		this.note = note;
+		this.note = aNote;
 	}
 
 	/**

@@ -14,9 +14,9 @@ public class ReactanceEvaluator implements EvaluatorInterface
 {
 	protected InstrumentCalculator  calculator;
 
-	public ReactanceEvaluator( InstrumentCalculator calculator )
+	public ReactanceEvaluator( InstrumentCalculator aCalculator )
 	{
-		this.calculator = calculator;
+		this.calculator = aCalculator;
 	}
 
 	/**

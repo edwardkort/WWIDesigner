@@ -22,10 +22,10 @@ public class LengthObjectiveFunction extends BaseObjectiveFunction
 	public static final ConstraintType CONSTR_TYPE = ConstraintType.DIMENSIONAL;
 	public static final String DISPLAY_NAME = "Length optimizer";
 
-	public LengthObjectiveFunction(InstrumentCalculator calculator,
-			TuningInterface tuning, EvaluatorInterface evaluator)
+	public LengthObjectiveFunction(InstrumentCalculator aCalculator,
+			TuningInterface tuning, EvaluatorInterface aEvaluator)
 	{
-		super(calculator, tuning, evaluator);
+		super(aCalculator, tuning, aEvaluator);
 		nrDimensions = 1;
 		optimizerType = OptimizerType.BrentOptimizer; // UnivariateOptimizer
 		setConstraints();

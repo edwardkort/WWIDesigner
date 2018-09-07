@@ -31,10 +31,10 @@ import com.wwidesigner.note.TuningInterface;
 public class GlobalHoleAndTaperObjectiveFunction extends HoleAndTaperObjectiveFunction
 {
 
-	public GlobalHoleAndTaperObjectiveFunction(InstrumentCalculator calculator,
-			TuningInterface tuning, EvaluatorInterface evaluator)
+	public GlobalHoleAndTaperObjectiveFunction(InstrumentCalculator aCalculator,
+			TuningInterface tuning, EvaluatorInterface aEvaluator)
 	{
-		super(calculator, tuning, evaluator);
+		super(aCalculator, tuning, aEvaluator);
 		optimizerType = OptimizerType.DIRECTOptimizer;
 		maxEvaluations = 30000;
 		constraints.setObjectiveDisplayName("Hole and taper global optimizer");

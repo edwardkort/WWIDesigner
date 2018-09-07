@@ -38,10 +38,10 @@ public class WhistleCalculator extends DefaultInstrumentCalculator
 	protected static final double StrouhalMin = 0.01;		// Minimum strouhal number.
 															// Below this, we are surely above fmax.
 
-	public WhistleCalculator(Instrument instrument,
+	public WhistleCalculator(Instrument aInstrument,
 			PhysicalParameters physicalParams)
 	{
-		super(instrument, new SimpleFippleMouthpieceCalculator(),
+		super(aInstrument, new SimpleFippleMouthpieceCalculator(),
 				new UnflangedEndCalculator(), new DefaultHoleCalculator(),
 				new SimpleBoreSectionCalculator(), physicalParams);
 	}
@@ -117,10 +117,10 @@ public class WhistleCalculator extends DefaultInstrumentCalculator
 	}
 
 	@Override
-	public boolean isCompatible(Instrument instrument)
+	public boolean isCompatible(Instrument aInstrument)
 	{
-		return instrument != null && instrument.getMouthpiece() != null
-				&& instrument.getMouthpiece().getFipple() != null;
+		return aInstrument != null && aInstrument.getMouthpiece() != null
+				&& aInstrument.getMouthpiece().getFipple() != null;
 	}
 
 }

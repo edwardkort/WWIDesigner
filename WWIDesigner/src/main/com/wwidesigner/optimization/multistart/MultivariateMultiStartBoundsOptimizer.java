@@ -36,30 +36,30 @@ public class MultivariateMultiStartBoundsOptimizer implements
 	/**
 	 * Create a multi-start optimizer from a single-start optimizer.
 	 * 
-	 * @param optimizer
+	 * @param aOptimizer
 	 *            Single-start optimizer to wrap.
-	 * @param starts
+	 * @param aStarts
 	 *            Number of starts to perform (including the first one),
 	 *            multi-start is disabled if value is less than or equal to 1.
-	 * @param generator
+	 * @param aGenerator
 	 *            Random vector generator to use for restarts.
 	 */
 	public MultivariateMultiStartBoundsOptimizer(
-			final MultivariateOptimizer optimizer, final int starts,
-			final AbstractRangeProcessor generator)
+			final MultivariateOptimizer aOptimizer, final int aStarts,
+			final AbstractRangeProcessor aGenerator)
 	{
-		if (optimizer == null || generator == null)
+		if (aOptimizer == null || aGenerator == null)
 		{
 			throw new NullArgumentException();
 		}
-		if (starts < 1)
+		if (aStarts < 1)
 		{
-			throw new NotStrictlyPositiveException(starts);
+			throw new NotStrictlyPositiveException(aStarts);
 		}
 
-		this.optimizer = optimizer;
-		this.starts = starts;
-		this.generator = generator;
+		this.optimizer = aOptimizer;
+		this.starts = aStarts;
+		this.generator = aGenerator;
 	}
 
 	/**

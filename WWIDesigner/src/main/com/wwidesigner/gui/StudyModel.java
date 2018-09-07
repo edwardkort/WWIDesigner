@@ -296,9 +296,9 @@ public abstract class StudyModel implements CategoryType
 		private String selectedSub;
 		private Map<String, String> toolTips = new HashMap<String, String>();
 
-		public Category(String name)
+		public Category(String aName)
 		{
-			this.name = name;
+			this.name = aName;
 		}
 
 		public String toString()
@@ -306,29 +306,29 @@ public abstract class StudyModel implements CategoryType
 			return name;
 		}
 
-		public void addSub(String name, Object sub)
+		public void addSub(String aName, Object sub)
 		{
 			if (subs == null)
 			{
 				subs = new TreeMap<String, Object>();
 			}
-			subs.put(name, sub);
+			subs.put(aName, sub);
 		}
 
-		public void addSub(String name, Object sub, String toolTip)
+		public void addSub(String aName, Object sub, String toolTip)
 		{
-			addSub(name, sub);
-			toolTips.put(name, toolTip);
+			addSub(aName, sub);
+			toolTips.put(aName, toolTip);
 		}
 
-		public void removeSub(String name)
+		public void removeSub(String aName)
 		{
-			if (name.equals(selectedSub))
+			if (aName.equals(selectedSub))
 			{
 				selectedSub = null;
 			}
-			subs.remove(name);
-			toolTips.remove(name);
+			subs.remove(aName);
+			toolTips.remove(aName);
 		}
 
 		public void removeSubByValue(Object value)
@@ -875,14 +875,14 @@ public abstract class StudyModel implements CategoryType
 
 	public String getDefaultConstraints(Object... parentFrame) throws Exception
 	{
-		BaseObjectiveFunction objective = getObjectiveFunction(
+		BaseObjectiveFunction aObjective = getObjectiveFunction(
 				BaseObjectiveFunction.DEFAULT_CONSTRAINTS_INTENT);
 		// For the case of a cancelled hole-grouping.
-		if (objective == null)
+		if (aObjective == null)
 		{
 			return null;
 		}
-		Constraints constraints = objective.getConstraints();
+		Constraints constraints = aObjective.getConstraints();
 		constraints.setConstraintsName("Default");
 		String xmlConstraints = marshal(constraints);
 
@@ -891,14 +891,14 @@ public abstract class StudyModel implements CategoryType
 
 	public String getBlankConstraints(Frame parentFrame) throws Exception
 	{
-		BaseObjectiveFunction objective = getObjectiveFunction(
+		BaseObjectiveFunction aObjective = getObjectiveFunction(
 				BaseObjectiveFunction.BLANK_CONSTRAINTS_INTENT);
 		// For the case of a cancelled hole-grouping.
-		if (objective == null)
+		if (aObjective == null)
 		{
 			return null;
 		}
-		Constraints constraints = objective.getConstraints();
+		Constraints constraints = aObjective.getConstraints();
 		constraints.setConstraintsName("Blank");
 		String xmlConstraints = marshal(constraints);
 
@@ -1167,9 +1167,9 @@ public abstract class StudyModel implements CategoryType
 		return params;
 	}
 
-	public void setParams(PhysicalParameters params)
+	public void setParams(PhysicalParameters aParams)
 	{
-		this.params = params;
+		this.params = aParams;
 	}
 
 	/**

@@ -56,14 +56,14 @@ public class FingeringPatternPage extends AbstractWizardPage implements
 	private JButton saveButton;
 	private boolean isInitialized;
 
-	public FingeringPatternPage(TuningWizardDialog parent)
+	public FingeringPatternPage(TuningWizardDialog aParent)
 	{
 		super(
 				"Fingering Pattern",
 				"Select or create the fingerings used in the scale. "
 						+ "Click on a fingering to start editing hole states (indicated by blue outline). "
 						+ "Hit Esc to cancel editing, Enter to accept edits.");
-		this.parent = parent;
+		this.parent = aParent;
 		createWizardContent();
 	}
 

@@ -45,13 +45,13 @@ public class HoleGroupPositionObjectiveFunction extends BaseObjectiveFunction
 	protected double[] groupSize;
 	protected boolean allowBoreSizeInterpolation = true;
 
-	public HoleGroupPositionObjectiveFunction(InstrumentCalculator calculator,
-			TuningInterface tuning, EvaluatorInterface evaluator,
-			int[][] holeGroups) throws Exception
+	public HoleGroupPositionObjectiveFunction(InstrumentCalculator aCalculator,
+			TuningInterface tuning, EvaluatorInterface aEvaluator,
+			int[][] aHoleGroups) throws Exception
 	{
-		super(calculator, tuning, evaluator);
+		super(aCalculator, tuning, aEvaluator);
 		optimizerType = OptimizerType.BOBYQAOptimizer; // MultivariateOptimizer
-		setHoleGroups(holeGroups);
+		setHoleGroups(aHoleGroups);
 	}
 
 	public void setHoleGroups(int[][] groups) throws Exception
@@ -80,7 +80,7 @@ public class HoleGroupPositionObjectiveFunction extends BaseObjectiveFunction
 		setConstraints();
 	}
 
-	private void validateHoleGroups(int[][] groups, int numberOfHoles)
+	private void validateHoleGroups(int[][] groups, int aNumberOfHoles)
 			throws Exception
 	{
 		boolean first = true;
@@ -135,7 +135,7 @@ public class HoleGroupPositionObjectiveFunction extends BaseObjectiveFunction
 
 		numberOfHoleSpaces++; // The space from last hole to foot of flute
 
-		if ((currentIdx + 1) != numberOfHoles)
+		if ((currentIdx + 1) != aNumberOfHoles)
 		{
 			throw new Exception("All holes are not in a group");
 		}
@@ -146,8 +146,8 @@ public class HoleGroupPositionObjectiveFunction extends BaseObjectiveFunction
 	protected int getNumberOfHoles()
 	{
 		numberOfHoleSpaces = 0;
-		int numberOfHoles = calculator.getInstrument().getHole().size();
-		if (numberOfHoles == 0)
+		int aNumberOfHoles = calculator.getInstrument().getHole().size();
+		if (aNumberOfHoles == 0)
 		{
 			// If there are no holes, assume the list of groups is empty.
 			// Only one dimension, the length of the flute.
@@ -156,13 +156,13 @@ public class HoleGroupPositionObjectiveFunction extends BaseObjectiveFunction
 			dimensionByHole = null;
 			groupSize = null;
 		}
-		return numberOfHoles;
+		return aNumberOfHoles;
 	}
 
-	protected void computeDimensionByHole(int numberOfHoles)
+	protected void computeDimensionByHole(int aNumberOfHoles)
 	{
-		dimensionByHole = new int[numberOfHoles];
-		groupSize = new double[numberOfHoles];
+		dimensionByHole = new int[aNumberOfHoles];
+		groupSize = new double[aNumberOfHoles];
 
 		// Dimension 0 is the position of the end bore point.
 		// Dimension 1 is the spacing after the first hole.

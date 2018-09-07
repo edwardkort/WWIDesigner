@@ -17,9 +17,9 @@ public class BellNoteEvaluator implements EvaluatorInterface
 	// fmax = FmaxRatio * fnom.
 	protected static final double FmaxRatio = 1.001;
 
-	public BellNoteEvaluator( InstrumentCalculator calculator )
+	public BellNoteEvaluator( InstrumentCalculator aCalculator )
 	{
-		this.calculator = calculator;
+		this.calculator = aCalculator;
 	}
 	
 	protected static boolean allHolesClosed(Fingering fingering)

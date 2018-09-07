@@ -62,12 +62,12 @@ public class Fingering implements Serializable
 	}
 
 	/**
-	 * @param note
+	 * @param aNote
 	 *            the note to set
 	 */
-	public void setNote(Note note)
+	public void setNote(Note aNote)
 	{
-		this.note = note;
+		this.note = aNote;
 	}
 
 	/**
@@ -83,12 +83,12 @@ public class Fingering implements Serializable
 	}
 
 	/**
-	 * @param openHole
+	 * @param aOpenHole
 	 *            the openHole to set
 	 */
-	public void setOpenHole(List<Boolean> openHole)
+	public void setOpenHole(List<Boolean> aOpenHole)
 	{
-		this.openHole = openHole;
+		this.openHole = aOpenHole;
 	}
 
 	public void setOpenHoles(boolean[] openHoles)
@@ -182,11 +182,11 @@ public class Fingering implements Serializable
 	}
 
 	/**
-	 * @param openEnd the openEnd state to set
+	 * @param aOpenEnd the openEnd state to set
 	 */
-	public void setOpenEnd(Boolean openEnd)
+	public void setOpenEnd(Boolean aOpenEnd)
 	{
-		this.openEnd = openEnd;
+		this.openEnd = aOpenEnd;
 	}
 
 	/**
@@ -209,9 +209,9 @@ public class Fingering implements Serializable
 		return optimizationWeight;
 	}
 
-	public void setOptimizationWeight(Integer optimizationWeight)
+	public void setOptimizationWeight(Integer aOptimizationWeight)
 	{
-		this.optimizationWeight = optimizationWeight;
+		this.optimizationWeight = aOptimizationWeight;
 	}
 	
 	public static Fingering valueOf(String s)

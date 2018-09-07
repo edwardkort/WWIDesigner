@@ -49,13 +49,13 @@ public abstract class InstrumentTuner
 	{
 	}
 
-	public InstrumentTuner(Instrument instrument, Tuning tuning,
-			InstrumentCalculator calculator, PhysicalParameters params)
+	public InstrumentTuner(Instrument aInstrument, Tuning aTuning,
+			InstrumentCalculator aCalculator, PhysicalParameters aParams)
 	{
-		setInstrument(instrument);
-		setCalculator(calculator);
-		setParams(params);
-		setTuning(tuning);
+		setInstrument(aInstrument);
+		setCalculator(aCalculator);
+		setParams(aParams);
+		setTuning(aTuning);
 	}
 
 	public void showTuning(String title)
@@ -147,12 +147,12 @@ public abstract class InstrumentTuner
 	}
 
 	/**
-	 * @param instrument
+	 * @param aInstrument
 	 *            the instrument to set
 	 */
-	public void setInstrument(Instrument instrument)
+	public void setInstrument(Instrument aInstrument)
 	{
-		this.instrument = instrument;
+		this.instrument = aInstrument;
 		if (this.calculator != null)
 		{
 			this.calculator.setInstrument(this.instrument);
@@ -163,17 +163,17 @@ public abstract class InstrumentTuner
 			throws Exception
 	{
 		BindFactory geomFactory = GeometryBindFactory.getInstance();
-		Instrument instrument = (Instrument) geomFactory.unmarshalXml(
+		Instrument thisInstrument = (Instrument) geomFactory.unmarshalXml(
 				xmlInstrumentFile, fileInClasspath, true);
-		setInstrument(instrument);
+		setInstrument(thisInstrument);
 	}
 
 	public void setInstrument(String instrumentXmlString) throws Exception
 	{
 		BindFactory geomFactory = GeometryBindFactory.getInstance();
-		Instrument instrument = (Instrument) geomFactory.unmarshalXml(
+		Instrument thisInstrument = (Instrument) geomFactory.unmarshalXml(
 				instrumentXmlString, true);
-		setInstrument(instrument);
+		setInstrument(thisInstrument);
 	}
 
 	public Tuning getTuning()
@@ -182,29 +182,29 @@ public abstract class InstrumentTuner
 	}
 
 	/**
-	 * @param tuning
+	 * @param aTuning
 	 *            the tuning to set
 	 */
-	public void setTuning(Tuning tuning)
+	public void setTuning(Tuning aTuning)
 	{
-		this.tuning = tuning;
+		this.tuning = aTuning;
 	}
 
 	public void setTuning(String xmlTuningFile, boolean fileInClasspath)
 			throws Exception
 	{
 		BindFactory noteFactory = NoteBindFactory.getInstance();
-		Tuning tuning = (Tuning) noteFactory.unmarshalXml(xmlTuningFile,
+		Tuning thisTuning = (Tuning) noteFactory.unmarshalXml(xmlTuningFile,
 				fileInClasspath, true);
-		setTuning(tuning);
+		setTuning(thisTuning);
 	}
 
 	public void setTuning(String tuningXmlString) throws Exception
 	{
 		BindFactory noteFactory = NoteBindFactory.getInstance();
-		Tuning tuning = (Tuning) noteFactory
+		Tuning thisTuning = (Tuning) noteFactory
 				.unmarshalXml(tuningXmlString, true);
-		setTuning(tuning);
+		setTuning(thisTuning);
 	}
 	
 	public InstrumentCalculator getCalculator()
@@ -213,12 +213,12 @@ public abstract class InstrumentTuner
 	}
 
 	/**
-	 * @param calculator
+	 * @param aCalculator
 	 *            the calculator to set
 	 */
-	public void setCalculator(InstrumentCalculator calculator)
+	public void setCalculator(InstrumentCalculator aCalculator)
 	{
-		this.calculator = calculator;
+		this.calculator = aCalculator;
 		if (this.instrument != null)
 		{
 			this.calculator.setInstrument(instrument);
@@ -230,12 +230,12 @@ public abstract class InstrumentTuner
 	}
 
 	/**
-	 * @param params
+	 * @param aParams
 	 *            the params to set
 	 */
-	public void setParams(PhysicalParameters params)
+	public void setParams(PhysicalParameters aParams)
 	{
-		this.params = params;
+		this.params = aParams;
 		if (this.calculator != null)
 		{
 			this.calculator.setPhysicalParameters(this.params);

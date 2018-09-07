@@ -56,12 +56,12 @@ public class Note implements Serializable
 	}
 
 	/**
-	 * @param name
+	 * @param aName
 	 *            the name to set
 	 */
-	public void setName(String name)
+	public void setName(String aName)
 	{
-		this.name = name;
+		this.name = aName;
 	}
 
 	/**
@@ -73,12 +73,12 @@ public class Note implements Serializable
 	}
 
 	/**
-	 * @param frequency
+	 * @param aFrequency
 	 *            the frequency to set
 	 */
-	public void setFrequency(Double frequency)
+	public void setFrequency(Double aFrequency)
 	{
-		this.frequency = frequency;
+		this.frequency = aFrequency;
 	}
 
 	/**
@@ -90,12 +90,12 @@ public class Note implements Serializable
 	}
 
 	/**
-	 * @param frequencyMin
+	 * @param aFrequencyMin
 	 *            the frequencyMin to set
 	 */
-	public void setFrequencyMin(Double frequencyMin)
+	public void setFrequencyMin(Double aFrequencyMin)
 	{
-		this.frequencyMin = frequencyMin;
+		this.frequencyMin = aFrequencyMin;
 	}
 
 	/**
@@ -107,12 +107,12 @@ public class Note implements Serializable
 	}
 
 	/**
-	 * @param frequencyMax
+	 * @param aFrequencyMax
 	 *            the frequencyMax to set
 	 */
-	public void setFrequencyMax(Double frequencyMax)
+	public void setFrequencyMax(Double aFrequencyMax)
 	{
-		this.frequencyMax = frequencyMax;
+		this.frequencyMax = aFrequencyMax;
 	}
 
 	public static double cents(double f1, double f2)

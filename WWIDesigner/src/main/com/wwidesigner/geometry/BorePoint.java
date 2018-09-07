@@ -36,12 +36,12 @@ public class BorePoint implements BorePointInterface
 	}
 
 	/**
-	 * @param borePosition
+	 * @param aBorePosition
 	 *            the borePosition to set
 	 */
-	public void setBorePosition(double borePosition)
+	public void setBorePosition(double aBorePosition)
 	{
-		this.borePosition = borePosition;
+		this.borePosition = aBorePosition;
 	}
 
 	/**
@@ -53,12 +53,12 @@ public class BorePoint implements BorePointInterface
 	}
 
 	/**
-	 * @param boreDiameter
+	 * @param aBoreDiameter
 	 *            the boreDiameter to set
 	 */
-	public void setBoreDiameter(double boreDiameter)
+	public void setBoreDiameter(double aBoreDiameter)
 	{
-		this.boreDiameter = boreDiameter;
+		this.boreDiameter = aBoreDiameter;
 	}
 
 	public void convertDimensions(double multiplier)

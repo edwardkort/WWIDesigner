@@ -108,12 +108,12 @@ public class Fingering
 	}
 
 	/**
-	 * @param openHole
+	 * @param aOpenHole
 	 *            the openHole to set
 	 */
-	public void setOpenHole(List<Boolean> openHole)
+	public void setOpenHole(List<Boolean> aOpenHole)
 	{
-		this.openHole = openHole;
+		this.openHole = aOpenHole;
 	}
 
 	/**
@@ -125,11 +125,11 @@ public class Fingering
 	}
 
 	/**
-	 * @param openEnd the openEnd state to set
+	 * @param aOpenEnd the openEnd state to set
 	 */
-	public void setOpenEnd(Boolean openEnd)
+	public void setOpenEnd(Boolean aOpenEnd)
 	{
-		this.openEnd = openEnd;
+		this.openEnd = aOpenEnd;
 	}
 
 	public Integer getOptimizationWeight()
@@ -137,9 +137,9 @@ public class Fingering
 		return optimizationWeight;
 	}
 
-	public void setOptimizationWeight(Integer optimizationWeight)
+	public void setOptimizationWeight(Integer aOptimizationWeight)
 	{
-		this.optimizationWeight = optimizationWeight;
+		this.optimizationWeight = aOptimizationWeight;
 	}
 
 }

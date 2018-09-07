@@ -48,28 +48,28 @@ public class Tuning extends FingeringPattern implements TuningInterface
 				handler.logError("Missing note in row " + (i + 1) + ".");
 			}
 			else {
-				String name = note.getName();
-				if (name == null || name.isEmpty())
+				String aName = note.getName();
+				if (aName == null || aName.isEmpty())
 				{
 					handler.logError("Enter a note name for row " + (i + 1) + ".");
-					name = "note";
+					aName = "note";
 				}
 				List<Boolean> holes = fingering.get(i).getOpenHole();
 				if (holes == null)
 				{
-					handler.logError("Missing fingering for " + name + " in row "
+					handler.logError("Missing fingering for " + aName + " in row "
 							+ (i + 1) + ".");
 				}
 				if (holes.size() != numberOfHoles)
 				{
 					handler.logError( "Fingering for "
-							+ name + " in row " + (i + 1)
+							+ aName + " in row " + (i + 1)
 							+ " has wrong number of holes.");
 				}
 				if (note.getFrequency() == null && note.getFrequencyMax() == null
 						&& note.getFrequencyMin() == null)
 				{
-					handler.logError("Enter at least one frequency for " + name
+					handler.logError("Enter at least one frequency for " + aName
 							+ " in row " + (i + 1) + ".");
 				}
 				if (note.getFrequency() != null && note.getFrequency() <= 0
@@ -78,7 +78,7 @@ public class Tuning extends FingeringPattern implements TuningInterface
 						|| note.getFrequencyMin() != null
 						&& note.getFrequencyMin() <= 0)
 				{
-					handler.logError("Frequency for " + name + " in row " + (i + 1)
+					handler.logError("Frequency for " + aName + " in row " + (i + 1)
 							+ " must be positive.");
 				}
 			}

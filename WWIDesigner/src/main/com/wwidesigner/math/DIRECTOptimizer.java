@@ -210,20 +210,20 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 	/**
 	 * Create an optimizer that uses the DIRECT algorithm.
 	 * 
-	 * @param convergenceXThreshold
+	 * @param aConvergenceXThreshold
 	 *            - The optimizer converges when the best solution is in a
 	 *            hyperrectangle with all sides smaller than this threshold,
 	 *            relative to the distance between the upper and lower bounds.
 	 */
-	public DIRECTOptimizer(double convergenceXThreshold)
+	public DIRECTOptimizer(double aConvergenceXThreshold)
 	{
-		this(convergenceXThreshold, DEFAULT_ITERATION_THRESHOLD);
+		this(aConvergenceXThreshold, DEFAULT_ITERATION_THRESHOLD);
 	}
 
 	/**
 	 * Create an optimizer that uses the DIRECT algorithm.
 	 * 
-	 * @param convergenceXThreshold
+	 * @param aConvergenceXThreshold
 	 *            - The optimizer converges when the best solution is in a
 	 *            hyperrectangle with all sides smaller than this threshold,
 	 *            relative to the distance between the upper and lower bounds.
@@ -232,10 +232,10 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 	 *            convergence after this many iterations without improvement in
 	 *            function value.
 	 */
-	public DIRECTOptimizer(double convergenceXThreshold, int convergedIterationThreshold)
+	public DIRECTOptimizer(double aConvergenceXThreshold, int convergedIterationThreshold)
 	{
 		super(null);		// No standard convergence checker.
-		this.convergenceXThreshold = convergenceXThreshold;
+		this.convergenceXThreshold = aConvergenceXThreshold;
 		this.convergedIterationsThreshold = convergedIterationThreshold;
 		this.targetFunctionValue = null;
 		allowDuplicatesInHull = true;		// Jones hull selection: allow duplicate points.
@@ -264,24 +264,24 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 		/**
 		 * Create the key for a real rectangle, of specified diameter and
 		 * function value.
-		 * @param diameter - "diameter" measure of the rectangle
-		 * @param fValue - function value at centre of rectangle
+		 * @param aDiameter - "diameter" measure of the rectangle
+		 * @param aFValue - function value at centre of rectangle
 		 */
-		public RectangleKey(double diameter, double fValue)
+		public RectangleKey(double aDiameter, double aFValue)
 		{
-			this.diameter = diameter;
-			this.fValue = fValue;
+			this.diameter = aDiameter;
+			this.fValue = aFValue;
 			this.serial = ++nextSerial;
 		}
 
 		/**
 		 * Create an index reference, used for searching the rectangle tree for
 		 * rectangles before or after a specified diameter.
-		 * @param diameter
+		 * @param aDiameter
 		 */
-		public RectangleKey(double diameter)
+		public RectangleKey(double aDiameter)
 		{
-			this.diameter = diameter;
+			this.diameter = aDiameter;
 			this.fValue = -Double.MAX_VALUE;
 			this.serial = 0;
 		}
@@ -357,26 +357,26 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 		protected  int longIdx;
 
 		/**
-		 * @param centre - Coordinates of centre point of the rectangle, in absolute terms.
-		 * @param width - Width of rectangle, relative to boundDifference.
+		 * @param aCentre - Coordinates of centre point of the rectangle, in absolute terms.
+		 * @param aWidth - Width of rectangle, relative to boundDifference.
 		 */
-		public RectangleValue(double[] centre, double[] width)
+		public RectangleValue(double[] aCentre, double[] aWidth)
 		{
-			this.centre = centre;
-			this.width = width;
+			this.centre = aCentre;
+			this.width = aWidth;
 			this.potential = null;
 			updateLongSides();
 		}
 		
 		/**
-		 * @param centre - Coordinates of centre point of the rectangle, in absolute terms.
-		 * @param width - Width of rectangle, relative to boundDifference.
+		 * @param aCentre - Coordinates of centre point of the rectangle, in absolute terms.
+		 * @param aWidth - Width of rectangle, relative to boundDifference.
 		 */
-		public RectangleValue(double[] centre, double[] width, double[] potential)
+		public RectangleValue(double[] aCentre, double[] aWidth, double[] aPotential)
 		{
-			this.centre = centre;
-			this.width = width;
-			this.potential = potential;
+			this.centre = aCentre;
+			this.width = aWidth;
+			this.potential = aPotential;
 			updateLongSides();
 		}
 		
@@ -418,14 +418,14 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 			return potential;
 		}
 
-		public void setPotential(double[] potential)
+		public void setPotential(double[] aPotential)
 		{
-			this.potential = potential;
+			this.potential = aPotential;
 		}
 
-		public void setPotential(int dimension, double potential)
+		public void setPotential(int dimension, double aPotential)
 		{
-			this.potential[dimension] = potential;
+			this.potential[dimension] = aPotential;
 		}
 
 		public int getLongCount()
@@ -505,10 +505,10 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 		}
 
 		@Override
-		public RectangleValue setValue(RectangleValue value)
+		public RectangleValue setValue(RectangleValue aValue)
 		{
-			this.value = value;
-			return value;
+			this.value = aValue;
+			return aValue;
 		}
 	}
 
@@ -627,9 +627,9 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 	{
 		Double targetValue;
 		
-		public TargetFunctionValue(Double targetValue)
+		public TargetFunctionValue(Double aTargetValue)
 		{
-			this.targetValue = targetValue;
+			this.targetValue = aTargetValue;
 		}
 
 		public Double getTargetValue()
@@ -700,8 +700,8 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 		}
 		// Round the threshold down to the next smaller power of 1/3.
 		// Rectangle is small when *all* sides are this size.
-		double iterations = FastMath.ceil(FastMath.log(THIRD,convergenceThreshold));
-		double threshold = FastMath.pow(THIRD, iterations);
+		double aIterations = FastMath.ceil(FastMath.log(THIRD,convergenceThreshold));
+		double threshold = FastMath.pow(THIRD, aIterations);
 		return 0.5 * FastMath.sqrt(dimension) * threshold;
 	}
 
@@ -780,10 +780,10 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 			Arrays.fill(isEligibleSide, false);
 		}
 
-		public void setNrEligibleSides(int nrEligibleSides)
+		public void setNrEligibleSides(int aNrEligibleSides)
 		{
-			this.nrEligibleSides = nrEligibleSides;
-			if (nrEligibleSides == 1)
+			this.nrEligibleSides = aNrEligibleSides;
+			if (aNrEligibleSides == 1)
 			{
 				Arrays.fill(isEligibleSide, false);
 				isEligibleSide[eligibleSide] = true;
@@ -795,13 +795,13 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 			return nrEligibleSides;
 		}
 
-		public void setEligibleSide(int eligibleSide)
+		public void setEligibleSide(int aEligibleSide)
 		{
-			this.eligibleSide = eligibleSide;
+			this.eligibleSide = aEligibleSide;
 			if (nrEligibleSides == 1)
 			{
 				Arrays.fill(isEligibleSide, false);
-				isEligibleSide[eligibleSide] = true;
+				isEligibleSide[aEligibleSide] = true;
 			}
 		}
 
@@ -1225,13 +1225,13 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 		return nhull;
 	}
 	
-	protected int getPrunePoint(Rectangle[] hull, int nhull, RectangleKey t1)
+	protected int getPrunePoint(Rectangle[] aHull, int nhull, RectangleKey t1)
 	{
 		int it2 = nhull - 2;
 		RectangleKey t2;
 		while (it2 >= 0)
 		{
-			t2 = hull[it2].getKey();
+			t2 = aHull[it2].getKey();
 			if (t2.getDiameter() != t1.getDiameter()
 					|| t2.getfValue() != t1.getfValue())
 			{

@@ -10,9 +10,9 @@ public class DataChangedEvent
 {
 	private Object source;
 
-	public DataChangedEvent(Object source)
+	public DataChangedEvent(Object aSource)
 	{
-		this.source = source;
+		this.source = aSource;
 	}
 
 	public Object getSource()

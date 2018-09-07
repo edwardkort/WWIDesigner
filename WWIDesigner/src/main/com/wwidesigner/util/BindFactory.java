@@ -133,7 +133,7 @@ public abstract class BindFactory
 		marshalToXml(input, outputXml);
 	}
 
-	public void marshalToXml(Object input, Writer writer) throws Exception
+	public void marshalToXml(Object input, Writer aWriter) throws Exception
 	{
 		Object mappedInput = mapObject(input, domainToBindMap);
 		if (mappedInput == null)
@@ -144,7 +144,7 @@ public abstract class BindFactory
 		Marshaller marshaller = context.createMarshaller();
 		marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
 		marshaller.setSchema(getSchema());
-		marshaller.marshal(createElement(mappedInput), writer);
+		marshaller.marshal(createElement(mappedInput), aWriter);
 
 	}
 

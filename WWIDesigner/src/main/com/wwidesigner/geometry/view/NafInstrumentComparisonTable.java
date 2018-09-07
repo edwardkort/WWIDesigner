@@ -5,10 +5,10 @@ import com.wwidesigner.util.Constants.LengthType;
 
 public class NafInstrumentComparisonTable extends InstrumentComparisonTable
 {
-	public NafInstrumentComparisonTable(String title,
-			LengthType defaultLengthType)
+	public NafInstrumentComparisonTable(String aTitle,
+			LengthType aDefaultLengthType)
 	{
-		super(title, defaultLengthType);
+		super(aTitle, aDefaultLengthType);
 	}
 
 	/**

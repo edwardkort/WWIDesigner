@@ -90,12 +90,12 @@ public class FingeringPatternPanel extends JPanel
 	/**
 	 * Create a panel with components of a specified preferred width.
 	 * 
-	 * @param componentWidth
+	 * @param aComponentWidth
 	 *            - preferred width of display/edit components.
 	 */
-	public FingeringPatternPanel(int componentWidth)
+	public FingeringPatternPanel(int aComponentWidth)
 	{
-		this.componentWidth = componentWidth;
+		this.componentWidth = aComponentWidth;
 		this.numberOfHoles = 0;
 		this.numberOfColumns = 1;
 		this.name = "";
@@ -707,18 +707,18 @@ public class FingeringPatternPanel extends JPanel
 		return numberOfHoles;
 	}
 
-	public void setName(String name)
+	public void setName(String aName)
 	{
-		nameWidget.setText(name);
+		nameWidget.setText(aName);
 		if (isNamePopulated())
 		{
 			fireDataStateChanged();
 		}
 	}
 
-	public void setDescription(String description)
+	public void setDescription(String aDescription)
 	{
-		descriptionWidget.setText(description);
+		descriptionWidget.setText(aDescription);
 		if (isDescriptionChanged())
 		{
 			fireDataStateChanged();

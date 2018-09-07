@@ -9,9 +9,9 @@ public class DoubleCellRenderer extends DefaultTableCellRenderer
 {
 	private int fractionalDigits;
 
-	public DoubleCellRenderer(int fractionalDigits)
+	public DoubleCellRenderer(int aFractionalDigits)
 	{
-		this.fractionalDigits = fractionalDigits;
+		this.fractionalDigits = aFractionalDigits;
 		setHorizontalAlignment(SwingConstants.CENTER);
 	}
 

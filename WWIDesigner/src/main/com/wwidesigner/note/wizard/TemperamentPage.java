@@ -38,11 +38,11 @@ public class TemperamentPage extends AbstractWizardPage implements
 	private JButton saveButton;
 	private boolean isInitialized;
 
-	public TemperamentPage(TuningWizardDialog parent)
+	public TemperamentPage(TuningWizardDialog aParent)
 	{
 		super("Musical Temperament",
 				"Select or create the note intervals (temperament) used in the scale.");
-		this.parent = parent;
+		this.parent = aParent;
 		createWizardContent();
 	}
 

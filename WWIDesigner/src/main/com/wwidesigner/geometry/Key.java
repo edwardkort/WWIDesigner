@@ -25,12 +25,12 @@ public class Key
 	}
 
 	/**
-	 * @param diameter
+	 * @param aDiameter
 	 *            the diameter to set
 	 */
-	public void setDiameter(double diameter)
+	public void setDiameter(double aDiameter)
 	{
-		this.diameter = diameter;
+		this.diameter = aDiameter;
 	}
 
 	/**
@@ -42,12 +42,12 @@ public class Key
 	}
 
 	/**
-	 * @param holeDiameter
+	 * @param aHoleDiameter
 	 *            the holeDiameter to set
 	 */
-	public void setHoleDiameter(double holeDiameter)
+	public void setHoleDiameter(double aHoleDiameter)
 	{
-		this.holeDiameter = holeDiameter;
+		this.holeDiameter = aHoleDiameter;
 	}
 
 	/**
@@ -59,12 +59,12 @@ public class Key
 	}
 
 	/**
-	 * @param height
+	 * @param aHeight
 	 *            the height to set
 	 */
-	public void setHeight(double height)
+	public void setHeight(double aHeight)
 	{
-		this.height = height;
+		this.height = aHeight;
 	}
 
 	/**
@@ -76,12 +76,12 @@ public class Key
 	}
 
 	/**
-	 * @param thickness
+	 * @param aThickness
 	 *            the thickness to set
 	 */
-	public void setThickness(double thickness)
+	public void setThickness(double aThickness)
 	{
-		this.thickness = thickness;
+		this.thickness = aThickness;
 	}
 
 	/**
@@ -93,12 +93,12 @@ public class Key
 	}
 
 	/**
-	 * @param wallThickness
+	 * @param aWallThickness
 	 *            the wallThickness to set
 	 */
-	public void setWallThickness(double wallThickness)
+	public void setWallThickness(double aWallThickness)
 	{
-		this.wallThickness = wallThickness;
+		this.wallThickness = aWallThickness;
 	}
 
 	/**
@@ -110,12 +110,12 @@ public class Key
 	}
 
 	/**
-	 * @param chimneyHeight
+	 * @param aChimneyHeight
 	 *            the chimneyHeight to set
 	 */
-	public void setChimneyHeight(double chimneyHeight)
+	public void setChimneyHeight(double aChimneyHeight)
 	{
-		this.chimneyHeight = chimneyHeight;
+		this.chimneyHeight = aChimneyHeight;
 	}
 
 	public void convertDimensions(double multiplier)

@@ -54,9 +54,9 @@ public class SupplementaryInfoTable extends DefaultTableModel
 	DecimalFormat format_00;
 	DecimalFormat format_sci;
 
-	public SupplementaryInfoTable(String title)
+	public SupplementaryInfoTable(String aTitle)
 	{
-		this.title = title;
+		this.title = aTitle;
 		format_ = new DecimalFormat("#0");
 		format_0 = new DecimalFormat("#0.0");
 		format_00 = new DecimalFormat("#0.00");

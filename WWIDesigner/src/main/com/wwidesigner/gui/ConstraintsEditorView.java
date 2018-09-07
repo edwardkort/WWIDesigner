@@ -19,9 +19,9 @@ public class ConstraintsEditorView extends ContainedXmlView
 	protected ConstraintsPanel constraintsPanel;
 	private JScrollPane scrollPane;
 
-	public ConstraintsEditorView(DataViewPane parent)
+	public ConstraintsEditorView(DataViewPane aParent)
 	{
-		super(parent);
+		super(aParent);
 
 		constraintsPanel = new ConstraintsPanel();
 		scrollPane = new JScrollPane(constraintsPanel);

@@ -58,27 +58,27 @@ public class BoreDiameterObjectiveFunction extends BaseObjectiveFunction
 	/**
 	 * Create an optimization objective function for bore diameters at existing
 	 * bore points.
-	 * @param calculator
+	 * @param aCalculator
 	 * @param tuning
-	 * @param evaluator
-	 * @param unchangedBorePoints - Leave diameter unchanged for this many bore points
+	 * @param aEvaluator
+	 * @param aUnchangedBorePoints - Leave diameter unchanged for this many bore points
 	 * from the top of the bore.
 	 */
-	public BoreDiameterObjectiveFunction(InstrumentCalculator calculator,
-			TuningInterface tuning, EvaluatorInterface evaluator, int unchangedBorePoints)
+	public BoreDiameterObjectiveFunction(InstrumentCalculator aCalculator,
+			TuningInterface tuning, EvaluatorInterface aEvaluator, int aUnchangedBorePoints)
 	{
-		super(calculator, tuning, evaluator);
-		int nrBorePoints = calculator.getInstrument().getBorePoint().size();
-		if (unchangedBorePoints >= 1)
+		super(aCalculator, tuning, aEvaluator);
+		int nrBorePoints = aCalculator.getInstrument().getBorePoint().size();
+		if (aUnchangedBorePoints >= 1)
 		{
-			this.unchangedBorePoints = unchangedBorePoints;
+			this.unchangedBorePoints = aUnchangedBorePoints;
 		}
 		else
 		{
 			// At a minimum, top bore point is unchanged.
 			this.unchangedBorePoints = 1;
 		}
-		nrDimensions = nrBorePoints - unchangedBorePoints;
+		nrDimensions = nrBorePoints - aUnchangedBorePoints;
 		if (nrDimensions > 1)
 		{
 			optimizerType = OptimizerType.BOBYQAOptimizer; // MultivariateOptimizer
@@ -91,10 +91,10 @@ public class BoreDiameterObjectiveFunction extends BaseObjectiveFunction
 		setConstraints();
 	}
 
-	public BoreDiameterObjectiveFunction(InstrumentCalculator calculator,
-			TuningInterface tuning, EvaluatorInterface evaluator)
+	public BoreDiameterObjectiveFunction(InstrumentCalculator aCalculator,
+			TuningInterface tuning, EvaluatorInterface aEvaluator)
 	{
-		this(calculator, tuning, evaluator, 1);
+		this(aCalculator, tuning, aEvaluator, 1);
 	}
 
 	protected void setConstraints()

@@ -35,13 +35,13 @@ public class WhistleEvaluator implements EvaluatorInterface
 	protected WhistleCalculator  calculator;
 	protected InstrumentTuner  tuner;
 
-	public WhistleEvaluator( WhistleCalculator calculator, InstrumentTuner tuner )
+	public WhistleEvaluator( WhistleCalculator aCalculator, InstrumentTuner aTuner )
 	{
-		this.calculator = calculator;
-		this.tuner = tuner;
-		this.tuner.setCalculator(calculator);
-		this.tuner.setInstrument(calculator.getInstrument());
-		this.tuner.setParams(calculator.getPhysicalParameters());
+		this.calculator = aCalculator;
+		this.tuner = aTuner;
+		this.tuner.setCalculator(aCalculator);
+		this.tuner.setInstrument(aCalculator.getInstrument());
+		this.tuner.setParams(aCalculator.getPhysicalParameters());
 	}
 
 	/**

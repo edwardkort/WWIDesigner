@@ -40,31 +40,31 @@ import com.wwidesigner.util.PhysicalParameters;
 public class DefaultInstrumentCalculator extends InstrumentCalculator
 {
 
-	public DefaultInstrumentCalculator(Instrument instrument,
+	public DefaultInstrumentCalculator(Instrument aInstrument,
 			PhysicalParameters physicalParams)
 	{
-		super(instrument, physicalParams);
+		super(aInstrument, physicalParams);
 	}
 
-	public DefaultInstrumentCalculator(Instrument instrument,
-			MouthpieceCalculator mouthpieceCalculator,
-			TerminationCalculator terminationCalculator,
-			HoleCalculator holeCalculator,
-			BoreSectionCalculator boreSectionCalculator,
+	public DefaultInstrumentCalculator(Instrument aInstrument,
+			MouthpieceCalculator aMouthpieceCalculator,
+			TerminationCalculator aTerminationCalculator,
+			HoleCalculator aHoleCalculator,
+			BoreSectionCalculator aBoreSectionCalculator,
 			PhysicalParameters physicalParams)
 	{
-		super(instrument, mouthpieceCalculator, terminationCalculator,
-				holeCalculator, boreSectionCalculator, physicalParams);
+		super(aInstrument, aMouthpieceCalculator, aTerminationCalculator,
+				aHoleCalculator, aBoreSectionCalculator, physicalParams);
 	}
 
 	public DefaultInstrumentCalculator(
-			MouthpieceCalculator mouthpieceCalculator,
-			TerminationCalculator terminationCalculator,
-			HoleCalculator holeCalculator,
-			BoreSectionCalculator boreSectionCalculator)
+			MouthpieceCalculator aMouthpieceCalculator,
+			TerminationCalculator aTerminationCalculator,
+			HoleCalculator aHoleCalculator,
+			BoreSectionCalculator aBoreSectionCalculator)
 	{
-		super(mouthpieceCalculator, terminationCalculator, holeCalculator,
-				boreSectionCalculator);
+		super(aMouthpieceCalculator, aTerminationCalculator, aHoleCalculator,
+				aBoreSectionCalculator);
 	}
 
 	public DefaultInstrumentCalculator()
@@ -154,7 +154,7 @@ public class DefaultInstrumentCalculator extends InstrumentCalculator
 	}
 
 	@Override
-	public boolean isCompatible(Instrument instrument)
+	public boolean isCompatible(Instrument aInstrument)
 	{
 		// This default calculator is not specific to any type of instrument.
 		return true;

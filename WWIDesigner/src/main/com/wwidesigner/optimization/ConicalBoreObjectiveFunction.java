@@ -45,10 +45,10 @@ public class ConicalBoreObjectiveFunction extends BaseObjectiveFunction
 	public static final String DISPLAY_NAME = "Conical bore optimizer";
 	public static final double AFFECTED_BORE_FRACTION = 0.5;
 
-	public ConicalBoreObjectiveFunction(InstrumentCalculator calculator,
-			TuningInterface tuning, EvaluatorInterface evaluator)
+	public ConicalBoreObjectiveFunction(InstrumentCalculator aCalculator,
+			TuningInterface tuning, EvaluatorInterface aEvaluator)
 	{
-		super(calculator, tuning, evaluator);
+		super(aCalculator, tuning, aEvaluator);
 		nrDimensions = 1;
 		optimizerType = OptimizerType.BrentOptimizer; // UnivariateOptimizer
 		setConstraints();

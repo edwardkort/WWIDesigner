@@ -18,11 +18,11 @@ public class Hole implements ComponentInterface, BorePointInterface
 
 	}
 
-	public Hole(double position, double diameter, double height)
+	public Hole(double aPosition, double aDiameter, double aHeight)
 	{
-		this.position = position;
-		this.diameter = diameter;
-		this.height = height;
+		this.position = aPosition;
+		this.diameter = aDiameter;
+		this.height = aHeight;
 	}
 
 	/**
@@ -37,9 +37,9 @@ public class Hole implements ComponentInterface, BorePointInterface
 	 * @param radius
 	 *            the radius to set
 	 */
-	public void setDiameter(double diameter)
+	public void setDiameter(double aDiameter)
 	{
-		this.diameter = diameter;
+		this.diameter = aDiameter;
 	}
 
 	/**
@@ -51,12 +51,12 @@ public class Hole implements ComponentInterface, BorePointInterface
 	}
 
 	/**
-	 * @param height
+	 * @param aHeight
 	 *            the height to set
 	 */
-	public void setHeight(double height)
+	public void setHeight(double aHeight)
 	{
-		this.height = height;
+		this.height = aHeight;
 	}
 
 	/**
@@ -68,12 +68,12 @@ public class Hole implements ComponentInterface, BorePointInterface
 	}
 
 	/**
-	 * @param name
+	 * @param aName
 	 *            the name to set
 	 */
-	public void setName(String name)
+	public void setName(String aName)
 	{
-		this.name = name;
+		this.name = aName;
 	}
 
 	/**
@@ -85,12 +85,12 @@ public class Hole implements ComponentInterface, BorePointInterface
 	}
 
 	/**
-	 * @param innerCurvatureRadius
+	 * @param aInnerCurvatureRadius
 	 *            the innerCurvatureRadius to set
 	 */
-	public void setInnerCurvatureRadius(Double innerCurvatureRadius)
+	public void setInnerCurvatureRadius(Double aInnerCurvatureRadius)
 	{
-		this.innerCurvatureRadius = innerCurvatureRadius;
+		this.innerCurvatureRadius = aInnerCurvatureRadius;
 	}
 
 	public double getBorePosition()
@@ -98,9 +98,9 @@ public class Hole implements ComponentInterface, BorePointInterface
 		return position;
 	}
 
-	public void setBorePosition(double position)
+	public void setBorePosition(double aPosition)
 	{
-		this.position = position;
+		this.position = aPosition;
 	}
 
 	/**
@@ -112,12 +112,12 @@ public class Hole implements ComponentInterface, BorePointInterface
 	}
 
 	/**
-	 * @param key
+	 * @param aKey
 	 *            the key to set
 	 */
-	public void setKey(Key key)
+	public void setKey(Key aKey)
 	{
-		this.key = key;
+		this.key = aKey;
 	}
 
 	public void convertDimensions(double multiplier)
@@ -137,9 +137,9 @@ public class Hole implements ComponentInterface, BorePointInterface
 	}
 
 	@Override
-	public void setBoreDiameter(double boreDiameter)
+	public void setBoreDiameter(double aBoreDiameter)
 	{
-		this.boreDiameter = boreDiameter;
+		this.boreDiameter = aBoreDiameter;
 	}
 
 	@Override

@@ -29,11 +29,11 @@ public class SingleTaperRatioObjectiveFunction extends BaseObjectiveFunction
 	public static final String CONSTR_CAT = "Single bore taper";
 	public static final ConstraintType CONSTR_TYPE = ConstraintType.DIMENSIONLESS;
 
-	public SingleTaperRatioObjectiveFunction(InstrumentCalculator calculator,
-			TuningInterface tuning, EvaluatorInterface evaluator)
+	public SingleTaperRatioObjectiveFunction(InstrumentCalculator aCalculator,
+			TuningInterface tuning, EvaluatorInterface aEvaluator)
 			throws Exception
 	{
-		super(calculator, tuning, evaluator);
+		super(aCalculator, tuning, aEvaluator);
 		nrDimensions = 3;
 		optimizerType = OptimizerType.BOBYQAOptimizer; // MultivariateOptimizer
 		setConstraints();

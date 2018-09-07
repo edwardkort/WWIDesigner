@@ -39,11 +39,11 @@ public class ScaleSymbolPage extends AbstractWizardPage implements
 	private JButton saveButton;
 	private boolean isInitialized;
 
-	public ScaleSymbolPage(TuningWizardDialog parent)
+	public ScaleSymbolPage(TuningWizardDialog aParent)
 	{
 		super("Scale Symbols",
 				"Select or create the note symbols used in the scale.");
-		this.parent = parent;
+		this.parent = aParent;
 		createWizardContent();
 	}
 

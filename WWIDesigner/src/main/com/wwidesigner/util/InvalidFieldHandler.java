@@ -14,12 +14,12 @@ public class InvalidFieldHandler
 	 * Construct a handler to accumulate errors in a data structure of type
 	 * <code>modelType</code>.
 	 * 
-	 * @param modelType
+	 * @param aModelType
 	 *            - The type of the data structure tested.
 	 */
-	public InvalidFieldHandler(String modelType)
+	public InvalidFieldHandler(String aModelType)
 	{
-		this.modelType = modelType;
+		this.modelType = aModelType;
 		this.nrOfErrors = 0;
 		this.messages = new ArrayList<String>();
 	}

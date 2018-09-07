@@ -48,9 +48,9 @@ public class ConstraintsPanel extends JPanel implements DataChangedProvider
 	private int[] columnWidth = new int[] { 500, 110, 85, 85 };
 	private JTable[] constraintTables;
 
-	public ConstraintsPanel(Constraints constraints)
+	public ConstraintsPanel(Constraints aConstraints)
 	{
-		setConstraintValues(constraints);
+		setConstraintValues(aConstraints);
 	}
 
 	public ConstraintsPanel()
@@ -58,10 +58,10 @@ public class ConstraintsPanel extends JPanel implements DataChangedProvider
 
 	}
 
-	public void setConstraintValues(Constraints constraints)
+	public void setConstraintValues(Constraints aConstraints)
 	{
-		this.constraints = constraints;
-		dimensionalDecimalPrecision = constraints.getDimensionType()
+		this.constraints = aConstraints;
+		dimensionalDecimalPrecision = aConstraints.getDimensionType()
 				.getDecimalPrecision();
 		setLayout(new GridBagLayout());
 		setMetadataValues();
@@ -262,9 +262,9 @@ public class ConstraintsPanel extends JPanel implements DataChangedProvider
 	{
 		List<Constraint> constraintValues;
 
-		ConstraintTableModel(List<Constraint> constraintValues)
+		ConstraintTableModel(List<Constraint> aConstraintValues)
 		{
-			this.constraintValues = constraintValues;
+			this.constraintValues = aConstraintValues;
 		}
 
 		@Override

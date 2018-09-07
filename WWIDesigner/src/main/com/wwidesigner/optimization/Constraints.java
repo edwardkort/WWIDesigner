@@ -27,10 +27,10 @@ public class Constraints
 		this.dimensionType = LengthType.M;
 	}
 
-	public Constraints(LengthType dimensionType)
+	public Constraints(LengthType aDimensionType)
 	{
 		constraint = new ArrayList<Constraint>();
-		this.dimensionType = dimensionType;
+		this.dimensionType = aDimensionType;
 	}
 
 	public Set<String> getCategories()
@@ -148,9 +148,9 @@ public class Constraints
 		return numberOfHoles;
 	}
 
-	public void setNumberOfHoles(int numberOfHoles)
+	public void setNumberOfHoles(int aNumberOfHoles)
 	{
-		this.numberOfHoles = numberOfHoles;
+		this.numberOfHoles = aNumberOfHoles;
 	}
 
 	public String getObjectiveDisplayName()
@@ -158,9 +158,9 @@ public class Constraints
 		return objectiveDisplayName;
 	}
 
-	public void setObjectiveDisplayName(String objectiveDisplayName)
+	public void setObjectiveDisplayName(String aObjectiveDisplayName)
 	{
-		this.objectiveDisplayName = objectiveDisplayName;
+		this.objectiveDisplayName = aObjectiveDisplayName;
 	}
 
 	public String getObjectiveFunctionName()
@@ -191,16 +191,16 @@ public class Constraints
 		for (String category : categories)
 		{
 			List<Constraint> constraints = getConstraints(category);
-			for (Constraint constraint : constraints)
+			for (Constraint thisConstraint : constraints)
 			{
 				Double value;
 				if (isLowerBounds)
 				{
-					value = constraint.getLowerBound();
+					value = thisConstraint.getLowerBound();
 				}
 				else
 				{
-					value = constraint.getUpperBound();
+					value = thisConstraint.getUpperBound();
 				}
 				if (value == null)
 				{
@@ -220,10 +220,10 @@ public class Constraints
 		}
 	}
 
-	public void setLowerBounds(double[] lowerBounds)
+	public void setLowerBounds(double[] aLowerBounds)
 	{
-		validateBounds(lowerBounds);
-		this.lowerBounds = lowerBounds;
+		validateBounds(aLowerBounds);
+		this.lowerBounds = aLowerBounds;
 		updateBounds(true);
 	}
 
@@ -235,7 +235,7 @@ public class Constraints
 		for (String category : categories)
 		{
 			List<Constraint> constraints = getConstraints(category);
-			for (Constraint constraint : constraints)
+			for (Constraint thisConstraint : constraints)
 			{
 				Double value = null;
 				if (bounds != null)
@@ -244,19 +244,19 @@ public class Constraints
 				}
 				if (isLowerBounds)
 				{
-					constraint.setLowerBound(value);
+					thisConstraint.setLowerBound(value);
 				}
 				else
 				{
-					constraint.setUpperBound(value);
+					thisConstraint.setUpperBound(value);
 				}
 			}
 		}
 	}
 
-	public void setDimensionType(LengthType dimensionType)
+	public void setDimensionType(LengthType aDimensionType)
 	{
-		this.dimensionType = dimensionType;
+		this.dimensionType = aDimensionType;
 	}
 
 	public LengthType getDimensionType()
@@ -269,9 +269,9 @@ public class Constraints
 		return constraintsName;
 	}
 
-	public void setConstraintsName(String constraintsName)
+	public void setConstraintsName(String aConstraintsName)
 	{
-		this.constraintsName = constraintsName;
+		this.constraintsName = aConstraintsName;
 	}
 
 	public void setConstraint(List<Constraint> constraintList)
@@ -311,10 +311,10 @@ public class Constraints
 		return upperBounds;
 	}
 
-	public void setUpperBounds(double[] upperBounds)
+	public void setUpperBounds(double[] aUpperBounds)
 	{
-		validateBounds(upperBounds);
-		this.upperBounds = upperBounds;
+		validateBounds(aUpperBounds);
+		this.upperBounds = aUpperBounds;
 		updateBounds(false);
 	}
 
@@ -336,9 +336,9 @@ public class Constraints
 		return holeGroups;
 	}
 
-	public void setHoleGroups(HoleGroups holeGroups)
+	public void setHoleGroups(HoleGroups aHoleGroups)
 	{
-		this.holeGroups = holeGroups;
+		this.holeGroups = aHoleGroups;
 	}
 
 	public void setHoleGroups(int[][] groups)

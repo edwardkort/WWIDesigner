@@ -189,12 +189,12 @@ public class Instrument
 	}
 
 	/**
-	 * @param borePoint
+	 * @param aBorePoint
 	 *            the borePoint to set
 	 */
-	public void setBorePoint(List<BorePoint> borePoint)
+	public void setBorePoint(List<BorePoint> aBorePoint)
 	{
-		this.borePoint = borePoint;
+		this.borePoint = aBorePoint;
 	}
 
 	/**
@@ -229,12 +229,12 @@ public class Instrument
 	}
 
 	/**
-	 * @param hole
+	 * @param aHole
 	 *            the hole to set
 	 */
-	public void setHole(List<Hole> hole)
+	public void setHole(List<Hole> aHole)
 	{
-		this.hole = hole;
+		this.hole = aHole;
 	}
 
 	/**

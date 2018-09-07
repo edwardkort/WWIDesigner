@@ -5,10 +5,10 @@ public class NoteInterval
 	protected String name;
 	protected Double interval;
 
-	public NoteInterval(String name, Double interval)
+	public NoteInterval(String aName, Double aInterval)
 	{
-		setName(name);
-		setInterval(interval);
+		setName(aName);
+		setInterval(aInterval);
 	}
 
 	/**
@@ -20,12 +20,12 @@ public class NoteInterval
 	}
 
 	/**
-	 * @param name
+	 * @param aName
 	 *            the name to set
 	 */
-	public void setName(String name)
+	public void setName(String aName)
 	{
-		this.name = name;
+		this.name = aName;
 	}
 
 	/**
@@ -37,12 +37,12 @@ public class NoteInterval
 	}
 
 	/**
-	 * @param interval
+	 * @param aInterval
 	 *            the interval to set
 	 */
-	public void setInterval(Double interval)
+	public void setInterval(Double aInterval)
 	{
-		this.interval = interval;
+		this.interval = aInterval;
 	}
 
 	public String toString()

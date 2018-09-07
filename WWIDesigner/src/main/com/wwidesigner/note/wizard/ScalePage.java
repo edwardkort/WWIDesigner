@@ -62,12 +62,12 @@ public class ScalePage extends AbstractWizardPage implements DataProvider,
 	boolean isRefNoteSelected;
 	private boolean isRefFrequencySet;
 
-	public ScalePage(TuningWizardDialog parent)
+	public ScalePage(TuningWizardDialog aParent)
 	{
 		super(
 				"Scale with Frequencies",
 				"Convert a scale with intervals to one with frequencies by setting a reference note.");
-		this.parent = parent;
+		this.parent = aParent;
 		createWizardContent();
 	}
 

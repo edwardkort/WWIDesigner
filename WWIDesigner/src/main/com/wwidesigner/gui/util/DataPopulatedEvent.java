@@ -6,17 +6,17 @@ public class DataPopulatedEvent
 	private Object source;
 	private String dataName;
 
-	public DataPopulatedEvent(Object source, boolean isPopulated)
+	public DataPopulatedEvent(Object aSource, boolean aIsPopulated)
 	{
-		this.source = source;
-		this.isPopulated = isPopulated;
+		this.source = aSource;
+		this.isPopulated = aIsPopulated;
 	}
 
-	public DataPopulatedEvent(Object source, String dataName,
-			boolean isPopulated)
+	public DataPopulatedEvent(Object aSource, String aDataName,
+			boolean aIsPopulated)
 	{
-		this(source, isPopulated);
-		this.dataName = dataName;
+		this(aSource, aIsPopulated);
+		this.dataName = aDataName;
 	}
 
 	public Object getSource()
@@ -29,9 +29,9 @@ public class DataPopulatedEvent
 		return isPopulated;
 	}
 
-	public Boolean isPopulated(String dataName)
+	public Boolean isPopulated(String aDataName)
 	{
-		if (this.dataName == null || !this.dataName.equals(dataName))
+		if (this.dataName == null || !this.dataName.equals(aDataName))
 		{
 			return null;
 		}

@@ -25,12 +25,12 @@ public class Temperament
 	}
 
 	/**
-	 * @param name
+	 * @param aName
 	 *            the name to set
 	 */
-	public void setName(String name)
+	public void setName(String aName)
 	{
-		this.name = name;
+		this.name = aName;
 	}
 
 	/**
@@ -42,12 +42,12 @@ public class Temperament
 	}
 
 	/**
-	 * @param comment
+	 * @param aComment
 	 *            the comment to set
 	 */
-	public void setComment(String comment)
+	public void setComment(String aComment)
 	{
-		this.comment = comment;
+		this.comment = aComment;
 	}
 
 	/**
@@ -63,12 +63,12 @@ public class Temperament
 	}
 
 	/**
-	 * @param ratio
+	 * @param aRatio
 	 *            the ratio to set
 	 */
-	public void setRatio(List<Double> ratio)
+	public void setRatio(List<Double> aRatio)
 	{
-		this.ratio = ratio;
+		this.ratio = aRatio;
 	}
 
 	public void addRatio(Double newRatio)
@@ -124,9 +124,9 @@ public class Temperament
 		TET_12("12-tone equal temperament"), JI_12("12-tone just intonation");
 		private String description;
 
-		private StandardTemperament(String description)
+		private StandardTemperament(String aDescription)
 		{
-			this.description = description;
+			this.description = aDescription;
 		}
 
 		public String toString()

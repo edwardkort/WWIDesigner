@@ -14,10 +14,10 @@ public class BasicOptimizationFunction implements OptimizationFunctionInterface
 	private List<Fingering> fingeringTargets;
 	protected int iterationsDone;
 
-	public BasicOptimizationFunction(InstrumentOptimizerInterface optimizer,
+	public BasicOptimizationFunction(InstrumentOptimizerInterface aOptimizer,
 			TuningInterface tuning)
 	{
-		this.optimizer = optimizer;
+		this.optimizer = aOptimizer;
 		fingeringTargets = tuning.getFingering();
 	}
 

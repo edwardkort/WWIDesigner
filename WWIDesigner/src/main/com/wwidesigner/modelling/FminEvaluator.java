@@ -35,16 +35,16 @@ public class FminEvaluator implements EvaluatorInterface
 	protected InstrumentCalculator  calculator;
 	protected InstrumentTuner tuner;
 
-	public FminEvaluator( InstrumentCalculator calculator )
+	public FminEvaluator( InstrumentCalculator aCalculator )
 	{
-		this.calculator = calculator;
+		this.calculator = aCalculator;
 		setTuner(new LinearVInstrumentTuner());
 	}
 
-	public FminEvaluator(InstrumentCalculator calculator, InstrumentTuner tuner)
+	public FminEvaluator(InstrumentCalculator aCalculator, InstrumentTuner aTuner)
 	{
-		this.calculator = calculator;
-		setTuner(tuner);
+		this.calculator = aCalculator;
+		setTuner(aTuner);
 	}
 
 	/**
@@ -89,9 +89,9 @@ public class FminEvaluator implements EvaluatorInterface
 		return errorVector;
 	}
 
-	protected void setTuner(InstrumentTuner tuner)
+	protected void setTuner(InstrumentTuner aTuner)
 	{
-		this.tuner = tuner;
+		this.tuner = aTuner;
 		this.tuner.setCalculator(calculator);
 		this.tuner.setInstrument(calculator.getInstrument());
 		this.tuner.setParams(calculator.getPhysicalParameters());

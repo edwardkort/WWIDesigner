@@ -35,11 +35,11 @@ public class DoubleFormatter extends DefaultFormatter
 		this.isOptional = false;
 	}
 
-	public DoubleFormatter(boolean isOptional)
+	public DoubleFormatter(boolean aIsOptional)
 	{
 		super();
 		setValueClass(Double.class);
-		this.isOptional = isOptional;
+		this.isOptional = aIsOptional;
 	}
 
 	/*
@@ -91,9 +91,9 @@ public class DoubleFormatter extends DefaultFormatter
 		return isOptional;
 	}
 
-	public void setOptional(boolean isOptional)
+	public void setOptional(boolean aIsOptional)
 	{
-		this.isOptional = isOptional;
+		this.isOptional = aIsOptional;
 	}
 
 	@Override

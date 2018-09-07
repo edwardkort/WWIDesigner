@@ -80,12 +80,12 @@ public class Mouthpiece implements ComponentInterface, MouthpieceInterface,
 	 * factor, after Auvray, 2012. Loop gain G = gainFactor * freq * rho /
 	 * abs(Z).
 	 * 
-	 * @param beta
+	 * @param aBeta
 	 *            the jet amplification factor to set
 	 */
-	public void setBeta(Double beta)
+	public void setBeta(Double aBeta)
 	{
-		this.beta = beta;
+		this.beta = aBeta;
 		// For instruments without beta, calculate a gain factor with a default beta.
 		double nominalBeta = 0.35;
 		if (this.beta != null)
@@ -133,12 +133,12 @@ public class Mouthpiece implements ComponentInterface, MouthpieceInterface,
 	 * factor, after Auvray, 2012. Loop gain G = gainFactor * freq * rho /
 	 * abs(Z).
 	 * 
-	 * @param gainFactor
+	 * @param aGainFactor
 	 *            the gain factor to set
 	 */
-	public void setGainFactor(Double gainFactor)
+	public void setGainFactor(Double aGainFactor)
 	{
-		this.gainFactor = gainFactor;
+		this.gainFactor = aGainFactor;
 		if (this.fipple != null && this.fipple.windwayHeight != null
 			&& this.gainFactor != null)
 		{
@@ -467,9 +467,9 @@ public class Mouthpiece implements ComponentInterface, MouthpieceInterface,
 		/**
 		 * Sets the embouchure hole length (size in longitudinal direction).
 		 */
-		public void setLength(double length)
+		public void setLength(double aLength)
 		{
-			this.length = length;
+			this.length = aLength;
 		}
 
 		/**
@@ -485,9 +485,9 @@ public class Mouthpiece implements ComponentInterface, MouthpieceInterface,
 		 * Sets the embouchure hole width (size in transverse direction,
 		 * direction of air stream).
 		 */
-		public void setWidth(double width)
+		public void setWidth(double aWidth)
 		{
-			this.width = width;
+			this.width = aWidth;
 		}
 
 		/**
@@ -500,12 +500,12 @@ public class Mouthpiece implements ComponentInterface, MouthpieceInterface,
 
 		/**
 		 * Set the height of the embouchure hole.
-		 * @param height
+		 * @param aHeight
 		 *            the height to set
 		 */
-		public void setHeight(double height)
+		public void setHeight(double aHeight)
 		{
-			this.height = height;
+			this.height = aHeight;
 		}
 
 		/**
@@ -523,9 +523,9 @@ public class Mouthpiece implements ComponentInterface, MouthpieceInterface,
 		 * @param height
 		 *            the height to set
 		 */
-		public void setAirstreamLength(double length)
+		public void setAirstreamLength(double aLength)
 		{
-			this.airstreamLength = length;
+			this.airstreamLength = aLength;
 		}
 
 		/**
@@ -538,12 +538,12 @@ public class Mouthpiece implements ComponentInterface, MouthpieceInterface,
 
 		/**
 		 * Set the height of the air stream from the player's lips.
-		 * @param height
+		 * @param aHeight
 		 *            the height to set
 		 */
-		public void setAirstreamHeight(double height)
+		public void setAirstreamHeight(double aHeight)
 		{
-			this.airstreamHeight = height;
+			this.airstreamHeight = aHeight;
 		}
 
 		public void convertDimensions(double multiplier)
@@ -621,12 +621,12 @@ public class Mouthpiece implements ComponentInterface, MouthpieceInterface,
 		}
 
 		/**
-		 * @param windowWidth
+		 * @param aWindowWidth
 		 *            the windowWidth to set
 		 */
-		public void setWindowWidth(double windowWidth)
+		public void setWindowWidth(double aWindowWidth)
 		{
-			this.windowWidth = windowWidth;
+			this.windowWidth = aWindowWidth;
 		}
 
 		/**
@@ -638,12 +638,12 @@ public class Mouthpiece implements ComponentInterface, MouthpieceInterface,
 		}
 
 		/**
-		 * @param windowLength
+		 * @param aWindowLength
 		 *            the windowLength to set
 		 */
-		public void setWindowLength(double windowLength)
+		public void setWindowLength(double aWindowLength)
 		{
-			this.windowLength = windowLength;
+			this.windowLength = aWindowLength;
 		}
 
 		/**
@@ -655,12 +655,12 @@ public class Mouthpiece implements ComponentInterface, MouthpieceInterface,
 		}
 
 		/**
-		 * @param fippleFactor
+		 * @param aFippleFactor
 		 *            the fippleFactor to set
 		 */
-		public void setFippleFactor(Double fippleFactor)
+		public void setFippleFactor(Double aFippleFactor)
 		{
-			this.fippleFactor = fippleFactor;
+			this.fippleFactor = aFippleFactor;
 		}
 
 		/**
@@ -672,12 +672,12 @@ public class Mouthpiece implements ComponentInterface, MouthpieceInterface,
 		}
 
 		/**
-		 * @param windowHeight
+		 * @param aWindowHeight
 		 *            the windowHeight to set
 		 */
-		public void setWindowHeight(Double windowHeight)
+		public void setWindowHeight(Double aWindowHeight)
 		{
-			this.windowHeight = windowHeight;
+			this.windowHeight = aWindowHeight;
 		}
 
 		/**
@@ -689,12 +689,12 @@ public class Mouthpiece implements ComponentInterface, MouthpieceInterface,
 		}
 
 		/**
-		 * @param windwayLength
+		 * @param aWindwayLength
 		 *            the windwayLength to set
 		 */
-		public void setWindwayLength(Double windwayLength)
+		public void setWindwayLength(Double aWindwayLength)
 		{
-			this.windwayLength = windwayLength;
+			this.windwayLength = aWindwayLength;
 		}
 
 		/**
@@ -706,12 +706,12 @@ public class Mouthpiece implements ComponentInterface, MouthpieceInterface,
 		}
 
 		/**
-		 * @param windwayHeight
+		 * @param aWindwayHeight
 		 *            the windwayHeight to set
 		 */
-		public void setWindwayHeight(Double windwayHeight)
+		public void setWindwayHeight(Double aWindwayHeight)
 		{
-			this.windwayHeight = windwayHeight;
+			this.windwayHeight = aWindwayHeight;
 		}
 
 		public void convertDimensions(double multiplier)
@@ -786,12 +786,12 @@ public class Mouthpiece implements ComponentInterface, MouthpieceInterface,
 		}
 
 		/**
-		 * @param alpha
+		 * @param aAlpha
 		 *            the alpha to set
 		 */
-		public void setAlpha(double alpha)
+		public void setAlpha(double aAlpha)
 		{
-			this.alpha = alpha;
+			this.alpha = aAlpha;
 		}
 
 		public void convertDimensions(double multiplier)
@@ -829,12 +829,12 @@ public class Mouthpiece implements ComponentInterface, MouthpieceInterface,
 		}
 
 		/**
-		 * @param alpha
+		 * @param aAlpha
 		 *            the alpha to set
 		 */
-		public void setAlpha(double alpha)
+		public void setAlpha(double aAlpha)
 		{
-			this.alpha = alpha;
+			this.alpha = aAlpha;
 		}
 
 
@@ -847,12 +847,12 @@ public class Mouthpiece implements ComponentInterface, MouthpieceInterface,
 		}
 
 		/**
-		 * @param crowFreq
+		 * @param aCrowFreq
 		 *            the crowFreq to set
 		 */
-		public void setCrowFreq(double crowFreq)
+		public void setCrowFreq(double aCrowFreq)
 		{
-			this.crowFreq = crowFreq;
+			this.crowFreq = aCrowFreq;
 		}
 
 		public void convertDimensions(double multiplier)
@@ -898,12 +898,12 @@ public class Mouthpiece implements ComponentInterface, MouthpieceInterface,
 		}
 
 		/**
-		 * @param alpha
+		 * @param aAlpha
 		 *            the alpha to set
 		 */
-		public void setAlpha(double alpha)
+		public void setAlpha(double aAlpha)
 		{
-			this.alpha = alpha;
+			this.alpha = aAlpha;
 		}
 
 		public void convertDimensions(double multiplier)
@@ -926,15 +926,15 @@ public class Mouthpiece implements ComponentInterface, MouthpieceInterface,
 	}
 
 	@Override
-	public void setBorePosition(double position)
+	public void setBorePosition(double aPosition)
 	{
-		this.position = position;
+		this.position = aPosition;
 	}
 
 	@Override
-	public void setBoreDiameter(double boreDiameter)
+	public void setBoreDiameter(double aBoreDiameter)
 	{
-		this.boreDiameter = boreDiameter;
+		this.boreDiameter = aBoreDiameter;
 	}
 
 	@Override
@@ -952,12 +952,12 @@ public class Mouthpiece implements ComponentInterface, MouthpieceInterface,
 	}
 
 	/**
-	 * @param headspace
+	 * @param aHeadspace
 	 *            the headspace to set
 	 */
-	public void setHeadspace(List<BoreSection> headspace)
+	public void setHeadspace(List<BoreSection> aHeadspace)
 	{
-		this.headspace = headspace;
+		this.headspace = aHeadspace;
 	}
 
 }

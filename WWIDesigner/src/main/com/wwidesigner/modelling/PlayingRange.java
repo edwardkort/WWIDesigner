@@ -144,9 +144,9 @@ public class PlayingRange
 		 * Create a function for finding frequencies
 		 * where gain(f) has a specified value.
 		 */
-		public Gain(double targetGain)
+		public Gain(double aTargetGain)
 		{
-			this.targetGain = targetGain;
+			this.targetGain = aTargetGain;
 		}
 
 		public double value(double f)
@@ -242,9 +242,9 @@ public class PlayingRange
 	{
 		private static final long serialVersionUID = 8397354277027817459L;
 		private final double freq;
-		public NoPlayingRange(double freq)
+		public NoPlayingRange(double aFreq)
 		{
-			this.freq = freq;
+			this.freq = aFreq;
 		}
 		@Override
 		public String getMessage()
@@ -255,13 +255,13 @@ public class PlayingRange
 
 	/**
 	 * Construct a playing-range calculator for a specified fingering.
-	 * @param calculator
-	 * @param fingering
+	 * @param aCalculator
+	 * @param aFingering
 	 */
-	public PlayingRange(InstrumentCalculator calculator, Fingering fingering)
+	public PlayingRange(InstrumentCalculator aCalculator, Fingering aFingering)
 	{
-		this.calculator = calculator;
-		this.fingering = fingering;
+		this.calculator = aCalculator;
+		this.fingering = aFingering;
 		this.reactance = new Reactance();
 		this.zMagnitude = new ZMagnitude();
 		this.gainOne = new Gain();
@@ -531,11 +531,11 @@ public class PlayingRange
 	public double findX(double nearFreq, double targetX) throws NoPlayingRange
 	{
 		double rootFreq;		// Frequency at which Z.imag == targetX.
-		Reactance reactance = new Reactance( targetX );
-		double[] bracket = findBracket(nearFreq, reactance);
+		Reactance aReactance = new Reactance( targetX );
+		double[] bracket = findBracket(nearFreq, aReactance);
 
 		try {
-			rootFreq = solver.solve( 50, reactance, bracket[0], bracket[1] );
+			rootFreq = solver.solve( 50, aReactance, bracket[0], bracket[1] );
 		}
 		catch (Exception e)
 		{
@@ -693,9 +693,9 @@ public class PlayingRange
 		return fingering;
 	}
 
-	public void setFingering(Fingering fingering)
+	public void setFingering(Fingering aFingering)
 	{
-		this.fingering = fingering;
+		this.fingering = aFingering;
 	}
 
 }

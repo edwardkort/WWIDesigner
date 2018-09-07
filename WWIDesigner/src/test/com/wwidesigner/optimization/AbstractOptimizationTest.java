@@ -47,57 +47,57 @@ public class AbstractOptimizationTest
 	protected BaseObjectiveFunction objective;
 	
 	/**
-	 * @param params
+	 * @param aParams
 	 *            the params to set
 	 */
-	public void setParams(PhysicalParameters params)
+	public void setParams(PhysicalParameters aParams)
 	{
-		this.params = params;
+		this.params = aParams;
 	}
 
 	/**
-	 * @param inputInstrumentXML
+	 * @param aInputInstrumentXML
 	 *            the inputInstrumentXML to set
 	 */
-	public void setInputInstrumentXML(String inputInstrumentXML)
+	public void setInputInstrumentXML(String aInputInstrumentXML)
 	{
-		this.inputInstrumentXML = inputInstrumentXML;
+		this.inputInstrumentXML = aInputInstrumentXML;
 	}
 
 	/**
-	 * @param inputTuningXML
+	 * @param aInputTuningXML
 	 *            the inputTuningXML to set
 	 */
-	public void setInputTuningXML(String inputTuningXML)
+	public void setInputTuningXML(String aInputTuningXML)
 	{
-		this.inputTuningXML = inputTuningXML;
+		this.inputTuningXML = aInputTuningXML;
 	}
 
 	/**
-	 * @param lowerBound
+	 * @param aLowerBound
 	 *            the lowerBound to set
 	 */
-	public void setLowerBound(double[] lowerBound)
+	public void setLowerBound(double[] aLowerBound)
 	{
-		this.lowerBound = lowerBound;
+		this.lowerBound = aLowerBound;
 	}
 
 	/**
-	 * @param upperBound
+	 * @param aUpperBound
 	 *            the upperBound to set
 	 */
-	public void setUpperBound(double[] upperBound)
+	public void setUpperBound(double[] aUpperBound)
 	{
-		this.upperBound = upperBound;
+		this.upperBound = aUpperBound;
 	}
 
 	/**
-	 * @param calculator
+	 * @param aCalculator
 	 *            the calculator to set
 	 */
-	public void setCalculator(InstrumentCalculator calculator)
+	public void setCalculator(InstrumentCalculator aCalculator)
 	{
-		this.calculator = calculator;
+		this.calculator = aCalculator;
 	}
 
 	protected void setup() throws Exception
@@ -146,16 +146,16 @@ public class AbstractOptimizationTest
 		return instrument;
 	}
 
-	public void showTuning(Instrument instrument,
-			InstrumentCalculator calculator, Tuning tuning, String title)
+	public void showTuning(Instrument aInstrument,
+			InstrumentCalculator aCalculator, Tuning aTuning, String title)
 	{
 		SimpleInstrumentTuner tuner = new SimpleInstrumentTuner();
-		tuner.setInstrument(instrument);
-		tuner.setCalculator(calculator);
-		tuner.setTuning(tuning);
+		tuner.setInstrument(aInstrument);
+		tuner.setCalculator(aCalculator);
+		tuner.setTuning(aTuning);
 		Tuning predicted = tuner.getPredictedTuning();
 		TuningComparisonTable table = new TuningComparisonTable(title);
-		table.buildTable(tuning, predicted);
+		table.buildTable(aTuning, predicted);
 		table.showTuning();
 	}
 
@@ -163,20 +163,20 @@ public class AbstractOptimizationTest
 	{
 		BindFactory geometryBindFactory = GeometryBindFactory.getInstance();
 		File inputFile = getInputFile(inputInstrumentXML, geometryBindFactory);
-		Instrument instrument = (Instrument) geometryBindFactory.unmarshalXml(
+		Instrument thisInstrument = (Instrument) geometryBindFactory.unmarshalXml(
 				inputFile, true);
-		instrument.updateComponents();
+		thisInstrument.updateComponents();
 
-		return instrument;
+		return thisInstrument;
 	}
 
 	protected Tuning getTuningFromXml() throws Exception
 	{
 		BindFactory noteBindFactory = NoteBindFactory.getInstance();
 		File inputFile = getInputFile(inputTuningXML, noteBindFactory);
-		Tuning tuning = (Tuning) noteBindFactory.unmarshalXml(inputFile, true);
+		Tuning thisTuning = (Tuning) noteBindFactory.unmarshalXml(inputFile, true);
 
-		return tuning;
+		return thisTuning;
 	}
 
 	protected File getInputFile(String fileName, BindFactory bindFactory)

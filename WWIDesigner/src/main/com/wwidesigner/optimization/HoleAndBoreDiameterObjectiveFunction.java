@@ -34,25 +34,25 @@ public class HoleAndBoreDiameterObjectiveFunction extends MergedObjectiveFunctio
 	 * Create an optimization objective function for hole positions and
 	 * diameters, and bore diameters at existing bore points.
 	 * 
-	 * @param calculator
+	 * @param aCalculator
 	 * @param tuning
-	 * @param evaluator
+	 * @param aEvaluator
 	 * @param unchangedBorePoints
 	 *            - Leave diameter unchanged for this many bore points from the
 	 *            top of the bore.
 	 */
-	public HoleAndBoreDiameterObjectiveFunction(InstrumentCalculator calculator,
-			TuningInterface tuning, EvaluatorInterface evaluator, 
+	public HoleAndBoreDiameterObjectiveFunction(InstrumentCalculator aCalculator,
+			TuningInterface tuning, EvaluatorInterface aEvaluator, 
 			int unchangedBorePoints)
 	{
-		super(calculator, tuning, evaluator);
+		super(aCalculator, tuning, aEvaluator);
 		this.components = new BaseObjectiveFunction[3];
-		this.components[0] = new HolePositionObjectiveFunction(calculator,
-				tuning, evaluator, BoreLengthAdjustmentType.PRESERVE_BELL);
-		this.components[1] = new HoleSizeObjectiveFunction(calculator, tuning,
-				evaluator);
-		this.components[2] = new BoreDiameterObjectiveFunction(calculator, tuning,
-				evaluator, unchangedBorePoints);
+		this.components[0] = new HolePositionObjectiveFunction(aCalculator,
+				tuning, aEvaluator, BoreLengthAdjustmentType.PRESERVE_BELL);
+		this.components[1] = new HoleSizeObjectiveFunction(aCalculator, tuning,
+				aEvaluator);
+		this.components[2] = new BoreDiameterObjectiveFunction(aCalculator, tuning,
+				aEvaluator, unchangedBorePoints);
 		optimizerType = OptimizerType.BOBYQAOptimizer; // MultivariateOptimizer
 		maxEvaluations = 50000;
 		sumDimensions();

@@ -37,9 +37,9 @@ public abstract class InstrumentOptimizer implements
 
 	public abstract void setOptimizationFunction();
 
-	public InstrumentOptimizer(int numberOfInterpolationPoints,
+	public InstrumentOptimizer(int aNumberOfInterpolationPoints,
 			Instrument inst, InstrumentCalculator calculator,
-			TuningInterface tuning)
+			TuningInterface aTuning)
 	{
 		// Default to a BOBYQAOptimizer
 		// The number of interpolation point
@@ -47,11 +47,11 @@ public abstract class InstrumentOptimizer implements
 		// to the number of variables in the optimization problem,
 		// which depends on the OptimizableInstrument
 		setBaseOptimizer(OptimizerType.BOBYQAOptimizer,
-				numberOfInterpolationPoints);
+				aNumberOfInterpolationPoints);
 
 		this.instrument = inst;
 		this.instrumentCalculator = calculator;
-		this.tuning = tuning;
+		this.tuning = aTuning;
 	}
 
 	/**
@@ -73,18 +73,18 @@ public abstract class InstrumentOptimizer implements
 	}
 
 	public void setBaseOptimizer(OptimizerType thisBaseOptimizerType,
-			int numberOfInterpolationPoints)
+			int aNumberOfInterpolationPoints)
 	{
-		this.numberOfInterpolationPoints = numberOfInterpolationPoints;
+		this.numberOfInterpolationPoints = aNumberOfInterpolationPoints;
 
 		switch (thisBaseOptimizerType)
 		{
 			case BOBYQAOptimizer:
-				baseOptimizer = new BOBYQAOptimizer(numberOfInterpolationPoints);
+				baseOptimizer = new BOBYQAOptimizer(aNumberOfInterpolationPoints);
 				baseOptimizerType = OptimizerType.BOBYQAOptimizer;
 				break;
 			case CMAESOptimizer:
-				baseOptimizer = new CMAESOptimizer(numberOfInterpolationPoints);
+				baseOptimizer = new CMAESOptimizer(aNumberOfInterpolationPoints);
 				baseOptimizerType = OptimizerType.CMAESOptimizer;
 				break;
 		}
@@ -147,12 +147,12 @@ public abstract class InstrumentOptimizer implements
 		}
 	}
 
-	public void doMultistart(boolean doMultistart, int numberOfStarts,
-			int[] indicesToVary, boolean varyRandomly)
+	public void doMultistart(boolean doMultistart, int aNumberOfStarts,
+			int[] aIndicesToVary, boolean varyRandomly)
 	{
 		this.isMultistart = doMultistart;
-		this.numberOfStarts = numberOfStarts;
-		this.indicesToVary = indicesToVary;
+		this.numberOfStarts = aNumberOfStarts;
+		this.indicesToVary = aIndicesToVary;
 		this.varyStartValuesRandomly = varyRandomly;
 	}
 

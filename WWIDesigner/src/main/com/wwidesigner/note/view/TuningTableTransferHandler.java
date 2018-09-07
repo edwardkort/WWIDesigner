@@ -15,9 +15,9 @@ public class TuningTableTransferHandler extends TableTransferHandler
 {
 	private TuningPanel tuningPanel;
 
-	public TuningTableTransferHandler(TuningPanel tuningPanel)
+	public TuningTableTransferHandler(TuningPanel aTuningPanel)
 	{
-		this.tuningPanel = tuningPanel;
+		this.tuningPanel = aTuningPanel;
 	}
 
 	@Override

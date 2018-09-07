@@ -29,10 +29,10 @@ public class BasicTaperObjectiveFunction extends BaseObjectiveFunction
 	public static final ConstraintType CONSTR_TYPE = ConstraintType.DIMENSIONLESS;
 	public static final String DISPLAY_NAME = "Basic Taper optimizer";
 
-	public BasicTaperObjectiveFunction(InstrumentCalculator calculator,
-			TuningInterface tuning, EvaluatorInterface evaluator)
+	public BasicTaperObjectiveFunction(InstrumentCalculator aCalculator,
+			TuningInterface tuning, EvaluatorInterface aEvaluator)
 	{
-		super(calculator, tuning, evaluator);
+		super(aCalculator, tuning, aEvaluator);
 		nrDimensions = 2;
 		optimizerType = OptimizerType.BOBYQAOptimizer; // MultivariateOptimizer
 		setConstraints();

@@ -24,17 +24,17 @@ public class SingleTaperNoHoleGroupingFromTopHemiHeadObjectiveFunction extends
 			.getSimpleName();
 
 	public SingleTaperNoHoleGroupingFromTopHemiHeadObjectiveFunction(
-			InstrumentCalculator calculator, TuningInterface tuning,
-			EvaluatorInterface evaluator) throws Exception
+			InstrumentCalculator aCalculator, TuningInterface tuning,
+			EvaluatorInterface aEvaluator) throws Exception
 	{
-		super(calculator, tuning, evaluator);
+		super(aCalculator, tuning, aEvaluator);
 		this.components = new BaseObjectiveFunction[3];
 		this.components[0] = new HolePositionFromTopObjectiveFunction(
-				calculator, tuning, evaluator, BoreLengthAdjustmentType.MOVE_BOTTOM);
-		this.components[1] = new HoleSizeObjectiveFunction(calculator, tuning,
-				evaluator);
+				aCalculator, tuning, aEvaluator, BoreLengthAdjustmentType.MOVE_BOTTOM);
+		this.components[1] = new HoleSizeObjectiveFunction(aCalculator, tuning,
+				aEvaluator);
 		this.components[2] = new SingleTaperSimpleRatioHemiHeadObjectiveFunction(
-				calculator, tuning, evaluator);
+				aCalculator, tuning, aEvaluator);
 		optimizerType = OptimizerType.BOBYQAOptimizer; // MultivariateOptimizer
 		sumDimensions();
 		maxEvaluations = 20000 + (getNrDimensions() - 1) * 5000;

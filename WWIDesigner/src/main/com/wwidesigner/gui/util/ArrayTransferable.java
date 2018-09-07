@@ -27,22 +27,22 @@ public class ArrayTransferable implements Transferable
 
 	/**
 	 * Create a transferable object from an array of rows.
-	 * @param data - row data, one element per row.
+	 * @param aData - row data, one element per row.
 	 */
-	public ArrayTransferable(Object[] data)
+	public ArrayTransferable(Object[] aData)
 	{
-		this.data = data;
+		this.data = aData;
 		// Assume anything from a table can be cast to a string (possibly empty),
 		// or an array of strings (possibly empty or singleton).
-		if (data != null && data.length > 0 && data[0] != null)
+		if (aData != null && aData.length > 0 && aData[0] != null)
 		{
-			if (data[0] instanceof String)
+			if (aData[0] instanceof String)
 			{
 				supportedFlavors = new DataFlavor[2];
 				supportedFlavors[0] = STRINGS_FLAVOUR;
 				supportedFlavors[1] = DataFlavor.stringFlavor;
 			}
-			else if (data[0] instanceof Double)
+			else if (aData[0] instanceof Double)
 			{
 				// Don't support STRINGS_FLAVOUR, so a column of Doubles can't be
 				// dragged to a String column of another table, even though
@@ -51,7 +51,7 @@ public class ArrayTransferable implements Transferable
 				supportedFlavors[0] = DOUBLES_FLAVOUR;
 				supportedFlavors[1] = DataFlavor.stringFlavor;
 			}
-			else if (data[0] instanceof Fingering)
+			else if (aData[0] instanceof Fingering)
 			{
 				// Don't support STRINGS_FLAVOUR, so a column of Fingerings can't be
 				// dragged to a String column of another table, even though
@@ -60,7 +60,7 @@ public class ArrayTransferable implements Transferable
 				supportedFlavors[0] = FINGERINGS_FLAVOUR;
 				supportedFlavors[1] = DataFlavor.stringFlavor;
 			}
-			else if (data[0] instanceof Object[])
+			else if (aData[0] instanceof Object[])
 			{
 				supportedFlavors = new DataFlavor[2];
 				supportedFlavors[0] = TABLE_FLAVOUR;
@@ -91,23 +91,23 @@ public class ArrayTransferable implements Transferable
 		int colCount = 1;
 		int rowNr;
 		DataFlavor dataFlavour = null;
-		String[][] data = new String[rows.length][1];
+		String[][] thisData = new String[rows.length][1];
 		for (rowNr = 0; rowNr < rows.length; ++rowNr)
 		{
-			data[rowNr] = rows[rowNr].split("\t");
-			if (data[rowNr].length > colCount)
+			thisData[rowNr] = rows[rowNr].split("\t");
+			if (thisData[rowNr].length > colCount)
 			{
-				colCount = data[rowNr].length;
+				colCount = thisData[rowNr].length;
 			}
 			if (colCount == 1 )
 			{
 				if ((dataFlavour == null || dataFlavour == DOUBLES_FLAVOUR)
-					&& data[rowNr][0].matches(DOUBLE_MATCH_STRING))
+					&& thisData[rowNr][0].matches(DOUBLE_MATCH_STRING))
 				{
 					dataFlavour = DOUBLES_FLAVOUR;
 				}
 				else if ((dataFlavour == null || dataFlavour == FINGERINGS_FLAVOUR)
-						&& data[rowNr][0].matches(FINGERING_MATCH_STRING))
+						&& thisData[rowNr][0].matches(FINGERING_MATCH_STRING))
 				{
 					dataFlavour = FINGERINGS_FLAVOUR;
 				}
@@ -126,12 +126,12 @@ public class ArrayTransferable implements Transferable
 			// Pad all rows to the same number of columns.
 			for (rowNr = 0; rowNr < rows.length; ++rowNr)
 			{
-				if (data[rowNr].length != colCount)
+				if (thisData[rowNr].length != colCount)
 				{
-					data[rowNr] = Arrays.copyOf(data[rowNr], colCount);
+					thisData[rowNr] = Arrays.copyOf(thisData[rowNr], colCount);
 				}
 			}
-			this.data = data;
+			this.data = thisData;
 			supportedFlavors = new DataFlavor[2];
 			supportedFlavors[0] = TABLE_FLAVOUR;
 			supportedFlavors[1] = DataFlavor.stringFlavor;
@@ -141,7 +141,7 @@ public class ArrayTransferable implements Transferable
 			this.data = new Double[rows.length];
 			for (rowNr = 0; rowNr < rows.length; ++rowNr)
 			{
-				this.data[rowNr] = Double.valueOf(data[rowNr][0]);
+				this.data[rowNr] = Double.valueOf(thisData[rowNr][0]);
 			}
 			supportedFlavors = new DataFlavor[2];
 			supportedFlavors[0] = DOUBLES_FLAVOUR;
@@ -152,7 +152,7 @@ public class ArrayTransferable implements Transferable
 			this.data = new Fingering[rows.length];
 			for (rowNr = 0; rowNr < rows.length; ++rowNr)
 			{
-				this.data[rowNr] = Fingering.valueOf(data[rowNr][0]);
+				this.data[rowNr] = Fingering.valueOf(thisData[rowNr][0]);
 			}
 			supportedFlavors = new DataFlavor[2];
 			supportedFlavors[0] = FINGERINGS_FLAVOUR;
@@ -163,7 +163,7 @@ public class ArrayTransferable implements Transferable
 			this.data = new String[rows.length];
 			for (rowNr = 0; rowNr < rows.length; ++rowNr)
 			{
-				this.data[rowNr] = data[rowNr][0];
+				this.data[rowNr] = thisData[rowNr][0];
 			}
 			supportedFlavors = new DataFlavor[2];
 			supportedFlavors[0] = STRINGS_FLAVOUR;

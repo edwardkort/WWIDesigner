@@ -265,12 +265,12 @@ public class LinearVInstrumentTuner extends InstrumentTuner
 	 * @see com.wwidesigner.modelling.InstrumentTuner#setTuning(com.wwidesigner.note.Tuning)
 	 */
 	@Override
-	public void setTuning(Tuning tuning)
+	public void setTuning(Tuning aTuning)
 	{
-		super.setTuning(tuning);
-		if (tuning != null && calculator != null)
+		super.setTuning(aTuning);
+		if (aTuning != null && calculator != null)
 		{
-			setFingering(tuning.getFingering());
+			setFingering(aTuning.getFingering());
 		}
 	}
 
@@ -278,10 +278,10 @@ public class LinearVInstrumentTuner extends InstrumentTuner
 	 * @see com.wwidesigner.modelling.InstrumentTuner#setCalculator(com.wwidesigner.modelling.InstrumentCalculator)
 	 */
 	@Override
-	public void setCalculator(InstrumentCalculator calculator)
+	public void setCalculator(InstrumentCalculator aCalculator)
 	{
-		super.setCalculator(calculator);
-		if (tuning != null && calculator != null)
+		super.setCalculator(aCalculator);
+		if (tuning != null && aCalculator != null)
 		{
 			setFingering(tuning.getFingering());
 		}
@@ -291,9 +291,9 @@ public class LinearVInstrumentTuner extends InstrumentTuner
 	 * @see com.wwidesigner.modelling.InstrumentTuner#setParams(com.wwidesigner.util.PhysicalParameters)
 	 */
 	@Override
-	public void setParams(PhysicalParameters params)
+	public void setParams(PhysicalParameters aParams)
 	{
-		super.setParams(params);
+		super.setParams(aParams);
 		if (tuning != null && calculator != null)
 		{
 			setFingering(tuning.getFingering());

@@ -33,23 +33,23 @@ public class BoreObjectiveFunction extends MergedObjectiveFunction
 	 * Create an optimization objective function for bore point position and
 	 * diameter at existing bore points.
 	 * 
-	 * @param calculator
+	 * @param aCalculator
 	 * @param tuning
-	 * @param evaluator
+	 * @param aEvaluator
 	 * @param unchangedBorePoints
 	 *            - Leave diameter and position unchanged for this many bore
 	 *            points from the top of the bore.
 	 */
-	public BoreObjectiveFunction(InstrumentCalculator calculator,
-			TuningInterface tuning, EvaluatorInterface evaluator, 
+	public BoreObjectiveFunction(InstrumentCalculator aCalculator,
+			TuningInterface tuning, EvaluatorInterface aEvaluator, 
 			int unchangedBorePoints)
 	{
-		super(calculator, tuning, evaluator);
+		super(aCalculator, tuning, aEvaluator);
 		this.components = new BaseObjectiveFunction[2];
-		this.components[0] = new BorePositionObjectiveFunction(calculator,
-				tuning, evaluator, unchangedBorePoints);
-		this.components[1] = new BoreDiameterObjectiveFunction(calculator,
-				tuning, evaluator, unchangedBorePoints);
+		this.components[0] = new BorePositionObjectiveFunction(aCalculator,
+				tuning, aEvaluator, unchangedBorePoints);
+		this.components[1] = new BoreDiameterObjectiveFunction(aCalculator,
+				tuning, aEvaluator, unchangedBorePoints);
 		optimizerType = OptimizerType.BOBYQAOptimizer; // MultivariateOptimizer
 		maxEvaluations = 40000;
 		sumDimensions();

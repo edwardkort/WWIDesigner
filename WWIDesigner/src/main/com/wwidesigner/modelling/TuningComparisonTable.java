@@ -54,9 +54,9 @@ public class TuningComparisonTable extends DefaultTableModel
 	boolean tgtHasFmin = false;
 	boolean predHasFmin = false;
 
-	public TuningComparisonTable(String title)
+	public TuningComparisonTable(String aTitle)
 	{
-		this.title = title;
+		this.title = aTitle;
 		format_0 = new DecimalFormat("#0.0");
 		format_00 = new DecimalFormat("#0.00");
 	}

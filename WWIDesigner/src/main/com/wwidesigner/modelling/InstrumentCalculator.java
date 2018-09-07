@@ -72,10 +72,10 @@ public abstract class InstrumentCalculator
 	{
 	}
 
-	public InstrumentCalculator(Instrument instrument,
+	public InstrumentCalculator(Instrument aInstrument,
 			PhysicalParameters physicalParams)
 	{
-		this.instrument = instrument;
+		this.instrument = aInstrument;
 		this.instrument.convertToMetres();
 		this.instrument.updateComponents();
 		this.mouthpieceCalculator = new MouthpieceCalculator();
@@ -85,32 +85,32 @@ public abstract class InstrumentCalculator
 		this.params = physicalParams;
 	}
 
-	public InstrumentCalculator(Instrument instrument,
-			MouthpieceCalculator mouthpieceCalculator,
-			TerminationCalculator terminationCalculator,
-			HoleCalculator holeCalculator,
-			BoreSectionCalculator boreSectionCalculator,
+	public InstrumentCalculator(Instrument aInstrument,
+			MouthpieceCalculator aMouthpieceCalculator,
+			TerminationCalculator aTerminationCalculator,
+			HoleCalculator aHoleCalculator,
+			BoreSectionCalculator aBoreSectionCalculator,
 			PhysicalParameters physicalParams)
 	{
-		this.instrument = instrument;
+		this.instrument = aInstrument;
 		this.instrument.convertToMetres();
 		this.instrument.updateComponents();
-		this.mouthpieceCalculator = mouthpieceCalculator;
-		this.terminationCalculator = terminationCalculator;
-		this.holeCalculator = holeCalculator;
-		this.boreSectionCalculator = boreSectionCalculator;
+		this.mouthpieceCalculator = aMouthpieceCalculator;
+		this.terminationCalculator = aTerminationCalculator;
+		this.holeCalculator = aHoleCalculator;
+		this.boreSectionCalculator = aBoreSectionCalculator;
 		this.params = physicalParams;
 	}
 
-	public InstrumentCalculator(MouthpieceCalculator mouthpieceCalculator,
-			TerminationCalculator terminationCalculator,
-			HoleCalculator holeCalculator,
-			BoreSectionCalculator boreSectionCalculator)
+	public InstrumentCalculator(MouthpieceCalculator aMouthpieceCalculator,
+			TerminationCalculator aTerminationCalculator,
+			HoleCalculator aHoleCalculator,
+			BoreSectionCalculator aBoreSectionCalculator)
 	{
-		this.mouthpieceCalculator = mouthpieceCalculator;
-		this.terminationCalculator = terminationCalculator;
-		this.holeCalculator = holeCalculator;
-		this.boreSectionCalculator = boreSectionCalculator;
+		this.mouthpieceCalculator = aMouthpieceCalculator;
+		this.terminationCalculator = aTerminationCalculator;
+		this.holeCalculator = aHoleCalculator;
+		this.boreSectionCalculator = aBoreSectionCalculator;
 	}
 	
 	/**
@@ -118,60 +118,60 @@ public abstract class InstrumentCalculator
 	 * Calculation results are unpredictable if this calculator is used with an
 	 * incompatible instrument.
 	 * 
-	 * @param instrument
+	 * @param aInstrument
 	 * @return true if the specified instrument is compatible with this
 	 *         calculator.
 	 */
-	public abstract boolean isCompatible(Instrument instrument);
+	public abstract boolean isCompatible(Instrument aInstrument);
 
 	/**
-	 * @param instrument
+	 * @param aInstrument
 	 *            the instrument to set
 	 */
-	public void setInstrument(Instrument instrument)
+	public void setInstrument(Instrument aInstrument)
 	{
-		this.instrument = instrument;
+		this.instrument = aInstrument;
 		this.instrument.convertToMetres();
 		this.instrument.updateComponents();
 	}
 
 	/**
-	 * @param mouthpieceCalculator
+	 * @param aMouthpieceCalculator
 	 *            the mouthpieceCalculator to set
 	 */
 	public void setMouthpieceCalculator(
-			MouthpieceCalculator mouthpieceCalculator)
+			MouthpieceCalculator aMouthpieceCalculator)
 	{
-		this.mouthpieceCalculator = mouthpieceCalculator;
+		this.mouthpieceCalculator = aMouthpieceCalculator;
 	}
 
 	/**
-	 * @param terminationCalculator
+	 * @param aTerminationCalculator
 	 *            the terminationCalculator to set
 	 */
 	public void setTerminationCalculator(
-			TerminationCalculator terminationCalculator)
+			TerminationCalculator aTerminationCalculator)
 	{
-		this.terminationCalculator = terminationCalculator;
+		this.terminationCalculator = aTerminationCalculator;
 	}
 
 	/**
-	 * @param holeCalculator
+	 * @param aHoleCalculator
 	 *            the holeCalculator to set
 	 */
-	public void setHoleCalculator(HoleCalculator holeCalculator)
+	public void setHoleCalculator(HoleCalculator aHoleCalculator)
 	{
-		this.holeCalculator = holeCalculator;
+		this.holeCalculator = aHoleCalculator;
 	}
 
 	/**
-	 * @param boreSectionCalculator
+	 * @param aBoreSectionCalculator
 	 *            the boreSectionCalculator to set
 	 */
 	public void setBoreSectionCalculator(
-			BoreSectionCalculator boreSectionCalculator)
+			BoreSectionCalculator aBoreSectionCalculator)
 	{
-		this.boreSectionCalculator = boreSectionCalculator;
+		this.boreSectionCalculator = aBoreSectionCalculator;
 	}
 
 	public Instrument getInstrument()

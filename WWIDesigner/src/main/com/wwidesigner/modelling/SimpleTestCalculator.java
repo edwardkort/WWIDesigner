@@ -10,9 +10,9 @@ import com.wwidesigner.util.PhysicalParameters;
 public class SimpleTestCalculator extends DefaultInstrumentCalculator
 {
 
-	public SimpleTestCalculator(Instrument instrument, PhysicalParameters physicalParams)
+	public SimpleTestCalculator(Instrument aInstrument, PhysicalParameters physicalParams)
 	{
-		super(instrument, new MouthpieceCalculator(),
+		super(aInstrument, new MouthpieceCalculator(),
 				new IdealOpenEndCalculator(),
 				new DefaultHoleCalculator(), new SimpleBoreSectionCalculator(),
 				physicalParams);

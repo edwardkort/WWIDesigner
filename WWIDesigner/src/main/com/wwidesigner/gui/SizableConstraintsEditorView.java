@@ -4,9 +4,9 @@ import com.jidesoft.app.framework.gui.DataViewPane;
 
 public class SizableConstraintsEditorView extends ConstraintsEditorView
 {
-	public SizableConstraintsEditorView(DataViewPane parent)
+	public SizableConstraintsEditorView(DataViewPane aParent)
 	{
-		super(parent);
+		super(aParent);
 		constraintsPanel.setPanelDimension(600, 150);
 		constraintsPanel.setColumnWidths(new int[] { 340, 100, 80, 80 });
 	}

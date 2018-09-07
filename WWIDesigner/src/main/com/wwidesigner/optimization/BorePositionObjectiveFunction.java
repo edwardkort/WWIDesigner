@@ -56,12 +56,12 @@ public class BorePositionObjectiveFunction extends BaseObjectiveFunction
 	protected final int unchangedBottomPoint;
 	// Invariant: nrDimensions + unchangedBorePoints + unchangedBottomPoint = number of bore points.
 
-	public BorePositionObjectiveFunction(InstrumentCalculator calculator,
-			TuningInterface tuning, EvaluatorInterface evaluator, int unchangedBorePoints,
+	public BorePositionObjectiveFunction(InstrumentCalculator aCalculator,
+			TuningInterface tuning, EvaluatorInterface aEvaluator, int aUnchangedBorePoints,
 			boolean bottomPointUnchanged)
 	{
-		super(calculator, tuning, evaluator);
-		int nrBorePoints = calculator.getInstrument().getBorePoint().size();
+		super(aCalculator, tuning, aEvaluator);
+		int nrBorePoints = aCalculator.getInstrument().getBorePoint().size();
 		if (bottomPointUnchanged)
 		{
 			this.unchangedBottomPoint = 1;
@@ -70,9 +70,9 @@ public class BorePositionObjectiveFunction extends BaseObjectiveFunction
 		{
 			this.unchangedBottomPoint = 0;
 		}
-		if (unchangedBorePoints >= 1)
+		if (aUnchangedBorePoints >= 1)
 		{
-			this.unchangedBorePoints = unchangedBorePoints;
+			this.unchangedBorePoints = aUnchangedBorePoints;
 		}
 		else
 		{
@@ -92,16 +92,16 @@ public class BorePositionObjectiveFunction extends BaseObjectiveFunction
 		setConstraints();
 	}
 
-	public BorePositionObjectiveFunction(InstrumentCalculator calculator,
-			TuningInterface tuning, EvaluatorInterface evaluator, int unchangedBorePoints)
+	public BorePositionObjectiveFunction(InstrumentCalculator aCalculator,
+			TuningInterface tuning, EvaluatorInterface aEvaluator, int aUnchangedBorePoints)
 	{
-		this(calculator, tuning, evaluator, unchangedBorePoints, false);
+		this(aCalculator, tuning, aEvaluator, aUnchangedBorePoints, false);
 	}
 
-	public BorePositionObjectiveFunction(InstrumentCalculator calculator,
-			TuningInterface tuning, EvaluatorInterface evaluator)
+	public BorePositionObjectiveFunction(InstrumentCalculator aCalculator,
+			TuningInterface tuning, EvaluatorInterface aEvaluator)
 	{
-		this(calculator, tuning, evaluator, 1, false);
+		this(aCalculator, tuning, aEvaluator, 1, false);
 	}
 
 	protected void setConstraints()
@@ -217,7 +217,7 @@ public class BorePositionObjectiveFunction extends BaseObjectiveFunction
 	}
 
 	@Override
-	public void setLowerBounds(double[] lowerBounds)
+	public void setLowerBounds(double[] aLowerBounds)
 	{
 		if (unchangedBottomPoint == 0)
 		{
@@ -236,12 +236,12 @@ public class BorePositionObjectiveFunction extends BaseObjectiveFunction
 				bottomHolePosition = 0.5 * (sortedPoints[0].getBorePosition()
 						+ sortedPoints[sortedPoints.length - 1].getBorePosition());
 			}
-			if (lowerBounds[0] < bottomHolePosition + 0.012)
+			if (aLowerBounds[0] < bottomHolePosition + 0.012)
 			{
 				// Raise the lower bound to restrict bottom bore position.
-				lowerBounds[0] = bottomHolePosition + 0.012;
+				aLowerBounds[0] = bottomHolePosition + 0.012;
 			}
 		}
-		super.setLowerBounds(lowerBounds);
+		super.setLowerBounds(aLowerBounds);
 	}
 }

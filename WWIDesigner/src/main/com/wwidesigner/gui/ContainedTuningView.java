@@ -46,9 +46,9 @@ public class ContainedTuningView extends ContainedXmlView implements DataChanged
 	
 	protected static int DEFAULT_TABLE_WIDTH = 490;
 
-	public ContainedTuningView(DataViewPane parent)
+	public ContainedTuningView(DataViewPane aParent)
 	{
-		super(parent);
+		super(aParent);
 
 		tuningPanel = new WhistleTuningPanel(DEFAULT_TABLE_WIDTH);
 		tuningPanel.addDataChangedListener(this);

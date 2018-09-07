@@ -67,10 +67,10 @@ public class PlotPlayingRanges
 		this.useActuals = DEFAULT_USE_ACTUALS;
 	}
 	
-	public PlotPlayingRanges(String title, boolean useActuals)
+	public PlotPlayingRanges(String title, boolean aUseActuals)
 	{
 		this.mName = title;
-		this.useActuals = useActuals;
+		this.useActuals = aUseActuals;
 	}
 	
 	/**

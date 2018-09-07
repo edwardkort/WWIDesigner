@@ -131,12 +131,12 @@ public class Temperament
 	}
 
 	/**
-	 * @param ratio
+	 * @param aRatio
 	 *            the ratio to set
 	 */
-	public void setRatio(List<Double> ratio)
+	public void setRatio(List<Double> aRatio)
 	{
-		this.ratio = ratio;
+		this.ratio = aRatio;
 	}
 
 }

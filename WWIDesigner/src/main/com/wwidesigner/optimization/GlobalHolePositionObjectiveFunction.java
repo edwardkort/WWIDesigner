@@ -31,11 +31,11 @@ import com.wwidesigner.note.TuningInterface;
 public class GlobalHolePositionObjectiveFunction extends HolePositionObjectiveFunction
 {
 
-	public GlobalHolePositionObjectiveFunction(InstrumentCalculator calculator,
-			TuningInterface tuning, EvaluatorInterface evaluator, 
-			BoreLengthAdjustmentType lengthAdjustmentMode)
+	public GlobalHolePositionObjectiveFunction(InstrumentCalculator aCalculator,
+			TuningInterface tuning, EvaluatorInterface aEvaluator, 
+			BoreLengthAdjustmentType aLengthAdjustmentMode)
 	{
-		super(calculator, tuning, evaluator, lengthAdjustmentMode);
+		super(aCalculator, tuning, aEvaluator, aLengthAdjustmentMode);
 		optimizerType = OptimizerType.DIRECTOptimizer;
 		maxEvaluations = 30000;
 	}

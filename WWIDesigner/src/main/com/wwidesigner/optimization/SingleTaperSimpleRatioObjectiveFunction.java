@@ -31,10 +31,10 @@ public class SingleTaperSimpleRatioObjectiveFunction extends
 	public static final String CONSTR_CAT = "Single bore taper";
 
 	public SingleTaperSimpleRatioObjectiveFunction(
-			InstrumentCalculator calculator, TuningInterface tuning,
-			EvaluatorInterface evaluator) throws Exception
+			InstrumentCalculator aCalculator, TuningInterface tuning,
+			EvaluatorInterface aEvaluator) throws Exception
 	{
-		super(calculator, tuning, evaluator);
+		super(aCalculator, tuning, aEvaluator);
 		nrDimensions = 3;
 		optimizerType = OptimizerType.BOBYQAOptimizer; // MultivariateOptimizer
 		setConstraints();

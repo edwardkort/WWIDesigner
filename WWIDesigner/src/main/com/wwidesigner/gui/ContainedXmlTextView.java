@@ -15,9 +15,9 @@ public class ContainedXmlTextView extends ContainedXmlView
 	private CodeEditor codeEditor;
 	private DocumentListener docListener;
 
-	public ContainedXmlTextView(DataViewPane parent)
+	public ContainedXmlTextView(DataViewPane aParent)
 	{
-		super(parent);
+		super(aParent);
 
 		codeEditor = new CodeEditor();
 		LanguageSpecManager.getInstance().getLanguageSpec("XML")

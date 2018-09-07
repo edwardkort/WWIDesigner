@@ -35,9 +35,9 @@ public class StandardOptimizerTest
 
 	MultivariateOptimizer optimizer;
 
-	public StandardOptimizerTest(MultivariateOptimizer optimizer)
+	public StandardOptimizerTest(MultivariateOptimizer aOptimizer)
 	{
-		this.optimizer = optimizer;
+		this.optimizer = aOptimizer;
 	}
 	
 	public abstract static class OptimizerTestFunction implements MultivariateFunction
@@ -97,10 +97,10 @@ public class StandardOptimizerTest
 			return stdDev;
 		}
 
-		public OptimizerTestFunction(double[] lowerBound, double[] upperBound)
+		public OptimizerTestFunction(double[] aLowerBound, double[] aUpperBound)
 		{
-			this.lowerBound = lowerBound;
-			this.upperBound = upperBound;
+			this.lowerBound = aLowerBound;
+			this.upperBound = aUpperBound;
 			this.evaluations = 0;
 		}
 	}
@@ -153,10 +153,10 @@ public class StandardOptimizerTest
 
 	public static class RosenbrockFunction extends OptimizerTestFunction
 	{
-		public RosenbrockFunction(double[] lowerBound,
-				double[] upperBound)
+		public RosenbrockFunction(double[] aLowerBound,
+				double[] aUpperBound)
 		{
-			super(lowerBound, upperBound);
+			super(aLowerBound, aUpperBound);
 			this.name = "Rosenbrock";
 		}
 
@@ -183,10 +183,10 @@ public class StandardOptimizerTest
 	 */
 	public static class ScaledRosenbrockFunction extends OptimizerTestFunction
 	{
-		public ScaledRosenbrockFunction(double[] lowerBound,
-				double[] upperBound)
+		public ScaledRosenbrockFunction(double[] aLowerBound,
+				double[] aUpperBound)
 		{
-			super(lowerBound, upperBound);
+			super(aLowerBound, aUpperBound);
 			this.name = "Scaled Rosenbrock";
 			for (int i = 0; i < getDimension(); ++i)
 			{
@@ -219,9 +219,9 @@ public class StandardOptimizerTest
 		protected final double[][] p;
 		protected final double[] c;
 
-		public HartmanFunction(double[] lowerBound, double[] upperBound)
+		public HartmanFunction(double[] aLowerBound, double[] aUpperBound)
 		{
-			super(lowerBound, upperBound);
+			super(aLowerBound, aUpperBound);
 			this.name = "Hartman";
 			c = new double[]{1.0, 1.2, 3.0, 3.2};
 			if (getDimension() == 3)
@@ -280,11 +280,11 @@ public class StandardOptimizerTest
 		protected final double[][] a;
 		protected final double[] c;
 
-		public ShekelFunction(int m, double[] lowerBound,
-				double[] upperBound)
+		public ShekelFunction(int aM, double[] aLowerBound,
+				double[] aUpperBound)
 		{
-			super(lowerBound, upperBound);
-			this.m = m;
+			super(aLowerBound, aUpperBound);
+			this.m = aM;
 			this.name = "Shekel " + this.m;
 			c = new double[]{0.1, 0.2, 0.2, 0.4, 0.4, 0.6, 0.3, 0.7, 0.5, 0.5};
 			a = new double[][]
@@ -325,10 +325,10 @@ public class StandardOptimizerTest
 
 	public static class GoldsteinPriceFunction extends OptimizerTestFunction
 	{
-		public GoldsteinPriceFunction(double[] lowerBound,
-				double[] upperBound)
+		public GoldsteinPriceFunction(double[] aLowerBound,
+				double[] aUpperBound)
 		{
-			super(lowerBound, upperBound);
+			super(aLowerBound, aUpperBound);
 			this.name = "Goldstein-Price";
 		}
 
@@ -350,19 +350,19 @@ public class StandardOptimizerTest
 	{
 		public final double waveCoeff;
 
-		public RastriginFunction(double[] lowerBound,
-				double[] upperBound)
+		public RastriginFunction(double[] aLowerBound,
+				double[] aUpperBound)
 		{
-			super(lowerBound, upperBound);
+			super(aLowerBound, aUpperBound);
 			this.waveCoeff = 10.0;
 			this.name = "Rastrigin";
 		}
 
-		public RastriginFunction(double waveCoeff, double[] lowerBound,
-				double[] upperBound)
+		public RastriginFunction(double aWaveCoeff, double[] aLowerBound,
+				double[] aUpperBound)
 		{
-			super(lowerBound, upperBound);
-			this.waveCoeff = waveCoeff;
+			super(aLowerBound, aUpperBound);
+			this.waveCoeff = aWaveCoeff;
 			this.name = "Rastrigin";
 		}
 
@@ -383,19 +383,19 @@ public class StandardOptimizerTest
 	{
 		public final double waveCoeff;
 
-		public RosenbrockRastriginFunction(double[] lowerBound,
-				double[] upperBound)
+		public RosenbrockRastriginFunction(double[] aLowerBound,
+				double[] aUpperBound)
 		{
-			super(lowerBound, upperBound);
+			super(aLowerBound, aUpperBound);
 			this.waveCoeff = 10.0;
 			this.name = "Rosenbrock-Rastrigin";
 		}
 
-		public RosenbrockRastriginFunction(double waveCoeff, double[] lowerBound,
-				double[] upperBound)
+		public RosenbrockRastriginFunction(double aWaveCoeff, double[] aLowerBound,
+				double[] aUpperBound)
 		{
-			super(lowerBound, upperBound);
-			this.waveCoeff = waveCoeff;
+			super(aLowerBound, aUpperBound);
+			this.waveCoeff = aWaveCoeff;
 			this.name = "Rosenbrock-Rastrigin";
 		}
 
@@ -429,10 +429,10 @@ public class StandardOptimizerTest
 
 	public static class AckleyFunction extends OptimizerTestFunction
 	{
-		public AckleyFunction(double[] lowerBound,
-				double[] upperBound)
+		public AckleyFunction(double[] aLowerBound,
+				double[] aUpperBound)
 		{
-			super(lowerBound, upperBound);
+			super(aLowerBound, aUpperBound);
 			this.name = "Ackley";
 		}
 
@@ -454,10 +454,10 @@ public class StandardOptimizerTest
 
 	public static class SkewedAckleyFunction extends OptimizerTestFunction
 	{
-		public SkewedAckleyFunction(double[] lowerBound,
-				double[] upperBound)
+		public SkewedAckleyFunction(double[] aLowerBound,
+				double[] aUpperBound)
 		{
-			super(lowerBound, upperBound);
+			super(aLowerBound, aUpperBound);
 			this.name = "Skewed Ackley";
 		}
 

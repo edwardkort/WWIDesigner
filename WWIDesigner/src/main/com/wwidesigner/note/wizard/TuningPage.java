@@ -66,11 +66,11 @@ public class TuningPage extends AbstractWizardPage implements
 	private JButton newButton;
 	private JButton saveButton;
 
-	public TuningPage(TuningWizardDialog parent)
+	public TuningPage(TuningWizardDialog aParent)
 	{
 		super("Scale with Frequencies and Fingerings (Tuning)",
 				"Drag and drop selected notes and fingerings to create a tuning.");
-		this.parent = parent;
+		this.parent = aParent;
 		createWizardContent();
 	}
 

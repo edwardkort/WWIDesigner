@@ -519,9 +519,9 @@ public class StudyView extends DataViewPane implements EventSubscriber
 	/**
 	 * Set the study model given a study class name.
 	 */
-	public void setStudyModel(StudyModel study)
+	public void setStudyModel(StudyModel aStudy)
 	{
-		this.study = study;
+		this.study = aStudy;
 
 		DataModel[] models = getApplication().getDataModels();
 		for (DataModel model : models)
@@ -530,7 +530,7 @@ public class StudyView extends DataViewPane implements EventSubscriber
 			{
 				try
 				{
-					study.addDataModel((FileDataModel) model, false);
+					aStudy.addDataModel((FileDataModel) model, false);
 				}
 				catch (Exception ex)
 				{
@@ -696,13 +696,13 @@ public class StudyView extends DataViewPane implements EventSubscriber
 		private String toolTip;
 		private String displayName;
 
-		public TreeNodeWithToolTips(Object userObject)
+		public TreeNodeWithToolTips(Object aUserObject)
 		{
-			super(userObject);
+			super(aUserObject);
 
-			if (userObject != null)
+			if (aUserObject != null)
 			{
-				String key = (String) userObject;
+				String key = (String) aUserObject;
 				if (key.contains(File.separator))
 				{
 					displayName = key

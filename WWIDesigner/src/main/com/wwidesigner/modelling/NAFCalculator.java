@@ -27,9 +27,9 @@ import com.wwidesigner.util.PhysicalParameters;
 
 public class NAFCalculator extends DefaultInstrumentCalculator
 {
-	public NAFCalculator(Instrument instrument, PhysicalParameters physicalParams)
+	public NAFCalculator(Instrument aInstrument, PhysicalParameters physicalParams)
 	{
-		super(instrument, physicalParams);
+		super(aInstrument, physicalParams);
 
 		setMouthpieceCalculator(new DefaultFippleMouthpieceCalculator());
 		setTerminationCalculator(new ThickFlangedOpenEndCalculator());
@@ -50,10 +50,10 @@ public class NAFCalculator extends DefaultInstrumentCalculator
 	}
 
 	@Override
-	public boolean isCompatible(Instrument instrument)
+	public boolean isCompatible(Instrument aInstrument)
 	{
-		return instrument != null && instrument.getMouthpiece() != null
-				&& instrument.getMouthpiece().getFipple() != null;
+		return aInstrument != null && aInstrument.getMouthpiece() != null
+				&& aInstrument.getMouthpiece().getFipple() != null;
 	}
 
 }

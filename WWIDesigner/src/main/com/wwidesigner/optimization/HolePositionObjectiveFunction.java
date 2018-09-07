@@ -71,20 +71,20 @@ public class HolePositionObjectiveFunction extends BaseObjectiveFunction
 	protected static final double MINIMUM_BORE_POINT_SPACING = 0.00001d;
 	protected int bellIndex;
 
-	public HolePositionObjectiveFunction(InstrumentCalculator calculator,
-			TuningInterface tuning, EvaluatorInterface evaluator, 
-			BoreLengthAdjustmentType lengthAdjustmentMode)
+	public HolePositionObjectiveFunction(InstrumentCalculator aCalculator,
+			TuningInterface tuning, EvaluatorInterface aEvaluator, 
+			BoreLengthAdjustmentType aLengthAdjustmentMode)
 	{
-		super(calculator, tuning, evaluator);
-		this.lengthAdjustmentMode = lengthAdjustmentMode;
-		nrDimensions = 1 + calculator.getInstrument().getHole().size();
-		if (lengthAdjustmentMode == BoreLengthAdjustmentType.PRESERVE_BELL)
+		super(aCalculator, tuning, aEvaluator);
+		this.lengthAdjustmentMode = aLengthAdjustmentMode;
+		nrDimensions = 1 + aCalculator.getInstrument().getHole().size();
+		if (aLengthAdjustmentMode == BoreLengthAdjustmentType.PRESERVE_BELL)
 		{
-			bellIndex = findBell(calculator.getInstrument());
+			bellIndex = findBell(aCalculator.getInstrument());
 		}
 		else
 		{
-			bellIndex = calculator.getInstrument().getBorePoint().size() - 1;
+			bellIndex = aCalculator.getInstrument().getBorePoint().size() - 1;
 		}
 		optimizerType = OptimizerType.BOBYQAOptimizer; // MultivariateOptimizer
 		if (nrDimensions == 1)

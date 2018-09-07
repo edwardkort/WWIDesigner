@@ -16,9 +16,9 @@ public class ReflectionEvaluator implements EvaluatorInterface
 {
 	protected InstrumentCalculator  calculator;
 
-	public ReflectionEvaluator( InstrumentCalculator calculator )
+	public ReflectionEvaluator( InstrumentCalculator aCalculator )
 	{
-		this.calculator = calculator;
+		this.calculator = aCalculator;
 	}
 
 	/**

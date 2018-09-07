@@ -10,10 +10,10 @@ import com.wwidesigner.util.PhysicalParameters;
 public class SimpleReedCalculator extends DefaultInstrumentCalculator
 {
 
-	public SimpleReedCalculator(Instrument instrument,
+	public SimpleReedCalculator(Instrument aInstrument,
 			PhysicalParameters physicalParams)
 	{
-		super(instrument, new SimpleReedMouthpieceCalculator(),
+		super(aInstrument, new SimpleReedMouthpieceCalculator(),
 				new ThickFlangedOpenEndCalculator(),
 				new DefaultHoleCalculator(),
 				new SimpleBoreSectionCalculator(), physicalParams);
@@ -27,10 +27,10 @@ public class SimpleReedCalculator extends DefaultInstrumentCalculator
 	}
 
 	@Override
-	public boolean isCompatible(Instrument instrument)
+	public boolean isCompatible(Instrument aInstrument)
 	{
-		return instrument != null && instrument.getMouthpiece() != null
-				&& instrument.getMouthpiece().isPressureNode();
+		return aInstrument != null && aInstrument.getMouthpiece() != null
+				&& aInstrument.getMouthpiece().isPressureNode();
 	}
 	
 }

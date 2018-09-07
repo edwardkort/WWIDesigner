@@ -36,16 +36,16 @@ public class CentDeviationEvaluator implements EvaluatorInterface
 	protected InstrumentCalculator calculator;
 	protected InstrumentTuner tuner;
 
-	public CentDeviationEvaluator(InstrumentCalculator calculator)
+	public CentDeviationEvaluator(InstrumentCalculator aCalculator)
 	{
-		this.calculator = calculator;
+		this.calculator = aCalculator;
 		setTuner(new SimpleInstrumentTuner());
 	}
 
-	public CentDeviationEvaluator(InstrumentCalculator calculator, InstrumentTuner tuner)
+	public CentDeviationEvaluator(InstrumentCalculator aCalculator, InstrumentTuner aTuner)
 	{
-		this.calculator = calculator;
-		setTuner(tuner);
+		this.calculator = aCalculator;
+		setTuner(aTuner);
 	}
 
 	/**
@@ -90,9 +90,9 @@ public class CentDeviationEvaluator implements EvaluatorInterface
 		return errorValues;
 	}
 
-	protected void setTuner(InstrumentTuner tuner)
+	protected void setTuner(InstrumentTuner aTuner)
 	{
-		this.tuner = tuner;
+		this.tuner = aTuner;
 		this.tuner.setCalculator(calculator);
 		this.tuner.setInstrument(calculator.getInstrument());
 		this.tuner.setParams(calculator.getPhysicalParameters());

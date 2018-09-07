@@ -164,9 +164,9 @@ public class WhistleStudyModel extends StudyModel
 		super.setPreferences(newPreferences);
 	}
 
-	public void setBlowingLevel(int blowingLevel)
+	public void setBlowingLevel(int aBlowingLevel)
 	{
-		this.blowingLevel = blowingLevel;
+		this.blowingLevel = aBlowingLevel;
 	}
 
 	@Override
@@ -231,7 +231,7 @@ public class WhistleStudyModel extends StudyModel
 		int numberOfHoles = instrument.getHole().size();
 
 		EvaluatorInterface evaluator;
-		BaseObjectiveFunction objective = null;
+		BaseObjectiveFunction aObjective = null;
 		double[] lowerBound = null;
 		double[] upperBound = null;
 
@@ -242,7 +242,7 @@ public class WhistleStudyModel extends StudyModel
 		{
 			case "AirstreamLengthObjectiveFunction":
 				evaluator = new FmaxEvaluator(calculator, getInstrumentTuner());
-				objective = new AirstreamLengthObjectiveFunction(calculator,
+				aObjective = new AirstreamLengthObjectiveFunction(calculator,
 						tuning, evaluator);
 				lowerBound = new double[] { 0.001 };
 				upperBound = new double[] { 0.020 };
@@ -250,7 +250,7 @@ public class WhistleStudyModel extends StudyModel
 
 			case "WindowHeightObjectiveFunction":
 				evaluator = new FmaxEvaluator(calculator, getInstrumentTuner());
-				objective = new WindowHeightObjectiveFunction(calculator,
+				aObjective = new WindowHeightObjectiveFunction(calculator,
 						tuning, evaluator);
 				lowerBound = new double[] { 0.0001 };
 				upperBound = new double[] { 0.030 };
@@ -258,7 +258,7 @@ public class WhistleStudyModel extends StudyModel
 
 			case "BetaObjectiveFunction":
 				evaluator = new FminEvaluator(calculator, getInstrumentTuner());
-				objective = new BetaObjectiveFunction(calculator, tuning,
+				aObjective = new BetaObjectiveFunction(calculator, tuning,
 						evaluator);
 				lowerBound = new double[] { 0.2 };
 				upperBound = new double[] { 1.0 };
@@ -266,7 +266,7 @@ public class WhistleStudyModel extends StudyModel
 
 			case "LengthObjectiveFunction":
 				evaluator = new BellNoteEvaluator(calculator);
-				objective = new LengthObjectiveFunction(calculator, tuning,
+				aObjective = new LengthObjectiveFunction(calculator, tuning,
 						evaluator);
 				lowerBound = new double[] { 0.200 };
 				upperBound = new double[] { 0.700 };
@@ -275,7 +275,7 @@ public class WhistleStudyModel extends StudyModel
 			case "HoleSizeObjectiveFunction":
 				evaluator = new CentDeviationEvaluator(calculator,
 						getInstrumentTuner());
-				objective = new HoleSizeObjectiveFunction(calculator, tuning,
+				aObjective = new HoleSizeObjectiveFunction(calculator, tuning,
 						evaluator);
 				// Bounds are diameters, expressed in meters.
 				lowerBound = new double[numberOfHoles];
@@ -290,12 +290,12 @@ public class WhistleStudyModel extends StudyModel
 						getInstrumentTuner());
 				if (objectiveFunctionClass.equals("GlobalHolePositionObjectiveFunction"))
 				{
-					objective = new GlobalHolePositionObjectiveFunction(calculator,
+					aObjective = new GlobalHolePositionObjectiveFunction(calculator,
 							tuning, evaluator, BoreLengthAdjustmentType.MOVE_BOTTOM);
 				}
 				else
 				{
-					objective = new HolePositionObjectiveFunction(calculator,
+					aObjective = new HolePositionObjectiveFunction(calculator,
 							tuning, evaluator, BoreLengthAdjustmentType.PRESERVE_TAPER);
 				}
 				// Bounds are hole separations, expressed in meters.
@@ -332,12 +332,12 @@ public class WhistleStudyModel extends StudyModel
 						getInstrumentTuner());
 				if (objectiveFunctionClass.equals("GlobalHoleObjectiveFunction"))
 				{
-					objective = new GlobalHoleObjectiveFunction(calculator, tuning,
+					aObjective = new GlobalHoleObjectiveFunction(calculator, tuning,
 							evaluator, BoreLengthAdjustmentType.PRESERVE_TAPER);
 				}
 				else
 				{
-					objective = new HoleObjectiveFunction(calculator, tuning,
+					aObjective = new HoleObjectiveFunction(calculator, tuning,
 							evaluator);
 				}
 				// Separation and diameter bounds, expressed in meters.
@@ -365,7 +365,7 @@ public class WhistleStudyModel extends StudyModel
 			case "BasicTaperObjectiveFunction":
 				evaluator = new CentDeviationEvaluator(calculator,
 						getInstrumentTuner());
-				objective = new BasicTaperObjectiveFunction(calculator, tuning,
+				aObjective = new BasicTaperObjectiveFunction(calculator, tuning,
 						evaluator);
 				// Dimensions are expressed as ratios: head length, foot
 				// diameter.
@@ -379,12 +379,12 @@ public class WhistleStudyModel extends StudyModel
 						getInstrumentTuner());
 				if (objectiveFunctionClass.equals("GlobalHoleAndTaperObjectiveFunction"))
 				{
-					objective = new GlobalHoleAndTaperObjectiveFunction(calculator,
+					aObjective = new GlobalHoleAndTaperObjectiveFunction(calculator,
 							tuning, evaluator);
 				}
 				else
 				{
-					objective = new HoleAndTaperObjectiveFunction(calculator,
+					aObjective = new HoleAndTaperObjectiveFunction(calculator,
 							tuning, evaluator);
 				}
 				// Separation bounds and diameter bounds, expressed in meters,
@@ -444,10 +444,10 @@ public class WhistleStudyModel extends StudyModel
 				}
 			}
 		}
-		objective.setLowerBounds(lowerBound);
-		objective.setUpperBounds(upperBound);
+		aObjective.setLowerBounds(lowerBound);
+		aObjective.setUpperBounds(upperBound);
 
-		return objective;
+		return aObjective;
 	}
 
 	@Override

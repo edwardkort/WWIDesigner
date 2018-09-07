@@ -131,12 +131,12 @@ public class ScaleSymbolList
 	}
 
 	/**
-	 * @param scaleSymbol
+	 * @param aScaleSymbol
 	 *            the scaleSymbol to set
 	 */
-	public void setScaleSymbol(List<String> scaleSymbol)
+	public void setScaleSymbol(List<String> aScaleSymbol)
 	{
-		this.scaleSymbol = scaleSymbol;
+		this.scaleSymbol = aScaleSymbol;
 	}
 
 }

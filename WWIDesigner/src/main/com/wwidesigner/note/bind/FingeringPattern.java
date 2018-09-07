@@ -162,12 +162,12 @@ public class FingeringPattern
 	}
 
 	/**
-	 * @param fingering
+	 * @param aFingering
 	 *            the fingering to set
 	 */
-	public void setFingering(List<Fingering> fingering)
+	public void setFingering(List<Fingering> aFingering)
 	{
-		this.fingering = fingering;
+		this.fingering = aFingering;
 	}
 
 }

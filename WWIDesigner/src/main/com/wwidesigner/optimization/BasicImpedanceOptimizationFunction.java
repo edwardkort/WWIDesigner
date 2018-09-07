@@ -23,9 +23,9 @@ public class BasicImpedanceOptimizationFunction implements
 	protected int iterationsDone;
 
 	public BasicImpedanceOptimizationFunction(
-			InstrumentOptimizerInterface optimizer, TuningInterface tuning)
+			InstrumentOptimizerInterface aOptimizer, TuningInterface tuning)
 	{
-		this.optimizer = optimizer;
+		this.optimizer = aOptimizer;
 		fingeringTargets = tuning.getFingering();
 	}
 

@@ -36,18 +36,18 @@ public class GlobalHoleAndBoreDiameterObjectiveFunction extends HoleAndBoreDiame
 	 * diameters, and bore point position and diameter at existing bore
 	 * points, for use with DIRECT global optimizer.
 	 * 
-	 * @param calculator
+	 * @param aCalculator
 	 * @param tuning
-	 * @param evaluator
+	 * @param aEvaluator
 	 * @param unchangedBorePoints
 	 *            - Leave diameter and position unchanged for this many bore
 	 *            points from the top of the bore.
 	 */
-	public GlobalHoleAndBoreDiameterObjectiveFunction(InstrumentCalculator calculator,
-			TuningInterface tuning, EvaluatorInterface evaluator, 
+	public GlobalHoleAndBoreDiameterObjectiveFunction(InstrumentCalculator aCalculator,
+			TuningInterface tuning, EvaluatorInterface aEvaluator, 
 			int unchangedBorePoints)
 	{
-		super(calculator, tuning, evaluator, unchangedBorePoints);
+		super(aCalculator, tuning, aEvaluator, unchangedBorePoints);
 		optimizerType = OptimizerType.DIRECTOptimizer;
 		maxEvaluations = 60000;
 		constraints.setObjectiveDisplayName("Hole and bore diameter global optimizer");

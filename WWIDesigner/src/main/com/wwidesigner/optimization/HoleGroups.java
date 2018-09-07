@@ -35,14 +35,14 @@ public class HoleGroups
 		return holeGroup;
 	}
 
-	public void setHoleGroup(List<HoleGroup> holeGroup)
+	public void setHoleGroup(List<HoleGroup> aHoleGroup)
 	{
-		this.holeGroup = holeGroup;
+		this.holeGroup = aHoleGroup;
 	}
 
-	public void addHoleGroup(HoleGroup holeGroup)
+	public void addHoleGroup(HoleGroup aHoleGroup)
 	{
-		this.holeGroup.add(holeGroup);
+		this.holeGroup.add(aHoleGroup);
 	}
 
 	public int[][] getHoleGroupsArray()

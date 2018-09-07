@@ -39,9 +39,9 @@ public class HoleGroup
 		return holeIdx;
 	}
 
-	public void setHoleIdx(List<Integer> holeIdx)
+	public void setHoleIdx(List<Integer> aHoleIdx)
 	{
-		this.holeIdx = holeIdx;
+		this.holeIdx = aHoleIdx;
 	}
 
 	public void addHole(Integer hole)

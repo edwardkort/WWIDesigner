@@ -20,9 +20,9 @@ public abstract class ContainedXmlView
 {
 	protected DataViewPane parent;
 
-	public ContainedXmlView(DataViewPane parent)
+	public ContainedXmlView(DataViewPane aParent)
 	{
-		this.parent = parent;
+		this.parent = aParent;
 	}
 
 	/**

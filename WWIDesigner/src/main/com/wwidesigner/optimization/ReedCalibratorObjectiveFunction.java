@@ -21,10 +21,10 @@ public class ReedCalibratorObjectiveFunction extends BaseObjectiveFunction
 	public static final ConstraintType CONSTR_TYPE = ConstraintType.DIMENSIONLESS;
 	public static final String DISPLAY_NAME = "Reed calibrator";
 
-	public ReedCalibratorObjectiveFunction(InstrumentCalculator calculator,
-			TuningInterface tuning, EvaluatorInterface evaluator)
+	public ReedCalibratorObjectiveFunction(InstrumentCalculator aCalculator,
+			TuningInterface tuning, EvaluatorInterface aEvaluator)
 	{
-		super(calculator, tuning, evaluator);
+		super(aCalculator, tuning, aEvaluator);
 		nrDimensions = 2;
 		setConstraints();
 	}

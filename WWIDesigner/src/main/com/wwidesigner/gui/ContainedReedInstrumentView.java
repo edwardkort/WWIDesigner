@@ -23,9 +23,9 @@ import com.wwidesigner.geometry.view.ReedInstrumentPanel;
 
 public class ContainedReedInstrumentView extends ContainedInstrumentView
 {
-	public ContainedReedInstrumentView(DataViewPane parent)
+	public ContainedReedInstrumentView(DataViewPane aParent)
 	{
-		super(parent);
+		super(aParent);
 	}
 
 	@Override

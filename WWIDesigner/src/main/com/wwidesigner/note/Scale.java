@@ -25,12 +25,12 @@ public class Scale
 	}
 
 	/**
-	 * @param name
+	 * @param aName
 	 *            the name to set
 	 */
-	public void setName(String name)
+	public void setName(String aName)
 	{
-		this.name = name;
+		this.name = aName;
 	}
 
 	/**
@@ -42,12 +42,12 @@ public class Scale
 	}
 
 	/**
-	 * @param comment
+	 * @param aComment
 	 *            the comment to set
 	 */
-	public void setComment(String comment)
+	public void setComment(String aComment)
 	{
-		this.comment = comment;
+		this.comment = aComment;
 	}
 
 	/**
@@ -63,12 +63,12 @@ public class Scale
 	}
 
 	/**
-	 * @param note
+	 * @param aNote
 	 *            the note to set
 	 */
-	public void setNote(List<Note> note)
+	public void setNote(List<Note> aNote)
 	{
-		this.note = note;
+		this.note = aNote;
 	}
 
 	public void addNote(Note newNote)

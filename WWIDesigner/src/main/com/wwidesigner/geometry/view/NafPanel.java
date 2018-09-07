@@ -185,7 +185,7 @@ public class NafPanel extends InstrumentPanel
 		return newPanel;
 	}
 
-	protected void addHemiHead(JideTable boreList)
+	protected void addHemiHead(JideTable aBoreList)
 	{
 		List<BorePoint> borePoints = getBoreTableData();
 		SortedPositionList<BorePoint> sortedPoints = new SortedPositionList<BorePoint>(
@@ -210,7 +210,7 @@ public class NafPanel extends InstrumentPanel
 						newPoints.add(point);
 					}
 				}
-				DefaultTableModel model = (DefaultTableModel) boreList
+				DefaultTableModel model = (DefaultTableModel) aBoreList
 						.getModel();
 				int lastRow = model.getRowCount() - 1;
 				for (int i = lastRow; i >= 0; i--)

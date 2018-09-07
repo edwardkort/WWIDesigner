@@ -23,9 +23,9 @@ import com.wwidesigner.geometry.view.FluteInstrumentPanel;
 
 public class ContainedFluteView extends ContainedInstrumentView
 {
-	public ContainedFluteView(DataViewPane parent)
+	public ContainedFluteView(DataViewPane aParent)
 	{
-		super(parent);
+		super(aParent);
 	}
 
 	@Override

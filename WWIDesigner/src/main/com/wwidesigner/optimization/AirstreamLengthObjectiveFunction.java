@@ -20,10 +20,10 @@ public class AirstreamLengthObjectiveFunction extends BaseObjectiveFunction
 	public static final ConstraintType CONSTR_TYPE = ConstraintType.DIMENSIONAL;
 	public static final String DISPLAY_NAME = "Airstream Length calibrator";
 
-	public AirstreamLengthObjectiveFunction(InstrumentCalculator calculator,
-			TuningInterface tuning, EvaluatorInterface evaluator)
+	public AirstreamLengthObjectiveFunction(InstrumentCalculator aCalculator,
+			TuningInterface tuning, EvaluatorInterface aEvaluator)
 	{
-		super(calculator, tuning, evaluator);
+		super(aCalculator, tuning, aEvaluator);
 		nrDimensions = 1;
 		optimizerType = OptimizerType.BrentOptimizer; // UnivariateOptimizer
 		setConstraints();

@@ -20,10 +20,10 @@ public class BetaObjectiveFunction extends BaseObjectiveFunction
 	public static final ConstraintType CONSTR_TYPE = ConstraintType.DIMENSIONLESS;
 	public static final String DISPLAY_NAME = "Beta calibrator";
 
-	public BetaObjectiveFunction(InstrumentCalculator calculator,
-			TuningInterface tuning, EvaluatorInterface evaluator)
+	public BetaObjectiveFunction(InstrumentCalculator aCalculator,
+			TuningInterface tuning, EvaluatorInterface aEvaluator)
 	{
-		super(calculator, tuning, evaluator);
+		super(aCalculator, tuning, aEvaluator);
 		nrDimensions = 1;
 		optimizerType = OptimizerType.BrentOptimizer; // UnivariateOptimizer
 		setConstraints();

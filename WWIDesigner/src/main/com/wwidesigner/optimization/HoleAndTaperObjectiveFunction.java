@@ -24,16 +24,16 @@ public class HoleAndTaperObjectiveFunction extends MergedObjectiveFunction
 {
 	public static final String DISPLAY_NAME = "Hole and taper optimizer";
 
-	public HoleAndTaperObjectiveFunction(InstrumentCalculator calculator,
-			TuningInterface tuning, EvaluatorInterface evaluator)
+	public HoleAndTaperObjectiveFunction(InstrumentCalculator aCalculator,
+			TuningInterface tuning, EvaluatorInterface aEvaluator)
 	{
-		super(calculator, tuning, evaluator);
+		super(aCalculator, tuning, aEvaluator);
 		this.components = new BaseObjectiveFunction[3];
-		this.components[0] = new HolePositionObjectiveFunction(calculator,
-				tuning, evaluator, BoreLengthAdjustmentType.MOVE_BOTTOM);
-		this.components[1] = new HoleSizeObjectiveFunction(calculator, tuning,
-				evaluator);
-		this.components[2] = new BasicTaperObjectiveFunction(calculator, tuning, evaluator);
+		this.components[0] = new HolePositionObjectiveFunction(aCalculator,
+				tuning, aEvaluator, BoreLengthAdjustmentType.MOVE_BOTTOM);
+		this.components[1] = new HoleSizeObjectiveFunction(aCalculator, tuning,
+				aEvaluator);
+		this.components[2] = new BasicTaperObjectiveFunction(aCalculator, tuning, aEvaluator);
 		optimizerType = OptimizerType.BOBYQAOptimizer; // MultivariateOptimizer
 		maxEvaluations = 20000;
 		sumDimensions();

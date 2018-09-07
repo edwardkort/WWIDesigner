@@ -227,14 +227,14 @@ public class TuningPanel extends FingeringPatternPanel
 			return null;
 		}
 		Note note = new Note();
-		String name = (String) model.getValueAt(row, 0);
-		if (name == null)
+		String aName = (String) model.getValueAt(row, 0);
+		if (aName == null)
 		{
 			note.setName("");
 		}
 		else
 		{
-			note.setName(name.trim());
+			note.setName(aName.trim());
 		}
 		Double freq = (Double) model.getValueAt(row, 1);
 		note.setFrequency(freq);

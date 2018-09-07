@@ -26,12 +26,12 @@ public class Termination extends BorePoint implements TerminationInterface
 	}
 
 	/**
-	 * @param flangeDiameter
+	 * @param aFlangeDiameter
 	 *            the flangeDiameter to set
 	 */
-	public void setFlangeDiameter(double flangeDiameter)
+	public void setFlangeDiameter(double aFlangeDiameter)
 	{
-		this.flangeDiameter = flangeDiameter;
+		this.flangeDiameter = aFlangeDiameter;
 	}
 
 	public void convertDimensions(double multiplier)

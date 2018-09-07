@@ -35,16 +35,16 @@ public class FmaxEvaluator implements EvaluatorInterface
 	protected InstrumentCalculator  calculator;
 	protected InstrumentTuner tuner;
 
-	public FmaxEvaluator( InstrumentCalculator calculator )
+	public FmaxEvaluator( InstrumentCalculator aCalculator )
 	{
-		this.calculator = calculator;
+		this.calculator = aCalculator;
 		setTuner(new LinearVInstrumentTuner());
 	}
 
-	public FmaxEvaluator(InstrumentCalculator calculator, InstrumentTuner tuner)
+	public FmaxEvaluator(InstrumentCalculator aCalculator, InstrumentTuner aTuner)
 	{
-		this.calculator = calculator;
-		setTuner(tuner);
+		this.calculator = aCalculator;
+		setTuner(aTuner);
 	}
 
 	/**
@@ -89,9 +89,9 @@ public class FmaxEvaluator implements EvaluatorInterface
 		return errorVector;
 	}
 
-	protected void setTuner(InstrumentTuner tuner)
+	protected void setTuner(InstrumentTuner aTuner)
 	{
-		this.tuner = tuner;
+		this.tuner = aTuner;
 		this.tuner.setCalculator(calculator);
 		this.tuner.setInstrument(calculator.getInstrument());
 		this.tuner.setParams(calculator.getPhysicalParameters());

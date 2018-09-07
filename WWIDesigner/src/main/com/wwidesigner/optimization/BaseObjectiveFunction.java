@@ -87,16 +87,16 @@ public abstract class BaseObjectiveFunction
 	/**
 	 * The constructor sets what is to be optimized.
 	 * 
-	 * @param calculator
+	 * @param aCalculator
 	 * @param tuning
-	 * @param evaluator
+	 * @param aEvaluator
 	 */
-	public BaseObjectiveFunction(InstrumentCalculator calculator,
-			TuningInterface tuning, EvaluatorInterface evaluator)
+	public BaseObjectiveFunction(InstrumentCalculator aCalculator,
+			TuningInterface tuning, EvaluatorInterface aEvaluator)
 	{
-		this.calculator = calculator;
+		this.calculator = aCalculator;
 		this.fingeringTargets = tuning.getFingering();
-		this.evaluator = evaluator;
+		this.evaluator = aEvaluator;
 		nrDimensions = 1;
 		optimizerType = OptimizerType.BOBYQAOptimizer;
 		maxEvaluations = 10000;
@@ -105,7 +105,7 @@ public abstract class BaseObjectiveFunction
 		evaluationsDone = 0;
 		tuningsDone = 0;
 		constraints = new Constraints(
-				calculator.getInstrument().getLengthType());
+				aCalculator.getInstrument().getLengthType());
 	}
 
 	/**
@@ -151,11 +151,11 @@ public abstract class BaseObjectiveFunction
 	/**
 	 * Supports the changing of the evaluator at any time.
 	 * 
-	 * @param evaluator
+	 * @param aEvaluator
 	 */
-	public void setEvaluator(EvaluatorInterface evaluator)
+	public void setEvaluator(EvaluatorInterface aEvaluator)
 	{
-		this.evaluator = evaluator;
+		this.evaluator = aEvaluator;
 	}
 
 	public EvaluatorInterface getEvaluator()
@@ -168,9 +168,9 @@ public abstract class BaseObjectiveFunction
 		return firstStageEvaluator;
 	}
 
-	public void setFirstStageEvaluator(EvaluatorInterface firstStageEvaluator)
+	public void setFirstStageEvaluator(EvaluatorInterface aFirstStageEvaluator)
 	{
-		this.firstStageEvaluator = firstStageEvaluator;
+		this.firstStageEvaluator = aFirstStageEvaluator;
 	}
 
 	public InstrumentCalculator getCalculator()
@@ -231,9 +231,9 @@ public abstract class BaseObjectiveFunction
 		return runTwoStageOptimization && firstStageEvaluator != null;
 	}
 
-	public void setRunTwoStageOptimization(boolean runTwoStageOptimization)
+	public void setRunTwoStageOptimization(boolean aRunTwoStageOptimization)
 	{
-		this.runTwoStageOptimization = runTwoStageOptimization;
+		this.runTwoStageOptimization = aRunTwoStageOptimization;
 	}
 
 	/**
@@ -429,27 +429,27 @@ public abstract class BaseObjectiveFunction
 		return lowerBounds;
 	}
 
-	public void setLowerBounds(double[] lowerBounds)
+	public void setLowerBounds(double[] aLowerBounds)
 	{
-		if (lowerBounds.length != nrDimensions)
+		if (aLowerBounds.length != nrDimensions)
 		{
-			throw new DimensionMismatchException(lowerBounds.length,
+			throw new DimensionMismatchException(aLowerBounds.length,
 					nrDimensions);
 		}
-		this.lowerBounds = lowerBounds.clone();
+		this.lowerBounds = aLowerBounds.clone();
 		validateBounds();
 		// Reset initialTrustRadius
 		initialTrustRegionRadius = null;
 	}
 
-	public void setUpperBounds(double[] upperBounds)
+	public void setUpperBounds(double[] aUpperBounds)
 	{
-		if (upperBounds.length != nrDimensions)
+		if (aUpperBounds.length != nrDimensions)
 		{
-			throw new DimensionMismatchException(upperBounds.length,
+			throw new DimensionMismatchException(aUpperBounds.length,
 					nrDimensions);
 		}
-		this.upperBounds = upperBounds.clone();
+		this.upperBounds = aUpperBounds.clone();
 		validateBounds();
 		// Reset initialTrustRadius
 		initialTrustRegionRadius = null;
@@ -530,9 +530,9 @@ public abstract class BaseObjectiveFunction
 		return optimizerType;
 	}
 
-	public void setOptimizerType(OptimizerType optimizerType)
+	public void setOptimizerType(OptimizerType aOptimizerType)
 	{
-		this.optimizerType = optimizerType;
+		this.optimizerType = aOptimizerType;
 	}
 
 	public int getMaxEvaluations()
@@ -540,9 +540,9 @@ public abstract class BaseObjectiveFunction
 		return maxEvaluations;
 	}
 
-	public void setMaxEvaluations(int maxEvaluations)
+	public void setMaxEvaluations(int aMaxEvaluations)
 	{
-		this.maxEvaluations = maxEvaluations;
+		this.maxEvaluations = aMaxEvaluations;
 	}
 
 	public boolean isMultiStart()
@@ -559,9 +559,9 @@ public abstract class BaseObjectiveFunction
 		return rangeProcessor;
 	}
 
-	public void setRangeProcessor(AbstractRangeProcessor rangeProcessor)
+	public void setRangeProcessor(AbstractRangeProcessor aRangeProcessor)
 	{
-		this.rangeProcessor = rangeProcessor;
+		this.rangeProcessor = aRangeProcessor;
 	}
 
 	public int getNumberOfEvaluations()
@@ -583,26 +583,26 @@ public abstract class BaseObjectiveFunction
 	 * Sets the lower and upper bounds using values contained in the
 	 * constraints.
 	 * 
-	 * @param constraints
+	 * @param aConstraints
 	 * @throws Exception
 	 *             If the constraints are invalid for this optimizer.
 	 */
-	public void setConstraintsBounds(Constraints constraints) throws Exception
+	public void setConstraintsBounds(Constraints aConstraints) throws Exception
 	{
-		lowerBounds = constraints.getLowerBounds();
-		upperBounds = constraints.getUpperBounds();
-		setConstraints(constraints);
+		lowerBounds = aConstraints.getLowerBounds();
+		upperBounds = aConstraints.getUpperBounds();
+		setConstraints(aConstraints);
 		validateBounds();
 	}
 
 	/**
 	 * Sets the member constraints from an externally derive one.
 	 * 
-	 * @param constraints
+	 * @param aConstraints
 	 */
-	public void setConstraints(Constraints constraints)
+	public void setConstraints(Constraints aConstraints)
 	{
-		this.constraints = constraints;
+		this.constraints = aConstraints;
 	}
 
 	/**
@@ -613,9 +613,9 @@ public abstract class BaseObjectiveFunction
 	/**
 	 * Set cancel to true to cancel an optimization.
 	 */
-	public void setCancel(boolean cancel)
+	public void setCancel(boolean aCancel)
 	{
-		this.cancel = cancel;
+		this.cancel = aCancel;
 	}
 
 	/**

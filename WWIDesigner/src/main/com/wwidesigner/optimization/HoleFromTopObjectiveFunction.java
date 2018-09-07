@@ -22,15 +22,15 @@ public class HoleFromTopObjectiveFunction extends MergedObjectiveFunction
 	public static final String DISPLAY_NAME = "Hole size & position";
 	public static final String NAME = HoleFromTopObjectiveFunction.class.getSimpleName();
 
-	public HoleFromTopObjectiveFunction(InstrumentCalculator calculator,
-			TuningInterface tuning, EvaluatorInterface evaluator, BoreLengthAdjustmentType lengthAdjustmentMode)
+	public HoleFromTopObjectiveFunction(InstrumentCalculator aCalculator,
+			TuningInterface tuning, EvaluatorInterface aEvaluator, BoreLengthAdjustmentType lengthAdjustmentMode)
 	{
-		super(calculator, tuning, evaluator);
+		super(aCalculator, tuning, aEvaluator);
 		this.components = new BaseObjectiveFunction[2];
 		this.components[0] = new HolePositionFromTopObjectiveFunction(
-				calculator, tuning, evaluator, lengthAdjustmentMode);
-		this.components[1] = new HoleSizeObjectiveFunction(calculator, tuning,
-				evaluator);
+				aCalculator, tuning, aEvaluator, lengthAdjustmentMode);
+		this.components[1] = new HoleSizeObjectiveFunction(aCalculator, tuning,
+				aEvaluator);
 		optimizerType = OptimizerType.BOBYQAOptimizer; // MultivariateOptimizer
 		sumDimensions();
 		maxEvaluations = 20000 + (getNrDimensions() - 1) * 5000;

@@ -10,10 +10,10 @@ public class NafHoleSizeObjectiveFunction extends HoleSizeObjectiveFunction
 	public static final String NAME = NafHoleSizeObjectiveFunction.class
 			.getSimpleName();
 
-	public NafHoleSizeObjectiveFunction(InstrumentCalculator calculator,
-			TuningInterface tuning, EvaluatorInterface evaluator)
+	public NafHoleSizeObjectiveFunction(InstrumentCalculator aCalculator,
+			TuningInterface tuning, EvaluatorInterface aEvaluator)
 	{
-		super(calculator, tuning, evaluator);
+		super(aCalculator, tuning, aEvaluator);
 		constraints.setObjectiveFunctionName(NAME);
 	}
 

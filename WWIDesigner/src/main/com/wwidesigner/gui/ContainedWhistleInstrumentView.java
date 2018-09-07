@@ -23,9 +23,9 @@ import com.wwidesigner.geometry.view.WhistleInstrumentPanel;
 
 public class ContainedWhistleInstrumentView extends ContainedInstrumentView
 {
-	public ContainedWhistleInstrumentView(DataViewPane parent)
+	public ContainedWhistleInstrumentView(DataViewPane aParent)
 	{
-		super(parent);
+		super(aParent);
 	}
 
 	@Override

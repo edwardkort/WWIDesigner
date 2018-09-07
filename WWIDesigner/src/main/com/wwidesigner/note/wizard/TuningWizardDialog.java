@@ -123,9 +123,9 @@ public class TuningWizardDialog extends WizardDialog
 		return currentSaveDirectory;
 	}
 
-	public void setCurrentSaveDirectory(File currentSaveDirectory)
+	public void setCurrentSaveDirectory(File aCurrentSaveDirectory)
 	{
-		this.currentSaveDirectory = currentSaveDirectory;
+		this.currentSaveDirectory = aCurrentSaveDirectory;
 	}
 
 	public static void main(String[] args)

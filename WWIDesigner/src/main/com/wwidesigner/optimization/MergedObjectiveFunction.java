@@ -22,14 +22,14 @@ public abstract class MergedObjectiveFunction extends BaseObjectiveFunction
 	/**
 	 * Constructor for merged class.
 	 * 
-	 * @param calculator
+	 * @param aCalculator
 	 * @param tuning
-	 * @param evaluator
+	 * @param aEvaluator
 	 */
-	public MergedObjectiveFunction(InstrumentCalculator calculator,
-			TuningInterface tuning, EvaluatorInterface evaluator)
+	public MergedObjectiveFunction(InstrumentCalculator aCalculator,
+			TuningInterface tuning, EvaluatorInterface aEvaluator)
 	{
-		super(calculator, tuning, evaluator);
+		super(aCalculator, tuning, aEvaluator);
 	}
 
 	/**
@@ -112,9 +112,9 @@ public abstract class MergedObjectiveFunction extends BaseObjectiveFunction
 	 * [])
 	 */
 	@Override
-	public void setLowerBounds(double[] lowerBounds)
+	public void setLowerBounds(double[] aLowerBounds)
 	{
-		super.setLowerBounds(lowerBounds);
+		super.setLowerBounds(aLowerBounds);
 		// Copy the lower bounds to the component ObjectiveFunctions.
 		int i = 0; // Index into point.
 		for (BaseObjectiveFunction component : components)
@@ -122,7 +122,7 @@ public abstract class MergedObjectiveFunction extends BaseObjectiveFunction
 			double[] subPoint = new double[component.getNrDimensions()];
 			for (int j = 0; j < component.getNrDimensions(); j++)
 			{
-				subPoint[j] = lowerBounds[i++];
+				subPoint[j] = aLowerBounds[i++];
 			}
 			component.setLowerBounds(subPoint);
 		}
@@ -136,9 +136,9 @@ public abstract class MergedObjectiveFunction extends BaseObjectiveFunction
 	 * [])
 	 */
 	@Override
-	public void setUpperBounds(double[] upperBounds)
+	public void setUpperBounds(double[] aUpperBounds)
 	{
-		super.setUpperBounds(upperBounds);
+		super.setUpperBounds(aUpperBounds);
 		// Copy the upper bounds to the component ObjectiveFunctions.
 		int i = 0; // Index into point.
 		for (BaseObjectiveFunction component : components)
@@ -146,7 +146,7 @@ public abstract class MergedObjectiveFunction extends BaseObjectiveFunction
 			double[] subPoint = new double[component.getNrDimensions()];
 			for (int j = 0; j < component.getNrDimensions(); j++)
 			{
-				subPoint[j] = upperBounds[i++];
+				subPoint[j] = aUpperBounds[i++];
 			}
 			component.setUpperBounds(subPoint);
 		}

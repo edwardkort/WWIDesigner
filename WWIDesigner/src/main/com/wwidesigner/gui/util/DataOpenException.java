@@ -9,10 +9,10 @@ public class DataOpenException extends Exception
 
 	private String type;
 
-	public DataOpenException(String message, String type)
+	public DataOpenException(String message, String aType)
 	{
 		super(message);
-		this.type = type;
+		this.type = aType;
 	}
 
 	public String getType()

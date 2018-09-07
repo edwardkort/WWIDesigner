@@ -34,10 +34,10 @@ public class SingleTaperSimpleRatioHemiHeadObjectiveFunction extends
 	protected final static int NUM_HEMI_POINTS = 10;
 
 	public SingleTaperSimpleRatioHemiHeadObjectiveFunction(
-			InstrumentCalculator calculator, TuningInterface tuning,
-			EvaluatorInterface evaluator) throws Exception
+			InstrumentCalculator aCalculator, TuningInterface tuning,
+			EvaluatorInterface aEvaluator) throws Exception
 	{
-		super(calculator, tuning, evaluator);
+		super(aCalculator, tuning, aEvaluator);
 	}
 
 	protected void setConstraints()

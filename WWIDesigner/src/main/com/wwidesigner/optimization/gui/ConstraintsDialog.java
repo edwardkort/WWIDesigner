@@ -13,9 +13,9 @@ public class ConstraintsDialog extends StandardDialog
 {
 	Constraints constraints;
 
-	public ConstraintsDialog(Constraints constraints)
+	public ConstraintsDialog(Constraints aConstraints)
 	{
-		this.constraints = constraints;
+		this.constraints = aConstraints;
 		this.setSize(new Dimension(1000, 1000));
 	}
 

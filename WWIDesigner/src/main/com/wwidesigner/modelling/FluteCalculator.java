@@ -27,10 +27,10 @@ import com.wwidesigner.util.PhysicalParameters;
 
 public class FluteCalculator extends DefaultInstrumentCalculator
 {
-	public FluteCalculator(Instrument instrument,
+	public FluteCalculator(Instrument aInstrument,
 			PhysicalParameters physicalParams)
 	{
-		super(instrument, new FluteMouthpieceCalculator(),
+		super(aInstrument, new FluteMouthpieceCalculator(),
 				new UnflangedEndCalculator(), new DefaultHoleCalculator(),
 				new SimpleBoreSectionCalculator(), physicalParams);
 	}
@@ -43,10 +43,10 @@ public class FluteCalculator extends DefaultInstrumentCalculator
 	}
 
 	@Override
-	public boolean isCompatible(Instrument instrument)
+	public boolean isCompatible(Instrument aInstrument)
 	{
-		return instrument != null && instrument.getMouthpiece() != null
-				&& instrument.getMouthpiece().getEmbouchureHole() != null;
+		return aInstrument != null && aInstrument.getMouthpiece() != null
+				&& aInstrument.getMouthpiece().getEmbouchureHole() != null;
 	}
 
 }

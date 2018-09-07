@@ -64,10 +64,10 @@ public class DirectoryChooserPanel extends JPanel
 		return directoryPath;
 	}
 
-	public void setSelectedDirectory(String directoryPath)
+	public void setSelectedDirectory(String aDirectoryPath)
 	{
-		textField.setText(directoryPath);
-		this.directoryPath = directoryPath;
+		textField.setText(aDirectoryPath);
+		this.directoryPath = aDirectoryPath;
 	}
 
 	public static void main(String[] args)

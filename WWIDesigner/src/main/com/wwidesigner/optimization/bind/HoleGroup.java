@@ -80,9 +80,9 @@ public class HoleGroup
 		return this.holeIdx;
 	}
 
-	public void setHoleIdx(List<Integer> holeIdx)
+	public void setHoleIdx(List<Integer> aHoleIdx)
 	{
-		this.holeIdx = holeIdx;
+		this.holeIdx = aHoleIdx;
 	}
 
 }

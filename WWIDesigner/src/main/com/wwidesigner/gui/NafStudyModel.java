@@ -111,10 +111,10 @@ public class NafStudyModel extends StudyModel
 	// Display name for this study
 	private static final String DISPLAY_NAME = "Native American Flute Study";
 
-	public NafStudyModel(Frame parentFrame)
+	public NafStudyModel(Frame aParentFrame)
 	{
 		super();
-		this.parentFrame = parentFrame;
+		this.parentFrame = aParentFrame;
 		setLocalCategories();
 	}
 
@@ -405,7 +405,7 @@ public class NafStudyModel extends StudyModel
 		EvaluatorInterface evaluator = new CentDeviationEvaluator(calculator);
 		int numberOfHoles = instrument.getHole().size();
 
-		BaseObjectiveFunction objective = null;
+		BaseObjectiveFunction aObjective = null;
 		double[] lowerBound = null;
 		double[] upperBound = null;
 		int[][] holeGroups = null;
@@ -418,7 +418,7 @@ public class NafStudyModel extends StudyModel
 		switch (optimizer)
 		{
 			case FIPPLE_OPT_SUB_CATEGORY_ID:
-				objective = new FippleFactorObjectiveFunction(calculator,
+				aObjective = new FippleFactorObjectiveFunction(calculator,
 						tuning, evaluator);
 				if (objectiveFunctionIntent == BaseObjectiveFunction.DEFAULT_CONSTRAINTS_INTENT)
 				{
@@ -427,7 +427,7 @@ public class NafStudyModel extends StudyModel
 				}
 				break;
 			case HOLESIZE_OPT_SUB_CATEGORY_ID:
-				objective = new NafHoleSizeObjectiveFunction(calculator, tuning,
+				aObjective = new NafHoleSizeObjectiveFunction(calculator, tuning,
 						evaluator);
 				if (objectiveFunctionIntent == BaseObjectiveFunction.DEFAULT_CONSTRAINTS_INTENT)
 				{
@@ -460,7 +460,7 @@ public class NafStudyModel extends StudyModel
 				}
 				break;
 			case NO_GROUP_OPT_SUB_CATEGORY_ID:
-				objective = new HoleFromTopObjectiveFunction(calculator, tuning,
+				aObjective = new HoleFromTopObjectiveFunction(calculator, tuning,
 						evaluator, BoreLengthAdjustmentType.PRESERVE_TAPER);
 				if (objectiveFunctionIntent == BaseObjectiveFunction.DEFAULT_CONSTRAINTS_INTENT)
 				{
@@ -562,11 +562,11 @@ public class NafStudyModel extends StudyModel
 						}
 					}
 				}
-				objective = new HoleGroupFromTopObjectiveFunction(calculator,
+				aObjective = new HoleGroupFromTopObjectiveFunction(calculator,
 						tuning, evaluator, holeGroups);
 				break;
 			case TAPER_NO_GROUP_OPT_SUB_CATEGORY_ID:
-				objective = new SingleTaperNoHoleGroupingFromTopObjectiveFunction(
+				aObjective = new SingleTaperNoHoleGroupingFromTopObjectiveFunction(
 						calculator, tuning, evaluator);
 				if (objectiveFunctionIntent == BaseObjectiveFunction.DEFAULT_CONSTRAINTS_INTENT)
 				{
@@ -608,7 +608,7 @@ public class NafStudyModel extends StudyModel
 				}
 				break;
 			case TAPER_HEMI_HEAD_NO_GROUP_OPT_SUB_CATEGORY_ID:
-				objective = new SingleTaperNoHoleGroupingFromTopHemiHeadObjectiveFunction(
+				aObjective = new SingleTaperNoHoleGroupingFromTopHemiHeadObjectiveFunction(
 						calculator, tuning, evaluator);
 				if (objectiveFunctionIntent == BaseObjectiveFunction.DEFAULT_CONSTRAINTS_INTENT)
 				{
@@ -714,7 +714,7 @@ public class NafStudyModel extends StudyModel
 						}
 					}
 				}
-				objective = new SingleTaperHoleGroupFromTopObjectiveFunction(
+				aObjective = new SingleTaperHoleGroupFromTopObjectiveFunction(
 						calculator, tuning, evaluator, holeGroups);
 				break;
 			case TAPER_HEMI_HEAD_GROUP_OPT_SUB_CATEGORY_ID:
@@ -782,22 +782,22 @@ public class NafStudyModel extends StudyModel
 						}
 					}
 				}
-				objective = new SingleTaperHoleGroupFromTopHemiHeadObjectiveFunction(
+				aObjective = new SingleTaperHoleGroupFromTopHemiHeadObjectiveFunction(
 						calculator, tuning, evaluator, holeGroups);
 				break;
 		}
 
 		if (thisIntent == BaseObjectiveFunction.DEFAULT_CONSTRAINTS_INTENT)
 		{
-			objective.setLowerBounds(lowerBound);
-			objective.setUpperBounds(upperBound);
+			aObjective.setLowerBounds(lowerBound);
+			aObjective.setUpperBounds(upperBound);
 		}
 		else if (thisIntent == BaseObjectiveFunction.OPTIMIZATION_INTENT)
 		{
-			objective.setConstraintsBounds(constraints);
+			aObjective.setConstraintsBounds(constraints);
 			// Using different evaluators with a granular solution space can
 			// yield sub-optimal solutions.
-			objective.setRunTwoStageOptimization(false);
+			aObjective.setRunTwoStageOptimization(false);
 			// objective
 			// .setFirstStageEvaluator(new ReflectionEvaluator(calculator));
 			Category multiStartCategory = getCategory(MULTI_START_CATEGORY_ID);
@@ -805,24 +805,24 @@ public class NafStudyModel extends StudyModel
 			if (multiStartSelected == VARY_FIRST_MULTI_START_SUB_CATEGORY_ID)
 			{
 				GridRangeProcessor rangeProcessor = new GridRangeProcessor(
-						objective.getLowerBounds(), objective.getUpperBounds(),
+						aObjective.getLowerBounds(), aObjective.getUpperBounds(),
 						new int[] { 0 }, numberOfStarts);
-				objective.setRangeProcessor(rangeProcessor);
-				objective.setMaxEvaluations(
-						numberOfStarts * objective.getMaxEvaluations());
+				aObjective.setRangeProcessor(rangeProcessor);
+				aObjective.setMaxEvaluations(
+						numberOfStarts * aObjective.getMaxEvaluations());
 			}
 			else if (multiStartSelected == VARY_ALL_MULTI_START_SUB_CATEGORY_ID)
 			{
 				GridRangeProcessor rangeProcessor = new GridRangeProcessor(
-						objective.getLowerBounds(), objective.getUpperBounds(),
+						aObjective.getLowerBounds(), aObjective.getUpperBounds(),
 						null, numberOfStarts);
-				objective.setRangeProcessor(rangeProcessor);
-				objective.setMaxEvaluations(
-						numberOfStarts * objective.getMaxEvaluations());
+				aObjective.setRangeProcessor(rangeProcessor);
+				aObjective.setMaxEvaluations(
+						numberOfStarts * aObjective.getMaxEvaluations());
 			}
 		}
 
-		return objective;
+		return aObjective;
 	} // getObjectiveFunction
 
 	protected int[][] getUserHoleGroups(int numberOfHoles)

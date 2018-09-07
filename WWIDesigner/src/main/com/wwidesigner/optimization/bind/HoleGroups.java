@@ -78,9 +78,9 @@ public class HoleGroups
 		return this.holeGroup;
 	}
 
-	public void setHoleGroup(List<HoleGroup> holeGroup)
+	public void setHoleGroup(List<HoleGroup> aHoleGroup)
 	{
-		this.holeGroup = holeGroup;
+		this.holeGroup = aHoleGroup;
 	}
 
 }

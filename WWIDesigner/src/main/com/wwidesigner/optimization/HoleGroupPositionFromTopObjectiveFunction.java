@@ -40,10 +40,10 @@ public class HoleGroupPositionFromTopObjectiveFunction extends
 {
 
 	public HoleGroupPositionFromTopObjectiveFunction(
-			InstrumentCalculator calculator, TuningInterface tuning,
-			EvaluatorInterface evaluator, int[][] holeGroups) throws Exception
+			InstrumentCalculator aCalculator, TuningInterface tuning,
+			EvaluatorInterface aEvaluator, int[][] aHoleGroups) throws Exception
 	{
-		super(calculator, tuning, evaluator, holeGroups);
+		super(aCalculator, tuning, aEvaluator, aHoleGroups);
 	}
 
 	@Override

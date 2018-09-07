@@ -27,10 +27,10 @@ public class FippleFactorObjectiveFunction extends BaseObjectiveFunction
 	public static final String DISPLAY_NAME = "Fipple factor";
 	public static final String NAME = FippleFactorObjectiveFunction.class.getSimpleName();
 
-	public FippleFactorObjectiveFunction(InstrumentCalculator calculator,
-			TuningInterface tuning, EvaluatorInterface evaluator)
+	public FippleFactorObjectiveFunction(InstrumentCalculator aCcalculator,
+			TuningInterface tuning, EvaluatorInterface aEvaluator)
 	{
-		super(calculator, getLowestNote(tuning), evaluator);
+		super(aCcalculator, getLowestNote(tuning), aEvaluator);
 		nrDimensions = 1;
 		optimizerType = OptimizerType.BrentOptimizer; // UnivariateOptimizer
 		setConstraints();

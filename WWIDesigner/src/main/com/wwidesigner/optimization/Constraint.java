@@ -17,11 +17,11 @@ public class Constraint
 
 	}
 
-	public Constraint(String category, String displayName, ConstraintType type)
+	public Constraint(String aCategory, String aDisplayName, ConstraintType aType)
 	{
-		this.category = category;
-		this.displayName = displayName;
-		this.type = type;
+		this.category = aCategory;
+		this.displayName = aDisplayName;
+		this.type = aType;
 	}
 
 	public String getDisplayName()
@@ -91,9 +91,9 @@ public class Constraint
 		return lowerBound;
 	}
 
-	public void setLowerBound(Double lowerBound)
+	public void setLowerBound(Double aLowerBound)
 	{
-		this.lowerBound = lowerBound;
+		this.lowerBound = aLowerBound;
 	}
 
 	public Double getUpperBound()
@@ -101,14 +101,14 @@ public class Constraint
 		return upperBound;
 	}
 
-	public void setUpperBound(Double upperBound)
+	public void setUpperBound(Double aUpperBound)
 	{
-		this.upperBound = upperBound;
+		this.upperBound = aUpperBound;
 	}
 
-	public void setParent(Constraints parent)
+	public void setParent(Constraints aParent)
 	{
-		this.parent = parent;
+		this.parent = aParent;
 	}
 
 	public double convertBound(boolean isLowerBound, boolean toMetres)
@@ -153,19 +153,19 @@ public class Constraint
 		return type.toString();
 	}
 
-	public void setDisplayName(String displayName)
+	public void setDisplayName(String aDisplayName)
 	{
-		this.displayName = displayName;
+		this.displayName = aDisplayName;
 	}
 
-	public void setCategory(String category)
+	public void setCategory(String aCategory)
 	{
-		this.category = category;
+		this.category = aCategory;
 	}
 
-	public void setType(ConstraintType type)
+	public void setType(ConstraintType aType)
 	{
-		this.type = type;
+		this.type = aType;
 	}
 
 }

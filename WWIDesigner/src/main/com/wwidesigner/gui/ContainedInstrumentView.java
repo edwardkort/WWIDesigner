@@ -37,9 +37,9 @@ public class ContainedInstrumentView extends ContainedXmlView implements DataCha
 	protected InstrumentPanel instrumentPanel;
 	private JScrollPane scrollPane;
 
-	public ContainedInstrumentView(DataViewPane parent)
+	public ContainedInstrumentView(DataViewPane aParent)
 	{
-		super(parent);
+		super(aParent);
 
 		setInstrumentPanel();
 		scrollPane = new JScrollPane(instrumentPanel);

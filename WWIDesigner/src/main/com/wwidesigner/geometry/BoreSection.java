@@ -67,12 +67,12 @@ public class BoreSection implements ComponentInterface
 	}
 
 	/**
-	 * @param rightBorePosition
+	 * @param aRightBorePosition
 	 *            the rightBorePosition to set
 	 */
-	public void setRightBorePosition(double rightBorePosition)
+	public void setRightBorePosition(double aRightBorePosition)
 	{
-		this.rightBorePosition = rightBorePosition;
+		this.rightBorePosition = aRightBorePosition;
 	}
 
 }

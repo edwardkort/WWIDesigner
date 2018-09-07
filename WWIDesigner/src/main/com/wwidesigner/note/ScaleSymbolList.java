@@ -25,12 +25,12 @@ public class ScaleSymbolList
 	}
 
 	/**
-	 * @param name
+	 * @param aName
 	 *            the name to set
 	 */
-	public void setName(String name)
+	public void setName(String aName)
 	{
-		this.name = name;
+		this.name = aName;
 	}
 
 	/**
@@ -42,12 +42,12 @@ public class ScaleSymbolList
 	}
 
 	/**
-	 * @param comment
+	 * @param aComment
 	 *            the comment to set
 	 */
-	public void setComment(String comment)
+	public void setComment(String aComment)
 	{
-		this.comment = comment;
+		this.comment = aComment;
 	}
 
 	/**
@@ -63,12 +63,12 @@ public class ScaleSymbolList
 	}
 
 	/**
-	 * @param scaleSymbol
+	 * @param aScaleSymbol
 	 *            the scaleSymbol to set
 	 */
-	public void setScaleSymbol(List<String> scaleSymbol)
+	public void setScaleSymbol(List<String> aScaleSymbol)
 	{
-		this.scaleSymbol = scaleSymbol;
+		this.scaleSymbol = aScaleSymbol;
 	}
 
 	public void addScaleSymbol(String symbol)
@@ -173,9 +173,9 @@ public class ScaleSymbolList
 				"Scientific symbols, flats only"), MIDI("MIDI numbers");
 		private String description;
 
-		private StandardSymbols(String description)
+		private StandardSymbols(String aDescription)
 		{
-			this.description = description;
+			this.description = aDescription;
 		}
 
 		public String toString()

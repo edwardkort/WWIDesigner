@@ -54,7 +54,7 @@ public class DefaultFippleMouthpieceCalculator extends MouthpieceCalculator
 		double omega = waveNumber * parameters.getSpeedOfSound();
 		double k_delta_l = calcKDeltaL(mouthpiece, omega, z0);
 		// Add a series resistance for radiation loss.
-		double r_rad = Tube.calcR(omega/(2*Math.PI), radius, parameters);
+		double r_rad = Tube.calcR(omega/(2.*Math.PI), radius, parameters);
 		double cos_kl = FastMath.cos(k_delta_l);
 		double sin_kl = FastMath.sin(k_delta_l);
 
@@ -142,7 +142,7 @@ public class DefaultFippleMouthpieceCalculator extends MouthpieceCalculator
 			windwayHeight = DEFAULT_WINDWAY_HEIGHT;
 		}
 
-		double ratio = Math.pow(DEFAULT_WINDWAY_HEIGHT / windwayHeight, 1. / 3);
+		double ratio = Math.pow(DEFAULT_WINDWAY_HEIGHT / windwayHeight, 1.d / 3.d);
 		double scaledFippleFactor;
 		if (mouthpiece.getFipple().getFippleFactor() == null)
 		{

@@ -87,7 +87,7 @@ public class Mouthpiece implements ComponentInterface, MouthpieceInterface,
 	{
 		this.beta = aBeta;
 		// For instruments without beta, calculate a gain factor with a default beta.
-		double nominalBeta = 0.35;
+		double nominalBeta = 0.35d;
 		if (this.beta != null)
 		{
 			nominalBeta = this.beta;
@@ -520,8 +520,8 @@ public class Mouthpiece implements ComponentInterface, MouthpieceInterface,
 		/**
 		 * Set the length of the air stream from the player's lips
 		 * to the edge of the embouchure hole.
-		 * @param height
-		 *            the height to set
+		 * @param aLength
+		 *            the new value of airstreamLength
 		 */
 		public void setAirstreamLength(double aLength)
 		{

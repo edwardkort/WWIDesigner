@@ -31,7 +31,7 @@ import com.wwidesigner.util.PhysicalParameters;
  */
 public class Tube
 {
-	public static final double MINIMUM_CONE_LENGTH = 0.00001;
+	public static final double MINIMUM_CONE_LENGTH = 0.00001d;
 	
 	public Tube()
 	{
@@ -46,7 +46,7 @@ public class Tube
      */
     public static Complex calcZload_old( double freq, double radius, PhysicalParameters params )
     {
-    	Complex zRel = new Complex(9.87 * freq * radius / params.getSpeedOfSound(), 3.84 )
+    	Complex zRel = new Complex(9.87d * freq * radius / params.getSpeedOfSound(), 3.84d )
     						.multiply( freq * radius / params.getSpeedOfSound() );
     	return zRel.multiply( params.calcZ0(radius) );
     }
@@ -66,9 +66,9 @@ public class Tube
     {
     	double ka = params.calcWaveNumber(freq) * radius;
     	double ka2 = ka*ka;
-    	double z0_denominator = params.calcZ0(radius)/(1.0 + ka2*(0.1514 + 0.05221*ka2));
-    	return new Complex(ka2*(0.2499 + 0.05221*ka2)*z0_denominator,
-    			ka*(0.6133 + 0.0381*ka2)*z0_denominator);
+    	double z0_denominator = params.calcZ0(radius)/(1.0 + ka2*(0.1514d + 0.05221d*ka2));
+    	return new Complex(ka2*(0.2499d + 0.05221d*ka2)*z0_denominator,
+    			ka*(0.6133d + 0.0381d*ka2)*z0_denominator);
     }
 
     /**
@@ -81,7 +81,7 @@ public class Tube
      */
     public static Complex calcZflanged_old( double freq, double radius, PhysicalParameters params )
     {
-    	Complex zRel = new Complex(19.7 * freq * radius / params.getSpeedOfSound(), 5.33 )
+    	Complex zRel = new Complex(19.7d * freq * radius / params.getSpeedOfSound(), 5.33d )
     					.multiply( freq * radius / params.getSpeedOfSound() );
     	return zRel.multiply( params.calcZ0(radius) );
     }
@@ -102,7 +102,7 @@ public class Tube
     {
     	double ka = params.calcWaveNumber(freq) * radius;
     	double ka2 = ka*ka;
-    	return params.calcZ0(radius) * ka2*(0.5 + 0.1053*ka2)/(1.0 + ka2*(0.358 + 0.1053*ka2));
+    	return params.calcZ0(radius) * ka2*(0.5d + 0.1053d*ka2)/(1.0d + ka2*(0.358d + 0.1053d*ka2));
     }
 
     /**
@@ -121,9 +121,9 @@ public class Tube
     {
     	double ka = params.calcWaveNumber(freq) * radius;
     	double ka2 = ka*ka;
-    	double z0_denominator = params.calcZ0(radius)/(1.0 + ka2*(0.358 + 0.1053*ka2));
-    	return new Complex(ka2*(0.5 + 0.1053*ka2)*z0_denominator,
-    			ka*(0.82159 + 0.059*ka2)*z0_denominator);
+    	double z0_denominator = params.calcZ0(radius)/(1.0d + ka2*(0.358d + 0.1053d*ka2));
+    	return new Complex(ka2*(0.5d + 0.1053d*ka2)*z0_denominator,
+    			ka*(0.82159d + 0.059d*ka2)*z0_denominator);
     }
 
     /**
@@ -132,7 +132,7 @@ public class Tube
      * From Jean Kergomard, Antoine Lefebvre, Gary Scavone,
      * "Matching of fundamental modes at a junction of a cylinder and a
      * truncated cone; application to the calculation of radiation impedances,"
-     * 2015. <hal-01134302>.  https://hal.archives-ouvertes.fr/hal-01134302.
+     * 2015. &lt;hal-01134302&gt;.  https://hal.archives-ouvertes.fr/hal-01134302.
      * 
      * @param freq - fundamental frequency of the waveform.
      * @param radius - radius of pipe, in metres.
@@ -143,8 +143,8 @@ public class Tube
     {
     	double ka = params.calcWaveNumber(freq) * radius;
     	double ka2 = ka*ka;
-    	Complex numerator = new Complex(0.3216*ka2, (0.82159-0.0368*ka2)*ka);
-    	Complex denominator = new Complex(1+0.3701*ka2, (1.0-0.0368*ka2)*ka);
+    	Complex numerator = new Complex(0.3216d*ka2, (0.82159d-0.0368d*ka2)*ka);
+    	Complex denominator = new Complex(1.d+0.3701d*ka2, (1.0d-0.0368d*ka2)*ka);
     	return numerator.divide(denominator).multiply(params.calcZ0(radius));
     }
 
@@ -161,7 +161,7 @@ public class Tube
 	{
 		double Zc = params.calcZ0(radius);
 		double epsilon = params.getAlphaConstant()/(radius * FastMath.sqrt(waveNumber));
-		Complex gammaL = new Complex( epsilon, 1.0+epsilon ).multiply( waveNumber * length );
+		Complex gammaL = new Complex( epsilon, 1.0d+epsilon ).multiply( waveNumber * length );
 		Complex coshL = gammaL.cosh();
 		Complex sinhL = gammaL.sinh();
         TransferMatrix result = new TransferMatrix(coshL, sinhL.multiply(Zc), sinhL.divide(Zc), coshL);
@@ -201,7 +201,7 @@ public class Tube
 			epsilon = alpha_0 / (loadRadius - sourceRadius)
 					* FastMath.log(loadRadius / sourceRadius);
 		}
-		Complex mean = new Complex( 1.0 + epsilon, - epsilon );
+		Complex mean = new Complex( 1.0d + epsilon, - epsilon );
 		Complex kMeanL;
 		if (length >= MINIMUM_CONE_LENGTH)
 		{

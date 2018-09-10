@@ -76,7 +76,7 @@ public class SimpleReedMouthpieceCalculator extends MouthpieceCalculator
 
 		double headRadius = 0.5 * mouthpiece.getBoreDiameter();
 		double z0 = parameters.calcZ0(headRadius);
-		double X = alpha*1.0e-3*freq + beta;
+		double X = alpha*1.0e-3d*freq + beta;
         TransferMatrix closedEnd = new TransferMatrix(
         		new Complex(0.0, X), new Complex(z0, 0.0), 
         		new Complex(1.0, 0.0), Complex.ZERO);

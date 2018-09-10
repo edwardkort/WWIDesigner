@@ -42,11 +42,11 @@ public class SimplePhysicalParameters
 									// per metre.
 	private double mAlphaConstant;
 
-	private static final double mRelativeHumidity = 0.45;
+	private static final double mRelativeHumidity = 0.45d;
 
 	public SimplePhysicalParameters()
 	{
-		this(72.0, TemperatureType.F);
+		this(72.0d, TemperatureType.F);
 	}
 
 	public SimplePhysicalParameters(PhysicalParameters params)
@@ -63,23 +63,23 @@ public class SimplePhysicalParameters
 				mTemperature = temperature;
 				break;
 			case F:
-				mTemperature = (temperature + 40.) * 5. / 9. - 40.;
+				mTemperature = (temperature + 40.d) * 5.d / 9.d - 40.d;
 				break;
 		}
 		mSpeedOfSound = calculateSpeedOfSound(mTemperature, mRelativeHumidity);
 
-		mEta = 3.648e-6 * (1 + 0.0135003 * (mTemperature + 273.15));
+		mEta = 3.648e-6d * (1.d + 0.0135003d * (mTemperature + 273.15d));
 
-		double deltaT = mTemperature - 26.85;
+		double deltaT = mTemperature - 26.85d;
 
-		mRho = 1.1769 * (1 - 0.00335 * deltaT);
-		mMu = 1.8460E-5 * (1 + 0.00250 * deltaT);
-		mGamma = 1.4017 * (1 - 0.00002 * deltaT);
-		mNu = 0.8410 * (1 - 0.00020 * deltaT);
+		mRho = 1.1769d * (1.d - 0.00335d * deltaT);
+		mMu = 1.8460e-5d * (1.d + 0.00250d * deltaT);
+		mGamma = 1.4017d * (1.d - 0.00002d * deltaT);
+		mNu = 0.8410d * (1.d - 0.00020d * deltaT);
 		mWaveNumber1 = 2.0 * Math.PI / mSpeedOfSound;
 
-		mAlphaConstant = Math.sqrt(mMu / (2 * mRho * mSpeedOfSound))
-				* (1 + (mGamma - 1) / mNu);
+		mAlphaConstant = Math.sqrt(mMu / (2. * mRho * mSpeedOfSound))
+				* (1. + (mGamma - 1.) / mNu);
 
 	}
 
@@ -96,19 +96,19 @@ public class SimplePhysicalParameters
 		double c;
 		double Xc;
 		double speed;
-		double p = 101000;
-		double[] a = new double[] { 331.5024, 0.603055, -0.000528, 51.471935,
-				0.1495874, -0.000782, -1.82e-7, 3.73e-8, -2.93e-10, -85.20931,
-				-0.228525, 5.91e-5, -2.835149, -2.15e-13, 29.179762, 0.000486 };
+		double p = 101000d;
+		double[] a = new double[] { 331.5024d, 0.603055d, -0.000528d, 51.471935d,
+				0.1495874d, -0.000782d, -1.82e-7d, 3.73e-8d, -2.93e-10d, -85.20931d,
+				-0.228525d, 5.91e-5d, -2.835149d, -2.15e-13d, 29.179762d, 0.000486d };
 
-		T = ambientTemp + 273.15;
-		f = 1.00062 + 0.0000000314 * p + 0.00000056 * ambientTemp * ambientTemp;
-		Psv = Math.exp(0.000012811805 * T * T - 0.019509874 * T + 34.04926034
-				- 6353.6311 / T);
+		T = ambientTemp + 273.15d;
+		f = 1.00062d + 0.0000000314d * p + 0.00000056d * ambientTemp * ambientTemp;
+		Psv = Math.exp(0.000012811805d * T * T - 0.019509874d * T + 34.04926034d
+				- 6353.6311d / T);
 		Xw = relativeHumidity * f * Psv / p;
-		c = 331.45 - a[0] - p * a[6] - a[13] * p * p;
+		c = 331.45d - a[0] - p * a[6] - a[13] * p * p;
 		c = Math.sqrt(a[9] * a[9] + 4 * a[14] * c);
-		Xc = ((-1) * a[9] - c) / (2 * a[14]);
+		Xc = (-a[9] - c) / (2. * a[14]);
 
 		speed = a[0]
 				+ a[1]
@@ -218,8 +218,8 @@ public class SimplePhysicalParameters
 
 	/**
 	 * 
-	 * @param wave
-	 *            number in radians/metre.
+	 * @param waveNumber
+	 *            wave number in radians/metre.
 	 * @return frequency in Hz.
 	 */
 	public double calcFrequency(double waveNumber)

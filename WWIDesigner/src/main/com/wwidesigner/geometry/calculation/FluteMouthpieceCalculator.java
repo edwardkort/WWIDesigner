@@ -106,13 +106,13 @@ public class FluteMouthpieceCalculator extends MouthpieceCalculator
 		// Model for use in absence of blade height measurement.
 		double windowHeight = mouthpiece.getEmbouchureHole().getHeight();
 		double Xw = physicalParams.getRho() * freq/effSize
-				* ( 4.30 + 2.87 * windowHeight/effSize );
+				* ( 4.30d + 2.87d * windowHeight/effSize );
 		
 		// Resistance modeled as radiation resistance from end of bore,
 		// plus short cylindrical tube with same area as window.
 		double radius = 0.5 * mouthpiece.getBoreDiameter();
 		double Rw = Tube.calcR(freq, radius, physicalParams)
-			  + physicalParams.getRho() * 0.0184 * FastMath.sqrt(freq)*windowHeight
+			  + physicalParams.getRho() * 0.0184d * FastMath.sqrt(freq)*windowHeight
 				/ (effSize*effSize*effSize);
 		return new Complex(Rw,Xw);
 	}

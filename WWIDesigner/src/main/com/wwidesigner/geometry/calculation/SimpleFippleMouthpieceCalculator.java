@@ -125,19 +125,19 @@ public class SimpleFippleMouthpieceCalculator extends MouthpieceCalculator
 			windowHeight = 0.001;	// Default to 1 mm.
 		}
 		double Xw = physicalParams.getRho() * freq/effSize
-				* ( 4.30 + 2.87 * windowHeight/effSize );
+				* ( 4.30d + 2.87d * windowHeight/effSize );
 		// Model for use when blade height measurement is available.
 		// double Xw = physicalParams.getRho() * freq/effSize
-		// 		* ( 5.34 + 2.24 * windowHeight/effSize
-		//			- 3.13 * mouthpiece.getFipple().getBladeHeight()/mouthpiece.getFipple().getWindwayHeight());
+		// 		* ( 5.34d + 2.24d * windowHeight/effSize
+		//			- 3.13d * mouthpiece.getFipple().getBladeHeight()/mouthpiece.getFipple().getWindwayHeight());
 		// Model adapted from DefaultFippleMouthpieceCalculator.
-		// Xw = 5.851 * freq/effSize * FastMath.pow(mouthpiece.getFipple().getWindwayHeight()/0.7874e-3,0.333333333);
+		// Xw = 5.851d * freq/effSize * FastMath.pow(mouthpiece.getFipple().getWindwayHeight()/0.7874e-3d,1.d/3.d);
 		
 		// Resistance modeled as radiation resistance from end of bore,
 		// plus short cylindrical tube with same area as window.
 		double radius = 0.5 * mouthpiece.getBoreDiameter();
 		double Rw = Tube.calcR(freq, radius, physicalParams)
-			  + physicalParams.getRho() * 0.0184 * FastMath.sqrt(freq)*windowHeight
+			  + physicalParams.getRho() * 0.0184d * FastMath.sqrt(freq)*windowHeight
 				/ (effSize*effSize*effSize);
 		return new Complex(Rw,Xw);
 	}

@@ -18,6 +18,7 @@ public class BoreSection implements ComponentInterface
 		mLength = length;
 		mLeftRadius = left_radius;
 		mRightRadius = right_radius;
+		rightBorePosition = 0.;
 	}
 
 	public double getLength()
@@ -41,8 +42,8 @@ public class BoreSection implements ComponentInterface
 	}
 
 	/**
-	 * @param mLeftRadius
-	 *            the mLeftRadius to set
+	 * @param leftRadius
+	 *            the new value for mLeftRadius
 	 */
 	public void setLeftRadius(double leftRadius)
 	{
@@ -50,8 +51,8 @@ public class BoreSection implements ComponentInterface
 	}
 
 	/**
-	 * @param mRightRadius
-	 *            the mRightRadius to set
+	 * @param rightRadius
+	 *            the new value for mRightRadius
 	 */
 	public void setRightRadius(double rightRadius)
 	{
@@ -68,7 +69,7 @@ public class BoreSection implements ComponentInterface
 
 	/**
 	 * @param aRightBorePosition
-	 *            the rightBorePosition to set
+	 *            the new value for rightBorePosition
 	 */
 	public void setRightBorePosition(double aRightBorePosition)
 	{

@@ -26,7 +26,7 @@ public class Hole implements ComponentInterface, BorePointInterface
 	}
 
 	/**
-	 * @return the radius
+	 * @return the diameter
 	 */
 	public double getDiameter()
 	{
@@ -34,8 +34,8 @@ public class Hole implements ComponentInterface, BorePointInterface
 	}
 
 	/**
-	 * @param radius
-	 *            the radius to set
+	 * @param aDiameter
+	 *            the diameter to set
 	 */
 	public void setDiameter(double aDiameter)
 	{

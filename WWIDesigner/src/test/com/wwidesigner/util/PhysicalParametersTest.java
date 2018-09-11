@@ -28,7 +28,7 @@ public class PhysicalParametersTest
 
     /**
      * Test method for
-     * {@link com.wwidesigner.util.PhysicalParameters#PhysicalParameters(double, com.wwidesigner.impedance.util.PhysicalParameters.TemperatureType)}.
+     * {@link com.wwidesigner.util.PhysicalParameters#PhysicalParameters(double, com.wwidesigner.util.Constants.TemperatureType)}.
      */
     @Test
     public void testTemperature()
@@ -47,7 +47,7 @@ public class PhysicalParametersTest
 
     /**
      * Test method for
-     * {@link com.wwidesigner.util.PhysicalParameters#PhysicalParameters(double, com.wwidesigner.impedance.util.PhysicalParameters.TemperatureType)}.
+     * {@link com.wwidesigner.util.PhysicalParameters#PhysicalParameters(double, com.wwidesigner.util.Constants.TemperatureType)}.
      */
     @Test
     public void testProperties()
@@ -84,7 +84,7 @@ public class PhysicalParametersTest
 
     /**
      * Test method for
-     * {@link com.wwidesigner.util.PhysicalParameters#CalcZ0(double)}.
+     * {@link com.wwidesigner.util.PhysicalParameters#calcZ0(double)}.
      */
     @Test
     public void testCalcZ0()

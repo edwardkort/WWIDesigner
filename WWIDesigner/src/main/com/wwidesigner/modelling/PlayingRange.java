@@ -629,8 +629,8 @@ public class PlayingRange
 	/**
 	 * Find the frequency with a specified reactance nearest to nearFreq
 	 * satisfying nearFreq/SearchBoundRatio <= f <= nearFreq*SearchBoundRatio
-	 * @param nearFreq
-	 * @param targetX
+	 * @param nearFreq - frequency to search near
+	 * @param targetRatio - target ratio Im(Z)/Re(Z)
 	 * @throws NoPlayingRange if there is no zero of X
 	 * within the specified range of nearFreq.
 	 */

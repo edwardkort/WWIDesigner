@@ -19,7 +19,7 @@ public class ScaleSymbolListTest extends AbstractXmlTest<ScaleSymbolList>
 
 	/**
 	 * Test method for
-	 * {@link com.wwidesigner.note.bind.XmlScaleSymbolList#getName()}.
+	 * {@link com.wwidesigner.note.bind.ScaleSymbolList#getName()}.
 	 */
 	@Test
 	public final void testGetName()
@@ -42,7 +42,7 @@ public class ScaleSymbolListTest extends AbstractXmlTest<ScaleSymbolList>
 
 	/**
 	 * Test method for
-	 * {@link com.wwidesigner.note.bind.XmlScaleSymbolList#getComment()}.
+	 * {@link com.wwidesigner.note.bind.ScaleSymbolList#getComment()}.
 	 */
 	@Test
 	public final void testGetComment()
@@ -66,7 +66,7 @@ public class ScaleSymbolListTest extends AbstractXmlTest<ScaleSymbolList>
 
 	/**
 	 * Test method for
-	 * {@link com.wwidesigner.note.bind.XmlScaleSymbolList#getScaleSymbol()}.
+	 * {@link com.wwidesigner.note.bind.ScaleSymbolList#getScaleSymbol()}.
 	 */
 	@Test
 	public final void testGetScaleSymbol()

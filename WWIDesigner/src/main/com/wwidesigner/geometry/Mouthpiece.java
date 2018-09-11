@@ -183,7 +183,7 @@ public class Mouthpiece implements ComponentInterface, MouthpieceInterface,
 	/**
 	 * Gets the value of the embouchureHole property.
 	 * 
-	 * @return possible object is {@link XmlMouthpiece.EmbouchureHole }
+	 * @return possible object is {@link Mouthpiece.EmbouchureHole }
 	 * 
 	 */
 	public Mouthpiece.EmbouchureHole getEmbouchureHole()
@@ -195,7 +195,7 @@ public class Mouthpiece implements ComponentInterface, MouthpieceInterface,
 	 * Sets the value of the embouchureHole property.
 	 * 
 	 * @param value
-	 *            allowed object is {@link XmlMouthpiece.EmbouchureHole }
+	 *            allowed object is {@link Mouthpiece.EmbouchureHole }
 	 * 
 	 */
 	public void setEmbouchureHole(Mouthpiece.EmbouchureHole value)
@@ -215,7 +215,7 @@ public class Mouthpiece implements ComponentInterface, MouthpieceInterface,
 	/**
 	 * Gets the value of the fipple property.
 	 * 
-	 * @return possible object is {@link XmlMouthpiece.Fipple }
+	 * @return possible object is {@link Mouthpiece.Fipple }
 	 * 
 	 */
 	public Mouthpiece.Fipple getFipple()
@@ -227,7 +227,7 @@ public class Mouthpiece implements ComponentInterface, MouthpieceInterface,
 	 * Sets the value of the fipple property.
 	 * 
 	 * @param value
-	 *            allowed object is {@link XmlMouthpiece.Fipple }
+	 *            allowed object is {@link Mouthpiece.Fipple }
 	 * 
 	 */
 	public void setFipple(Mouthpiece.Fipple value)
@@ -247,7 +247,7 @@ public class Mouthpiece implements ComponentInterface, MouthpieceInterface,
 	/**
 	 * Gets the single-reed mouthpiece.
 	 * 
-	 * @return possible object is {@link XmlMouthpiece.SingleReed }
+	 * @return possible object is {@link Mouthpiece.SingleReed }
 	 * 
 	 */
 	public Mouthpiece.SingleReed getSingleReed()
@@ -259,7 +259,7 @@ public class Mouthpiece implements ComponentInterface, MouthpieceInterface,
 	 * Sets the single-reed mouthpiece.
 	 * 
 	 * @param value
-	 *            allowed object is {@link XmlMouthpiece.SingleReed }
+	 *            allowed object is {@link Mouthpiece.SingleReed }
 	 * 
 	 */
 	public void setSingleReed(Mouthpiece.SingleReed value)
@@ -279,7 +279,7 @@ public class Mouthpiece implements ComponentInterface, MouthpieceInterface,
 	/**
 	 * Gets the double-reed mouthpiece.
 	 * 
-	 * @return possible object is {@link XmlMouthpiece.DoubleReed }
+	 * @return possible object is {@link Mouthpiece.DoubleReed }
 	 * 
 	 */
 	public Mouthpiece.DoubleReed getDoubleReed()
@@ -291,7 +291,7 @@ public class Mouthpiece implements ComponentInterface, MouthpieceInterface,
 	 * Sets the double-reed mouthpiece.
 	 * 
 	 * @param value
-	 *            allowed object is {@link XmlMouthpiece.DoubleReed }
+	 *            allowed object is {@link Mouthpiece.DoubleReed }
 	 * 
 	 */
 	public void setDoubleReed(Mouthpiece.DoubleReed value)
@@ -311,7 +311,7 @@ public class Mouthpiece implements ComponentInterface, MouthpieceInterface,
 	/**
 	 * Gets the lip-reed (brass) mouthpiece.
 	 * 
-	 * @return possible object is {@link XmlMouthpiece.LipReed }
+	 * @return possible object is {@link Mouthpiece.LipReed }
 	 * 
 	 */
 	public Mouthpiece.LipReed getLipReed()
@@ -323,7 +323,7 @@ public class Mouthpiece implements ComponentInterface, MouthpieceInterface,
 	 * Sets the lip-reed (brass) mouthpiece.
 	 * 
 	 * @param value
-	 *            allowed object is {@link XmlMouthpiece.LipReed }
+	 *            allowed object is {@link Mouthpiece.LipReed }
 	 * 
 	 */
 	public void setLipReed(Mouthpiece.LipReed value)

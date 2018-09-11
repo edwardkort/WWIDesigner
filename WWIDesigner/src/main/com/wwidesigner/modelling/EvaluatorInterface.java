@@ -38,7 +38,7 @@ public interface EvaluatorInterface
 	 * between target performance for each fingering in a list,
 	 * and the predicted performance for that fingering.
 	 * Interpretation depends on the implementation class.
-	 * @param fingering  - Fingering and target note.
+	 * @param fingeringTargets  - Fingering and target note.
 	 * @return difference between target and predicted performance.
 	 * 			length = fingeringTargets.size().
 	 */

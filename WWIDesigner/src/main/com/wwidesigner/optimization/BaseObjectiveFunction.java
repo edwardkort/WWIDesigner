@@ -116,8 +116,7 @@ public abstract class BaseObjectiveFunction
 	 *            - geometry values to test. point.length == nrDimensions.
 	 * @return value of objective function at the specified point.
 	 * 
-	 * @see org.apache.commons.math3.analysis.MultivariateFunction#value(double*
-	 *      [])
+	 * @see org.apache.commons.math3.analysis.MultivariateFunction#value(double[])
 	 */
 	@Override
 	public double value(double[] point)
@@ -623,7 +622,7 @@ public abstract class BaseObjectiveFunction
 	 * optimizer selected. Check for this combination. Other combinations may be
 	 * added in the future.
 	 * 
-	 * @param optimizerType
+	 * @param anOptimizerType - optimizer type to be tested
 	 * @return False if multi-start optimization and DIRECT optimizer, true
 	 *         otherwise.
 	 */

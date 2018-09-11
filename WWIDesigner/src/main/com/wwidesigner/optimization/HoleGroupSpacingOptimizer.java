@@ -38,7 +38,7 @@ public class HoleGroupSpacingOptimizer extends InstrumentOptimizer
 	 * 
 	 * @param groups
 	 *            A group represents contiguous holes having equal spacing. Each
-	 *            element in {@link holeGroups} is the indices (0 based) of
+	 *            element in {@link HoleGroups} is the indices (0 based) of
 	 *            contiguous holes that make up a group, starting from the top
 	 *            hole.
 	 * @throws Exception

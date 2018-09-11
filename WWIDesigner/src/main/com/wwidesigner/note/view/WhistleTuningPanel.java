@@ -42,7 +42,9 @@ public class WhistleTuningPanel extends TuningPanel
 	/**
 	 * Create a panel with components of a specified preferred width.
 	 * Optionally include columns for min and max frequency and optimization weight.
-	 * @param componentWidth - preferred width of display/edit components.
+	 * @param width - preferred width of display/edit components.
+	 * @param withMinMax - true to include Min Freq and Max Freq columns
+	 * @param withWeight - true to include optimization weight column
 	 */
 	public WhistleTuningPanel(int width, boolean withMinMax, boolean withWeight)
 	{

@@ -56,7 +56,7 @@ public class TuningPanel extends FingeringPatternPanel
 	/**
 	 * Create a panel with components of a specified preferred width.
 	 * 
-	 * @param componentWidth
+	 * @param width
 	 *            - preferred width of display/edit components.
 	 */
 	public TuningPanel(int width)

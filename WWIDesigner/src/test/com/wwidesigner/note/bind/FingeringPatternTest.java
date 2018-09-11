@@ -20,7 +20,7 @@ public class FingeringPatternTest extends
 
 	/**
 	 * Test method for
-	 * {@link com.wwidesigner.note.bind.XmlFingeringPattern#getName()}.
+	 * {@link com.wwidesigner.note.bind.FingeringPattern#getName()}.
 	 */
 	@Test
 	public final void testGetName()
@@ -43,7 +43,7 @@ public class FingeringPatternTest extends
 
 	/**
 	 * Test method for
-	 * {@link com.wwidesigner.note.bind.XmlFingeringPattern#getComment()}.
+	 * {@link com.wwidesigner.note.bind.FingeringPattern#getComment()}.
 	 */
 	@Test
 	public final void testGetComment()
@@ -67,7 +67,7 @@ public class FingeringPatternTest extends
 
 	/**
 	 * Test method for
-	 * {@link com.wwidesigner.note.bind.XmlFingeringPattern#getNumberOfHoles()}.
+	 * {@link com.wwidesigner.note.bind.FingeringPattern#getNumberOfHoles()}.
 	 */
 	@Test
 	public final void testGetNumberOfHoles()
@@ -89,7 +89,7 @@ public class FingeringPatternTest extends
 
 	/**
 	 * Test method for
-	 * {@link com.wwidesigner.note.bind.XmlFingeringPattern#getFingering()}.
+	 * {@link com.wwidesigner.note.bind.FingeringPattern#getFingering()}.
 	 */
 	@Test
 	public final void testGetFingering()

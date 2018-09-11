@@ -118,7 +118,7 @@ public abstract class InstrumentCalculator
 	 * Calculation results are unpredictable if this calculator is used with an
 	 * incompatible instrument.
 	 * 
-	 * @param aInstrument
+	 * @param aInstrument - the specified instrument
 	 * @return true if the specified instrument is compatible with this
 	 *         calculator.
 	 */
@@ -193,7 +193,7 @@ public abstract class InstrumentCalculator
 	 * Calculate the reflection coefficient at the nominal frequency for a
 	 * specified fingering.
 	 * 
-	 * @param fingering
+	 * @param fingering - the fingering and note at which to calculate
 	 * @return coefficient of pressure reflection
 	 */
 	public Complex calcReflectionCoefficient(Fingering fingering)
@@ -206,8 +206,8 @@ public abstract class InstrumentCalculator
 	 * Calculate the reflection coefficient at a specified frequency and
 	 * fingering.
 	 * 
-	 * @param freq
-	 * @param fingering
+	 * @param freq - the frequency at which to calculate
+	 * @param fingering - the fingering for which to calculate
 	 * @return coefficient of pressure reflection
 	 */
 	public abstract Complex calcReflectionCoefficient(double freq, Fingering fingering);
@@ -216,7 +216,7 @@ public abstract class InstrumentCalculator
 	 * Calculate the overall impedance at the nominal frequency for a specified
 	 * fingering.
 	 * 
-	 * @param fingering
+	 * @param fingering - the fingering and note at which to calculate
 	 * @return impedance
 	 */
 	public Complex calcZ(Fingering fingering)
@@ -228,8 +228,8 @@ public abstract class InstrumentCalculator
 	/**
 	 * Calculate the overall impedance at a specified frequency and fingering.
 	 * 
-	 * @param freq
-	 * @param fingering
+	 * @param freq - the frequency at which to calculate
+	 * @param fingering - the fingering for which to calculate
 	 * @return impedance
 	 */
 	public abstract Complex calcZ(double freq, Fingering fingering);
@@ -238,7 +238,7 @@ public abstract class InstrumentCalculator
 	 * Calculate the loop gain at the nominal frequency for a specified
 	 * fingering.
 	 * 
-	 * @param fingering
+	 * @param fingering - the fingering and note at which to calculate
 	 * @return loop gain
 	 */
 	public double calcGain(Fingering fingering)
@@ -250,8 +250,8 @@ public abstract class InstrumentCalculator
 	/**
 	 * Calculate the loop gain at a specified frequency and fingering.
 	 * 
-	 * @param freq
-	 * @param fingering
+	 * @param freq - the frequency at which to calculate
+	 * @param fingering - the fingering for which to calculate
 	 * @return loop gain
 	 */
 	public double calcGain(double freq, Fingering fingering)
@@ -264,8 +264,8 @@ public abstract class InstrumentCalculator
 	 * current fingering, given the overall impedance at the same frequency and
 	 * fingering.
 	 * 
-	 * @param freq
-	 * @param impedance
+	 * @param freq - the frequency for which to calculate
+	 * @param Z - the impedance at frequency freq
 	 * @return loop gain
 	 */
 	public abstract double calcGain(double freq, Complex Z);

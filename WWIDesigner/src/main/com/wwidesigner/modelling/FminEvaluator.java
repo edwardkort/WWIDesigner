@@ -49,7 +49,7 @@ public class FminEvaluator implements EvaluatorInterface
 
 	/**
 	 * Return an array of cent differences between predicted and target fmin.
-	 * @param fingeringTargets  - Fingerings, with target note for each.
+	 * @param fingeringActualData  - Fingerings, with target note for each.
 	 * @return array of cent differences.   length = fingeringTargets.size().
 	 */
 

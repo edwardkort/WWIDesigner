@@ -130,7 +130,7 @@ public interface InstrumentInterface
 	/**
 	 * Gets the value of the termination property.
 	 * 
-	 * @return possible object is {@link XmlEndBoreSection }
+	 * @return possible object is {@link Termination }
 	 * 
 	 */
 	public Termination getTermination();
@@ -139,7 +139,7 @@ public interface InstrumentInterface
 	 * Sets the value of the termination property.
 	 * 
 	 * @param value
-	 *            allowed object is {@link XmlEndBoreSection }
+	 *            allowed object is {@link Termination }
 	 * 
 	 */
 	public void setTermination(Termination value);

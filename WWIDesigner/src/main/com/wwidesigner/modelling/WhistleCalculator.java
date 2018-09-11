@@ -87,8 +87,8 @@ public class WhistleCalculator extends DefaultInstrumentCalculator
 	 * given the overall impedance at the same frequency and fingering.
 	 * Result valid only if the nominal frequency is within a playing range
 	 * (not checked).
-	 * @param freq
-	 * @param impedance
+	 * @param freq - target frequency
+	 * @param Z - impedance at frequency freq
 	 * @return predicted windway velocity
 	 */
 	public double predictV(double freq, Complex Z)

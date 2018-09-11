@@ -18,7 +18,7 @@ public class ScaleTest extends AbstractXmlTest<Scale>
 {
 
 	/**
-	 * Test method for {@link com.wwidesigner.note.bind.XmlScale#getName()}.
+	 * Test method for {@link com.wwidesigner.note.bind.Scale#getName()}.
 	 */
 	@Test
 	public final void testGetName()
@@ -40,7 +40,7 @@ public class ScaleTest extends AbstractXmlTest<Scale>
 	}
 
 	/**
-	 * Test method for {@link com.wwidesigner.note.bind.XmlScale#getComment()}.
+	 * Test method for {@link com.wwidesigner.note.bind.Scale#getComment()}.
 	 */
 	@Test
 	public final void testGetComment()
@@ -64,7 +64,7 @@ public class ScaleTest extends AbstractXmlTest<Scale>
 	}
 
 	/**
-	 * Test method for {@link com.wwidesigner.note.bind.XmlScale#getNote()}.
+	 * Test method for {@link com.wwidesigner.note.bind.Scale#getNote()}.
 	 */
 	@Test
 	public final void testGetNote()

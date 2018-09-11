@@ -19,7 +19,7 @@ public class TemperamentTest extends AbstractXmlTest<Temperament>
 
 	/**
 	 * Test method for
-	 * {@link com.wwidesigner.note.bind.XmlTemperament#getName()}.
+	 * {@link com.wwidesigner.note.bind.Temperament#getName()}.
 	 */
 	@Test
 	public final void testGetName()
@@ -42,7 +42,7 @@ public class TemperamentTest extends AbstractXmlTest<Temperament>
 
 	/**
 	 * Test method for
-	 * {@link com.wwidesigner.note.bind.XmlTemperament#getComment()}.
+	 * {@link com.wwidesigner.note.bind.Temperament#getComment()}.
 	 */
 	@Test
 	public final void testGetComment()
@@ -65,7 +65,7 @@ public class TemperamentTest extends AbstractXmlTest<Temperament>
 
 	/**
 	 * Test method for
-	 * {@link com.wwidesigner.note.bind.XmlTemperament#getInterval()}.
+	 * {@link com.wwidesigner.note.bind.Temperament#getRatio()}.
 	 */
 	@Test
 	public final void testGetInterval()

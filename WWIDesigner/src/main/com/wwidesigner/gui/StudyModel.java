@@ -761,7 +761,7 @@ public abstract class StudyModel implements CategoryType
 	 * 
 	 * @param constraintsDirectory
 	 *            The root of the constraints directory tree.
-	 * @return
+	 * @return true if Constraint menu items are active
 	 */
 	public boolean isOptimizerFullySpecified(String constraintsDirectory)
 	{
@@ -1175,7 +1175,7 @@ public abstract class StudyModel implements CategoryType
 	/**
 	 * Set study model preferences from application preferences.
 	 * 
-	 * @param newPreferences
+	 * @param newPreferences - new preference values to set
 	 */
 	public void setPreferences(Preferences newPreferences)
 	{
@@ -1250,10 +1250,10 @@ public abstract class StudyModel implements CategoryType
 	}
 
 	/**
-	 * Create the default view for and XML dataModel for each type represented
+	 * Create the default view for an XML dataModel for each type represented
 	 * in the XML.
 	 * 
-	 * @param dataModel
+	 * @param dataModel - data model for which to create a view
 	 * @return created ContainedXmlView
 	 */
 	public ContainedXmlView getDefaultXmlView(FileDataModel dataModel,
@@ -1412,8 +1412,8 @@ public abstract class StudyModel implements CategoryType
 	 * Configures the array of allowed ContainedXmlView classes for each data
 	 * type, a CATEGORY_ID, in the XML.
 	 * 
-	 * @return A Map in which the keys a the data types, and the values are
-	 *         arrays of ContainedXmlView classes.
+	 * Sets toggleXmlViewLists to a Map in which the keys are the data types,
+	 * and the values are arrays of ContainedXmlView classes.
 	 */
 	protected abstract void setToggleViewClassesMap();
 
@@ -1421,9 +1421,8 @@ public abstract class StudyModel implements CategoryType
 	 * Configures the default ContainedXmlView to be used for each supported
 	 * data type, a CATEGORY_ID, in the XML.
 	 * 
-	 * @param categoryName
-	 * @return The Class of the default view. The base StudyModel uses
-	 *         reflection to create the instance.
+	 * Sets defaultXmlViewMap to a Map in which the keys are category Ids
+	 * and the values are the Class of the default view.
 	 */
 	protected abstract void setDefaultViewClassMap();
 

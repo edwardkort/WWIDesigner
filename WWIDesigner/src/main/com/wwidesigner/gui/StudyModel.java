@@ -532,7 +532,7 @@ public abstract class StudyModel implements CategoryType
 	public boolean addDataModel(FileDataModel dataModel, boolean isNew)
 			throws Exception
 	{
-		String data = (String) dataModel.getData().toString();
+		String data = dataModel.getData().toString();
 		if (data == null || data.length() == 0)
 		{
 			return false;
@@ -1259,7 +1259,7 @@ public abstract class StudyModel implements CategoryType
 	public ContainedXmlView getDefaultXmlView(FileDataModel dataModel,
 			DataViewPane parent)
 	{
-		String xmlData = (String) dataModel.getData().toString();
+		String xmlData = dataModel.getData().toString();
 		String categoryName = getCategoryName(xmlData);
 
 		Class<? extends ContainedXmlView> defaultViewClass = getDefaultViewClass(
@@ -1269,7 +1269,7 @@ public abstract class StudyModel implements CategoryType
 		{
 			Constructor<? extends ContainedXmlView> constr = defaultViewClass
 					.getConstructor(new Class[] { DataViewPane.class });
-			defaultView = (ContainedXmlView) constr
+			defaultView = constr
 					.newInstance(new Object[] { parent });
 		}
 		catch (Exception e)
@@ -1301,7 +1301,7 @@ public abstract class StudyModel implements CategoryType
 				.getClass();
 		ContainedXmlView nextView = null;
 
-		String xmlData = (String) dataModel.getData().toString();
+		String xmlData = dataModel.getData().toString();
 		String categoryName = getCategoryName(xmlData);
 
 		Class<ContainedXmlView>[] toggleViews = getToggleViewClasses(
@@ -1337,7 +1337,7 @@ public abstract class StudyModel implements CategoryType
 			{
 				Constructor<ContainedXmlView> constr = nextViewClass
 						.getConstructor(new Class[] { DataViewPane.class });
-				nextView = (ContainedXmlView) constr
+				nextView = constr
 						.newInstance(new Object[] { parent });
 			}
 			catch (Exception e)
@@ -1361,7 +1361,7 @@ public abstract class StudyModel implements CategoryType
 	 */
 	public int getNumberOfToggleViews(BasicDataModel dataModel)
 	{
-		String xmlData = (String) dataModel.getData().toString();
+		String xmlData = dataModel.getData().toString();
 		String categoryName = getCategoryName(xmlData);
 
 		Class<ContainedXmlView>[] toggleViews = getToggleViewClasses(

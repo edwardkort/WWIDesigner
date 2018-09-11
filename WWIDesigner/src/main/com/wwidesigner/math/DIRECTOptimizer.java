@@ -328,7 +328,7 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 				return 0;
 			}
 			// Should not occur.
-			return (int) this.hashCode() - arg0.hashCode();
+			return this.hashCode() - arg0.hashCode();
 		}
 	}
 	

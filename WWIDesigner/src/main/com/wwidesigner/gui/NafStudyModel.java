@@ -878,7 +878,7 @@ public class NafStudyModel extends StudyModel
 		}
 
 		// Process Constraints. May move to super.
-		String data = (String) dataModel.getData().toString();
+		String data = dataModel.getData().toString();
 		if (data == null || data.length() == 0)
 		{
 			return false;

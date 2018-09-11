@@ -344,7 +344,7 @@ public class ScalePanel extends JPanel implements KeyListener,
 	public Object getTableData()
 	{
 		DefaultTableModel model = (DefaultTableModel) noteTable.getModel();
-		Vector data = (Vector) model.getDataVector();
+		Vector data = model.getDataVector();
 		Vector clonedData = new Vector();
 		for (Object row : data)
 		{

@@ -180,13 +180,13 @@ public class MultivariateMultiStartBoundsOptimizer implements
 					optima[i] = ((BaseAbstractMultivariateSimpleBoundsOptimizer) optimizer)
 							.optimize(maxEval - totalEvaluations, f, goalType,
 									start, lowerBound, upperBound);
-					System.out.println("Start " + (int) (i + 1) + ", start: "
+					System.out.println("Start " + (i + 1) + ", start: "
 							+ Arrays.toString(start) + ", optimum: " + optima[i].getValue());
 				}
 				catch (RuntimeException mue)
 				{
 					optima[i] = null;
-					System.out.println("Start " + (int) (i + 1) + " failed, " + mue);
+					System.out.println("Start " + (i + 1) + " failed, " + mue);
 				}
 				// CHECKSTYLE: resume IllegalCatch
 

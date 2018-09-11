@@ -308,7 +308,7 @@ public class ObjectiveFunctionOptimizer
 		{
 			if (totalEvaluations < maxEvaluations)
 			{
-				System.out.print("Start " + (int) (startNr + 1) + ": ");
+				System.out.print("Start " + (startNr + 1) + ": ");
 				optima[startNr] = doSingleStart(objective, startPoint,
 						maxEvaluations - totalEvaluations, nextStart);
 				nextStart = rangeProcessor.nextVector();

@@ -87,7 +87,7 @@ public class ScaleIntervalPanel extends JPanel implements TableModelListener
 	public Object getTableData()
 	{
 		DefaultTableModel model = (DefaultTableModel) intervalTable.getModel();
-		Vector data = (Vector) model.getDataVector();
+		Vector data = model.getDataVector();
 		Vector clonedData = new Vector();
 		for (Object row : data)
 		{

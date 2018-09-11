@@ -192,7 +192,7 @@ public class FingeringPatternPanel extends JPanel
 			nameWidget.setText(name);
 			description = fingerings.getComment();
 			descriptionWidget.setText(description);
-			numberOfHoles = (Integer) fingerings.getNumberOfHoles();
+			numberOfHoles = fingerings.getNumberOfHoles();
 			numberOfHolesWidget.setText(Integer.toString(numberOfHoles));
 
 			stopTableEditing();

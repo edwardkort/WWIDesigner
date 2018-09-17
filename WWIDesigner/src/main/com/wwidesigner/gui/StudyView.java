@@ -181,29 +181,23 @@ public class StudyView extends DataViewPane implements EventSubscriber
 		for (String category : study.getCategoryNames())
 		{
 			DefaultMutableTreeNode node = new DefaultMutableTreeNode(category);
-			if (node != null)
-			{
-				node.setAllowsChildren(true);
-				root.add(node);
-			}
+			node.setAllowsChildren(true);
+			root.add(node);
 			String selectedSub = study.getSelectedSub(category);
 			Map<String, String> toolTips = study.getCategory(category)
 					.getToolTips();
 			for (String name : study.getSubcategories(category))
 			{
 				TreeNodeWithToolTips childNode = new TreeNodeWithToolTips(name);
-				if (childNode != null)
+				node.add(childNode);
+				if (name.equals(selectedSub))
 				{
-					node.add(childNode);
-					if (name.equals(selectedSub))
-					{
-						selectionPaths.add(new TreePath(childNode.getPath()));
-					}
-					String tip = toolTips.get(name);
-					if (tip != null)
-					{
-						childNode.setToolTip(tip);
-					}
+					selectionPaths.add(new TreePath(childNode.getPath()));
+				}
+				String tip = toolTips.get(name);
+				if (tip != null)
+				{
+					childNode.setToolTip(tip);
 				}
 			}
 		}

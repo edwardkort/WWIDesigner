@@ -62,7 +62,7 @@ public class ContainedXmlTextView extends ContainedXmlView
 			if (text != null && ! text.isEmpty())
 			{
 				codeEditor.getDocument().removeDocumentListener(docListener);
-				codeEditor.setText(text != null ? text : "");
+				codeEditor.setText(text);
 				codeEditor.getDocument().addDocumentListener(docListener);
 			}
 		}

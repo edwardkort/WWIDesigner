@@ -836,10 +836,7 @@ public class NafStudyModel extends StudyModel
 		{
 			return spacingDialog.getHoleSpacingGroups();
 		}
-		else
-		{
-			return null;
-		}
+		return null;
 	}
 
 	@Override

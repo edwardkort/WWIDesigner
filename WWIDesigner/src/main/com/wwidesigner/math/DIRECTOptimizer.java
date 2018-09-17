@@ -1143,16 +1143,13 @@ public class DIRECTOptimizer extends MultivariateOptimizer
 					n = rtree.floorEntry(newKey);
 					continue;
 				}
-				else
+				/* equal y values, add to hull */
+				if (allow_dups)
 				{
-					/* equal y values, add to hull */
-					if (allow_dups)
-					{
-						checkHullLength(nhull);
-						hull[nhull++] = new Rectangle(n);
-					}
-					continue;
+					checkHullLength(nhull);
+					hull[nhull++] = new Rectangle(n);
 				}
+				continue;
 			}
 
 			if (nhull > 0 && k.getfValue() > ylast + (k.getDiameter() - xlast) * minslope)

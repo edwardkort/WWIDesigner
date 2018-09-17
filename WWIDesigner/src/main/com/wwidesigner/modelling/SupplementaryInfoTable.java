@@ -86,10 +86,7 @@ public class SupplementaryInfoTable extends DefaultTableModel
 		{
 			return "";
 		}
-		else
-		{
-			return format_00.format(f);
-		}
+		return format_00.format(f);
 	}
 	
 	/**

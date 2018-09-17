@@ -1127,10 +1127,7 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 				{
 					return String.class;
 				}
-				else
-				{
-					return Double.class;
-				}
+				return Double.class;
 			}
 
 			@Override
@@ -1140,10 +1137,7 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 				{
 					return false;
 				}
-				else
-				{
-					return true;
-				}
+				return true;
 			}
 		};
 		holeList = new JideTable(model);

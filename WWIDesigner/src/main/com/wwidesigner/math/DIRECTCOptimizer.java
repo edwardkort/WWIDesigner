@@ -285,18 +285,16 @@ public class DIRECTCOptimizer extends DIRECT1Optimizer
 				}
 				continue;
 			}
-			else
-			{
-				// Checked all rectangles with same diameter as nearest.
-				// Add nearest to hull, pruning to convex hull.
-				nhull = pruneHullLargeAndNear(target, nearest.getKey(), nDist, nhull, useConvexHull);
-				checkHullLength(nhull);
-				hull[nhull++] = new Rectangle(nearest);
-			
-				// Start search for nearest rectangle at new diameter.
-				nearest = n;
-				nDist = distance(nearest.getValue().getCentre(), target);
-			}
+			// Checked all rectangles with same diameter as nearest.
+			// Add nearest to hull, pruning to convex hull.
+			nhull = pruneHullLargeAndNear(target, nearest.getKey(), nDist,
+					nhull, useConvexHull);
+			checkHullLength(nhull);
+			hull[nhull++] = new Rectangle(nearest);
+
+			// Start search for nearest rectangle at new diameter.
+			nearest = n;
+			nDist = distance(nearest.getValue().getCentre(), target);
 		}
 
 		nhull = pruneHullLargeAndNear(target, nearest.getKey(), nDist, nhull, useConvexHull);

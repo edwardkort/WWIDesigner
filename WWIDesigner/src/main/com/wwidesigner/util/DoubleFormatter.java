@@ -56,10 +56,7 @@ public class DoubleFormatter extends DefaultFormatter
 			{
 				return null;
 			}
-			else
-			{
-				throw new ParseException("Required field", 0);
-			}
+			throw new ParseException("Required field", 0);
 		}
 		return super.stringToValue(string);
 	}
@@ -78,10 +75,7 @@ public class DoubleFormatter extends DefaultFormatter
 			{
 				return new String("");
 			}
-			else
-			{
-				return formatValue(0);
-			}
+			return formatValue(0);
 		}
 		return formatValue(value);
 	}

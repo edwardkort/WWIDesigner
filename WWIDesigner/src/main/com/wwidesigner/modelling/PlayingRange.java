@@ -460,38 +460,35 @@ public class PlayingRange
 			}
 			return upwardBracket;
 		}
-		else
-		{
-			// If starting function value is positive, start searching downward.
-			downwardBracket = findBracketBelow(freq, zNear, function, 
-					nearFreq/SearchBoundRatio);
-			if (downwardBracket[0] <= 0.0
+		
+		// If starting function value is positive, start searching downward.
+		downwardBracket = findBracketBelow(freq, zNear, function,
+				nearFreq / SearchBoundRatio);
+		if (downwardBracket[0] <= 0.0
 				|| downwardBracket[0] < nearFreq / PreferredSolutionRatio)
-			{
-				// If result isn't close enough, search upward as well.
-				if (downwardBracket[0] <= 0.0)
-				{
-					limitFreq = nearFreq * SearchBoundRatio;
-				}
-				else
-				{
-					limitFreq = nearFreq * nearFreq/downwardBracket[0]; 
-				}
-				upwardBracket = findBracketAbove(freq, zNear, function,
-						limitFreq);
-				if (upwardBracket[0] > 0.0)
-				{
-					// We found a better solution searching upward.
-					return upwardBracket;
-				}
-			}
+		{
+			// If result isn't close enough, search upward as well.
 			if (downwardBracket[0] <= 0.0)
 			{
-				// We didn't find a bracket searching downward.
-				throw new NoPlayingRange(nearFreq);
+				limitFreq = nearFreq * SearchBoundRatio;
 			}
-			return downwardBracket;
+			else
+			{
+				limitFreq = nearFreq * nearFreq / downwardBracket[0];
+			}
+			upwardBracket = findBracketAbove(freq, zNear, function, limitFreq);
+			if (upwardBracket[0] > 0.0)
+			{
+				// We found a better solution searching upward.
+				return upwardBracket;
+			}
 		}
+		if (downwardBracket[0] <= 0.0)
+		{
+			// We didn't find a bracket searching downward.
+			throw new NoPlayingRange(nearFreq);
+		}
+		return downwardBracket;
 	} // findBracket
 
 	/**

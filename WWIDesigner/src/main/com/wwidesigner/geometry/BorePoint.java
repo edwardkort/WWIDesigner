@@ -143,12 +143,9 @@ public class BorePoint implements BorePointInterface
 			return secondDiameter - (secondDiameter - firstDiameter)
 					* positionRatio;
 		}
-		else
-		{
-			double positionRatio = (position - firstPosition)
-					/ (secondPosition - firstPosition);
-			return firstDiameter - (firstDiameter - secondDiameter)
-					* positionRatio;
-		}
+		
+		double positionRatio = (position - firstPosition)
+				/ (secondPosition - firstPosition);
+		return firstDiameter - (firstDiameter - secondDiameter) * positionRatio;
 	}
 }

@@ -54,11 +54,8 @@ public class XmlDiff extends Diff
 			{
 				return RETURN_IGNORE_DIFFERENCE_NODES_IDENTICAL;
 			}
-			else
-			{
 
-				return RETURN_ACCEPT_DIFFERENCE;
-			}
+			return RETURN_ACCEPT_DIFFERENCE;
 		}
 
 		public void skippedComparison(Node control, Node test)

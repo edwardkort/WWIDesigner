@@ -16,8 +16,8 @@ import org.apache.commons.math3.optimization.PointValuePair;
 import org.apache.commons.math3.optimization.direct.BaseAbstractMultivariateSimpleBoundsOptimizer;
 
 @Deprecated
-public class MultivariateMultiStartBoundsOptimizer implements
-		MultivariateOptimizer,
+public class MultivariateMultiStartBoundsOptimizer
+		implements MultivariateOptimizer,
 		BaseMultivariateSimpleBoundsOptimizer<MultivariateFunction>
 {
 	/** Underlying classical optimizer. */
@@ -133,8 +133,7 @@ public class MultivariateMultiStartBoundsOptimizer implements
 			try
 			{
 				optima[i] = optimizer.optimize(maxEval - totalEvaluations, f,
-						goal,
-						i == 0 ? startPoint : generator.nextVector());
+						goal, i == 0 ? startPoint : generator.nextVector());
 			}
 			catch (RuntimeException mue)
 			{
@@ -175,13 +174,14 @@ public class MultivariateMultiStartBoundsOptimizer implements
 				// CHECKSTYLE: stop IllegalCatch
 				try
 				{
-					double[] start = i == 0 ? startPoint : generator
-							.nextVector();
+					double[] start = i == 0 ? startPoint
+							: generator.nextVector();
 					optima[i] = ((BaseAbstractMultivariateSimpleBoundsOptimizer) optimizer)
 							.optimize(maxEval - totalEvaluations, f, goalType,
 									start, lowerBound, upperBound);
 					System.out.println("Start " + (i + 1) + ", start: "
-							+ Arrays.toString(start) + ", optimum: " + optima[i].getValue());
+							+ Arrays.toString(start) + ", optimum: "
+							+ optima[i].getValue());
 				}
 				catch (RuntimeException mue)
 				{
@@ -204,10 +204,7 @@ public class MultivariateMultiStartBoundsOptimizer implements
 			System.out.println("Best optimum: " + optima[0].getValue());
 			return optima[0];
 		}
-		else
-		{
-			return optimize(maxEval, f, goalType, startPoint);
-		}
+		return optimize(maxEval, f, goalType, startPoint);
 	}
 
 	/**

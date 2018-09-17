@@ -76,10 +76,7 @@ public class InstrumentComparisonTable extends DefaultTableModel
 		{
 			return "N/A";
 		}
-		else
-		{
-			return format_00.format(f);
-		}
+		return format_00.format(f);
 	}
 
 	protected void addValues(String dimension, String oldValue,

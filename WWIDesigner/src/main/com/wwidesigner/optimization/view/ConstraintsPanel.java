@@ -398,10 +398,8 @@ public class ConstraintsPanel extends JPanel implements DataChangedProvider
 			{
 				return dimensionlessDecimalPrecision;
 			}
-			else
-			{
-				return dimensionalDecimalPrecision;
-			}
+
+			return dimensionalDecimalPrecision;
 		}
 	}
 

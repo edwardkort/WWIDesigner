@@ -9,6 +9,8 @@ and a limited set of lip-reed instruments.
 
 [Using WIDesigner](https://github.com/edwardkort/WWIDesigner/wiki/Using-WIDesigner) describes
 the current instantiation of the application, and summarizes how to use it. 
+See the [latest release page](https://github.com/edwardkort/WWIDesigner/releases/latest)
+to download the most recent WIDesigner release, with associated libraries and sample files.
 
 The transverse flute model requires more data from real flutes for proper calibration.
 Unfortunately, none of the current contributors has the flute skills to collect this data.

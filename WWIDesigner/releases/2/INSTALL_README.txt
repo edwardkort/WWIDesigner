@@ -9,7 +9,7 @@ All of the files (instrument, tuning, and constraints) that you
 have used or made with 1.0.3 or later releases are fully
 compatible with this release.
 
-Download WIDesigner-2.1.0. Follow the instructions in the YouTube:
+Download WIDesigner-2.2.0. Follow the instructions in the YouTube:
    http://youtu.be/nDlKJURdHfw
 
 If you normally keep your working files in the installation

@@ -1,7 +1,26 @@
-Release notes for v2.1.0
+Release notes for v2.2.0
 
-This is an upgrade to v2.0.1. Please read INSTALL_README for
+This is an upgrade to v2.1.0. Please read INSTALL_README for
 installation details.
+
+v2.2.0 changes
+Enhancements:
+Added updated GUI libraries (JideSoft). No functional changes were
+  noted.
+Issue #43: Added defensive code so that calculators and optimizers
+  are not used on inappropriate instrument types.
+Issue #68: For whistle and flute tuning table views, added buttons
+  to add/remove min/max and weight columns.
+Issue #71: Added cut/copy/paste support for the Name and Description
+  fields in the Tuning Wizard panels.
+Issue #74: For the NAF study, increased the size of tables to better
+  accommodate viewing flutes with more than 6 holes and longer hole names.
+Issue #79: Updated the wiki page, Using WIDesigner, with more specific
+  guidance for new users.
+Bug fixes:
+Issue #78: Resolved a large number of compiler warnings to make the code
+  safer for less experienced programmers. No functional changes were noted
+  as the result of any of these edits.
 
 v2.1.0 changes
 Enhancements:

@@ -6,6 +6,7 @@ package com.wwidesigner.gui;
 import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.GridLayout;
 import java.awt.Insets;
 import java.io.File;
 import java.text.NumberFormat;
@@ -73,6 +74,9 @@ public class OptimizationPreferences extends PreferencesPane
 	public static final String WARN_ON_DIRTY_CLOSE_OPT = "Warn on dirty close";
 	public static final boolean WARN_ON_DIRTY_CLOSE_DEFAULT = false;
 
+	public static final String MAX_NOTE_FREQ_MULT = "Max Note Spectrum freq (multiplier)";
+	public static final double DEFAULT_NOTE_FREQ_MULT = 3.17d;
+
 	JRadioButton nafButton;
 	JRadioButton whistleButton;
 	JRadioButton fluteButton;
@@ -88,7 +92,7 @@ public class OptimizationPreferences extends PreferencesPane
 	JFormattedTextField pressureField;
 	JFormattedTextField humidityField;
 	JFormattedTextField co2Field;
-	JFormattedTextField topHoleRatioField;
+	JFormattedTextField noteFreqMultField;
 	DirectoryChooserPanel constraintsDirChooser;
 
 	LengthTypeComboBox lengthTypeComboBox;
@@ -121,7 +125,7 @@ public class OptimizationPreferences extends PreferencesPane
 		blowingLevelSpinner = new JSpinner(blowingLevel);
 		blowingLevelSpinner.setName("Blowing Level");
 		lengthTypeComboBox = new LengthTypeComboBox();
-		optimizerBox = new JCheckBox("Use DIRECT optimizer (slow & thorough)");
+		optimizerBox = new JCheckBox();
 
 		floatFormat = NumberFormat.getNumberInstance();
 		floatFormat.setMinimumFractionDigits(1);
@@ -129,10 +133,12 @@ public class OptimizationPreferences extends PreferencesPane
 		pressureField = new JFormattedTextField(floatFormat);
 		humidityField = new JFormattedTextField();
 		co2Field = new JFormattedTextField();
+		noteFreqMultField = new JFormattedTextField(floatFormat);
 		temperatureField.setColumns(5);
 		pressureField.setColumns(5);
 		humidityField.setColumns(5);
 		co2Field.setColumns(5);
+		noteFreqMultField.setColumns(5);
 
 		numStarts = new SpinnerNumberModel(DEFAULT_NUMBER_OF_STARTS, 1, 50, 1);
 		numStartsSpinner = new JSpinner(numStarts);
@@ -202,6 +208,9 @@ public class OptimizationPreferences extends PreferencesPane
 		Number currentCO2 = myPreferences.getInt(CO2_FRACTION_OPT,
 				DEFAULT_CO2_FRACTION);
 		co2Field.setValue(currentCO2);
+		Number currentMaxNoteFreqMult = myPreferences
+				.getDouble(MAX_NOTE_FREQ_MULT, DEFAULT_NOTE_FREQ_MULT);
+		noteFreqMultField.setValue(currentMaxNoteFreqMult);
 
 		String constraintsPath = myPreferences.get(CONSTRAINTS_DIRECTORY,
 				DEFAULT_CONSTRAINTS_DIRECTORY);
@@ -263,6 +272,8 @@ public class OptimizationPreferences extends PreferencesPane
 		myPreferences.putInt(CO2_FRACTION_OPT,
 				((Number) co2Field.getValue()).intValue());
 		myPreferences.put(OPTIMIZER_TYPE_OPT, optimizerName);
+		myPreferences.putDouble(MAX_NOTE_FREQ_MULT,
+				((Number) noteFreqMultField.getValue()).doubleValue());
 
 		myPreferences.put(CONSTRAINTS_DIRECTORY,
 				constraintsDirChooser.getSelectedDirectory());
@@ -335,6 +346,15 @@ public class OptimizationPreferences extends PreferencesPane
 			whistleMessageField.setForeground(Color.RED);
 			throw new ApplicationVetoException();
 		}
+		double currentMaxNoteFreqMult = ((Number) noteFreqMultField.getValue())
+				.doubleValue();
+		if (currentMaxNoteFreqMult < 1.d || currentMaxNoteFreqMult > 100.d)
+		{
+			generalMessageField.setText(
+					"Maximum note frequency multiplier must be between 1 and 100.");
+			generalMessageField.setForeground(Color.RED);
+			throw new ApplicationVetoException();
+		}
 		if (nafButton.isSelected())
 		{
 			String constraintsPath = constraintsDirChooser
@@ -390,29 +410,47 @@ public class OptimizationPreferences extends PreferencesPane
 			JPanel topPanel = new JPanel();
 			topPanel.setLayout(new GridBagLayout());
 			GridBagConstraints gbc = new GridBagConstraints();
-			gbc.anchor = GridBagConstraints.WEST;
+			gbc.anchor = GridBagConstraints.CENTER;
+			JPanel studyButtonPanel = new JPanel(new GridLayout(1, 4));
+			studyButtonPanel.add(nafButton);
+			studyButtonPanel.add(whistleButton);
+			studyButtonPanel.add(fluteButton);
+			studyButtonPanel.add(reedButton);
 			gbc.gridx = 0;
 			gbc.gridy = 0;
-			topPanel.add(nafButton, gbc);
-			gbc.gridx = 1;
-			topPanel.add(whistleButton, gbc);
-			gbc.gridx = 2;
-			topPanel.add(fluteButton, gbc);
-			gbc.gridx = 3;
-			topPanel.add(reedButton, gbc);
+			gbc.gridwidth = 4;
+			topPanel.add(studyButtonPanel, gbc);
+			gbc.anchor = GridBagConstraints.WEST;
 			gbc.gridx = 0;
 			gbc.gridy = 1;
+			gbc.gridwidth = 1;
+			gbc.insets = new Insets(10, 0, 0, 0);
 			topPanel.add(new JLabel(LENGTH_TYPE_OPT + ": "), gbc);
 			gbc.gridx = 1;
 			topPanel.add(lengthTypeComboBox, gbc);
 			gbc.gridx = 0;
 			gbc.gridy = 2;
+			gbc.insets = new Insets(0, 0, 0, 0);
 			topPanel.add(new JLabel("Temperature, C: "), gbc);
 			gbc.gridx = 1;
 			topPanel.add(temperatureField, gbc);
 			gbc.gridx = 2;
-			gbc.gridwidth = 2;
+			gbc.gridy = 1;
+			gbc.gridwidth = 1;
+			gbc.insets = new Insets(10, 20, 0, 0);
+			topPanel.add(new JLabel("Use DIRECT optimizer (slow & thorough): "),
+					gbc);
+			gbc.gridx = 3;
+			gbc.insets = new Insets(10, 0, 0, 0);
 			topPanel.add(optimizerBox, gbc);
+			gbc.gridwidth = 1;
+			gbc.gridx = 2;
+			gbc.gridy = 2;
+			gbc.insets = new Insets(0, 20, 0, 0);
+			topPanel.add(new JLabel(MAX_NOTE_FREQ_MULT + ": "), gbc);
+			gbc.gridx = 3;
+			gbc.insets = new Insets(0, 0, 0, 0);
+			topPanel.add(noteFreqMultField, gbc);
 			gbc.gridwidth = 1;
 			gbc.gridx = 0;
 			gbc.gridy = 3;
@@ -428,13 +466,15 @@ public class OptimizationPreferences extends PreferencesPane
 			gbc.gridx = 0;
 			gbc.gridy = 1;
 			gbc.anchor = GridBagConstraints.WEST;
+			gbc.insets = new Insets(10, 0, 0, 0);
 			add(new JLabel(CONSTRAINTS_DIRECTORY + ": "), gbc);
 			gbc.gridy = 2;
+			gbc.insets = new Insets(0, 0, 0, 0);
 			gbc.anchor = GridBagConstraints.CENTER;
 			add(constraintsDirChooser, gbc);
 			gbc.gridx = 0;
 			gbc.gridy = 3;
-			gbc.insets = new Insets(10, 0, 5, 0);
+			gbc.insets = new Insets(5, 0, 5, 0);
 			add(generalMessageField, gbc);
 		}
 	}

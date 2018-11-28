@@ -72,7 +72,7 @@ public abstract class StudyModel implements CategoryType
 	// Parameters for plotting impedance spectrum.
 	// Plot from a major 9th below to 3rd harmonic above.
 	protected static final double SPECTRUM_FREQUENCY_BELOW = 0.45;
-	protected static final double SPECTRUM_FREQUENCY_ABOVE = 3.17;
+	protected double spectrumFrequencyAbove;
 	protected static final int SPECTRUM_NUMBER_OF_POINTS = 2000; // Number of
 																	// points to
 																	// plot.
@@ -792,17 +792,18 @@ public abstract class StudyModel implements CategoryType
 		return isSpecified;
 
 	}
-	
-	protected void testInstrumentType(Instrument instrument, InstrumentCalculator calculator) throws Exception
+
+	protected void testInstrumentType(Instrument instrument,
+			InstrumentCalculator calculator) throws Exception
 	{
-		if (! calculator.isCompatible(instrument))
+		if (!calculator.isCompatible(instrument))
 		{
 			throw new InstrumentTypeException("The " + getDisplayName()
 					+ " is not compatible with the selected instrument."
 					+ "\nChoose a different instrument, or change the Study option.");
 		}
 	}
-	
+
 	protected InstrumentTuner initializeTuner() throws Exception
 	{
 		InstrumentTuner tuner = getInstrumentTuner();
@@ -870,7 +871,7 @@ public abstract class StudyModel implements CategoryType
 		calculator.setInstrument(instrument);
 		PlayingRangeSpectrum spectrum = new PlayingRangeSpectrum();
 		spectrum.plot(calculator, fingering, SPECTRUM_FREQUENCY_BELOW,
-				SPECTRUM_FREQUENCY_ABOVE, SPECTRUM_NUMBER_OF_POINTS, false);
+				spectrumFrequencyAbove, SPECTRUM_NUMBER_OF_POINTS, false);
 	}
 
 	public String getDefaultConstraints(Object... parentFrame) throws Exception
@@ -1175,7 +1176,8 @@ public abstract class StudyModel implements CategoryType
 	/**
 	 * Set study model preferences from application preferences.
 	 * 
-	 * @param newPreferences - new preference values to set
+	 * @param newPreferences
+	 *            - new preference values to set
 	 */
 	public void setPreferences(Preferences newPreferences)
 	{
@@ -1213,6 +1215,10 @@ public abstract class StudyModel implements CategoryType
 		{
 			preferredOptimizerType = null;
 		}
+
+		spectrumFrequencyAbove = newPreferences.getDouble(
+				OptimizationPreferences.MAX_NOTE_FREQ_MULT,
+				OptimizationPreferences.DEFAULT_NOTE_FREQ_MULT);
 	}
 
 	// Methods to return statistics from an optimization.
@@ -1250,10 +1256,11 @@ public abstract class StudyModel implements CategoryType
 	}
 
 	/**
-	 * Create the default view for an XML dataModel for each type represented
-	 * in the XML.
+	 * Create the default view for an XML dataModel for each type represented in
+	 * the XML.
 	 * 
-	 * @param dataModel - data model for which to create a view
+	 * @param dataModel
+	 *            - data model for which to create a view
 	 * @return created ContainedXmlView
 	 */
 	public ContainedXmlView getDefaultXmlView(FileDataModel dataModel,
@@ -1269,8 +1276,7 @@ public abstract class StudyModel implements CategoryType
 		{
 			Constructor<? extends ContainedXmlView> constr = defaultViewClass
 					.getConstructor(new Class[] { DataViewPane.class });
-			defaultView = constr
-					.newInstance(new Object[] { parent });
+			defaultView = constr.newInstance(new Object[] { parent });
 		}
 		catch (Exception e)
 		{
@@ -1337,8 +1343,7 @@ public abstract class StudyModel implements CategoryType
 			{
 				Constructor<ContainedXmlView> constr = nextViewClass
 						.getConstructor(new Class[] { DataViewPane.class });
-				nextView = constr
-						.newInstance(new Object[] { parent });
+				nextView = constr.newInstance(new Object[] { parent });
 			}
 			catch (Exception e)
 			{
@@ -1421,8 +1426,8 @@ public abstract class StudyModel implements CategoryType
 	 * Configures the default ContainedXmlView to be used for each supported
 	 * data type, a CATEGORY_ID, in the XML.
 	 * 
-	 * Sets defaultXmlViewMap to a Map in which the keys are category Ids
-	 * and the values are the Class of the default view.
+	 * Sets defaultXmlViewMap to a Map in which the keys are category Ids and
+	 * the values are the Class of the default view.
 	 */
 	protected abstract void setDefaultViewClassMap();
 

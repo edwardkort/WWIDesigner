@@ -185,6 +185,9 @@ public class NafStudyModel extends StudyModel
 	@Override
 	public void setPreferences(Preferences newPreferences)
 	{
+		// Run the base class to get whatever common prefs exist.
+		super.setPreferences(newPreferences);
+		
 		double currentTemperature = newPreferences.getDouble(
 				OptimizationPreferences.TEMPERATURE_OPT,
 				OptimizationPreferences.DEFAULT_TEMPERATURE);

@@ -40,8 +40,9 @@ public class PlayingRangeSpectrum
 	protected String mName;
 	protected List<Double> actuals; // min/max frequency if available, nominal
 									// frequency otherwise.
-	protected boolean hasMinMax; // false if actuals contains min/max, true if
+	protected boolean hasMinMax;	// false if actuals contains min/max, true if
 									// actuals contains nominal.
+	protected List<Double> harmonics;	// Harmonics of target or nominal frequency.
 	/**
 	 * Holds impedance spectrum (created by calcImpedance()).
 	 */
@@ -127,6 +128,7 @@ public class PlayingRangeSpectrum
 			mName += " on " + instrName;
 		}
 		actuals = new ArrayList<Double>();
+		harmonics = new ArrayList<Double>();
 		hasMinMax = false;
 
 		if (myNote.getFrequencyMin() != null)
@@ -142,6 +144,17 @@ public class PlayingRangeSpectrum
 		if (!hasMinMax && myNote.getFrequency() != null)
 		{
 			actuals.add(myNote.getFrequency());
+		}
+		if (myNote.getFrequency() != null)
+		{
+			// Build list of harmonics of target up to freqEnd.
+			double freqTarget = myNote.getFrequency();
+			double freqHarmonic = 2.0 * freqTarget;
+			while (freqHarmonic <= freqEnd)
+			{
+				harmonics.add(freqHarmonic);
+				freqHarmonic += freqTarget;
+			}
 		}
 		mImpedance = new TreeMap<Double, Complex>();
 		mGain = new TreeMap<Double, Double>();
@@ -277,6 +290,7 @@ public class PlayingRangeSpectrum
 				{
 					modelActuals = new DefaultChartModel("Target Frequency");
 				}
+				DefaultChartModel modelHarmonics = new DefaultChartModel("Harmonics");
 				for (Map.Entry<Double, Complex> point : mImpedance.entrySet())
 				{
 					double x = point.getKey();
@@ -300,6 +314,10 @@ public class PlayingRangeSpectrum
 				for (Double freq : actuals)
 				{
 					modelActuals.addPoint(freq, -0.4);
+				}
+				for (Double freq : harmonics)
+				{
+					modelHarmonics.addPoint(freq, -0.4);
 				}
 
 				Chart chart = new Chart();
@@ -325,11 +343,18 @@ public class PlayingRangeSpectrum
 					styleActuals.setPointSize(8);
 					chart.addModel(modelActuals, impedanceAxis, styleActuals);
 				}
+				if (harmonics.size() > 0)
+				{
+					ChartStyle styleHarmonics = new ChartStyle(Color.gray,
+							PointShape.UP_TRIANGLE);
+					styleHarmonics.setPointSize(6);
+					chart.addModel(modelHarmonics, impedanceAxis, styleHarmonics);
+				}
 				chart.getXAxis().setLabel("Frequency");
 				chart.setTitle("Note Spectrum");
 				Legend legend = new Legend(chart);
 				chart.addDrawable(legend);
-				legend.setLocation(540, 420);
+				legend.setLocation(560, 410);
 				frame.setContentPane(chart);
 				frame.setVisible(true);
 			}

@@ -81,6 +81,7 @@ import com.wwidesigner.gui.util.DataChangedListener;
 import com.wwidesigner.gui.util.DataChangedProvider;
 import com.wwidesigner.gui.util.NumberFormatTableCellRenderer;
 import com.wwidesigner.gui.util.NumericTableModel;
+import com.wwidesigner.gui.util.TableTransferHandler;
 import com.wwidesigner.util.BindFactory;
 import com.wwidesigner.util.Constants.LengthType;
 import com.wwidesigner.util.DoubleFormatter;
@@ -1143,6 +1144,7 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 		holeList = new JideTable(model);
 		resetTableData(holeList, 0, 5);
 		holeList.setAutoscrolls(true);
+		holeList.setTransferHandler(new TableTransferHandler());
 		JScrollPane scrollPane = new JScrollPane(holeList);
 		scrollPane.setBorder(new LineBorder(Color.BLACK));
 		scrollPane.setPreferredSize(new Dimension(HOLE_TABLE_WIDTH, 160));
@@ -1225,6 +1227,7 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 		boreList = new JideTable(model);
 		resetTableData(boreList, 2, 2);
 		boreList.setAutoscrolls(true);
+		boreList.setTransferHandler(new TableTransferHandler());
 		JScrollPane scrollPane = new JScrollPane(boreList);
 		scrollPane.setBorder(new LineBorder(Color.BLACK));
 		scrollPane.setPreferredSize(new Dimension(BORE_TABLE_WIDTH, 160));

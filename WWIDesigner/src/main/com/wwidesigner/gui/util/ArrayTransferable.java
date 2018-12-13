@@ -20,6 +20,7 @@ public class ArrayTransferable implements Transferable
 	// Our syntax for Double is more restrictive than Double.valueOf():
 	// requires a decimal point with preceding digits, and no exponent.
 	private static String DOUBLE_MATCH_STRING = "^(\\+|-|)[0-9]+\\.[0-9]*$";
+	private static String INTEGER_MATCH_STRING = "^(\\+|-|)[0-9]+$";
 	private static String FINGERING_MATCH_STRING = "^[XOxo][XOxo ]*(_|]|)$";
 	
 	private DataFlavor[] supportedFlavors;
@@ -102,7 +103,8 @@ public class ArrayTransferable implements Transferable
 			if (colCount == 1 )
 			{
 				if ((dataFlavour == null || dataFlavour == DOUBLES_FLAVOUR)
-					&& thisData[rowNr][0].matches(DOUBLE_MATCH_STRING))
+					&& (thisData[rowNr][0].matches(DOUBLE_MATCH_STRING)
+						|| thisData[rowNr][0].matches(INTEGER_MATCH_STRING)))
 				{
 					dataFlavour = DOUBLES_FLAVOUR;
 				}

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns2:constraints xmlns:ns2="http://www.wwidesigner.com/Constraints">
+    <constraintsName>Default</constraintsName>
+    <objectiveDisplayName>Beta calibrator</objectiveDisplayName>
+    <objectiveFunctionName>BetaObjectiveFunction</objectiveFunctionName>
+    <numberOfHoles>6</numberOfHoles>
+    <constraint>
+        <displayName>Beta</displayName>
+        <category>Mouthpiece beta</category>
+        <type>DIMENSIONLESS</type>
+        <lowerBound>0.2</lowerBound>
+        <upperBound>1.0</upperBound>
+    </constraint>
+</ns2:constraints>

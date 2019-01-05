@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns2:constraints xmlns:ns2="http://www.wwidesigner.com/Constraints">
+    <constraintsName>Default</constraintsName>
+    <objectiveDisplayName>Window Height calibrator</objectiveDisplayName>
+    <objectiveFunctionName>WindowHeightObjectiveFunction</objectiveFunctionName>
+    <numberOfHoles>6</numberOfHoles>
+    <constraint>
+        <displayName>Window height</displayName>
+        <category>Mouthpiece window</category>
+        <type>DIMENSIONAL</type>
+        <lowerBound>1.0E-4</lowerBound>
+        <upperBound>0.02</upperBound>
+    </constraint>
+</ns2:constraints>

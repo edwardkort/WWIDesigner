@@ -16,7 +16,7 @@ import com.wwidesigner.gui.WhistleStudyModel;
 public class WhistleOptimizationTest extends PerturbedInstrumentOptimization
 {
 	protected String instrumentFile = "com/wwidesigner/optimization/example/Optimized-D-Whistle.xml";
-	protected String tuningFile = "com/wwidesigner/optimization/example/D-Tuning.xml";
+	protected String tuningFile = "com/wwidesigner/optimization/example/Optimized-D-Tuning.xml";
 	protected String remoteTuningFile = "com/wwidesigner/optimization/example/A4-Just-Tuning.xml";
 	protected double finalNorm = 0.0;
 
@@ -95,5 +95,25 @@ public class WhistleOptimizationTest extends PerturbedInstrumentOptimization
 		sortedPoints = Instrument.sortList(newBorePoints);
 		double newBoreLength = sortedPoints[sortedPoints.length - 1].getBorePosition();
 		assertEquals("Bore length incorrect", 362.1, newBoreLength, 3.0);
+	}
+
+	@Test
+	public final void calibrationTest() throws Exception
+	{
+		// Set up the study model to be tested.
+
+		WhistleStudyModel myStudy = new WhistleStudyModel();
+		myStudy.getParams().setProperties(27.0, 98.4, 100, 0.040);
+		myStudy.setBlowingLevel(4);
+		myStudy.setCategorySelection(CategoryType.OPTIMIZER_CATEGORY_ID,
+				WhistleStudyModel.WHISTLE_CALIB_SUB_CATEGORY_ID);
+		
+		setStudyModel(myStudy);
+		setTuning(tuningFile);
+		setInstrument(instrumentFile, 1.0, 1.0, 1.0);
+		testOptimization("Re-calibrate the instrument...", 0.01);
+		finalNorm = study.getFinalNorm();
+		assertEquals("Residual error incorrect", 1.0, study.getResidualErrorRatio(), 0.05);
+
 	}
 }

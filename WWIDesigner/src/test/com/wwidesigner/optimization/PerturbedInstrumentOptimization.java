@@ -11,6 +11,7 @@ import com.jidesoft.app.framework.file.FileDataModel;
 import com.wwidesigner.geometry.BorePoint;
 import com.wwidesigner.geometry.Hole;
 import com.wwidesigner.geometry.Instrument;
+import com.wwidesigner.geometry.Mouthpiece;
 import com.wwidesigner.geometry.PositionInterface;
 import com.wwidesigner.gui.StudyModel;
 import com.wwidesigner.note.Tuning;
@@ -157,6 +158,10 @@ public class PerturbedInstrumentOptimization
 		List<BorePoint> newBorePoints = optimizedInstrument.getBorePoint();
 		PositionInterface[] sortedPoints;
 		sortedPoints = Instrument.sortList(oldBorePoints);
+		double oldBoreStart = sortedPoints[0].getBorePosition();
+		sortedPoints = Instrument.sortList(newBorePoints);
+		double newBoreStart = sortedPoints[0].getBorePosition();
+		assertEquals("Stopper position incorrect", oldBoreStart, newBoreStart, tolerance);
 		double oldBoreLength = sortedPoints[sortedPoints.length - 1].getBorePosition();
 		sortedPoints = Instrument.sortList(newBorePoints);
 		double newBoreLength = sortedPoints[sortedPoints.length - 1].getBorePosition();
@@ -179,7 +184,37 @@ public class PerturbedInstrumentOptimization
 			assertEquals(assertName,
 					oldHoles.get(holeNr).getBorePosition(),
 					newHoles.get(holeNr).getBorePosition(), tolerance);
-			
+		}
+		
+		// Test selected mouthpiece values.
+		
+		Mouthpiece oldMouthpiece = originalInstrument.getMouthpiece();
+		Mouthpiece newMouthpiece = optimizedInstrument.getMouthpiece();
+		if (oldMouthpiece.getBeta() != null)
+		{
+			assertEquals("Beta value incorrect", oldMouthpiece.getBeta(),
+					newMouthpiece.getBeta(), 0.001);
+		}
+		if (oldMouthpiece.getFipple() != null)
+		{
+			if (oldMouthpiece.getFipple().getWindowHeight() != null)
+			{
+				assertEquals("Window height incorrect", oldMouthpiece
+						.getFipple().getWindowHeight(), newMouthpiece
+						.getFipple().getWindowHeight(), tolerance);
+			}
+			if (oldMouthpiece.getFipple().getFippleFactor() != null)
+			{
+				assertEquals("Fipple factor incorrect", oldMouthpiece
+						.getFipple().getFippleFactor(), newMouthpiece
+						.getFipple().getFippleFactor(), tolerance);
+			}
+		}
+		if (oldMouthpiece.getEmbouchureHole() != null)
+		{
+			assertEquals("Window height incorrect", oldMouthpiece
+					.getEmbouchureHole().getAirstreamLength(), newMouthpiece
+					.getEmbouchureHole().getAirstreamLength(), tolerance);
 		}
 	}
 

@@ -32,6 +32,7 @@ import com.wwidesigner.modelling.CentDeviationEvaluator;
 import com.wwidesigner.modelling.EvaluatorInterface;
 import com.wwidesigner.modelling.FmaxEvaluator;
 import com.wwidesigner.modelling.FminEvaluator;
+import com.wwidesigner.modelling.FminmaxEvaluator;
 import com.wwidesigner.modelling.InstrumentCalculator;
 import com.wwidesigner.modelling.InstrumentTuner;
 import com.wwidesigner.modelling.LinearVInstrumentTuner;
@@ -42,6 +43,7 @@ import com.wwidesigner.optimization.BaseObjectiveFunction;
 import com.wwidesigner.optimization.BasicTaperObjectiveFunction;
 import com.wwidesigner.optimization.BetaObjectiveFunction;
 import com.wwidesigner.optimization.Constraints;
+import com.wwidesigner.optimization.FluteCalibrationObjectiveFunction;
 import com.wwidesigner.optimization.GlobalHoleAndTaperObjectiveFunction;
 import com.wwidesigner.optimization.GlobalHoleObjectiveFunction;
 import com.wwidesigner.optimization.GlobalHolePositionObjectiveFunction;
@@ -50,6 +52,8 @@ import com.wwidesigner.optimization.HoleObjectiveFunction;
 import com.wwidesigner.optimization.HolePositionObjectiveFunction;
 import com.wwidesigner.optimization.HoleSizeObjectiveFunction;
 import com.wwidesigner.optimization.LengthObjectiveFunction;
+import com.wwidesigner.optimization.StopperPositionObjectiveFunction;
+import com.wwidesigner.optimization.WhistleCalibrationObjectiveFunction;
 import com.wwidesigner.optimization.WindowHeightObjectiveFunction;
 import com.wwidesigner.optimization.HolePositionObjectiveFunction.BoreLengthAdjustmentType;
 import com.wwidesigner.optimization.bind.OptimizationBindFactory;
@@ -66,6 +70,8 @@ import com.wwidesigner.util.PhysicalParameters;
 public class WhistleStudyModel extends StudyModel
 {
 	// Named constants for the standard set of optimizers.
+	public static final String WHISTLE_CALIB_SUB_CATEGORY_ID = "1. Whistle Calibrator";				// for whistles
+	public static final String FLUTE_CALIB_SUB_CATEGORY_ID = "1. Flute Calibrator";					// for flutes
 	public static final String WINDOW_OPT_SUB_CATEGORY_ID = "1. Window Height Calibrator";			// for whistles
 	public static final String AIRSTREAM_OPT_SUB_CATEGORY_ID = "1. Airstream Length Calibrator";	// for flutes
 	public static final String BETA_OPT_SUB_CATEGORY_ID = "2. Beta Calibrator";
@@ -75,6 +81,7 @@ public class WhistleStudyModel extends StudyModel
 	public static final String HOLE_OPT_SUB_CATEGORY_ID = "6. Hole Size+Spacing Optimizer";
 	public static final String TAPER_OPT_SUB_CATEGORY_ID = "7. Taper Optimizer";
 	public static final String HOLE_TAPER_OPT_SUB_CATEGORY_ID = "8. Hole and Taper Optimizer";
+	public static final String STOPPER_OPT_SUB_CATEGORY_ID = "9. Stopper Position Optimizer";		// for flutes
 	public static final String GLOBAL_HOLESPACE_OPT_SUB_CATEGORY_ID = "A. Hole Spacing Global Optimizer";
 	public static final String GLOBAL_HOLE_OPT_SUB_CATEGORY_ID = "B. Hole Size+Spacing Global Optimizer";
 	public static final String GLOBAL_HOLE_TAPER_OPT_SUB_CATEGORY_ID = "C. Hole and Taper Global Optimizer";
@@ -111,17 +118,22 @@ public class WhistleStudyModel extends StudyModel
 		// Add the standard set of optimizers to the Optimizer category,
 		// and assign an associated objective function name to each one.
 		Category optimizers = new Category(OPTIMIZER_CATEGORY_ID);
-		optimizers.addSub(WINDOW_OPT_SUB_CATEGORY_ID, null);
+		optimizers.addSub(WHISTLE_CALIB_SUB_CATEGORY_ID, null);
+		objectiveFunctionNames.put(WHISTLE_CALIB_SUB_CATEGORY_ID,
+				WhistleCalibrationObjectiveFunction.class.getSimpleName());
+		objectiveFunctionNames.put(FLUTE_CALIB_SUB_CATEGORY_ID,
+				FluteCalibrationObjectiveFunction.class.getSimpleName());
 		objectiveFunctionNames.put(WINDOW_OPT_SUB_CATEGORY_ID,
 				WindowHeightObjectiveFunction.class.getSimpleName());
 		objectiveFunctionNames.put(AIRSTREAM_OPT_SUB_CATEGORY_ID,
 				AirstreamLengthObjectiveFunction.class.getSimpleName());
-		optimizers.addSub(BETA_OPT_SUB_CATEGORY_ID, null);
 		objectiveFunctionNames.put(BETA_OPT_SUB_CATEGORY_ID,
 				BetaObjectiveFunction.class.getSimpleName());
 		optimizers.addSub(LENGTH_OPT_SUB_CATEGORY_ID, null);
 		objectiveFunctionNames.put(LENGTH_OPT_SUB_CATEGORY_ID,
 				LengthObjectiveFunction.class.getSimpleName());
+		objectiveFunctionNames.put(STOPPER_OPT_SUB_CATEGORY_ID,
+				StopperPositionObjectiveFunction.class.getSimpleName());
 		optimizers.addSub(HOLESIZE_OPT_SUB_CATEGORY_ID, null);
 		objectiveFunctionNames.put(HOLESIZE_OPT_SUB_CATEGORY_ID,
 				HoleSizeObjectiveFunction.class.getSimpleName());
@@ -253,7 +265,7 @@ public class WhistleStudyModel extends StudyModel
 				aObjective = new WindowHeightObjectiveFunction(calculator,
 						tuning, evaluator);
 				lowerBound = new double[] { 0.0001 };
-				upperBound = new double[] { 0.030 };
+				upperBound = new double[] { 0.020 };
 				break;
 
 			case "BetaObjectiveFunction":
@@ -264,12 +276,37 @@ public class WhistleStudyModel extends StudyModel
 				upperBound = new double[] { 1.0 };
 				break;
 
+			case "WhistleCalibrationObjectiveFunction":
+				evaluator = new FminmaxEvaluator(calculator, getInstrumentTuner());
+				aObjective = new WhistleCalibrationObjectiveFunction(calculator,
+						tuning, evaluator);
+				lowerBound = new double[] { 0.0001, 0.2 };
+				upperBound = new double[] { 0.020,  1.0 };
+				break;
+
+			case "FluteCalibrationObjectiveFunction":
+				evaluator = new FminmaxEvaluator(calculator, getInstrumentTuner());
+				aObjective = new FluteCalibrationObjectiveFunction(calculator,
+						tuning, evaluator);
+				lowerBound = new double[] { 0.001, 0.2 };
+				upperBound = new double[] { 0.020, 1.0 };
+				break;
+
 			case "LengthObjectiveFunction":
 				evaluator = new BellNoteEvaluator(calculator);
 				aObjective = new LengthObjectiveFunction(calculator, tuning,
 						evaluator);
 				lowerBound = new double[] { 0.200 };
 				upperBound = new double[] { 0.700 };
+				break;
+
+			case "StopperPositionObjectiveFunction":
+				evaluator = new CentDeviationEvaluator(calculator,
+						getInstrumentTuner());
+				aObjective = new StopperPositionObjectiveFunction(calculator, tuning,
+						evaluator, StopperPositionObjectiveFunction.BoreLengthAdjustmentType.PRESERVE_TAPER);
+				lowerBound = new double[] { 0.00 };
+				upperBound = new double[] { 0.03 };
 				break;
 
 			case "HoleSizeObjectiveFunction":

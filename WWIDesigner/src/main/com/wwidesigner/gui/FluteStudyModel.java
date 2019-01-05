@@ -54,7 +54,9 @@ public class FluteStudyModel extends WhistleStudyModel
 		if (optimizers != null)
 		{
 			optimizers.removeSub(WINDOW_OPT_SUB_CATEGORY_ID);
-			optimizers.addSub(AIRSTREAM_OPT_SUB_CATEGORY_ID, null);
+			optimizers.removeSub(WHISTLE_CALIB_SUB_CATEGORY_ID);
+			optimizers.addSub(FLUTE_CALIB_SUB_CATEGORY_ID, null);
+			optimizers.addSub(STOPPER_OPT_SUB_CATEGORY_ID, null);
 		}
 	}
 

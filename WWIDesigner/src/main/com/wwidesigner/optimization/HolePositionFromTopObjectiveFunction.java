@@ -1,14 +1,5 @@
-package com.wwidesigner.optimization;
-
-import com.wwidesigner.geometry.Hole;
-import com.wwidesigner.geometry.Instrument;
-import com.wwidesigner.geometry.PositionInterface;
-import com.wwidesigner.modelling.EvaluatorInterface;
-import com.wwidesigner.modelling.InstrumentCalculator;
-import com.wwidesigner.note.TuningInterface;
-
 /**
- * Optimization objective function for bore length and hole positions:
+ * Optimization objective function for bore length and hole positions.
  * 
  * Copyright (C) 2014, Edward Kort, Antoine Lefebvre, Burton Patkau.
  *
@@ -24,6 +15,19 @@ import com.wwidesigner.note.TuningInterface;
  *
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
+package com.wwidesigner.optimization;
+
+import com.wwidesigner.geometry.Hole;
+import com.wwidesigner.geometry.Instrument;
+import com.wwidesigner.geometry.PositionInterface;
+import com.wwidesigner.modelling.EvaluatorInterface;
+import com.wwidesigner.modelling.InstrumentCalculator;
+import com.wwidesigner.note.TuningInterface;
+
+/**
+ * Optimization objective function for bore length and hole positions:
  * 
  * <ul>
  * <li>Position of end bore point.</li>

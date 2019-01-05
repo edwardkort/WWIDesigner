@@ -120,8 +120,22 @@ public class InstrumentComparisonTable extends DefaultTableModel
 		{
 			Object[] newRow = new Object[5];
 			newRow[0] = dimension;
-			newRow[1] = format_default.format(oldValue);
-			newRow[2] = format_default.format(newValue);
+			if (oldValue != null)
+			{
+				newRow[1] = format_default.format(oldValue);
+			}
+			else
+			{
+				newRow[1] = "";
+			}
+			if (newValue != null)
+			{
+				newRow[2] = format_default.format(newValue);
+			}
+			else
+			{
+				newRow[2] = "";
+			}
 			newRow[3] = "";
 			newRow[4] = "";
 			if (oldValue != null && newValue != null)

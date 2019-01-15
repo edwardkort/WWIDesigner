@@ -167,7 +167,15 @@ public class SupplementaryInfoTable extends DefaultTableModel
 		addColumn("Note");
 		addColumn("Freq");
 		addColumn("Im(Z)");
+		addColumn("Log |Z|");
+		addColumn("Log |Z2|");
+		addColumn("Log |Z3|");
 		addColumn("Gain");
+		addColumn("Gain2");
+		addColumn("Gain3");
+		addColumn("Log G1/G2");
+		addColumn("Log G3/G2");
+		addColumn("Log G1*G3/G2^2");
 		addColumn("Q Factor");
 		if (windowLength != null)
 		{
@@ -191,8 +199,21 @@ public class SupplementaryInfoTable extends DefaultTableModel
 			if (freq != null)
 			{
 				z = calculator.calcZ(freq, fingerings.get(i));
+				Complex z2 = calculator.calcZ(freq*2., fingerings.get(i));
+				Complex z3 = calculator.calcZ(freq*3., fingerings.get(i));
 				values[colNr++] = format_sci.format(z.getImaginary());
-				values[colNr++] = formatted(calculator.calcGain(freq, z));
+				values[colNr++] = formatted(Math.log(z.abs()));
+				values[colNr++] = formatted(Math.log(z2.abs()));
+				values[colNr++] = formatted(Math.log(z3.abs()));
+				double h1 = calculator.calcGain(freq, z);
+				double h2 = calculator.calcGain(freq*2., z2);
+				double h3 = calculator.calcGain(freq*3., z3);
+				values[colNr++] = formatted(h1);
+				values[colNr++] = formatted(h2);
+				values[colNr++] = formatted(h3);
+				values[colNr++] = formatted(Math.log(h1/h2));
+				values[colNr++] = formatted(Math.log(h3/h2));
+				values[colNr++] = formatted(Math.log(h1*h3/(h2*h2)));
 				values[colNr++] = formatted(Q(freq, z, calculator, fingerings.get(i)));
 				if (windowLength != null)
 				{

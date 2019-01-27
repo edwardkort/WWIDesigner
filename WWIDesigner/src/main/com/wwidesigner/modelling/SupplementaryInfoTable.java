@@ -36,11 +36,10 @@ import com.wwidesigner.geometry.Instrument;
 import com.wwidesigner.geometry.Mouthpiece;
 import com.wwidesigner.note.Fingering;
 import com.wwidesigner.note.Note;
-import com.wwidesigner.note.Tuning;
 
 /**
  * Display a tabular report of supplementary instrument performance information
- * at a specified tuning.  At present, you should consider these numbers speculative.
+ * at a specified tuning. At present, you should consider these numbers speculative.
  * 
  * @author Burton Patkau
  * 
@@ -48,6 +47,7 @@ import com.wwidesigner.note.Tuning;
 public class SupplementaryInfoTable extends DefaultTableModel
 {
 	protected final static double DeltaF = 0.0012;	// Baseline for derivative, about 2 cents.
+	
 	String title;
 	DecimalFormat format_;
 	DecimalFormat format_0;
@@ -62,7 +62,6 @@ public class SupplementaryInfoTable extends DefaultTableModel
 		format_00 = new DecimalFormat("#0.00");
 		format_sci = new DecimalFormat("0.000E0");
 	}
-
 
 	protected String formatted(Double f)
 	{
@@ -79,7 +78,7 @@ public class SupplementaryInfoTable extends DefaultTableModel
 			return format_0.format(f);
 		}
 	}
-	
+
 	protected String formatted2(Double f)
 	{
 		if (f == null)
@@ -88,21 +87,22 @@ public class SupplementaryInfoTable extends DefaultTableModel
 		}
 		return format_00.format(f);
 	}
-	
+
 	/**
 	 * Estimate Q factor using:<br/>
 	 * Q = f0/2 * d/df (Im(z)/Re(z))<br/>
 	 * cf. Arthur D. Yaghjian, Steven R. Best, "Impedance, Bandwidth, and Q of Antennas,"
 	 * IEEE Transactions on Antennas and Propagation, V 53, n 4, April 2005.
 	 */
-	protected static double Q(double freq, Complex z, InstrumentCalculator calculator,
-			Fingering fingering)
+	protected static double Q(double freq, Complex z,
+			InstrumentCalculator calculator, Fingering fingering)
 	{
-		double freqPlus = freq * (1+DeltaF);
+		double freqPlus = freq * (1 + DeltaF);
 		Complex zPlus = calculator.calcZ(freqPlus, fingering);
-		return 0.25*(freq+freqPlus)
-				* (zPlus.getImaginary()/zPlus.getReal() - z.getImaginary()/z.getReal())
-				/ (freqPlus - freq);
+		return 0.25
+				* (freq + freqPlus)
+				* (zPlus.getImaginary() / zPlus.getReal() - z.getImaginary()
+						/ z.getReal()) / (freqPlus - freq);
 	}
 
 	/*
@@ -115,7 +115,7 @@ public class SupplementaryInfoTable extends DefaultTableModel
 		double qRadiation = 2.0 * length / (waveNumber*radius*radius);
 		return 1.0/(1.0/qWall + 1.0/qRadiation);
 	 */
-	
+
 	/**
 	 * Collect the data necessary to tabulate the supplementary data for an
 	 * instrument. Following this call, use showTuning() or printTuning() to
@@ -130,23 +130,17 @@ public class SupplementaryInfoTable extends DefaultTableModel
 	public void buildTable(InstrumentTuner tuner, boolean usePredicted)
 	{
 		InstrumentCalculator calculator = tuner.getCalculator();
-		Tuning target;
-		if (usePredicted)
-		{
-			target = tuner.getPredictedTuning();
-		}
-		else
-		{
-			target = tuner.getTuning();
-		}
 		Instrument instrument = tuner.getInstrument();
 		Mouthpiece mouthpiece = instrument.getMouthpiece();
-		List<Fingering> fingerings = target.getFingering();
-		Note note;
-		Double freq;
-		Double windowLength = null;		// Window length in meters, if available.
-		Double windwayArea = null;		// Windway cross-section, in mm**2, if available.
-		Complex z;
+		List<Fingering> fingeringsTarget = tuner.getTuning().getFingering();
+		List<Fingering> fingeringsPredicted = tuner.getPredictedTuning()
+				.getFingering();
+		Note note, predicted;
+		Double targetFreq, predictedFreq;
+		Double windowLength = null; // Window length in meters, if available.
+		Double windwayArea = null; // Windway cross-section, in mm**2, if
+									// available.
+		Complex z, zTarget;
 		double speed;
 		if (mouthpiece.getFipple() != null)
 		{
@@ -161,22 +155,16 @@ public class SupplementaryInfoTable extends DefaultTableModel
 				}
 			}
 		}
+		else if (mouthpiece.getEmbouchureHole() != null)
+		{
+			windowLength = mouthpiece.getEmbouchureHole().getAirstreamLength();
+		}
 
 		int colNr;
 
 		addColumn("Note");
 		addColumn("Freq");
-		addColumn("Im(Z)");
-		addColumn("Log |Z|");
-		addColumn("Log |Z2|");
-		addColumn("Log |Z3|");
-		addColumn("Gain");
-		addColumn("Gain2");
-		addColumn("Gain3");
-		addColumn("Log G1/G2");
-		addColumn("Log G3/G2");
-		addColumn("Log G1*G3/G2^2");
-		addColumn("Q Factor");
+		addColumn("Im(Z) corr");
 		if (windowLength != null)
 		{
 			addColumn("Air Speed");
@@ -185,54 +173,88 @@ public class SupplementaryInfoTable extends DefaultTableModel
 				addColumn("Air Flow Rate");
 			}
 		}
+		addColumn("Log |Z|");
+		addColumn("Log |Z2|");
+		addColumn("Log |Z3|");
+		addColumn("Gain");
+		addColumn("Gain(2f)");
+		addColumn("Gain(3f)");
+		addColumn("Log G1/G2");
+		addColumn("Log G3/G2");
+		addColumn("Log G1*G3/G2^2");
+		addColumn("Q Factor");
 
-		for (int i = 0; i < fingerings.size(); ++i)
+		for (int i = 0; i < fingeringsTarget.size(); ++i)
 		{
-			note = fingerings.get(i).getNote();
+			note = fingeringsTarget.get(i).getNote();
+			predicted = fingeringsPredicted.get(i).getNote();
+			targetFreq = note.getFrequency();
+			predictedFreq = predicted.getFrequency();
+			if (usePredicted && predictedFreq != null)
+			{
+				targetFreq = predictedFreq;
+			}
 
 			Object[] values = new Object[getColumnCount()];
 			colNr = 0;
 
 			values[colNr++] = note.getName();
-			freq = note.getFrequency();
-			values[colNr++] = formatted2(freq);
-			if (freq != null)
+			values[colNr++] = formatted2(targetFreq);
+
+			// Im(Z) correction value at actual measured playing frequency is used for
+			// calibration and model testing.
+			if (note.getFrequencyMax() != null
+					&& predicted.getFrequencyMax() != null)
 			{
-				z = calculator.calcZ(freq, fingerings.get(i));
-				Complex z2 = calculator.calcZ(freq*2., fingerings.get(i));
-				Complex z3 = calculator.calcZ(freq*3., fingerings.get(i));
-				values[colNr++] = format_sci.format(z.getImaginary());
-				values[colNr++] = formatted(Math.log(z.abs()));
-				values[colNr++] = formatted(Math.log(z2.abs()));
-				values[colNr++] = formatted(Math.log(z3.abs()));
-				double h1 = calculator.calcGain(freq, z);
-				double h2 = calculator.calcGain(freq*2., z2);
-				double h3 = calculator.calcGain(freq*3., z3);
-				values[colNr++] = formatted(h1);
-				values[colNr++] = formatted(h2);
-				values[colNr++] = formatted(h3);
-				values[colNr++] = formatted(Math.log(h1/h2));
-				values[colNr++] = formatted(Math.log(h3/h2));
-				values[colNr++] = formatted(Math.log(h1*h3/(h2*h2)));
-				values[colNr++] = formatted(Q(freq, z, calculator, fingerings.get(i)));
+				double correction = calculator.calcZ(note.getFrequencyMax(),
+						fingeringsTarget.get(i)).getImaginary()
+						- calculator.calcZ(predicted.getFrequencyMax(),
+								fingeringsPredicted.get(i)).getImaginary();
+				values[colNr++] = format_sci.format(correction);
+			}
+			else if (targetFreq != null && predictedFreq != null)
+			{
+				double correction = calculator.calcZ(targetFreq,
+						fingeringsTarget.get(i)).getImaginary()
+						- calculator.calcZ(predictedFreq,
+								fingeringsPredicted.get(i)).getImaginary();
+				values[colNr++] = format_sci.format(correction);
+			}
+			else
+			{
+				values[colNr++] = "";
+			}
+
+			if (targetFreq != null)
+			{
+				zTarget = calculator.calcZ(targetFreq, fingeringsTarget.get(i));
+				Complex z2 = calculator.calcZ(targetFreq * 2.,
+						fingeringsTarget.get(i));
+				Complex z3 = calculator.calcZ(targetFreq * 3.,
+						fingeringsTarget.get(i));
+
+				// Air speed and flow values indicate what it would take to hit
+				// the target frequency.
 				if (windowLength != null)
 				{
 					// Although speed is nominally in m/s, and flow rate
 					// is nominally in ml/s, we don't publish these units.
-					// At present, the quantities are best treated as relative values.
-					speed = LinearVInstrumentTuner.velocity(freq, windowLength, z);
+					// At present, the quantities are best treated as relative
+					// values.
+					speed = LinearVInstrumentTuner.velocity(targetFreq,
+							windowLength, zTarget);
 					values[colNr++] = formatted(speed);
 					if (windwayArea != null)
 					{
 						values[colNr++] = formatted(speed * windwayArea);
 					}
 				}
+				values[colNr++] = formatted(Math.log(zTarget.abs()));
+				values[colNr++] = formatted(Math.log(z2.abs()));
+				values[colNr++] = formatted(Math.log(z3.abs()));
 			}
 			else
 			{
-				values[colNr++] = "";
-				values[colNr++] = "";
-				values[colNr++] = "";
 				if (windowLength != null)
 				{
 					values[colNr++] = "";
@@ -241,8 +263,39 @@ public class SupplementaryInfoTable extends DefaultTableModel
 						values[colNr++] = "";
 					}
 				}
+				values[colNr++] = "";
+				values[colNr++] = "";
+				values[colNr++] = "";
 			}
 
+			if (predictedFreq != null)
+			{
+				// Gain and Q values must be at predicted playing frequencies.
+				z = calculator.calcZ(predictedFreq, fingeringsPredicted.get(i));
+				double h1 = calculator.calcGain(predictedFreq, z);
+				double h2 = calculator.calcGain(2.0 * predictedFreq,
+						fingeringsPredicted.get(i));
+				double h3 = calculator.calcGain(3.0 * predictedFreq,
+						fingeringsPredicted.get(i));
+				values[colNr++] = formatted(h1);
+				values[colNr++] = formatted(h2);
+				values[colNr++] = formatted(h3);
+				values[colNr++] = formatted(Math.log(h1 / h2));
+				values[colNr++] = formatted(Math.log(h3 / h2));
+				values[colNr++] = formatted(Math.log(h1 * h3 / (h2 * h2)));
+				values[colNr++] = formatted(Q(predictedFreq, z, calculator,
+						fingeringsPredicted.get(i)));
+			}
+			else
+			{
+				values[colNr++] = "";
+				values[colNr++] = "";
+				values[colNr++] = "";
+				values[colNr++] = "";
+				values[colNr++] = "";
+				values[colNr++] = "";
+				values[colNr++] = "";
+			}
 
 			addRow(values);
 		}
@@ -314,7 +367,7 @@ public class SupplementaryInfoTable extends DefaultTableModel
 				{
 					frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 				}
-				frame.setSize(500, 360);
+				frame.setSize(900, 360);
 				frame.getContentPane().add(new JScrollPane(table));
 				frame.setVisible(true);
 			}

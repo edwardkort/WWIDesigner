@@ -30,6 +30,7 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
+ *         &lt;element name="name" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="borePosition" type="{http://www.wwidesigner.com/Instrument}Dimension"/>
  *         &lt;element name="boreDiameter" type="{http://www.wwidesigner.com/Instrument}ZeroOrMore"/>
  *       &lt;/sequence>
@@ -42,13 +43,39 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "BorePoint", propOrder = {
+    "name",
     "borePosition",
     "boreDiameter"
 })
 public class BorePoint {
 
+    protected String name;
     protected double borePosition;
     protected double boreDiameter;
+
+    /**
+     * Gets the value of the name property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * Sets the value of the name property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setName(String value) {
+        this.name = value;
+    }
 
     /**
      * Gets the value of the borePosition property.

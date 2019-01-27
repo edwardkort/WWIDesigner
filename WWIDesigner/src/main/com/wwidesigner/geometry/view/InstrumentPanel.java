@@ -90,7 +90,7 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 		TableModelListener, ActionListener, DataChangedProvider
 {
 	public static int HOLE_TABLE_WIDTH = 310;
-	public static final int BORE_TABLE_WIDTH = 175;
+	public static final int BORE_TABLE_WIDTH = 240;
 
 	// Instrument data fields.
 
@@ -208,7 +208,11 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 		{
 			return (new Object[] { null, null });
 		}
-		return (new Object[] { null, null, null });
+		if (numCols == 3)
+		{
+			return (new Object[] { null, null, null });
+		}
+		return (new Object[] { null, null, null, null, null });
 	}
 
 	/**
@@ -314,7 +318,7 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 			holeList.getModel().removeTableModelListener(this);
 			boreList.getModel().removeTableModelListener(this);
 			resetTableData(holeList, 0, 5);
-			resetTableData(boreList, 0, 2);
+			resetTableData(boreList, 0, 3);
 			DefaultTableModel model = (DefaultTableModel) holeList.getModel();
 			boolean firstHole = true;
 			Double priorHolePosition = 0.;
@@ -338,7 +342,8 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 			model = (DefaultTableModel) boreList.getModel();
 			for (BorePoint point : instrument.getBorePoint())
 			{
-				model.addRow(new Double[] { point.getBorePosition(),
+				model.addRow(new Object[] { point.getName(), 
+						point.getBorePosition(),
 						point.getBoreDiameter() });
 			}
 
@@ -1222,10 +1227,10 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 		gbc.gridy = 0;
 		panel.add(label, gbc);
 
-		DefaultTableModel model = new NumericTableModel(Double.class,
+		DefaultTableModel model = new NumericTableModel(String.class,
 				Double.class);
 		boreList = new JideTable(model);
-		resetTableData(boreList, 2, 2);
+		resetTableData(boreList, 2, 3);
 		boreList.setAutoscrolls(true);
 		boreList.setTransferHandler(new TableTransferHandler());
 		JScrollPane scrollPane = new JScrollPane(boreList);
@@ -1349,6 +1354,13 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 			model.setDataVector(new Object[0][2],
 					new String[] { "Position", "Diameter" });
 			firstDoubleCol = 0;
+			lastDoubleCol = 1;
+		}
+		else if (numCols == 3)
+		{
+			model.setDataVector(new Object[0][3],
+					new String[] { "Name", "Position", "Diameter" });
+			firstDoubleCol = 1;
 			lastDoubleCol = 2;
 		}
 		else
@@ -1356,9 +1368,9 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 			model.setDataVector(new Object[0][4], new String[] { "Name",
 					"Position", "Spacing", "Diameter", "Height" });
 			firstDoubleCol = 1;
-			lastDoubleCol = 5;
+			lastDoubleCol = 4;
 		}
-		for (int i = firstDoubleCol; i < lastDoubleCol; i++)
+		for (int i = firstDoubleCol; i <= lastDoubleCol; i++)
 		{
 			TableColumn col = table.getColumn(model.getColumnName(i));
 			col.setCellRenderer(renderer);
@@ -1415,8 +1427,9 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 
 		for (int i = 0; i < model.getRowCount(); i++)
 		{
-			Double position = (Double) model.getValueAt(i, 0);
-			Double diameter = (Double) model.getValueAt(i, 1);
+			String name = (String) model.getValueAt(i, 0);
+			Double position = (Double) model.getValueAt(i, 1);
+			Double diameter = (Double) model.getValueAt(i, 2);
 			if (position == null)
 			{
 				position = Double.NaN;
@@ -1425,7 +1438,9 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 			{
 				diameter = Double.NaN;
 			}
-			data.add(new BorePoint(position, diameter));
+			BorePoint borePoint = new BorePoint(position, diameter);
+			borePoint.setName(name);
+			data.add(borePoint);
 		}
 		return data;
 	}

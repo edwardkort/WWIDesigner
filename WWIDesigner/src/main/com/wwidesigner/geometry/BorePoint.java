@@ -14,6 +14,7 @@ import com.wwidesigner.util.SortedPositionList;
  */
 public class BorePoint implements BorePointInterface
 {
+	protected String name;
 	protected double borePosition;
 	protected double boreDiameter;
 
@@ -23,6 +24,7 @@ public class BorePoint implements BorePointInterface
 
 	public BorePoint(double position, double diameter)
 	{
+		this.name = null;
 		this.borePosition = position;
 		this.boreDiameter = diameter;
 	}
@@ -59,6 +61,23 @@ public class BorePoint implements BorePointInterface
 	public void setBoreDiameter(double aBoreDiameter)
 	{
 		this.boreDiameter = aBoreDiameter;
+	}
+
+	/**
+	 * @return the name
+	 */
+	public String getName()
+	{
+		return name;
+	}
+
+	/**
+	 * @param aName
+	 *            the name to set
+	 */
+	public void setName(String aName)
+	{
+		this.name = aName;
 	}
 
 	public void convertDimensions(double multiplier)

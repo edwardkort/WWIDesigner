@@ -112,6 +112,7 @@
 			</xsd:documentation>
 		</xsd:annotation>
 		<xsd:sequence>
+			<xsd:element name="name" type="xsd:string" minOccurs="0" />
 			<xsd:element name="borePosition" type="wii:Dimension" />
 			<xsd:element name="boreDiameter" type="wii:ZeroOrMore" />
 		</xsd:sequence>

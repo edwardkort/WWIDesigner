@@ -212,11 +212,11 @@ public class SupplementaryInfoTable extends DefaultTableModel
 								fingeringsPredicted.get(i)).getImaginary();
 				values[colNr++] = format_sci.format(correction);
 			}
-			else if (targetFreq != null && predictedFreq != null)
+			else if (note.getFrequency() != null && predicted.getFrequency() != null)
 			{
-				double correction = calculator.calcZ(targetFreq,
+				double correction = calculator.calcZ(note.getFrequency(),
 						fingeringsTarget.get(i)).getImaginary()
-						- calculator.calcZ(predictedFreq,
+						- calculator.calcZ(predicted.getFrequency(),
 								fingeringsPredicted.get(i)).getImaginary();
 				values[colNr++] = format_sci.format(correction);
 			}

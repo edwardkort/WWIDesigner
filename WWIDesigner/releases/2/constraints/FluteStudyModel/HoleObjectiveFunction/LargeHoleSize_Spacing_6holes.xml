@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <ns2:constraints xmlns:ns2="http://www.wwidesigner.com/Constraints">
-    <constraintsName>Large Hole Size+Spacing</constraintsName>
+    <constraintsName>Large Hole Size+Spacing, limits modelled on Pratten flute</constraintsName>
     <objectiveDisplayName>Hole position and size optimizer</objectiveDisplayName>
     <objectiveFunctionName>HoleObjectiveFunction</objectiveFunctionName>
     <numberOfHoles>6</numberOfHoles>
@@ -8,7 +8,7 @@
         <displayName>Bore length</displayName>
         <category>Hole position</category>
         <type>DIMENSIONAL</type>
-        <lowerBound>0.2</lowerBound>
+        <lowerBound>0.4</lowerBound>
         <upperBound>0.7</upperBound>
     </constraint>
     <constraint>
@@ -16,14 +16,14 @@
         <category>Hole position</category>
         <type>DIMENSIONAL</type>
         <lowerBound>0.015</lowerBound>
-        <upperBound>0.04</upperBound>
+        <upperBound>0.035</upperBound>
     </constraint>
     <constraint>
         <displayName>Hole 5 to Hole 4 distance</displayName>
         <category>Hole position</category>
         <type>DIMENSIONAL</type>
         <lowerBound>0.015</lowerBound>
-        <upperBound>0.04</upperBound>
+        <upperBound>0.035</upperBound>
     </constraint>
     <constraint>
         <displayName>Hole 4 to Hole 3 distance</displayName>
@@ -37,14 +37,14 @@
         <category>Hole position</category>
         <type>DIMENSIONAL</type>
         <lowerBound>0.015</lowerBound>
-        <upperBound>0.04</upperBound>
+        <upperBound>0.035</upperBound>
     </constraint>
     <constraint>
         <displayName>Hole 2 to Hole 1 (bottom) distance</displayName>
         <category>Hole position</category>
         <type>DIMENSIONAL</type>
         <lowerBound>0.015</lowerBound>
-        <upperBound>0.04</upperBound>
+        <upperBound>0.0375</upperBound>
     </constraint>
     <constraint>
         <displayName>Hole 1 (bottom) to bore end distance</displayName>
@@ -86,7 +86,7 @@
         <category>Hole size</category>
         <type>DIMENSIONAL</type>
         <lowerBound>0.004</lowerBound>
-        <upperBound>0.011</upperBound>
+        <upperBound>0.0105</upperBound>
     </constraint>
     <constraint>
         <displayName>Hole 1 (bottom) diameter</displayName>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns2:constraints xmlns:ns2="http://www.wwidesigner.com/Constraints">
+    <constraintsName>Diameter of cylindrical headjoint insert.  Assumes points 2-3 and 4-5 are close together.</constraintsName>
+    <objectiveDisplayName>Bore Diameter (from top) optimizer</objectiveDisplayName>
+    <objectiveFunctionName>BoreDiameterFromTopObjectiveFunction</objectiveFunctionName>
+    <numberOfHoles>6</numberOfHoles>
+    <constraint>
+        <displayName>Ratio of diameters, bore point 1 / bore point 2</displayName>
+        <category>Bore diameter ratios</category>
+        <type>DIMENSIONLESS</type>
+        <lowerBound>0.999</lowerBound>
+        <upperBound>1.0</upperBound>
+    </constraint>
+    <constraint>
+        <displayName>Ratio of diameters, bore point 2 / bore point 3</displayName>
+        <category>Bore diameter ratios</category>
+        <type>DIMENSIONLESS</type>
+        <lowerBound>1.0</lowerBound>
+        <upperBound>1.5</upperBound>
+    </constraint>
+    <constraint>
+        <displayName>Ratio of diameters, bore point 3 / bore point 4</displayName>
+        <category>Bore diameter ratios</category>
+        <type>DIMENSIONLESS</type>
+        <lowerBound>0.999</lowerBound>
+        <upperBound>1.0</upperBound>
+    </constraint>
+    <constraint>
+        <displayName>Ratio of diameters, bore point 4 / bore point 5</displayName>
+        <category>Bore diameter ratios</category>
+        <type>DIMENSIONLESS</type>
+        <lowerBound>0.5</lowerBound>
+        <upperBound>1.0</upperBound>
+    </constraint>
+</ns2:constraints>

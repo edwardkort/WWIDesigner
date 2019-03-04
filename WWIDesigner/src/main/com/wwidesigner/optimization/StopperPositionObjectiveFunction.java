@@ -45,29 +45,29 @@ public class StopperPositionObjectiveFunction extends BaseObjectiveFunction
 	public static final String CONSTR_CAT = "Stopper distance";
 	public static final ConstraintType CONSTR_TYPE = ConstraintType.DIMENSIONAL;
 
-	public enum BoreLengthAdjustmentType
-	{
-		/**
-		 * Change the position of the bottom bore point, adjusting the diameter
-		 * to keep the taper angle unchanged.
-		 */
-		PRESERVE_TAPER,
-		/**
-		 * Change position of the bottom bore point, leaving bore diameters
-		 * unchanged.
-		 */
-		MOVE_BOTTOM
-	}
-
-	protected BoreLengthAdjustmentType lengthAdjustmentMode;
+	protected boolean preserveTaper;
 	protected static final double MINIMUM_BORE_POINT_SPACING = 0.00001d;
 
+	/**
+	 * Optimization objective function for position of the flute stopper, the
+	 * overall headjoint length.
+	 * <ul>
+	 * <li>Distance from topmost bore point to upper end of embouchure hole.</li>
+	 * </ul>
+	 * 
+	 * @param aCalculator
+	 * @param tuning
+	 * @param aEvaluator
+	 * @param aPreserveTaper
+	 *            - false to leave bore diameter unchanged, true to adjust bore
+	 *            diameter to preserve bore taper.
+	 */
 	public StopperPositionObjectiveFunction(InstrumentCalculator aCalculator,
 			TuningInterface tuning, EvaluatorInterface aEvaluator,
-			BoreLengthAdjustmentType aLengthAdjustmentMode)
+			boolean aPreserveTaper)
 	{
 		super(aCalculator, tuning, aEvaluator);
-		this.lengthAdjustmentMode = aLengthAdjustmentMode;
+		this.preserveTaper = aPreserveTaper;
 		nrDimensions = 1;
 		optimizerType = OptimizerType.BrentOptimizer;
 		setConstraints();
@@ -122,7 +122,7 @@ public class StopperPositionObjectiveFunction extends BaseObjectiveFunction
 			newTopPosition -= 0.5 * mouthpiece.getEmbouchureHole().getLength();
 		}
 
-		if (lengthAdjustmentMode == BoreLengthAdjustmentType.PRESERVE_TAPER)
+		if (preserveTaper)
 		{
 			// Extrapolate/interpolate the bore diameter of end point
 			double topDiameter = BorePoint
@@ -141,7 +141,7 @@ public class StopperPositionObjectiveFunction extends BaseObjectiveFunction
 			if (currentPosition <= newTopPosition)
 			{
 				newTopPosition += MINIMUM_BORE_POINT_SPACING;
-				if (lengthAdjustmentMode == BoreLengthAdjustmentType.PRESERVE_TAPER)
+				if (preserveTaper)
 				{
 					// Extrapolate/interpolate the bore diameter
 					double diameter = BorePoint

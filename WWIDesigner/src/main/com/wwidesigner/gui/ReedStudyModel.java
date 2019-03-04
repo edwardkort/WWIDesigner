@@ -27,6 +27,7 @@ import java.util.prefs.Preferences;
 import com.jidesoft.app.framework.file.FileDataModel;
 import com.wwidesigner.geometry.Instrument;
 import com.wwidesigner.gui.util.DataOpenException;
+import com.wwidesigner.gui.util.OptimizerMismatchException;
 import com.wwidesigner.modelling.BellNoteEvaluator;
 import com.wwidesigner.modelling.CentDeviationEvaluator;
 import com.wwidesigner.modelling.EvaluatorInterface;
@@ -291,7 +292,7 @@ public class ReedStudyModel extends StudyModel
 			case "LengthObjectiveFunction":
 				evaluator = new BellNoteEvaluator(calculator);
 				aObjective = new LengthObjectiveFunction(calculator, tuning,
-						evaluator);
+						evaluator, true);
 				lowerBound = new double[] { MIN_BORE_LENGTH };
 				upperBound = new double[] { MAX_BORE_LENGTH };
 				break;
@@ -731,9 +732,7 @@ public class ReedStudyModel extends StudyModel
 				}
 				else
 				{
-					System.out
-							.println("Number of holes for specified constraints does not match number of holes for instrument.");
-					System.out.println("Using default constraints.");
+					throw new OptimizerMismatchException("Number of dimensions (holes or bore points) for selected constraints does not match the selected instrument.");
 				}
 			}
 		}

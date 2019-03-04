@@ -42,7 +42,7 @@ public class NafOptimizationTest extends AbstractOptimizationTest
 			setUpperBound(new double[] { 0.4 });
 			evaluator = new ReactanceEvaluator(calculator);
 			objective = new LengthObjectiveFunction(calculator, tuning,
-					evaluator);
+					evaluator, false);
 
 			Instrument optimizedInstrument = doInstrumentOptimization("No-hole");
 
@@ -73,7 +73,7 @@ public class NafOptimizationTest extends AbstractOptimizationTest
 			setUpperBound(new double[] { 0.6 });
 			evaluator = new ReactanceEvaluator(calculator);
 			objective = new LengthObjectiveFunction(calculator, tuning,
-					evaluator);
+					evaluator, false);
 
 			Instrument optimizedInstrument = doInstrumentOptimization("No-hole");
 

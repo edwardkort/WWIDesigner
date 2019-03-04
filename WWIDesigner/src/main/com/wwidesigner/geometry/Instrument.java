@@ -631,4 +631,55 @@ public class Instrument implements InstrumentInterface
 
 		return sortedPositions;
 	}
+
+	/**
+	 * Locates a BorePointInterface object (BorePoint and Hole) by name in a
+	 * list of positions.
+	 * 
+	 * @param positions
+	 *            - list of BorePoints or Holes.
+	 * @param name
+	 *            - name of element in position to search for.
+	 * @param isExactMatch
+	 *            - true to find an element with exactly the specified name;
+	 *            false to find an element with a name containing the specified
+	 *            name.
+	 * @param isLastMatch
+	 *            - false to find the matching element with lowest bore position;
+	 *            true to find the matching element with highest position.
+	 * @return index of element found, in list as sorted by bore position, or
+	 *         -1 if no matching element found.
+	 */
+	public static <P extends PositionInterface> int positionIndex(List<P> positions,
+			String name, boolean isExactMatch, boolean isLastMatch)
+	{
+		PositionInterface[] sortedPoints = sortList(positions);
+		int boreIdx;
+		String pointName;
+		if (isLastMatch)
+		{
+			for (boreIdx = sortedPoints.length - 1; boreIdx >= 0; --boreIdx)
+			{
+				pointName = sortedPoints[boreIdx].getName();
+				if (name.equalsIgnoreCase(pointName)
+					|| (! isExactMatch && pointName != null && pointName.contains(name)))
+				{
+					return boreIdx;
+				}
+			}
+		}
+		else
+		{
+			for (boreIdx = 0; boreIdx < sortedPoints.length; ++boreIdx)
+			{
+				pointName = sortedPoints[boreIdx].getName();
+				if (name.equalsIgnoreCase(pointName)
+					|| (! isExactMatch && pointName != null && pointName.contains(name)))
+				{
+					return boreIdx;
+				}
+			}
+		}
+		return -1;
+	}
 }

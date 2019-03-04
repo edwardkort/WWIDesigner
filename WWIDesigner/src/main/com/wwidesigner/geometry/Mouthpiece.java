@@ -66,6 +66,14 @@ public class Mouthpiece implements ComponentInterface, MouthpieceInterface,
 	{
 		this.position = value;
 	}
+	
+	/**
+	 * As yet, mouthpieces are not named.
+	 */
+	public String getName()
+	{
+		return "";
+	}
 
 	/**
 	 * @return the beta

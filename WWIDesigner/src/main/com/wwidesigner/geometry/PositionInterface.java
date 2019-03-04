@@ -9,6 +9,8 @@ package com.wwidesigner.geometry;
  */
 public interface PositionInterface
 {
+	public String getName();
+	
 	public double getBorePosition();
 
 	public void setBorePosition(double position);

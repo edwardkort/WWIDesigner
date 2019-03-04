@@ -600,7 +600,7 @@ public class WhistleStudyModel extends StudyModel
 						upperBound.length, 1.0);
 				break;
 
-			case "BoreSpacingObjectiveFunction":
+			case "BoreSpacingFromTopObjectiveFunction":
 				evaluator = new CentDeviationEvaluator(calculator,
 						getInstrumentTuner());
 				aObjective = new BoreSpacingFromTopObjectiveFunction(calculator, tuning,
@@ -613,7 +613,7 @@ public class WhistleStudyModel extends StudyModel
 				Arrays.fill(upperBound, 0.010);
 				break;
 
-			case "HoleAndBoreSpacingObjectiveFunction":
+			case "HoleAndBoreSpacingFromTopObjectiveFunction":
 				evaluator = new CentDeviationEvaluator(calculator,
 						getInstrumentTuner());
 				aObjective = new HoleAndBoreSpacingFromTopObjectiveFunction(calculator,

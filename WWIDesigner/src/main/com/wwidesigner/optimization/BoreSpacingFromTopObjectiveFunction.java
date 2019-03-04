@@ -129,8 +129,8 @@ public class BoreSpacingFromTopObjectiveFunction extends BaseObjectiveFunction
 		int dimension;
 		for (dimension = 0; dimension < nrDimensions; ++dimension)
 		{
-			name = "Distance from bore point " + String.valueOf(dimension)
-					+ " to point " + String.valueOf(dimension + 1);
+			name = "Distance from bore point " + String.valueOf(dimension + 1)
+					+ " to point " + String.valueOf(dimension + 2);
 			constraints.addConstraint(new Constraint(CONSTR_CAT,
 					name, ConstraintType.DIMENSIONAL));
 		}

@@ -98,7 +98,9 @@ public class HoleAndBoreDiameterFromTopObjectiveFunction extends
 
 	/**
 	 * Create an optimization objective function for hole positions and
-	 * diameters, and bore point spacing at existing bore points.
+	 * diameters, and bore point diameter at existing bore points
+	 * from the top of the bore.  The highest bore point left unchanged
+	 * will be the lowest bore point with a name that contains "Head".
 	 * 
 	 * @param aCalculator
 	 * @param tuning

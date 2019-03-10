@@ -48,6 +48,8 @@ import com.wwidesigner.optimization.BoreDiameterFromTopObjectiveFunction;
 import com.wwidesigner.optimization.BoreSpacingFromTopObjectiveFunction;
 import com.wwidesigner.optimization.Constraints;
 import com.wwidesigner.optimization.FluteCalibrationObjectiveFunction;
+import com.wwidesigner.optimization.GlobalHoleAndBoreDiameterFromBottomObjectiveFunction;
+import com.wwidesigner.optimization.GlobalHoleAndBoreDiameterFromTopObjectiveFunction;
 import com.wwidesigner.optimization.GlobalHoleAndTaperObjectiveFunction;
 import com.wwidesigner.optimization.GlobalHoleObjectiveFunction;
 import com.wwidesigner.optimization.GlobalHolePositionObjectiveFunction;
@@ -102,6 +104,7 @@ public class WhistleStudyModel extends StudyModel
 	public static final String GLOBAL_HOLESPACE_OPT_SUB_CATEGORY_ID = "A. Hole Spacing Global Optimizer";
 	public static final String GLOBAL_HOLE_OPT_SUB_CATEGORY_ID = "B. Hole Size+Spacing Global Optimizer";
 	public static final String GLOBAL_HOLE_TAPER_OPT_SUB_CATEGORY_ID = "C. Hole and Taper Global Optimizer";
+	public static final String GLOBAL_HOLE_BORE_DIA_BOTTOM_OPT_SUB_CATEGORY_ID = "D. Hole and Lower Bore Diameter Global Optimizer";
 
 	// Default minimum and maximum bore length, in meters
 	// (actually, position of bottom bore point).
@@ -202,6 +205,9 @@ public class WhistleStudyModel extends StudyModel
 		optimizers.addSub(GLOBAL_HOLE_TAPER_OPT_SUB_CATEGORY_ID, null);
 		objectiveFunctionNames.put(GLOBAL_HOLE_TAPER_OPT_SUB_CATEGORY_ID,
 				GlobalHoleAndTaperObjectiveFunction.class.getSimpleName());
+		optimizers.addSub(GLOBAL_HOLE_BORE_DIA_BOTTOM_OPT_SUB_CATEGORY_ID, null);
+		objectiveFunctionNames.put(GLOBAL_HOLE_BORE_DIA_BOTTOM_OPT_SUB_CATEGORY_ID,
+				GlobalHoleAndBoreDiameterFromBottomObjectiveFunction.class.getSimpleName());
 		categories.add(optimizers);
 	}
 
@@ -542,10 +548,19 @@ public class WhistleStudyModel extends StudyModel
 				break;
 
 			case "HoleAndBoreDiameterFromTopObjectiveFunction":
+			case "GlobalHoleAndBoreDiameterFromTopObjectiveFunction":
 				evaluator = new CentDeviationEvaluator(calculator,
 						getInstrumentTuner());
-				aObjective = new HoleAndBoreDiameterFromTopObjectiveFunction(calculator,
-						tuning, evaluator);
+				if (objectiveFunctionClass.equals("GlobalHoleAndBoreDiameterFromTopObjectiveFunction"))
+				{
+					aObjective = new GlobalHoleAndBoreDiameterFromTopObjectiveFunction(calculator,
+							tuning, evaluator);
+				}
+				else
+				{
+					aObjective = new HoleAndBoreDiameterFromTopObjectiveFunction(calculator,
+							tuning, evaluator);
+				}
 				nrDimensions = aObjective.getNrDimensions();
 				// Separation bounds and diameter bounds, expressed in meters,
 				// and bore position ratios.
@@ -623,10 +638,19 @@ public class WhistleStudyModel extends StudyModel
 				break;
 
 			case "HoleAndBoreDiameterFromBottomObjectiveFunction":
+			case "GlobalHoleAndBoreDiameterFromBottomObjectiveFunction":
 				evaluator = new CentDeviationEvaluator(calculator,
 						getInstrumentTuner());
-				aObjective = new HoleAndBoreDiameterFromBottomObjectiveFunction(calculator,
-						tuning, evaluator);
+				if (objectiveFunctionClass.equals("GlobalHoleAndBoreDiameterFromBottomObjectiveFunction"))
+				{
+					aObjective = new GlobalHoleAndBoreDiameterFromBottomObjectiveFunction(calculator,
+							tuning, evaluator);
+				}
+				else
+				{
+					aObjective = new HoleAndBoreDiameterFromBottomObjectiveFunction(calculator,
+							tuning, evaluator);
+				}
 				nrDimensions = aObjective.getNrDimensions();
 				// Separation bounds and diameter bounds, expressed in meters,
 				// and bore position ratios.

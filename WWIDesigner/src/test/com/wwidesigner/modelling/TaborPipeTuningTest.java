@@ -7,8 +7,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import java.util.List;
+
 import org.junit.Test;
 
+import com.wwidesigner.geometry.Instrument;
 import com.wwidesigner.note.Fingering;
 import com.wwidesigner.note.Note;
 import com.wwidesigner.note.Tuning;
@@ -78,6 +80,31 @@ public class TaborPipeTuningTest
 			
 			assertEquals("Note " + (i + 1) + " " + tgtNote.getName() + " tuning incorrect", 0.0f,
 					tuningError, allowedError);
+		}
+	}
+
+	@Test
+	public void testNames()
+	{
+		InstrumentTuner tuner = new LinearVInstrumentTuner(4);
+		try
+		{
+			tuner.setInstrument(instrumentFile, true);
+			Instrument pipe = tuner.getInstrument();
+			assertEquals("Wrong bore point for top of Head", 1,
+					Instrument.positionIndex(pipe.getBorePoint(), "Head", false, false));
+			assertEquals("Wrong bore point for bottom of Head", 3,
+					Instrument.positionIndex(pipe.getBorePoint(), "Head", false, true));
+			assertEquals("Wrong bore point for top of Body", 3,
+					Instrument.positionIndex(pipe.getBorePoint(), "Body", false, false));
+			assertEquals("Wrong bore point for bottom of Body", 5,
+					Instrument.positionIndex(pipe.getBorePoint(), "Body", false, true));
+			assertEquals("Wrong index for non-existent bore point", -1,
+					Instrument.positionIndex(pipe.getBorePoint(), "Headjoint", false, false));
+		}
+		catch (Exception e)
+		{
+			fail(e.getMessage());
 		}
 	}
 

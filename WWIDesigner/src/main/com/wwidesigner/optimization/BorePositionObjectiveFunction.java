@@ -1,5 +1,5 @@
 /**
- * Optimization objective function for positioning existing bore points.
+ * Optimization objective function for relative position of existing bore points.
  * 
  * Copyright (C) 2016, Edward Kort, Antoine Lefebvre, Burton Patkau.
  *
@@ -27,16 +27,17 @@ import com.wwidesigner.note.TuningInterface;
 import com.wwidesigner.optimization.Constraint.ConstraintType;
 
 /**
- * Optimization objective function for positioning existing bore points.
+ * Optimization objective function for relative position of existing bore points.
  * The optimization dimensions are:
  * <ul>
  * <li>Absolute position of bottom bore point.</li>
- * <li>For each interior bore point between top and bottom,
+ * <li>For interior bore points down to the bottom,
  * distance from prior bore point to this bore point,
  * as a fraction of the distance from the prior bore point to the bottom.</li>
  * </ul>
- * The absolute position of the top <i>N</i> bore points and diameters of all bore points
- * are invariant.
+ * The bore points to vary can be specified as a number of bore points or with a
+ * bore point name. The positions of bore points above these are left unchanged.
+ * Bore point diameters are invariant. <br>
  * 
  * Do not use with other optimizers that might change the number of bore points.
  * Specify bottomPointUnchanged = true to use with optimizers that might change
@@ -56,6 +57,17 @@ public class BorePositionObjectiveFunction extends BaseObjectiveFunction
 	protected final int unchangedBottomPoint;
 	// Invariant: nrDimensions + unchangedBorePoints + unchangedBottomPoint = number of bore points.
 
+	/**
+	 * Create an optimization objective function for relative position of existing
+	 * bore points, from the bottom of the bore.
+	 * 
+	 * @param aCalculator
+	 * @param tuning
+	 * @param aEvaluator
+	 * @param aUnchangedBorePoints - Index of first bore point to optimize.
+	 *        Leave position unchanged for this many bore points from the top of the bore.
+	 * @param bottomPointUnchanged
+	 */
 	public BorePositionObjectiveFunction(InstrumentCalculator aCalculator,
 			TuningInterface tuning, EvaluatorInterface aEvaluator, int aUnchangedBorePoints,
 			boolean bottomPointUnchanged)
@@ -92,16 +104,37 @@ public class BorePositionObjectiveFunction extends BaseObjectiveFunction
 		setConstraints();
 	}
 
+	/**
+	 * Create an optimization objective function for relative position of existing
+	 * bore points, from the bottom of the bore.
+	 * 
+	 * @param aCalculator
+	 * @param tuning
+	 * @param aEvaluator
+	 * @param aUnchangedBorePoints - Index of first bore point to optimize.
+	 *        Leave position unchanged for this many bore points from the top of the bore.
+	 */
 	public BorePositionObjectiveFunction(InstrumentCalculator aCalculator,
 			TuningInterface tuning, EvaluatorInterface aEvaluator, int aUnchangedBorePoints)
 	{
 		this(aCalculator, tuning, aEvaluator, aUnchangedBorePoints, false);
 	}
 
+	/**
+	 * Create an optimization objective function for relative position of existing
+	 * bore points, from the bottom of the bore.  The lowest bore point left
+	 * unchanged will be the highest bore point with a name that contains "Body".
+	 * 
+	 * @param aCalculator
+	 * @param tuning
+	 * @param aEvaluator
+	 */
 	public BorePositionObjectiveFunction(InstrumentCalculator aCalculator,
 			TuningInterface tuning, EvaluatorInterface aEvaluator)
 	{
-		this(aCalculator, tuning, aEvaluator, 1, false);
+		this(aCalculator, tuning, aEvaluator,
+				BoreDiameterFromBottomObjectiveFunction
+						.getTopOfBody(aCalculator.getInstrument()) + 1, false);
 	}
 
 	protected void setConstraints()
@@ -222,6 +255,8 @@ public class BorePositionObjectiveFunction extends BaseObjectiveFunction
 		if (unchangedBottomPoint == 0)
 		{
 			// Adjust first lower bound to keep bottom bore point below the bottom hole.
+			// This strategy is inadequate for merged optimizers that may move
+			// the bottom hole.
 			PositionInterface[] sortedHoles = Instrument.sortList(calculator
 					.getInstrument().getHole());
 			double bottomHolePosition;

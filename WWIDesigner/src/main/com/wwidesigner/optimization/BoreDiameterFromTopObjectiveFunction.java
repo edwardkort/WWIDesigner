@@ -184,8 +184,7 @@ public class BoreDiameterFromTopObjectiveFunction extends BaseObjectiveFunction
 	protected void setConstraints()
 	{
 		String name;
-		int dimension;
-		for (dimension = 0; dimension < nrDimensions; ++dimension)
+		for (int dimension = 0; dimension < nrDimensions; ++dimension)
 		{
 			name = "Ratio of diameters, bore point "
 					+ String.valueOf(dimension + 1) + " / bore point "
@@ -213,13 +212,12 @@ public class BoreDiameterFromTopObjectiveFunction extends BaseObjectiveFunction
 	public double[] getGeometryPoint()
 	{
 		double[] geometry = new double[nrDimensions];
-		int dimension;
 		PositionInterface[] sortedPoints = Instrument.sortList(calculator
 				.getInstrument().getBorePoint());
 		BorePoint borePoint = (BorePoint) sortedPoints[referencePointIdx()];
 		double nextBoreDia = borePoint.getBoreDiameter();
 
-		for (dimension = nrDimensions - 1; dimension >= 0; --dimension)
+		for (int dimension = nrDimensions - 1; dimension >= 0; --dimension)
 		{
 			borePoint = (BorePoint) sortedPoints[dimension];
 			if (nextBoreDia < 0.000001)
@@ -235,12 +233,11 @@ public class BoreDiameterFromTopObjectiveFunction extends BaseObjectiveFunction
 	@Override
 	public void setGeometryPoint(double[] point)
 	{
-		int dimension;
 		PositionInterface[] sortedPoints = Instrument.sortList(calculator
 				.getInstrument().getBorePoint());
 		BorePoint borePoint = (BorePoint) sortedPoints[referencePointIdx()];
 		double nextBoreDia = borePoint.getBoreDiameter();
-		for (dimension = nrDimensions - 1; dimension >= 0; --dimension)
+		for (int dimension = nrDimensions - 1; dimension >= 0; --dimension)
 		{
 			borePoint = (BorePoint) sortedPoints[dimension];
 			borePoint.setBoreDiameter(point[dimension] * nextBoreDia);

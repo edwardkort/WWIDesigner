@@ -183,6 +183,8 @@ public class HolePositionObjectiveFunction extends BaseObjectiveFunction
 				if (oldPosition + netChange <= priorBorePoint + MINIMUM_BORE_POINT_SPACING)
 				{
 					// Squeeze bore points together if necessary.
+					// This has undesirable consequences: it will not be undone in
+					// subsequent optimization geometries even if it is no longer required.
 					borePoint.setBorePosition(priorBorePoint + MINIMUM_BORE_POINT_SPACING);
 				}
 				else
@@ -204,6 +206,9 @@ public class HolePositionObjectiveFunction extends BaseObjectiveFunction
 				double currentPosition = borePoint.getBorePosition();
 				if (currentPosition >= newEndPosition)
 				{
+					// Squeeze bore points together if necessary.
+					// This has undesirable consequences: it will not be undone in
+					// subsequent optimization geometries even if it is no longer required.
 					newEndPosition -= MINIMUM_BORE_POINT_SPACING;
 					borePoint.setBorePosition(newEndPosition);
 				}

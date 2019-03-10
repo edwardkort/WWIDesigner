@@ -1,5 +1,6 @@
 /**
- * Global optimization objective function for holes and bore points.
+ * Global optimization objective function for bore point diameter and position
+ * from bottom of bore.
  * 
  * Copyright (C) 2016, Edward Kort, Antoine Lefebvre, Burton Patkau.
  *
@@ -23,33 +24,33 @@ import com.wwidesigner.modelling.InstrumentCalculator;
 import com.wwidesigner.note.TuningInterface;
 
 /**
- * Optimization objective function for hole position and diameter, and bore
- * point position and diameter, using DIRECT global optimizer.
+ * Optimization objective function for bore point diameter and position
+ * from bottom of bore, using DIRECT global optimizer.
  * 
  * @author Burton Patkau
  */
-public class GlobalHoleAndBoreObjectiveFunction extends HoleAndBoreObjectiveFunction
+public class GlobalBoreFromBottomObjectiveFunction extends BoreFromBottomObjectiveFunction
 {
 
 	/**
-	 * Create an optimization objective function for hole positions and
-	 * diameters, and bore point position and diameter at existing bore
-	 * points, for use with DIRECT global optimizer.
+	 * Create an optimization objective function for bore point position and
+	 * diameter at existing bore points at the bottom of the bore,
+	 * for use with DIRECT global optimizer.
 	 * 
 	 * @param aCalculator
 	 * @param tuning
 	 * @param aEvaluator
-	 * @param unchangedBorePoints
-	 *            - Leave diameter and position unchanged for this many bore
-	 *            points from the top of the bore.
+	 * @param aUnchangedBorePoints - Index of first bore point to optimize.
+	 *        Leave position and diameter unchanged for this many bore points
+	 *        from the top of the bore.
 	 */
-	public GlobalHoleAndBoreObjectiveFunction(InstrumentCalculator aCalculator,
+	public GlobalBoreFromBottomObjectiveFunction(InstrumentCalculator aCalculator,
 			TuningInterface tuning, EvaluatorInterface aEvaluator, 
-			int unchangedBorePoints)
+			int aUnchangedBorePoints)
 	{
-		super(aCalculator, tuning, aEvaluator, unchangedBorePoints);
+		super(aCalculator, tuning, aEvaluator, aUnchangedBorePoints);
 		optimizerType = OptimizerType.DIRECTOptimizer;
-		maxEvaluations = 60000;
-		constraints.setObjectiveDisplayName("Hole and bore point global optimizer");
+		maxEvaluations = 40000;
+		constraints.setObjectiveDisplayName("Bore point, from bottom, global optimizer");
 	}
 }

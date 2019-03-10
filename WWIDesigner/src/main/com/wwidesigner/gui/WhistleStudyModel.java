@@ -43,6 +43,7 @@ import com.wwidesigner.optimization.AirstreamLengthObjectiveFunction;
 import com.wwidesigner.optimization.BaseObjectiveFunction;
 import com.wwidesigner.optimization.BasicTaperObjectiveFunction;
 import com.wwidesigner.optimization.BetaObjectiveFunction;
+import com.wwidesigner.optimization.BoreDiameterFromBottomObjectiveFunction;
 import com.wwidesigner.optimization.BoreDiameterFromTopObjectiveFunction;
 import com.wwidesigner.optimization.BoreSpacingFromTopObjectiveFunction;
 import com.wwidesigner.optimization.Constraints;
@@ -51,6 +52,7 @@ import com.wwidesigner.optimization.GlobalHoleAndTaperObjectiveFunction;
 import com.wwidesigner.optimization.GlobalHoleObjectiveFunction;
 import com.wwidesigner.optimization.GlobalHolePositionObjectiveFunction;
 import com.wwidesigner.optimization.HeadjointObjectiveFunction;
+import com.wwidesigner.optimization.HoleAndBoreDiameterFromBottomObjectiveFunction;
 import com.wwidesigner.optimization.HoleAndBoreDiameterFromTopObjectiveFunction;
 import com.wwidesigner.optimization.HoleAndBoreSpacingFromTopObjectiveFunction;
 import com.wwidesigner.optimization.HoleAndHeadjointObjectiveFunction;
@@ -82,17 +84,19 @@ public class WhistleStudyModel extends StudyModel
 	public static final String WINDOW_OPT_SUB_CATEGORY_ID = "1.1 Window Height Calibrator";			// for whistles
 	public static final String AIRSTREAM_OPT_SUB_CATEGORY_ID = "1.1 Airstream Length Calibrator";	// for flutes
 	public static final String BETA_OPT_SUB_CATEGORY_ID = "1.2 Beta Calibrator";
-	public static final String LENGTH_OPT_SUB_CATEGORY_ID = "2. Length Optimizer";
-	public static final String HOLESIZE_OPT_SUB_CATEGORY_ID = "3. Hole Size Optimizer";
-	public static final String HOLESPACE_OPT_SUB_CATEGORY_ID = "4. Hole Spacing Optimizer";
-	public static final String HOLE_OPT_SUB_CATEGORY_ID = "5. Hole Size+Spacing Optimizer";
-	public static final String TAPER_OPT_SUB_CATEGORY_ID = "6. Taper Optimizer";
-	public static final String HOLE_TAPER_OPT_SUB_CATEGORY_ID = "6.1 Hole and Taper Optimizer";
-	public static final String BORE_DIA_TOP_OPT_SUB_CATEGORY_ID = "7. Upper Bore Diameter Optimizer";	// for whistles
-	public static final String HOLE_BORE_DIA_TOP_OPT_SUB_CATEGORY_ID = "7.1 Hole and Upper Bore Diameter Optimizer";
-	public static final String STOPPER_OPT_SUB_CATEGORY_ID = "7. Stopper Position Optimizer";			// for flutes
-	public static final String HEADJOINT_OPT_SUB_CATEGORY_ID = "7.1 Headjoint Optimizer";				// for flutes
-	public static final String HOLE_HEADJOINT_OPT_SUB_CATEGORY_ID = "7.2 Hole and Headjoint Optimizer";	// for flutes
+	public static final String HOLESIZE_OPT_SUB_CATEGORY_ID = "2. Hole Size Optimizer";
+	public static final String HOLESPACE_OPT_SUB_CATEGORY_ID = "3. Hole Spacing Optimizer";
+	public static final String HOLE_OPT_SUB_CATEGORY_ID = "4. Hole Size+Spacing Optimizer";
+	public static final String LENGTH_OPT_SUB_CATEGORY_ID = "4.1 Length Optimizer";					// Not used
+	public static final String TAPER_OPT_SUB_CATEGORY_ID = "5. Taper Optimizer";
+	public static final String HOLE_TAPER_OPT_SUB_CATEGORY_ID = "5.1 Hole and Taper Optimizer";
+	public static final String BORE_DIA_TOP_OPT_SUB_CATEGORY_ID = "6. Upper Bore Diameter Optimizer";	// for whistles
+	public static final String HOLE_BORE_DIA_TOP_OPT_SUB_CATEGORY_ID = "6.1 Hole and Upper Bore Diameter Optimizer";
+	public static final String STOPPER_OPT_SUB_CATEGORY_ID = "6. Stopper Position Optimizer";			// for flutes
+	public static final String HEADJOINT_OPT_SUB_CATEGORY_ID = "6.1 Headjoint Optimizer";				// for flutes
+	public static final String HOLE_HEADJOINT_OPT_SUB_CATEGORY_ID = "6.2 Hole and Headjoint Optimizer";	// for flutes
+	public static final String BORE_DIA_BOTTOM_OPT_SUB_CATEGORY_ID = "7. Lower Bore Diameter Optimizer";
+	public static final String HOLE_BORE_DIA_BOTTOM_OPT_SUB_CATEGORY_ID = "7.1 Hole and Lower Bore Diameter Optimizer";
 	public static final String BORE_SPACING_OPT_SUB_CATEGORY_ID = "8. Upper Bore Spacing Optimizer";
 	public static final String HOLE_BORE_SPACING_OPT_SUB_CATEGORY_ID = "8.1 Hole and Upper Bore Spacing Optimizer";
 	public static final String GLOBAL_HOLESPACE_OPT_SUB_CATEGORY_ID = "A. Hole Spacing Global Optimizer";
@@ -147,9 +151,9 @@ public class WhistleStudyModel extends StudyModel
 				AirstreamLengthObjectiveFunction.class.getSimpleName());
 		objectiveFunctionNames.put(BETA_OPT_SUB_CATEGORY_ID,
 				BetaObjectiveFunction.class.getSimpleName());
-		optimizers.addSub(LENGTH_OPT_SUB_CATEGORY_ID, null);
-		objectiveFunctionNames.put(LENGTH_OPT_SUB_CATEGORY_ID,
-				LengthObjectiveFunction.class.getSimpleName());
+		// optimizers.addSub(LENGTH_OPT_SUB_CATEGORY_ID, null);
+		// objectiveFunctionNames.put(LENGTH_OPT_SUB_CATEGORY_ID,
+		//		LengthObjectiveFunction.class.getSimpleName());
 		optimizers.addSub(HOLESIZE_OPT_SUB_CATEGORY_ID, null);
 		objectiveFunctionNames.put(HOLESIZE_OPT_SUB_CATEGORY_ID,
 				HoleSizeObjectiveFunction.class.getSimpleName());
@@ -177,6 +181,12 @@ public class WhistleStudyModel extends StudyModel
 				HoleAndBoreDiameterFromTopObjectiveFunction.class.getSimpleName());
 		objectiveFunctionNames.put(HOLE_HEADJOINT_OPT_SUB_CATEGORY_ID,
 				HoleAndHeadjointObjectiveFunction.class.getSimpleName());
+		optimizers.addSub(BORE_DIA_BOTTOM_OPT_SUB_CATEGORY_ID, null);
+		objectiveFunctionNames.put(BORE_DIA_BOTTOM_OPT_SUB_CATEGORY_ID,
+				BoreDiameterFromBottomObjectiveFunction.class.getSimpleName());
+		optimizers.addSub(HOLE_BORE_DIA_BOTTOM_OPT_SUB_CATEGORY_ID, null);
+		objectiveFunctionNames.put(HOLE_BORE_DIA_BOTTOM_OPT_SUB_CATEGORY_ID,
+				HoleAndBoreDiameterFromBottomObjectiveFunction.class.getSimpleName());
 		optimizers.addSub(BORE_SPACING_OPT_SUB_CATEGORY_ID, null);
 		objectiveFunctionNames.put(BORE_SPACING_OPT_SUB_CATEGORY_ID,
 				BoreSpacingFromTopObjectiveFunction.class.getSimpleName());
@@ -493,13 +503,25 @@ public class WhistleStudyModel extends StudyModel
 				aObjective = new BoreDiameterFromTopObjectiveFunction(calculator, tuning,
 						evaluator);
 				nrDimensions = aObjective.getNrDimensions();
-				// First bound is stopper position, expressed in meters.
-				// Remaining bounds are diameter ratios.
+				// Bounds are diameter ratios.  Default to taper inward toward top.
 				lowerBound = new double[nrDimensions];
 				upperBound = new double[nrDimensions];
 				Arrays.fill(lowerBound, 0.5);
 				Arrays.fill(upperBound, 1.0);
 				lowerBound[0] = 0.999;
+				break;
+
+			case "BoreDiameterFromBottomObjectiveFunction":
+				evaluator = new CentDeviationEvaluator(calculator,
+						getInstrumentTuner());
+				aObjective = new BoreDiameterFromBottomObjectiveFunction(calculator, tuning,
+						evaluator);
+				nrDimensions = aObjective.getNrDimensions();
+				// Bounds are diameter ratios.  Default to taper inward toward bottom.
+				lowerBound = new double[nrDimensions];
+				upperBound = new double[nrDimensions];
+				Arrays.fill(lowerBound, 0.5);
+				Arrays.fill(upperBound, 1.0);
 				break;
 
 			case "HeadjointObjectiveFunction":
@@ -597,6 +619,44 @@ public class WhistleStudyModel extends StudyModel
 				Arrays.fill(lowerBound, 2*numberOfHoles + 3,
 						lowerBound.length, 0.5);
 				Arrays.fill(upperBound, 2*numberOfHoles + 2,
+						upperBound.length, 1.0);
+				break;
+
+			case "HoleAndBoreDiameterFromBottomObjectiveFunction":
+				evaluator = new CentDeviationEvaluator(calculator,
+						getInstrumentTuner());
+				aObjective = new HoleAndBoreDiameterFromBottomObjectiveFunction(calculator,
+						tuning, evaluator);
+				nrDimensions = aObjective.getNrDimensions();
+				// Separation bounds and diameter bounds, expressed in meters,
+				// and bore position ratios.
+				lowerBound = new double[nrDimensions];
+				upperBound = new double[nrDimensions];
+				Arrays.fill(lowerBound, MIN_HOLE_DIAMETER);
+				Arrays.fill(upperBound, MAX_HOLE_DIAMETER);
+				// Bounds on hole spacing.
+				lowerBound[0] = MIN_BORE_LENGTH;
+				upperBound[0] = MAX_BORE_LENGTH;
+				for (int gapNr = 1; gapNr < numberOfHoles; ++gapNr)
+				{
+					lowerBound[gapNr] = 0.012;
+					upperBound[gapNr] = 0.040;
+				}
+				if (numberOfHoles > 0)
+				{
+					lowerBound[numberOfHoles] = 0.012;
+					upperBound[numberOfHoles] = 0.200;
+				}
+				if (numberOfHoles >= 5)
+				{
+					// Allow extra space between hands, assuming upper hand
+					// uses same number or one more finger than lower hand.
+					upperBound[(numberOfHoles+1)/2] = 0.100;
+				}
+				// Bore diameter ratios.
+				Arrays.fill(lowerBound, 2*numberOfHoles + 1,
+						lowerBound.length, 0.5);
+				Arrays.fill(upperBound, 2*numberOfHoles + 1,
 						upperBound.length, 1.0);
 				break;
 

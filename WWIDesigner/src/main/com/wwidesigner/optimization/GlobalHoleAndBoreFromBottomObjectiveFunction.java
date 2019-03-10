@@ -28,13 +28,14 @@ import com.wwidesigner.note.TuningInterface;
  * 
  * @author Burton Patkau
  */
-public class GlobalHoleAndBoreDiameterObjectiveFunction extends HoleAndBoreDiameterObjectiveFunction
+public class GlobalHoleAndBoreFromBottomObjectiveFunction extends
+		HoleAndBoreFromBottomObjectiveFunction
 {
 
 	/**
 	 * Create an optimization objective function for hole positions and
-	 * diameters, and bore point position and diameter at existing bore
-	 * points, for use with DIRECT global optimizer.
+	 * diameters, and bore point position and diameter at existing bore points,
+	 * for use with DIRECT global optimizer.
 	 * 
 	 * @param aCalculator
 	 * @param tuning
@@ -43,13 +44,14 @@ public class GlobalHoleAndBoreDiameterObjectiveFunction extends HoleAndBoreDiame
 	 *            - Leave diameter and position unchanged for this many bore
 	 *            points from the top of the bore.
 	 */
-	public GlobalHoleAndBoreDiameterObjectiveFunction(InstrumentCalculator aCalculator,
-			TuningInterface tuning, EvaluatorInterface aEvaluator, 
-			int unchangedBorePoints)
+	public GlobalHoleAndBoreFromBottomObjectiveFunction(
+			InstrumentCalculator aCalculator, TuningInterface tuning,
+			EvaluatorInterface aEvaluator, int unchangedBorePoints)
 	{
 		super(aCalculator, tuning, aEvaluator, unchangedBorePoints);
 		optimizerType = OptimizerType.DIRECTOptimizer;
 		maxEvaluations = 60000;
-		constraints.setObjectiveDisplayName("Hole and bore diameter global optimizer");
+		constraints
+				.setObjectiveDisplayName("Hole and bore point global optimizer");
 	}
 }

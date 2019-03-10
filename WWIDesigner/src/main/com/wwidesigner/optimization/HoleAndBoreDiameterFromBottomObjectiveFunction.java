@@ -1,6 +1,6 @@
 /**
  * Optimization objective function for hole positions and diameters, and
- * relative positions of existing bore points at the bottom of the bore.
+ * diameters of existing bore points at the bottom of the bore.
  * 
  * Copyright (C) 2019, Edward Kort, Antoine Lefebvre, Burton Patkau.
  *
@@ -25,55 +25,51 @@ import com.wwidesigner.note.TuningInterface;
 import com.wwidesigner.optimization.HolePositionObjectiveFunction.BoreLengthAdjustmentType;
 
 /**
- * Optimization objective function for hole positions and diameters, and
- * relative positions of existing bore points from bottom of bore:
+ * Optimization objective function for hole positions and diameters,
+ * and bore diameters at existing bore points at the bottom of the bore:
  * <ul>
  * <li>Position of end of bore,</li>
- * <li>For each hole, spacing to next hole, ending with spacing from last hole
- * to end of bore.</li>
+ * <li>For each hole, spacing to next hole, ending with spacing
+ * from last hole to end of bore.</li>
  * <li>For each hole, hole diameter.</li>
- * <li>For interior bore points down to the bottom,
- * distance from prior bore point to this bore point,
- * as a fraction of the distance from the prior bore point to the bottom.</li>
+ * <li>For bore points down to the bottom, ratio of diameters of this
+ * bore point to prior bore point upward.</li>
  * </ul>
- * The bore points to vary can be specified as a number of bore points or with a
- * bore point name. The positions of bore points above these are left unchanged.
- * Bore point diameters are invariant. <br>
+ * The diameter at upper bore points is left invariant.
+ * 
+ * Use of diameter ratios rather than absolute diameters allows constraints to control
+ * the direction of taper.  If lower bound is 1.0, bore flares out toward bottom;
+ * if upper bound is 1.0, bore tapers inward toward bottom.
  * 
  * @author Burton Patkau
  * 
  */
-public class HoleAndBorePositionObjectiveFunction extends
-		MergedObjectiveFunction
+public class HoleAndBoreDiameterFromBottomObjectiveFunction extends MergedObjectiveFunction
 {
-	public static final String DISPLAY_NAME
-			= "Hole, plus bore-point position from bottom, optimizer";
+	public static final String DISPLAY_NAME = "Hole, plus bore diameter from bottom, optimizer";
 
 	/**
 	 * Create an optimization objective function for hole positions and
-	 * diameters, and relative bore point position at existing bore points.
+	 * diameters, and bore diameters at existing bore points at bottom of bore.
 	 * 
 	 * @param aCalculator
 	 * @param tuning
 	 * @param aEvaluator
 	 * @param aUnchangedBorePoints - Index of first bore point to optimize.
-	 *        Leave position unchanged for this many bore points from the top of the bore.
+	 *        Leave diameter unchanged for this many bore points from the top of the bore.
 	 */
-	public HoleAndBorePositionObjectiveFunction(
-			InstrumentCalculator aCalculator, TuningInterface tuning,
-			EvaluatorInterface aEvaluator, int unchangedBorePoints)
+	public HoleAndBoreDiameterFromBottomObjectiveFunction(InstrumentCalculator aCalculator,
+			TuningInterface tuning, EvaluatorInterface aEvaluator, 
+			int unchangedBorePoints)
 	{
 		super(aCalculator, tuning, aEvaluator);
 		this.components = new BaseObjectiveFunction[3];
-		// Since BorePositionObjectiveFunction uses ratios from the bottom
-		// (intra-bell ratios), PRESERVE_BELL may have less impact on those
-		// geometry dimensions than MOVE_BOTTOM.
 		this.components[0] = new HolePositionObjectiveFunction(aCalculator,
-				tuning, aEvaluator, BoreLengthAdjustmentType.PRESERVE_BELL);
+				tuning, aEvaluator, BoreLengthAdjustmentType.MOVE_BOTTOM);
 		this.components[1] = new HoleSizeObjectiveFunction(aCalculator, tuning,
 				aEvaluator);
-		this.components[2] = new BorePositionObjectiveFunction(aCalculator,
-				tuning, aEvaluator, unchangedBorePoints, true);
+		this.components[2] = new BoreDiameterFromBottomObjectiveFunction(aCalculator, tuning,
+				aEvaluator, unchangedBorePoints);
 		optimizerType = OptimizerType.BOBYQAOptimizer; // MultivariateOptimizer
 		maxEvaluations = 50000;
 		sumDimensions();
@@ -84,27 +80,18 @@ public class HoleAndBorePositionObjectiveFunction extends
 
 	/**
 	 * Create an optimization objective function for hole positions and
-	 * diameters, and relative bore positions at existing bore points at bottom
-	 * of bore. The lowest bore point left unchanged will be the highest bore
-	 * point with a name that contains "Body".
+	 * diameters, and bore diameters at existing bore points at bottom of bore.
+	 * The lowest bore point left unchanged will be the highest bore point
+	 * with a name that contains "Body".
 	 * 
 	 * @param aCalculator
 	 * @param tuning
 	 * @param aEvaluator
 	 */
-	public HoleAndBorePositionObjectiveFunction(
-			InstrumentCalculator aCalculator, TuningInterface tuning,
-			EvaluatorInterface aEvaluator)
+	public HoleAndBoreDiameterFromBottomObjectiveFunction(InstrumentCalculator aCalculator,
+			TuningInterface tuning, EvaluatorInterface aEvaluator)
 	{
 		this(aCalculator, tuning, aEvaluator,
-				BoreDiameterFromBottomObjectiveFunction
-						.getTopOfBody(aCalculator.getInstrument()) + 1);
+				BoreDiameterFromBottomObjectiveFunction.getTopOfBody(aCalculator.getInstrument()) + 1);
 	}
-
-	@Override
-	public double getStoppingTrustRegionRadius()
-	{
-		return 0.9e-6;
-	}
-
 }

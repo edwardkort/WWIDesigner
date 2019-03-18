@@ -29,7 +29,7 @@ public class UnflangedEndCalculator extends TerminationCalculator
 		}
 		Complex Zend = Tube.calcZload(params.calcFrequency(wave_number),
 				0.5*termination.getBoreDiameter(), params);
-		return new StateVector( Zend, Complex.ONE );
+		return new StateVector( Zend );
 	}
 
 }

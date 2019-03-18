@@ -53,6 +53,31 @@ public class StateVector
     }
 
     /**
+     * Construct a new state vector that satisfies Z.equals(this.getImpedance()).
+     */
+    public StateVector( Complex Z )
+    {
+    	if (Z.getReal() == Double.POSITIVE_INFINITY)
+    	{
+    		mP = new Complex(1.0, 0.0);
+    		mU = new Complex(0.0, 0.0);
+    		return;
+    	}
+    	if (Z.getReal() == Double.NEGATIVE_INFINITY)
+    	{
+    		mP = new Complex(-1.0, 0.0);
+    		mU = new Complex(0.0, 0.0);
+    		return;
+    	}
+    	// For greater robustness, divide both P and U by (1+Z),
+    	// so that both are between 0 and 1, but ratio still works out to Z.
+    	// From Paul Dickens, 2007.
+    	Complex Zplus1 = Z.add(1.0);
+        mP = Z.divide(Zplus1);
+        mU = Complex.ONE.divide(Zplus1);
+    }
+
+    /**
      * @return a state vector representing an ideal open end.
      */
     public static StateVector OpenEnd()

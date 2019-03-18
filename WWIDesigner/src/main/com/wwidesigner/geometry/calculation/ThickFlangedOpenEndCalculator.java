@@ -17,10 +17,10 @@ public class ThickFlangedOpenEndCalculator extends TerminationCalculator
 		{
 			return StateVector.ClosedEnd();
 		}
-		Complex P = calcZ(termination, wave_number, params).multiply(
+		Complex Z = calcZ(termination, wave_number, params).multiply(
 				params.calcZ0(termination.getBoreDiameter() / 2.));
 
-		return new StateVector(P, Complex.ONE);
+		return new StateVector(Z);
 	}
 
 	private static Complex calcZ(Termination termination,

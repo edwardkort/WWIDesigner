@@ -151,45 +151,46 @@ public class DefaultHoleCalculator extends HoleCalculator
 		Complex Ys = Complex.ZERO; // Shunt admittance == 1/Zs
 		Complex Za = Complex.ZERO; // Series impedance
 
-		double Z0h = parameters.calcZ0(radius);
+		double Z0h = parameters.calcZ0(radius); // Characteristic impedance of hole.
 		double delta = radius / boreRadius;
 		double delta2 = delta * delta;
-		// double Z0 = parameters.calcZ0(boreRadius);
-		// Z0 == Z0h * delta*delta
 
+		// Equation 8.
 		double tm = (radius * delta / 8.) * (1. + 0.207d * delta * delta2);
 		double te = hole.getHeight() + tm;
+		// Equation 31.
+		double ti = radius
+				* (0.822d + delta * (-0.095d + delta * (-1.566d + delta
+						* (2.138d + delta * (-1.640d + delta * 0.502d)))));
 
 		double ta = 0.;
-
-		// Complex Gamma = Complex.I.multiply(wave_number);
 
 		if (isOpen)
 		{
 			double kb = waveNumber * radius;
 			double ka = waveNumber * boreRadius;
 
+			// Equation 33.
 			ta = (-0.35d + 0.06d * FastMath.tanh(2.7d * hole.getHeight() / radius))
 					* radius * delta2;
 
-			Complex Zr = new Complex(0.25d * kb * kb,
-					(0.822d - 0.47d * FastMath
-							.pow(radius / (boreRadius + hole.getHeight()), 0.8d))
-					* waveNumber * radius);
-			double cos = FastMath.cos(waveNumber * te);
-			Complex jsin = new Complex(0, FastMath.sin(waveNumber * te));
-
-			Complex Zo = (Zr.multiply(cos).add(jsin))
-					.divide(Zr.multiply(jsin).add(cos));
-
-			double ti = radius
-					* (0.822d + delta * (-0.095d + delta * (-1.566d + delta
-							* (2.138d + delta * (-1.640d + delta * 0.502d)))))
-					* (1. + (1. - 4.56d * delta + 6.55d * delta2) * ka
+			// Equation 31 times equation 32.
+			ti = ti	* (1. + (1. - 4.56d * delta + 6.55d * delta2) * ka
 							* (0.17d + ka * (0.92d + ka * (0.16d - 0.29d * ka))));
 
+			// Normalized radiation resistance, real part of Zs, per equation 3,
+			// (rather than real part of Zr in equation 10).
+			double Rr = 0.25d * kb * kb;
+			// Radiation length correction (equation 10 with Zr/Z0h = jk*tr
+			// without real part).
+			// Equation 11 times radius.
+			double tr = radius * (0.822d - 0.47d * FastMath
+					.pow(radius / (boreRadius + hole.getHeight()), 0.8d));
+
+			// Equation 3 and 7, inverted.
+			double kttotal = waveNumber * ti + FastMath.tan(waveNumber * (te + tr));
 			Ys = Complex.ONE.divide(
-					Complex.I.multiply(waveNumber * ti).add(Zo).multiply(Z0h));
+					Complex.I.multiply(kttotal).add(Rr).multiply(Z0h));
 
 		}
 		else if (hole.getKey() == null)
@@ -203,30 +204,34 @@ public class DefaultHoleCalculator extends HoleCalculator
 			}
 			else
 			{
+				// Equation 34.
 				ta = (-0.12d - 0.17d * FastMath.tanh(
 						2.4d * (hole.getHeight() - AssumedFingerSize) / radius))
 						* radius * delta2;
-				Ys = Complex.valueOf(0,
-						FastMath.tan(waveNumber * (te - AssumedFingerSize))
-								/ Z0h);
+				// Equation 16, inverted.
+				double kttotal = waveNumber * ti
+						- 1.0/FastMath.tan(waveNumber * (te - AssumedFingerSize));
+				Ys = Complex.valueOf(0.0, - 1.0/(Z0h * kttotal));
 			}
 		}
 		else
 		{
-			// Tonehole closed by key.
+			// Tonehole closed by key, not yet implemented.
 			ta = (-0.12d - 0.17d * FastMath.tanh(2.4d * hole.getHeight() / radius))
 					* radius * delta2;
-			Ys = Complex.valueOf(0, FastMath.tan(waveNumber * te) / Z0h);
+			Ys = Complex.valueOf(0.0, FastMath.tan(waveNumber * te) / Z0h);
 		}
 
+		// Equation 4, 6.
+		// double Z0 = parameters.calcZ0(boreRadius);
+		// Z0 == Z0h * delta*delta
 		Za = Complex.I.multiply(Z0h * delta2 * waveNumber * ta);
 		Complex Za_Zs = Za.multiply(Ys);
 
+		// Transfer matrix (equation 2).
 		Complex A = Za_Zs.divide(2.).add(1.);
 		Complex B = Za.multiply(Za_Zs.divide(4.).add(1.));
 		Complex C = Ys;
-		// Choose A and D to make the determinant = 1.
-		// Complex A = Complex.ONE.add(B.multiply(C)).sqrt();
 		TransferMatrix result = new TransferMatrix(A, B, C, A);
 
 		// assert result.determinant() == Complex.ONE;

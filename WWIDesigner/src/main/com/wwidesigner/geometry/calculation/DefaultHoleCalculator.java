@@ -37,9 +37,8 @@ import com.wwidesigner.util.PhysicalParameters;
  */
 public class DefaultHoleCalculator extends HoleCalculator
 {
-	// For bare (key-less) toneholes, assume the player's finger
-	// occupies a fixed length of the tonehole, in meters.
-	private static double AssumedFingerSize = 0.000;
+	private static double FingerRadius = 0.0075;
+	private static boolean isPlugged = false;
 	private double mFudgeFactor = 1.0;
 
 	public DefaultHoleCalculator()
@@ -156,7 +155,11 @@ public class DefaultHoleCalculator extends HoleCalculator
 		double delta2 = delta * delta;
 
 		// Equation 8.
-		double tm = (radius * delta / 8.) * (1. + 0.207d * delta * delta2);
+		double tm = 0.125d * radius * delta * (1. + 0.207d * delta * delta2);
+		// From Equation 2.3.12 from Lefebvre 2010.
+		// double outerDelta = radius / (boreRadius + hole.getHeight());
+		// tm = tm - 0.125d * (radius * outerDelta)
+		//			* (1 + 0.207d * outerDelta * outerDelta * outerDelta);
 		double te = hole.getHeight() + tm;
 		// Equation 31.
 		double ti = radius
@@ -186,6 +189,8 @@ public class DefaultHoleCalculator extends HoleCalculator
 			// Equation 11 times radius.
 			double tr = radius * (0.822d - 0.47d * FastMath
 					.pow(radius / (boreRadius + hole.getHeight()), 0.8d));
+			// Benade and Murray, 1967.
+			// tr = 0.64d * radius * (1.0 + 0.32d * FastMath.log(0.3d/outerDelta));
 
 			// Equation 3 and 7, inverted.
 			double kttotal = waveNumber * ti + FastMath.tan(waveNumber * (te + tr));
@@ -193,26 +198,23 @@ public class DefaultHoleCalculator extends HoleCalculator
 					Complex.I.multiply(kttotal).add(Rr).multiply(Z0h));
 
 		}
+		else if (isPlugged)
+		{
+			// Tonehole is fully plugged. Ignore the hole entirely.
+			ta = 0.;
+			Ys = Complex.ZERO;
+		}
 		else if (hole.getKey() == null)
 		{
 			// Tonehole closed by player's finger.
-			if (hole.getHeight() <= AssumedFingerSize)
-			{
-				// Finger is likely to fill the hole. Ignore the hole entirely.
-				ta = 0.;
-				Ys = Complex.ZERO;
-			}
-			else
-			{
-				// Equation 34.
-				ta = (-0.12d - 0.17d * FastMath.tanh(
-						2.4d * (hole.getHeight() - AssumedFingerSize) / radius))
+			// Equation 34, revised constants.
+			ta = (-0.12d - 0.17d * FastMath.tanh(
+			// ta = (-0.20d - 0.10d * FastMath.tanh(
+						2.4d * hole.getHeight() / radius))
 						* radius * delta2;
-				// Equation 16, inverted.
-				double kttotal = waveNumber * ti
-						- 1.0/FastMath.tan(waveNumber * (te - AssumedFingerSize));
-				Ys = Complex.valueOf(0.0, - 1.0/(Z0h * kttotal));
-			}
+			// Equation 16, inverted.
+			double tankt = FastMath.tan(waveNumber * te);
+			Ys = Complex.valueOf(0.0, tankt/(Z0h * ( 1.0 - waveNumber * ti * tankt)));
 		}
 		else
 		{

@@ -61,6 +61,10 @@ public class LinearVInstrumentTuner extends InstrumentTuner
 	protected static final double BottomHi = 0.05;
 	protected static final double TopLo = 0.99;
 	protected static final double TopHi = 0.30;
+	protected static final double BottomFractions[]
+			= {0.35d, 0.35d, 0.30d, 0.30d, 0.25d, 0.25d, 0.20d, 0.15d, 0.10d, 0.10d, 0.05d};
+	protected static final double TopFractions[]
+			= {0.80d, 0.85d, 0.90d, 0.95d, 0.90d, 0.95d, 0.95d, 0.95d, 0.95d, 0.99d, 0.99d};
 
 	protected double fLow;		// Lowest frequency in target range.
 	protected double fHigh;		// Highest frequency in target range.
@@ -76,13 +80,8 @@ public class LinearVInstrumentTuner extends InstrumentTuner
 	
 	public LinearVInstrumentTuner(int blowingLevel)
 	{
-		// Interpolate between Low and Hi values, depending on blowing level.
-		// For bottom note, we want to stick close to BottomHi, except at
-		// the lowest blowing levels.
-		// For top note, we want to stick close to BottomLo, except at
-		// the highest blowing levels.
-		this(BottomHi - (double)((10-blowingLevel)*(10-blowingLevel)) * 0.01 * (BottomHi - BottomLo),
-			 TopLo + (double)(blowingLevel*blowingLevel) * 0.01 * (TopHi - TopLo));
+		this(calcBottomFraction(blowingLevel),
+			 calcTopFraction(blowingLevel));
 	}
 	
 	public LinearVInstrumentTuner(double bottomFr, double topFr)
@@ -94,6 +93,42 @@ public class LinearVInstrumentTuner extends InstrumentTuner
 		fHigh          = 100.0;
 		slope          = 0.0;
 		intercept      = 0.0;
+	}
+
+	protected static double calcBottomFraction(int blowingLevel)
+	{
+		// Interpolate between Low and Hi values, depending on blowing level.
+		// For bottom note, we want to stick close to BottomHi, except at
+		// the lowest blowing levels.
+		if (blowingLevel < 0)
+		{
+			return BottomLo;
+		}
+		if (blowingLevel > 10)
+		{
+			return BottomHi;
+		}
+		return BottomFractions[blowingLevel];
+	//	double blowingRange = (10 - blowingLevel) * (10 - blowingLevel);
+	//	return BottomHi + (BottomLo - BottomHi) * 0.01d * blowingRange;
+	}
+
+	protected static double calcTopFraction(int blowingLevel)
+	{
+		// Interpolate between Low and Hi values, depending on blowing level.
+		// For top note, we want to stick close to TopLo, except at
+		// the highest blowing levels.
+		if (blowingLevel < 0)
+		{
+			return TopLo;
+		}
+		if (blowingLevel > 10)
+		{
+			return TopHi;
+		}
+		return TopFractions[blowingLevel];
+	//	double blowingRange = blowingLevel * blowingLevel;
+	//	return TopLo - (TopLo - TopHi) * 0.01d * blowingRange;
 	}
 
 	// Complementary functions for velocity estimation.
@@ -163,7 +198,7 @@ public class LinearVInstrumentTuner extends InstrumentTuner
 		noteHigh.setNote(new Note());
 		for (Fingering target: fingeringTargets)
 		{
-			if ( target.getNote() != null )
+			if ( target.getNote() != null && target.getOptimizationWeight() > 0 )
 			{
 				if( target.getNote().getFrequency() != null )
 				{

@@ -139,6 +139,11 @@ public class PerturbedInstrumentOptimization
 		}
 	}
 
+	public Instrument getOriginalInstrument()
+	{
+		return originalInstrument;
+	}
+
 	/**
 	 * Optimize the current instrument, and compare it to the original instrument.
 	 * Pre:  setStudyModel() and setInstrument() have been called.
@@ -193,7 +198,7 @@ public class PerturbedInstrumentOptimization
 		if (oldMouthpiece.getBeta() != null)
 		{
 			assertEquals("Beta value incorrect", oldMouthpiece.getBeta(),
-					newMouthpiece.getBeta(), 0.001);
+					newMouthpiece.getBeta(), 0.002);
 		}
 		if (oldMouthpiece.getFipple() != null)
 		{

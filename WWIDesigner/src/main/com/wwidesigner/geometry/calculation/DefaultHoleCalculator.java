@@ -37,18 +37,43 @@ import com.wwidesigner.util.PhysicalParameters;
  */
 public class DefaultHoleCalculator extends HoleCalculator
 {
-	private static double FingerRadius = 0.0075;
-	private static boolean isPlugged = false;
+	/**
+	 *  Adjustment factor in meters for finger intrusion on a closed tonehole.
+	 *  Use zero for no intrusion, or for specific approximations:
+	 *  0.025 for effect of volume reduction from cap of 15 mm sphere,
+	 *  0.020 for effect of volume reduction from cap of 13 mm dia sphere,
+	 *  0.011 for height of cap of 13 mm dia sphere,
+	 *  0.010 for adjustment that Paul Dickens used in his 2007 thesis.
+	 */
+	protected double fingerAdjustment = DEFAULT_FINGER_ADJ;
+	public static final double NO_FINGER_ADJ = 0.000;
+	public static final double CAP_VOLUME_FINGER_ADJ = 0.020;
+	public static final double CAP_HEIGHT_FINGER_ADJ = 0.011;
+	public static final double DEFAULT_FINGER_ADJ = 0.010;
+	
+	protected boolean isPlugged = false;
+
 	private double mFudgeFactor = 1.0;
 
 	public DefaultHoleCalculator()
 	{
 		this.mFudgeFactor = 1.0;
+		this.isPlugged = false;
+		this.fingerAdjustment = DEFAULT_FINGER_ADJ;
 	}
 
 	public DefaultHoleCalculator(double fudgeFactor)
 	{
 		mFudgeFactor = fudgeFactor;
+		this.isPlugged = false;
+		this.fingerAdjustment = NO_FINGER_ADJ;
+	}
+	
+	public DefaultHoleCalculator(boolean aIsPlugged, double aFingerAdj)
+	{
+		this.mFudgeFactor = 1.0;
+		this.isPlugged = aIsPlugged;
+		this.fingerAdjustment = aFingerAdj;
 	}
 
 	/*
@@ -187,9 +212,11 @@ public class DefaultHoleCalculator extends HoleCalculator
 			// Radiation length correction (equation 10 with Zr/Z0h = jk*tr
 			// without real part).
 			// Equation 11 times radius.
+			// (Both Dalmont, et al., 2001, and Dickens, 2007, obtained
+			// larger values experimentally.)
 			double tr = radius * (0.822d - 0.47d * FastMath
 					.pow(radius / (boreRadius + hole.getHeight()), 0.8d));
-			// Benade and Murray, 1967.
+			// Benade and Murday, 1967.
 			// tr = 0.64d * radius * (1.0 + 0.32d * FastMath.log(0.3d/outerDelta));
 
 			// Equation 3 and 7, inverted.
@@ -207,13 +234,25 @@ public class DefaultHoleCalculator extends HoleCalculator
 		else if (hole.getKey() == null)
 		{
 			// Tonehole closed by player's finger.
-			// Equation 34, revised constants.
-			ta = (-0.12d - 0.17d * FastMath.tanh(
-			// ta = (-0.20d - 0.10d * FastMath.tanh(
+			// Equation 34, revised constants to better fit figure 13.
+			// ta = (-0.12d - 0.17d * FastMath.tanh(
+			ta = (-0.20d - 0.10d * FastMath.tanh(
 						2.4d * hole.getHeight() / radius))
 						* radius * delta2;
+			double tf = 0.0;
+			// Dickens, 2007, from data limited to bore radius 7.5 mm.
+			// tf = 0.76d * radius * delta;
+			if (fingerAdjustment > 0.0)
+			{
+				// Approximate curve fit.
+				tf = radius * radius / fingerAdjustment;
+				// Estimated from volume removed by finger divided by hole area.
+				// double h = FingerRadius - FastMath.sqrt(FingerRadius * FingerRadius
+				//		- radius * radius);
+				// tf = h * (3.0d + h * h / (radius * radius))/6.0d;
+			}
 			// Equation 16, inverted.
-			double tankt = FastMath.tan(waveNumber * te);
+			double tankt = FastMath.tan(waveNumber * (te - tf));
 			Ys = Complex.valueOf(0.0, tankt/(Z0h * ( 1.0 - waveNumber * ti * tankt)));
 		}
 		else
@@ -221,7 +260,8 @@ public class DefaultHoleCalculator extends HoleCalculator
 			// Tonehole closed by key, not yet implemented.
 			ta = (-0.12d - 0.17d * FastMath.tanh(2.4d * hole.getHeight() / radius))
 					* radius * delta2;
-			Ys = Complex.valueOf(0.0, FastMath.tan(waveNumber * te) / Z0h);
+			double tankt = FastMath.tan(waveNumber * te);
+			Ys = Complex.valueOf(0.0, tankt/(Z0h * ( 1.0 - waveNumber * ti * tankt)));
 		}
 
 		// Equation 4, 6.

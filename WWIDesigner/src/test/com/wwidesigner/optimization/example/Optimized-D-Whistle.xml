@@ -9,11 +9,11 @@
             <windowLength>5.4</windowLength>
             <windowWidth>6.500000000000001</windowWidth>
             <fippleFactor>1.0</fippleFactor>
-            <windowHeight>2.13</windowHeight>
+            <windowHeight>3.3</windowHeight>
             <windwayLength>21.0</windwayLength>
             <windwayHeight>1.6</windwayHeight>
         </fipple>
-        <beta>0.384</beta>
+        <beta>0.23</beta>
     </mouthpiece>
     <borePoint>
         <borePosition>-5.4</borePosition>
@@ -46,43 +46,43 @@
         <boreDiameter>11.9</boreDiameter>
     </borePoint>
     <borePoint>
-        <borePosition>265.0</borePosition>
+        <borePosition>265.5</borePosition>
         <boreDiameter>11.899999999999993</boreDiameter>
     </borePoint>
     <hole>
         <name>T1</name>
-        <borePosition>125.0</borePosition>
-        <diameter>6.6</diameter>
+        <borePosition>122.0</borePosition>
+        <diameter>6.05</diameter>
         <height>1.9</height>
     </hole>
     <hole>
         <name>T2</name>
-        <borePosition>144.0</borePosition>
-        <diameter>7.6</diameter>
+        <borePosition>145.0</borePosition>
+        <diameter>8.35</diameter>
         <height>1.9</height>
     </hole>
     <hole>
         <name>T3</name>
-        <borePosition>161.5</borePosition>
-        <diameter>7.2</diameter>
+        <borePosition>161.25</borePosition>
+        <diameter>7.15</diameter>
         <height>1.9</height>
     </hole>
     <hole>
         <name>B1</name>
-        <borePosition>188.5</borePosition>
-        <diameter>8.3</diameter>
+        <borePosition>187.5</borePosition>
+        <diameter>7.25</diameter>
         <height>1.9</height>
     </hole>
     <hole>
         <name>B2</name>
-        <borePosition>200.5</borePosition>
-        <diameter>7.5</diameter>
+        <borePosition>199.5</borePosition>
+        <diameter>7.05</diameter>
         <height>1.9</height>
     </hole>
     <hole>
         <name>B3</name>
-        <borePosition>226.0</borePosition>
-        <diameter>7.9</diameter>
+        <borePosition>220.0</borePosition>
+        <diameter>5.65</diameter>
         <height>1.9</height>
     </hole>
     <termination>

@@ -32,7 +32,7 @@ public class WhistleOptimizationTest extends PerturbedInstrumentOptimization
 		// Set up the study model to be tested.
 
 		WhistleStudyModel myStudy = new WhistleStudyModel();
-		myStudy.getParams().setProperties(27.0, 98.4, 100, 0.040);
+		myStudy.getParams().setProperties(27.0, 98.4, 100.0, 0.040);
 		myStudy.setBlowingLevel(4);
 		myStudy.setCategorySelection(CategoryType.OPTIMIZER_CATEGORY_ID,
 				WhistleStudyModel.HOLE_OPT_SUB_CATEGORY_ID);
@@ -66,7 +66,7 @@ public class WhistleOptimizationTest extends PerturbedInstrumentOptimization
 		// A4 pitch instead of D5.
 
 		WhistleStudyModel myStudy = new WhistleStudyModel();
-		myStudy.getParams().setProperties(27.0, 98.4, 100, 0.040);
+		myStudy.getParams().setProperties(27.0, 98.4, 100.0, 0.040);
 		myStudy.setBlowingLevel(4);
 		myStudy.setCategorySelection(CategoryType.OPTIMIZER_CATEGORY_ID,
 				WhistleStudyModel.GLOBAL_HOLESPACE_OPT_SUB_CATEGORY_ID);
@@ -86,7 +86,7 @@ public class WhistleOptimizationTest extends PerturbedInstrumentOptimization
 		Instrument optimizedInstrument = StudyModel.getInstrument(study.optimizeInstrument());
 		
 		// Test final error norm.
-		assertEquals("Final error norm incorrect", 1432.3, study.getFinalNorm(), 1.0);
+		assertEquals("Final error norm incorrect", 866.7, study.getFinalNorm(), 1.0);
 
 		// Test bore length
 
@@ -103,7 +103,7 @@ public class WhistleOptimizationTest extends PerturbedInstrumentOptimization
 		// Set up the study model to be tested.
 
 		WhistleStudyModel myStudy = new WhistleStudyModel();
-		myStudy.getParams().setProperties(27.0, 98.4, 100, 0.040);
+		myStudy.getParams().setProperties(27.0, 98.4, 100.0, 0.040);
 		myStudy.setBlowingLevel(4);
 		myStudy.setCategorySelection(CategoryType.OPTIMIZER_CATEGORY_ID,
 				WhistleStudyModel.WHISTLE_CALIB_SUB_CATEGORY_ID);
@@ -111,10 +111,12 @@ public class WhistleOptimizationTest extends PerturbedInstrumentOptimization
 		setStudyModel(myStudy);
 		setTuning(tuningFile);
 		setInstrument(instrumentFile, 1.0, 1.0, 1.0);
+		// Slight change in tonehole model changes the window height.
+		getOriginalInstrument().getMouthpiece().getFipple().setWindowHeight(2.75);
+		getOriginalInstrument().getMouthpiece().setBeta(0.385);
 		testOptimization("Re-calibrate the instrument...", 0.01);
 		finalNorm = study.getFinalNorm();
-		assertEquals("Residual error incorrect", 1.0, study.getResidualErrorRatio(), 0.05);
-
+		assertEquals("Final error norm incorrect", 3948.3, study.getFinalNorm(), 1.0);
 	}
 
 	@Test
@@ -123,7 +125,7 @@ public class WhistleOptimizationTest extends PerturbedInstrumentOptimization
 		// Optimize the head-joint bore to improve the intonation.
 
 		WhistleStudyModel myStudy = new WhistleStudyModel();
-		myStudy.getParams().setProperties(27.0, 98.4, 100, 0.040);
+		myStudy.getParams().setProperties(27.0, 98.4, 100.0, 0.040);
 		myStudy.setBlowingLevel(4);
 		myStudy.setCategorySelection(CategoryType.OPTIMIZER_CATEGORY_ID,
 				WhistleStudyModel.BORE_DIA_TOP_OPT_SUB_CATEGORY_ID);
@@ -138,11 +140,11 @@ public class WhistleOptimizationTest extends PerturbedInstrumentOptimization
 		Instrument optimizedInstrument = StudyModel.getInstrument(study.optimizeInstrument());
 		
 		// Test final error norm.
-		assertEquals("Final error norm incorrect", 1098.2, study.getFinalNorm(), 1.0);
+		assertEquals("Final error norm incorrect", 515.2, study.getFinalNorm(), 1.0);
 
 		List<BorePoint> newBorePoints = optimizedInstrument.getBorePoint();
-		assertEquals("Upper bore diameter incorrect", 10.72, newBorePoints.get(0).getBoreDiameter(), 0.1);
-		assertEquals("Bore point 2 diameter incorrect", 11.79, newBorePoints.get(2).getBoreDiameter(), 0.1);
+		assertEquals("Upper bore diameter incorrect", 11.04, newBorePoints.get(0).getBoreDiameter(), 0.1);
+		assertEquals("Bore point 2 diameter incorrect", 11.90, newBorePoints.get(2).getBoreDiameter(), 0.1);
 		assertEquals("Bore point 5 diameter incorrect", 11.90, newBorePoints.get(5).getBoreDiameter(), 0.1);
 
 		// Optimize holes and headjoint bore profile to improve intonation even more.
@@ -154,10 +156,10 @@ public class WhistleOptimizationTest extends PerturbedInstrumentOptimization
 		optimizedInstrument = StudyModel.getInstrument(study.optimizeInstrument());
 		
 		// Test final error norm.
-		assertEquals("Final error norm incorrect", 218.3, study.getFinalNorm(), 1.0);
+		assertEquals("Final error norm incorrect", 302.8, study.getFinalNorm(), 1.0);
 
 		newBorePoints = optimizedInstrument.getBorePoint();
-		assertEquals("Upper bore diameter incorrect", 10.33, newBorePoints.get(0).getBoreDiameter(), 0.1);
+		assertEquals("Upper bore diameter incorrect", 10.82, newBorePoints.get(0).getBoreDiameter(), 0.1);
 		assertEquals("Bore point 2 diameter incorrect", 11.90, newBorePoints.get(2).getBoreDiameter(), 0.1);
 		assertEquals("Bore point 5 diameter incorrect", 11.90, newBorePoints.get(5).getBoreDiameter(), 0.1);
 	}

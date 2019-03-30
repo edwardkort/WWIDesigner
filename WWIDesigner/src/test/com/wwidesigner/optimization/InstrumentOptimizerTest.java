@@ -87,23 +87,23 @@ public class InstrumentOptimizerTest
 			List<BorePoint> borePoints = optimizedInstrument.getBorePoint();
 			PositionInterface[] sortedPoints = Instrument.sortList(borePoints);
 			PositionInterface lastPoint = sortedPoints[sortedPoints.length - 1];
-			assertEquals("Bore length incorrect", 377.10,
+			assertEquals("Bore length incorrect", 380.87,
 					lastPoint.getBorePosition(), 0.5);
 
 			// Test hole positions
 			List<Hole> holes = optimizedInstrument.getHole();
 			PositionInterface[] sortedHoles = Instrument.sortList(holes);
-			assertEquals("Hole 1 position incorrect", 188.32,
+			assertEquals("Hole 1 position incorrect", 188.02,
 					sortedHoles[0].getBorePosition(), 0.5);
-			assertEquals("Hole 2 position incorrect", 212.60,
+			assertEquals("Hole 2 position incorrect", 212.56,
 					sortedHoles[1].getBorePosition(), 0.5);
-			assertEquals("Hole 3 position incorrect", 238.91,
+			assertEquals("Hole 3 position incorrect", 239.36,
 					sortedHoles[2].getBorePosition(), 0.5);
-			assertEquals("Hole 4 position incorrect", 272.14,
+			assertEquals("Hole 4 position incorrect", 273.32,
 					sortedHoles[3].getBorePosition(), 0.5);
-			assertEquals("Hole 5 position incorrect", 283.72,
+			assertEquals("Hole 5 position incorrect", 285.25,
 					sortedHoles[4].getBorePosition(), 0.5);
-			assertEquals("Hole 6 position incorrect", 317.46,
+			assertEquals("Hole 6 position incorrect", 319.92,
 					sortedHoles[5].getBorePosition(), 0.5);
 		}
 		catch (Exception e)

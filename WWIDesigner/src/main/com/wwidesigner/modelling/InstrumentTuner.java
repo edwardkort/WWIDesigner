@@ -262,6 +262,7 @@ public abstract class InstrumentTuner
 			Fingering fingering = noteList.get(i);
 			Fingering predFingering = new Fingering();
 			predFingering.setOpenHole(fingering.getOpenHole());
+			predFingering.setOpenEnd(fingering.getOpenEnd());
 			predFingering.setNote(predictedNote(fingering));
 			newNotes.add(predFingering);
 		}

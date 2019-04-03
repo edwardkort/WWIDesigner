@@ -46,25 +46,25 @@
     </borePoint>
     <borePoint>
         <name>Bottom</name>
-        <borePosition>364.0</borePosition>
+        <borePosition>362.7</borePosition>
         <boreDiameter>11.9</boreDiameter>
     </borePoint>
     <hole>
         <name>B1</name>
-        <borePosition>248.6291711380839</borePosition>
+        <borePosition>248.3</borePosition>
         <diameter>4.0</diameter>
         <height>2.0</height>
     </hole>
     <hole>
         <name>B2</name>
-        <borePosition>280.2008348537409</borePosition>
+        <borePosition>280.0</borePosition>
         <diameter>9.1</diameter>
         <height>2.0</height>
     </hole>
     <hole>
         <name>B3</name>
-        <borePosition>305.015644056248</borePosition>
-        <diameter>5.671935417131886</diameter>
+        <borePosition>303.5</borePosition>
+        <diameter>5.42</diameter>
         <height>2.0</height>
     </hole>
     <termination>

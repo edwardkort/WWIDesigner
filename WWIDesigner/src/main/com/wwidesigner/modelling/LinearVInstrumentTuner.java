@@ -206,11 +206,13 @@ public class LinearVInstrumentTuner extends InstrumentTuner
 					{
 						fLow = target.getNote().getFrequency();
 						noteLow.setOpenHole(target.getOpenHole());
+						noteLow.setOpenEnd(target.getOpenEnd());
 					}
 					if ( target.getNote().getFrequency() > fHigh )
 					{
 						fHigh = target.getNote().getFrequency();
 						noteHigh.setOpenHole(target.getOpenHole());
+						noteHigh.setOpenEnd(target.getOpenEnd());
 					}
 				}
 				else if( target.getNote().getFrequencyMax() != null )
@@ -220,11 +222,13 @@ public class LinearVInstrumentTuner extends InstrumentTuner
 					{
 						fLow = target.getNote().getFrequencyMax();
 						noteLow.setOpenHole(target.getOpenHole());
+						noteLow.setOpenEnd(target.getOpenEnd());
 					}
 					if ( target.getNote().getFrequencyMax() > fHigh )
 					{
 						fHigh = target.getNote().getFrequencyMax();
 						noteHigh.setOpenHole(target.getOpenHole());
+						noteHigh.setOpenEnd(target.getOpenEnd());
 					}
 				}
 			}

@@ -66,9 +66,9 @@ public class TaborPipeTuningTest
 			tuningError = Note.cents(tgtNote.getFrequency(), predNote.getFrequency());
 			if (i == 0)
 			{
-				allowedError = 15.0;
+				allowedError = 10.0;
 			}
-			else if (i == 5 || i == 6)
+			else if (i == 5)
 			{
 				allowedError = 15.0;
 			}

@@ -33,6 +33,7 @@ public class NAFCalculator extends DefaultInstrumentCalculator
 
 		setMouthpieceCalculator(new DefaultFippleMouthpieceCalculator());
 		setTerminationCalculator(new ThickFlangedOpenEndCalculator());
+//		setHoleCalculator(new DefaultHoleCalculator(0.8294)); // Mike Prairie 6-hole, min. tuning deviation
 		setHoleCalculator(new DefaultHoleCalculator(0.9457));
 //		setHoleCalculator(new WhistleHoleCalculator());
 		setBoreSectionCalculator(new SimpleBoreSectionCalculator());
@@ -44,7 +45,9 @@ public class NAFCalculator extends DefaultInstrumentCalculator
 		
 		setMouthpieceCalculator(new DefaultFippleMouthpieceCalculator());
 		setTerminationCalculator(new ThickFlangedOpenEndCalculator());
+//		setHoleCalculator(new DefaultHoleCalculator(0.8294)); // Mike Prairie 6-hole, min. tuning deviation
 		setHoleCalculator(new DefaultHoleCalculator(0.9457));
+//		setHoleCalculator(new DefaultHoleCalculator(false, 0.003d));
 //		setHoleCalculator(new WhistleHoleCalculator());
 		setBoreSectionCalculator(new SimpleBoreSectionCalculator());
 	}

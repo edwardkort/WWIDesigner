@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns2:instrument xmlns:ns2="http://www.wwidesigner.com/Instrument">
+    <name>Mike Prairie 6-hole test flute</name>
+    <description>Test flute with cylindrical holes and round bore, small vertical-face bird.</description>
+    <lengthType>in</lengthType>
+    <mouthpiece>
+        <position>0.20899999999999996</position>
+        <fipple>
+            <windowLength>0.20899999999999996</windowLength>
+            <windowWidth>0.3825</windowWidth>
+            <fippleFactor>0.9103837577721693</fippleFactor>
+            <windwayHeight>0.03200012096019596</windwayHeight>
+        </fipple>
+    </mouthpiece>
+    <borePoint>
+        <borePosition>0.0</borePosition>
+        <boreDiameter>0.817</boreDiameter>
+    </borePoint>
+    <borePoint>
+        <borePosition>14.789999999999997</borePosition>
+        <boreDiameter>0.817</boreDiameter>
+    </borePoint>
+    <hole>
+        <name>Hole 6</name>
+        <borePosition>5.346</borePosition>
+        <diameter>0.3125</diameter>
+        <height>0.117</height>
+    </hole>
+    <hole>
+        <name>Hole 5</name>
+        <borePosition>6.204</borePosition>
+        <diameter>0.3125</diameter>
+        <height>0.117</height>
+    </hole>
+    <hole>
+        <name>Hole 4</name>
+        <borePosition>7.35</borePosition>
+        <diameter>0.3125</diameter>
+        <height>0.117</height>
+    </hole>
+    <hole>
+        <name>Hole 3</name>
+        <borePosition>8.136</borePosition>
+        <diameter>0.3125</diameter>
+        <height>0.117</height>
+    </hole>
+    <hole>
+        <name>Hole 2</name>
+        <borePosition>9.506</borePosition>
+        <diameter>0.3125</diameter>
+        <height>0.117</height>
+    </hole>
+    <hole>
+        <name>Hole 1</name>
+        <borePosition>10.891</borePosition>
+        <diameter>0.3125</diameter>
+        <height>0.117</height>
+    </hole>
+    <termination>
+        <flangeDiameter>1.05</flangeDiameter>
+    </termination>
+</ns2:instrument>

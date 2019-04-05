@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns2:instrument xmlns:ns2="http://www.wwidesigner.com/Instrument">
+    <name>1" bore, PVC try flute by Edward Kort</name>
+    <description>1" bore PVC flute with evenly spaced lattice of holes, 6 of which were uncovered to represent a D4 minor flute. Chimney made of plasticine. Flat plug even with top of TSH. Holes cylindrical, not shaped.</description>
+    <lengthType>in</lengthType>
+    <mouthpiece>
+        <position>0.18000097200236187</position>
+        <fipple>
+            <windowLength>0.18000097200236187</windowLength>
+            <windowWidth>0.46</windowWidth>
+            <fippleFactor>0.847865913296304</fippleFactor>
+            <windwayHeight>0.032000172800419904</windwayHeight>
+        </fipple>
+    </mouthpiece>
+    <borePoint>
+        <borePosition>0.0</borePosition>
+        <boreDiameter>1.038</boreDiameter>
+    </borePoint>
+    <borePoint>
+        <borePosition>18.6</borePosition>
+        <boreDiameter>1.038</boreDiameter>
+    </borePoint>
+    <hole>
+        <name>Hole 6</name>
+        <borePosition>5.855</borePosition>
+        <diameter>0.31</diameter>
+        <height>0.145</height>
+    </hole>
+    <hole>
+        <name>Hole 5</name>
+        <borePosition>6.835</borePosition>
+        <diameter>0.31</diameter>
+        <height>0.145</height>
+    </hole>
+    <hole>
+        <name>Hole 4</name>
+        <borePosition>7.855</borePosition>
+        <diameter>0.31</diameter>
+        <height>0.145</height>
+    </hole>
+    <hole>
+        <name>Hole 3</name>
+        <borePosition>9.855</borePosition>
+        <diameter>0.31</diameter>
+        <height>0.145</height>
+    </hole>
+    <hole>
+        <name>Hole 2</name>
+        <borePosition>11.855</borePosition>
+        <diameter>0.31</diameter>
+        <height>0.145</height>
+    </hole>
+    <hole>
+        <name>Hole 1</name>
+        <borePosition>13.865</borePosition>
+        <diameter>0.31</diameter>
+        <height>0.145</height>
+    </hole>
+    <termination>
+        <flangeDiameter>1.32</flangeDiameter>
+    </termination>
+</ns2:instrument>

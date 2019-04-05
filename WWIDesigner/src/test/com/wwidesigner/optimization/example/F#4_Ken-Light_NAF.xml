@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns2:instrument xmlns:ns2="http://www.wwidesigner.com/Instrument">
+    <name>F# Ken Light plastic NAF</name>
+    <description>Amon Alorin injection-molded flute, 0.851" bore diameter. Fipple factor is average of careful tuning and Flutini results.</description>
+    <lengthType>in</lengthType>
+    <mouthpiece>
+        <position>0.251</position>
+        <fipple>
+            <windowLength>0.251</windowLength>
+            <windowWidth>0.373</windowWidth>
+            <fippleFactor>0.77657</fippleFactor>
+            <windwayHeight>0.032</windwayHeight>
+        </fipple>
+    </mouthpiece>
+    <borePoint>
+        <borePosition>0.0</borePosition>
+        <boreDiameter>0.851</boreDiameter>
+    </borePoint>
+    <borePoint>
+        <borePosition>15.649999999999999</borePosition>
+        <boreDiameter>0.851</boreDiameter>
+    </borePoint>
+    <hole>
+        <name>Hole 6</name>
+        <borePosition>4.78</borePosition>
+        <diameter>0.31</diameter>
+        <height>0.132</height>
+    </hole>
+    <hole>
+        <name>Hole 5</name>
+        <borePosition>6.01</borePosition>
+        <diameter>0.31</diameter>
+        <height>0.132</height>
+    </hole>
+    <hole>
+        <name>Hole 4</name>
+        <borePosition>7.24</borePosition>
+        <diameter>0.31</diameter>
+        <height>0.132</height>
+    </hole>
+    <hole>
+        <name>Hole 3</name>
+        <borePosition>8.47</borePosition>
+        <diameter>0.31</diameter>
+        <height>0.132</height>
+    </hole>
+    <hole>
+        <name>Hole 2</name>
+        <borePosition>9.84</borePosition>
+        <diameter>0.31</diameter>
+        <height>0.132</height>
+    </hole>
+    <hole>
+        <name>Hole 1</name>
+        <borePosition>11.28</borePosition>
+        <diameter>0.31</diameter>
+        <height>0.132</height>
+    </hole>
+    <termination>
+        <flangeDiameter>1.115</flangeDiameter>
+    </termination>
+</ns2:instrument>

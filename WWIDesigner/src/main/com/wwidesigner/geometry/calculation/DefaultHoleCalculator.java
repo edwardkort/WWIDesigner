@@ -57,23 +57,43 @@ public class DefaultHoleCalculator extends HoleCalculator
 
 	public DefaultHoleCalculator()
 	{
-		this.mFudgeFactor = 1.0;
+		setFudgeFactor(1.0);
 		this.isPlugged = false;
-		this.fingerAdjustment = DEFAULT_FINGER_ADJ;
+		setFingerAdjustment(DEFAULT_FINGER_ADJ);
 	}
 
 	public DefaultHoleCalculator(double fudgeFactor)
 	{
-		mFudgeFactor = fudgeFactor;
+		setFudgeFactor(fudgeFactor);
 		this.isPlugged = false;
-		this.fingerAdjustment = NO_FINGER_ADJ;
+		setFingerAdjustment(NO_FINGER_ADJ);
 	}
 	
 	public DefaultHoleCalculator(boolean aIsPlugged, double aFingerAdj)
 	{
-		this.mFudgeFactor = 1.0;
+		setFudgeFactor(1.0);
 		this.isPlugged = aIsPlugged;
+		setFingerAdjustment(aFingerAdj);
+	}
+
+	public double getFingerAdjustment()
+	{
+		return fingerAdjustment;
+	}
+
+	public void setFingerAdjustment(double aFingerAdj)
+	{
 		this.fingerAdjustment = aFingerAdj;
+	}
+
+	public double getFudgeFactor()
+	{
+		return mFudgeFactor;
+	}
+
+	public void setFudgeFactor(double fudgeFactor)
+	{
+		this.mFudgeFactor = fudgeFactor;
 	}
 
 	/*

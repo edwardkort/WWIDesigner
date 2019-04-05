@@ -32,25 +32,26 @@ import com.wwidesigner.geometry.calculation.TerminationCalculator;
 import com.wwidesigner.geometry.calculation.IdealOpenEndCalculator;
 
 /**
- * Calculates attributes of the instrument body as seen by the driving source.<br/>
+ * Calculates attributes of the instrument body as seen by the driving
+ * source.<br/>
  * 
  * For flow-node mouthpieces (flutes and fipple flutes):<br/>
  * 
- * - calcZ() returns impedance seen by driving source.  Expect resonance
- *   when imaginary part is zero or phase angle is zero.<br/>
+ * - calcZ() returns impedance seen by driving source. Expect resonance when
+ * imaginary part is zero or phase angle is zero.<br/>
  * 
- * - calcReflectionCoefficient() returns coefficient of pressure reflection
- *   seen by driving source.  Expect resonance when coefficient is -1
- *   or phase angle is pi.<br/>
+ * - calcReflectionCoefficient() returns coefficient of pressure reflection seen
+ * by driving source. Expect resonance when coefficient is -1 or phase angle is
+ * pi.<br/>
  *
  * For pressure-node mouthpieces (cane reeds, lip reeds, brass):<br/>
  * 
- * - calcZ() returns normalized admittance seen by driving source: Z0/Z.
- *   Expect resonance when imaginary part is zero or phase angle is zero.<br/>
+ * - calcZ() returns normalized admittance seen by driving source: Z0/Z. Expect
+ * resonance when imaginary part is zero or phase angle is zero.<br/>
  * 
  * - calcReflectionCoefficient() returns negative coefficient of pressure
- *   reflection (coefficient of flow reflection) seen by driving source.
- *   Expect resonance when coefficient is -1 or phase angle is pi.<br/>
+ * reflection (coefficient of flow reflection) seen by driving source. Expect
+ * resonance when coefficient is -1 or phase angle is pi.<br/>
  *
  * @author kort
  * 
@@ -112,13 +113,14 @@ public abstract class InstrumentCalculator
 		this.holeCalculator = aHoleCalculator;
 		this.boreSectionCalculator = aBoreSectionCalculator;
 	}
-	
+
 	/**
 	 * Test whether an instrument is compatible with this calculator.
 	 * Calculation results are unpredictable if this calculator is used with an
 	 * incompatible instrument.
 	 * 
-	 * @param aInstrument - the specified instrument
+	 * @param aInstrument
+	 *            - the specified instrument
 	 * @return true if the specified instrument is compatible with this
 	 *         calculator.
 	 */
@@ -164,6 +166,11 @@ public abstract class InstrumentCalculator
 		this.holeCalculator = aHoleCalculator;
 	}
 
+	public HoleCalculator getHoleCalculator()
+	{
+		return holeCalculator;
+	}
+
 	/**
 	 * @param aBoreSectionCalculator
 	 *            the boreSectionCalculator to set
@@ -193,7 +200,8 @@ public abstract class InstrumentCalculator
 	 * Calculate the reflection coefficient at the nominal frequency for a
 	 * specified fingering.
 	 * 
-	 * @param fingering - the fingering and note at which to calculate
+	 * @param fingering
+	 *            - the fingering and note at which to calculate
 	 * @return coefficient of pressure reflection
 	 */
 	public Complex calcReflectionCoefficient(Fingering fingering)
@@ -206,17 +214,21 @@ public abstract class InstrumentCalculator
 	 * Calculate the reflection coefficient at a specified frequency and
 	 * fingering.
 	 * 
-	 * @param freq - the frequency at which to calculate
-	 * @param fingering - the fingering for which to calculate
+	 * @param freq
+	 *            - the frequency at which to calculate
+	 * @param fingering
+	 *            - the fingering for which to calculate
 	 * @return coefficient of pressure reflection
 	 */
-	public abstract Complex calcReflectionCoefficient(double freq, Fingering fingering);
+	public abstract Complex calcReflectionCoefficient(double freq,
+			Fingering fingering);
 
 	/**
 	 * Calculate the overall impedance at the nominal frequency for a specified
 	 * fingering.
 	 * 
-	 * @param fingering - the fingering and note at which to calculate
+	 * @param fingering
+	 *            - the fingering and note at which to calculate
 	 * @return impedance
 	 */
 	public Complex calcZ(Fingering fingering)
@@ -228,8 +240,10 @@ public abstract class InstrumentCalculator
 	/**
 	 * Calculate the overall impedance at a specified frequency and fingering.
 	 * 
-	 * @param freq - the frequency at which to calculate
-	 * @param fingering - the fingering for which to calculate
+	 * @param freq
+	 *            - the frequency at which to calculate
+	 * @param fingering
+	 *            - the fingering for which to calculate
 	 * @return impedance
 	 */
 	public abstract Complex calcZ(double freq, Fingering fingering);
@@ -238,7 +252,8 @@ public abstract class InstrumentCalculator
 	 * Calculate the loop gain at the nominal frequency for a specified
 	 * fingering.
 	 * 
-	 * @param fingering - the fingering and note at which to calculate
+	 * @param fingering
+	 *            - the fingering and note at which to calculate
 	 * @return loop gain
 	 */
 	public double calcGain(Fingering fingering)
@@ -250,8 +265,10 @@ public abstract class InstrumentCalculator
 	/**
 	 * Calculate the loop gain at a specified frequency and fingering.
 	 * 
-	 * @param freq - the frequency at which to calculate
-	 * @param fingering - the fingering for which to calculate
+	 * @param freq
+	 *            - the frequency at which to calculate
+	 * @param fingering
+	 *            - the fingering for which to calculate
 	 * @return loop gain
 	 */
 	public double calcGain(double freq, Fingering fingering)
@@ -264,8 +281,10 @@ public abstract class InstrumentCalculator
 	 * current fingering, given the overall impedance at the same frequency and
 	 * fingering.
 	 * 
-	 * @param freq - the frequency for which to calculate
-	 * @param Z - the impedance at frequency freq
+	 * @param freq
+	 *            - the frequency for which to calculate
+	 * @param Z
+	 *            - the impedance at frequency freq
 	 * @return loop gain
 	 */
 	public abstract double calcGain(double freq, Complex Z);

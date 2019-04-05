@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns2:instrument xmlns:ns2="http://www.wwidesigner.com/Instrument">
+    <name>A4 6-hole test flute, narrow flue</name>
+    <description>Old test flute, before chromatic optimizations. Cylindrical toneholes (no attempt to get chromatic notes in tune). Narrow flue (0.26"). ENK.</description>
+    <lengthType>in</lengthType>
+    <mouthpiece>
+        <position>0.163</position>
+        <fipple>
+            <windowLength>0.163</windowLength>
+            <windowWidth>0.26</windowWidth>
+            <fippleFactor>0.6904952642957239</fippleFactor>
+            <windwayHeight>0.034</windwayHeight>
+        </fipple>
+    </mouthpiece>
+    <borePoint>
+        <borePosition>-0.1</borePosition>
+        <boreDiameter>1.0E-5</boreDiameter>
+    </borePoint>
+    <borePoint>
+        <borePosition>-0.09806515072315532</borePosition>
+        <boreDiameter>0.0772</boreDiameter>
+    </borePoint>
+    <borePoint>
+        <borePosition>-0.09220121628572273</borePosition>
+        <boreDiameter>0.1544</boreDiameter>
+    </borePoint>
+    <borePoint>
+        <borePosition>-0.08222053174694102</borePosition>
+        <boreDiameter>0.2316</boreDiameter>
+    </borePoint>
+    <borePoint>
+        <borePosition>-0.06777484365059086</borePosition>
+        <boreDiameter>0.3088</boreDiameter>
+    </borePoint>
+    <borePoint>
+        <borePosition>-0.04828580586079331</borePosition>
+        <boreDiameter>0.386</boreDiameter>
+    </borePoint>
+    <borePoint>
+        <borePosition>-0.022800000000000015</borePosition>
+        <boreDiameter>0.4632</boreDiameter>
+    </borePoint>
+    <borePoint>
+        <borePosition>0.010340862658245934</borePosition>
+        <boreDiameter>0.5404</boreDiameter>
+    </borePoint>
+    <borePoint>
+        <borePosition>0.054400000000000004</borePosition>
+        <boreDiameter>0.6176</boreDiameter>
+    </borePoint>
+    <borePoint>
+        <borePosition>0.11774650077933005</borePosition>
+        <boreDiameter>0.6948000000000001</boreDiameter>
+    </borePoint>
+    <borePoint>
+        <borePosition>0.28600000000000003</borePosition>
+        <boreDiameter>0.772</boreDiameter>
+    </borePoint>
+    <borePoint>
+        <borePosition>12.029999999999998</borePosition>
+        <boreDiameter>0.772</boreDiameter>
+    </borePoint>
+    <hole>
+        <name>Hole 6</name>
+        <borePosition>3.53</borePosition>
+        <diameter>0.246</diameter>
+        <height>0.166</height>
+    </hole>
+    <hole>
+        <name>Hole 5</name>
+        <borePosition>4.38</borePosition>
+        <diameter>0.29</diameter>
+        <height>0.166</height>
+    </hole>
+    <hole>
+        <name>Hole 4</name>
+        <borePosition>5.23</borePosition>
+        <diameter>0.284</diameter>
+        <height>0.166</height>
+    </hole>
+    <hole>
+        <name>Hole 3</name>
+        <borePosition>6.179999999999999</borePosition>
+        <diameter>0.30899999999999994</diameter>
+        <height>0.166</height>
+    </hole>
+    <hole>
+        <name>Hole 2</name>
+        <borePosition>7.31</borePosition>
+        <diameter>0.315</diameter>
+        <height>0.166</height>
+    </hole>
+    <hole>
+        <name>Hole 1</name>
+        <borePosition>8.39</borePosition>
+        <diameter>0.30899999999999994</diameter>
+        <height>0.166</height>
+    </hole>
+    <termination>
+        <flangeDiameter>1.105</flangeDiameter>
+    </termination>
+</ns2:instrument>

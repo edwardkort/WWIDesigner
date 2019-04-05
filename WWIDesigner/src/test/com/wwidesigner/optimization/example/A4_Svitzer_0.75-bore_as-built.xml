@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns2:instrument xmlns:ns2="http://www.wwidesigner.com/Instrument">
+    <name>A4 6-hole NAF Rick Switzer, 0.75" bore</name>
+    <description>Rick Switzer 0.75" bore A4 flute, as built before enlarging holes and cutting off end for tuning. 2/13/19</description>
+    <lengthType>in</lengthType>
+    <mouthpiece>
+        <position>0.22499999999999998</position>
+        <fipple>
+            <windowLength>0.22499999999999998</windowLength>
+            <windowWidth>0.384</windowWidth>
+            <fippleFactor>0.8130469545251804</fippleFactor>
+            <windwayHeight>0.032</windwayHeight>
+        </fipple>
+    </mouthpiece>
+    <borePoint>
+        <borePosition>-0.125</borePosition>
+        <boreDiameter>1.0E-5</boreDiameter>
+    </borePoint>
+    <borePoint>
+        <borePosition>-0.1231202889149825</borePosition>
+        <boreDiameter>0.07500000000000001</boreDiameter>
+    </borePoint>
+    <borePoint>
+        <borePosition>-0.11742346141747671</borePosition>
+        <boreDiameter>0.15000000000000002</boreDiameter>
+    </borePoint>
+    <borePoint>
+        <borePosition>-0.1077272005313546</borePosition>
+        <boreDiameter>0.22499999999999998</boreDiameter>
+    </borePoint>
+    <borePoint>
+        <borePosition>-0.09369317712168801</borePosition>
+        <boreDiameter>0.30000000000000004</boreDiameter>
+    </borePoint>
+    <borePoint>
+        <borePosition>-0.0747595264191645</borePosition>
+        <boreDiameter>0.37499999999999994</boreDiameter>
+    </borePoint>
+    <borePoint>
+        <borePosition>-0.050000000000000044</borePosition>
+        <boreDiameter>0.44999999999999996</boreDiameter>
+    </borePoint>
+    <borePoint>
+        <borePosition>-0.017803566070356935</borePosition>
+        <boreDiameter>0.5249999999999999</boreDiameter>
+    </borePoint>
+    <borePoint>
+        <borePosition>0.02500000000000005</borePosition>
+        <boreDiameter>0.6000000000000001</boreDiameter>
+    </borePoint>
+    <borePoint>
+        <borePosition>0.08654128961722479</borePosition>
+        <boreDiameter>0.675</boreDiameter>
+    </borePoint>
+    <borePoint>
+        <borePosition>0.25</borePosition>
+        <boreDiameter>0.7499999999999999</boreDiameter>
+    </borePoint>
+    <borePoint>
+        <borePosition>13.343999999999998</borePosition>
+        <boreDiameter>0.7499999999999999</boreDiameter>
+    </borePoint>
+    <hole>
+        <name>Hole 6</name>
+        <borePosition>4.147</borePosition>
+        <diameter>0.231</diameter>
+        <height>0.18799999999999997</height>
+    </hole>
+    <hole>
+        <name>Hole 5</name>
+        <borePosition>4.897</borePosition>
+        <diameter>0.253</diameter>
+        <height>0.18799999999999997</height>
+    </hole>
+    <hole>
+        <name>Hole 4</name>
+        <borePosition>5.647</borePosition>
+        <diameter>0.22399999999999998</diameter>
+        <height>0.18799999999999997</height>
+    </hole>
+    <hole>
+        <name>Hole 3</name>
+        <borePosition>6.833</borePosition>
+        <diameter>0.23</diameter>
+        <height>0.18799999999999997</height>
+    </hole>
+    <hole>
+        <name>Hole 2</name>
+        <borePosition>7.866</borePosition>
+        <diameter>0.232</diameter>
+        <height>0.18799999999999997</height>
+    </hole>
+    <hole>
+        <name>Hole 1</name>
+        <borePosition>8.9</borePosition>
+        <diameter>0.221</diameter>
+        <height>0.18799999999999997</height>
+    </hole>
+    <termination>
+        <flangeDiameter>1.127</flangeDiameter>
+    </termination>
+</ns2:instrument>

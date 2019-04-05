@@ -13,7 +13,8 @@ public class NAFHoleParameterOptimizationTest extends AbstractOptimizationTest
 	{
 		setInputInstrumentXML(args[0]);
 		setInputTuningXML(args[1]);
-		setParams(new PhysicalParameters(22.22, TemperatureType.C));
+		setParams(new PhysicalParameters(Double.parseDouble(args[2]),
+				TemperatureType.F));
 		setCalculator(new NAFCalculator());
 		setup();
 		evaluator = new ReactanceEvaluator(calculator);
@@ -73,10 +74,10 @@ public class NAFHoleParameterOptimizationTest extends AbstractOptimizationTest
 
 	public static void main(String[] args)
 	{
-		if (args.length != 2)
+		if (args.length != 3)
 		{
 			System.out.println(
-					"Usage: NAFHoleParameterOptimizationTest <input instrument file> <input tuning file>");
+					"Usage: NAFHoleParameterOptimizationTest <input instrument file> <input tuning file> <tuning temp [F]");
 			return;
 		}
 

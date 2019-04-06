@@ -1,9 +1,14 @@
 package com.wwidesigner.optimization;
 
+import java.lang.reflect.Constructor;
+
 import com.wwidesigner.geometry.Instrument;
 import com.wwidesigner.geometry.calculation.DefaultHoleCalculator;
+import com.wwidesigner.modelling.EvaluatorInterface;
+import com.wwidesigner.modelling.InstrumentCalculator;
 import com.wwidesigner.modelling.NAFCalculator;
 import com.wwidesigner.modelling.ReactanceEvaluator;
+import com.wwidesigner.note.TuningInterface;
 import com.wwidesigner.util.Constants.TemperatureType;
 import com.wwidesigner.util.PhysicalParameters;
 
@@ -20,46 +25,66 @@ public class NAFHoleParameterOptimizationTest extends AbstractOptimizationTest
 		evaluator = new ReactanceEvaluator(calculator);
 	}
 
-	private void resetCalculator()
+	private void resetCalculator(double fingerAdj, double holeMultiplier)
 	{
 		DefaultHoleCalculator defHoleCalc = (DefaultHoleCalculator) calculator
 				.getHoleCalculator();
-		defHoleCalc.setFingerAdjustment(0.0d);
-		defHoleCalc.setFudgeFactor(1.0d);
+		defHoleCalc.setFingerAdjustment(fingerAdj);
+		defHoleCalc.setFudgeFactor(holeMultiplier);
 	}
 
+	@SuppressWarnings("rawtypes")
 	private void testFingerAdjOptimizer(String[] args) throws Exception
 	{
-		doSetup(args);
-		resetCalculator();
-		setLowerBound(new double[] { 0.0, 0.0 });
-		setUpperBound(new double[] { 1.0, 1.0 });
-		objective = new FippleFactorFingerAdjObjectiveFunction(calculator,
-				tuning, evaluator);
-		Instrument optimizedInstrument = doInstrumentOptimization(
-				"Fipple factor and finger adjustment optimization");
+		double startingFingerAdj = 0.0d;
+		double startingMultiplier = 1.0d;
+		Class objectiveClass = FippleFactorFingerAdjObjectiveFunction.class;
+		String optimizationTitle = "Fipple factor and finger adjustment optimization";
 
-		double fippleFactor = optimizedInstrument.getMouthpiece().getFipple()
-				.getFippleFactor();
-		System.out.println("Fipple factor: " + fippleFactor);
-		double fingerAdj = ((DefaultHoleCalculator) calculator
-				.getHoleCalculator()).getFingerAdjustment();
-		System.out.println("Finger adjustment: " + fingerAdj);
-		double holeSizeMult = ((DefaultHoleCalculator) calculator
-				.getHoleCalculator()).getFudgeFactor();
-		System.out.println("Hole-size multiplier: " + holeSizeMult);
+		runOptimizer(args, startingFingerAdj, startingMultiplier,
+				objectiveClass, optimizationTitle);
 	}
 
+	@SuppressWarnings("rawtypes")
 	private void testHoleSizeMultiplierOptimizer(String[] args) throws Exception
 	{
+		double startingFingerAdj = 0.0d;
+		double startingMultiplier = 1.0d;
+		Class objectiveClass = FippleFactorHoleSizeMultObjectiveFunction.class;
+		String optimizationTitle = "Fipple factor and hole-size multiplier optimization";
+
+		runOptimizer(args, startingFingerAdj, startingMultiplier,
+				objectiveClass, optimizationTitle);
+	}
+
+	@SuppressWarnings("rawtypes")
+	private void testHoleSizeMultiplierOptimizerDefaultFingerAdj(String[] args)
+			throws Exception
+	{
+		double startingFingerAdj = 0.01d;
+		double startingMultiplier = 1.0d;
+		Class objectiveClass = FippleFactorHoleSizeMultObjectiveFunction.class;
+		String optimizationTitle = "Fipple factor and hole-size multiplier optimization, default finger adjustment";
+
+		runOptimizer(args, startingFingerAdj, startingMultiplier,
+				objectiveClass, optimizationTitle);
+	}
+
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	private void runOptimizer(String[] args, double startingFingerAdj,
+			double startingMultiplier, Class objectiveClass,
+			String optimizationTitle) throws Exception
+	{
 		doSetup(args);
-		resetCalculator();
+		resetCalculator(startingFingerAdj, startingMultiplier);
 		setLowerBound(new double[] { 0.0, 0.0 });
 		setUpperBound(new double[] { 1.0, 1.0 });
-		objective = new FippleFactorHoleSizeMultObjectiveFunction(calculator,
-				tuning, evaluator);
+		Constructor<BaseObjectiveFunction> constr = objectiveClass
+				.getConstructor(InstrumentCalculator.class,
+						TuningInterface.class, EvaluatorInterface.class);
+		objective = constr.newInstance(calculator, tuning, evaluator);
 		Instrument optimizedInstrument = doInstrumentOptimization(
-				"Fipple factor and hole-size multiplier optimization");
+				optimizationTitle);
 
 		double fippleFactor = optimizedInstrument.getMouthpiece().getFipple()
 				.getFippleFactor();
@@ -86,6 +111,7 @@ public class NAFHoleParameterOptimizationTest extends AbstractOptimizationTest
 		{
 			test.testFingerAdjOptimizer(args);
 			test.testHoleSizeMultiplierOptimizer(args);
+			test.testHoleSizeMultiplierOptimizerDefaultFingerAdj(args);
 		}
 		catch (Exception e)
 		{

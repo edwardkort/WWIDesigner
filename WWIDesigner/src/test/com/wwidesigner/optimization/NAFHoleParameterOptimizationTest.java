@@ -33,6 +33,12 @@ public class NAFHoleParameterOptimizationTest extends AbstractOptimizationTest
 		defHoleCalc.setFudgeFactor(holeMultiplier);
 	}
 
+	private void setBounds()
+	{
+		setLowerBound(new double[] { 0.0, 0.0 });
+		setUpperBound(new double[] { 1.0, 1.0 });
+	}
+
 	@SuppressWarnings("rawtypes")
 	private void testFingerAdjOptimizer(String[] args) throws Exception
 	{
@@ -40,6 +46,7 @@ public class NAFHoleParameterOptimizationTest extends AbstractOptimizationTest
 		double startingMultiplier = 1.0d;
 		Class objectiveClass = FippleFactorFingerAdjObjectiveFunction.class;
 		String optimizationTitle = "Fipple factor and finger adjustment optimization";
+		setBounds();
 
 		runOptimizer(args, startingFingerAdj, startingMultiplier,
 				objectiveClass, optimizationTitle);
@@ -52,6 +59,7 @@ public class NAFHoleParameterOptimizationTest extends AbstractOptimizationTest
 		double startingMultiplier = 1.0d;
 		Class objectiveClass = FippleFactorHoleSizeMultObjectiveFunction.class;
 		String optimizationTitle = "Fipple factor and hole-size multiplier optimization";
+		setBounds();
 
 		runOptimizer(args, startingFingerAdj, startingMultiplier,
 				objectiveClass, optimizationTitle);
@@ -65,6 +73,22 @@ public class NAFHoleParameterOptimizationTest extends AbstractOptimizationTest
 		double startingMultiplier = 1.0d;
 		Class objectiveClass = FippleFactorHoleSizeMultObjectiveFunction.class;
 		String optimizationTitle = "Fipple factor and hole-size multiplier optimization, default finger adjustment";
+		setBounds();
+
+		runOptimizer(args, startingFingerAdj, startingMultiplier,
+				objectiveClass, optimizationTitle);
+	}
+
+	@SuppressWarnings("rawtypes")
+	private void testFingerAdjHoleSizeMultOptimizer(String[] args)
+			throws Exception
+	{
+		double startingFingerAdj = 0.0d;
+		double startingMultiplier = 1.0d;
+		Class objectiveClass = FippleFactorFingerAdjHoleMultObjectiveFunction.class;
+		String optimizationTitle = "Fipple factor, finger adjustment, and hole-size multiplier optimization";
+		setLowerBound(new double[] { 0.0, 0.0, 0.0 });
+		setUpperBound(new double[] { 1.0, 1.0, 1.0 });
 
 		runOptimizer(args, startingFingerAdj, startingMultiplier,
 				objectiveClass, optimizationTitle);
@@ -77,8 +101,6 @@ public class NAFHoleParameterOptimizationTest extends AbstractOptimizationTest
 	{
 		doSetup(args);
 		resetCalculator(startingFingerAdj, startingMultiplier);
-		setLowerBound(new double[] { 0.0, 0.0 });
-		setUpperBound(new double[] { 1.0, 1.0 });
 		Constructor<BaseObjectiveFunction> constr = objectiveClass
 				.getConstructor(InstrumentCalculator.class,
 						TuningInterface.class, EvaluatorInterface.class);
@@ -112,6 +134,7 @@ public class NAFHoleParameterOptimizationTest extends AbstractOptimizationTest
 			test.testFingerAdjOptimizer(args);
 			test.testHoleSizeMultiplierOptimizer(args);
 			test.testHoleSizeMultiplierOptimizerDefaultFingerAdj(args);
+			test.testFingerAdjHoleSizeMultOptimizer(args);
 		}
 		catch (Exception e)
 		{

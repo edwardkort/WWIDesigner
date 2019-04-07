@@ -17,7 +17,7 @@ import com.wwidesigner.note.TuningInterface;
 public class FippleFactorHoleSizeMultObjectiveFunction extends MergedObjectiveFunction
 {
 	public static final String DISPLAY_NAME = "Fipple factor & hole-size multiplier";
-	public static final String NAME = HoleFromTopObjectiveFunction.class.getSimpleName();
+	public static final String NAME = FippleFactorHoleSizeMultObjectiveFunction.class.getSimpleName();
 
 	public FippleFactorHoleSizeMultObjectiveFunction(InstrumentCalculator aCalculator,
 			TuningInterface tuning, EvaluatorInterface aEvaluator)

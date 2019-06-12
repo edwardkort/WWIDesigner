@@ -3,6 +3,7 @@ package com.wwidesigner.optimization;
 import org.apache.commons.math3.exception.DimensionMismatchException;
 
 import com.wwidesigner.geometry.calculation.DefaultHoleCalculator;
+//import com.wwidesigner.geometry.calculation.SimpleHoleCalculator;
 import com.wwidesigner.modelling.EvaluatorInterface;
 import com.wwidesigner.modelling.InstrumentCalculator;
 import com.wwidesigner.note.TuningInterface;

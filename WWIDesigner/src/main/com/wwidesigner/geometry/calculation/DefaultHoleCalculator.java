@@ -38,40 +38,41 @@ import com.wwidesigner.util.PhysicalParameters;
 public class DefaultHoleCalculator extends HoleCalculator
 {
 	/**
-	 *  Adjustment factor in meters for finger intrusion on a closed tonehole.
-	 *  Use zero for no intrusion, or for specific approximations:
-	 *  0.025 for effect of volume reduction from cap of 15 mm sphere,
-	 *  0.020 for effect of volume reduction from cap of 13 mm dia sphere,
-	 *  0.011 for height of cap of 13 mm dia sphere,
-	 *  0.010 for adjustment that Paul Dickens used in his 2007 thesis.
+	 * Adjustment factor in meters for finger intrusion on a closed tonehole.
+	 * Use zero for no intrusion, or for specific approximations: 0.025 for
+	 * effect of volume reduction from cap of 15 mm sphere, 0.020 for effect of
+	 * volume reduction from cap of 13 mm dia sphere, 0.011 for height of cap of
+	 * 13 mm dia sphere, 0.010 for adjustment that Paul Dickens used in his 2007
+	 * thesis.
 	 */
 	protected double fingerAdjustment = DEFAULT_FINGER_ADJ;
 	public static final double NO_FINGER_ADJ = 0.000;
 	public static final double CAP_VOLUME_FINGER_ADJ = 0.020;
 	public static final double CAP_HEIGHT_FINGER_ADJ = 0.011;
 	public static final double DEFAULT_FINGER_ADJ = 0.010;
-	
+	public static final double DEFAULT_HOLE_SIZE_MULT = 1.0;
+
 	protected boolean isPlugged = false;
 
-	private double mFudgeFactor = 1.0;
+	protected double mHoleSizeMult = 1.0;
 
 	public DefaultHoleCalculator()
 	{
-		setFudgeFactor(1.0);
+		setHoleSizeMult(DEFAULT_HOLE_SIZE_MULT);
 		this.isPlugged = false;
 		setFingerAdjustment(DEFAULT_FINGER_ADJ);
 	}
 
-	public DefaultHoleCalculator(double fudgeFactor)
+	public DefaultHoleCalculator(double holeSizeMult)
 	{
-		setFudgeFactor(fudgeFactor);
+		setHoleSizeMult(holeSizeMult);
 		this.isPlugged = false;
 		setFingerAdjustment(NO_FINGER_ADJ);
 	}
-	
+
 	public DefaultHoleCalculator(boolean aIsPlugged, double aFingerAdj)
 	{
-		setFudgeFactor(1.0);
+		setHoleSizeMult(DEFAULT_HOLE_SIZE_MULT);
 		this.isPlugged = aIsPlugged;
 		setFingerAdjustment(aFingerAdj);
 	}
@@ -86,14 +87,14 @@ public class DefaultHoleCalculator extends HoleCalculator
 		this.fingerAdjustment = aFingerAdj;
 	}
 
-	public double getFudgeFactor()
+	public double getHoleSizeMult()
 	{
-		return mFudgeFactor;
+		return mHoleSizeMult;
 	}
 
-	public void setFudgeFactor(double fudgeFactor)
+	public void setHoleSizeMult(double holeSizeMult)
 	{
-		this.mFudgeFactor = fudgeFactor;
+		mHoleSizeMult = holeSizeMult;
 	}
 
 	/*
@@ -102,14 +103,13 @@ public class DefaultHoleCalculator extends HoleCalculator
 	 * @see com.wwidesigner.geometry.HoleCalculator#calcTransferMatrix(double,
 	 * com.wwidesigner.util.PhysicalParameters)
 	 *
-	 * Reference:
-	 * Antoine Lefebvre, Computational Acoustic Methods for the Design of
-     * Woodwind Instruments.  Ph.D. thesis, McGill University, 2010.
+	 * Reference: Antoine Lefebvre, Computational Acoustic Methods for the
+	 * Design of Woodwind Instruments. Ph.D. thesis, McGill University, 2010.
 	 */
 	public TransferMatrix calcTransferMatrix_2010(Hole hole, boolean isOpen,
 			double waveNumber, PhysicalParameters parameters)
 	{
-		double radius = mFudgeFactor * hole.getDiameter() / 2;
+		double radius = mHoleSizeMult * hole.getDiameter() / 2;
 		double boreRadius = hole.getBoreDiameter() / 2;
 		Complex Zs = null;
 		Complex Za = null;
@@ -151,7 +151,8 @@ public class DefaultHoleCalculator extends HoleCalculator
 							- 1.6d * delta * delta * delta * delta
 							+ 0.50d * delta * delta * delta * delta * delta)
 					* (1. + (1. - 4.56d * delta + 6.55d * delta * delta)
-							* (0.17d * ka + 0.92d * ka * ka + 0.16d * ka * ka * ka
+							* (0.17d * ka + 0.92d * ka * ka
+									+ 0.16d * ka * ka * ka
 									- 0.29d * ka * ka * ka * ka));
 
 			Zs = Complex.I.multiply(waveNumber * ti).add(Zo).multiply(Z0h);
@@ -190,12 +191,13 @@ public class DefaultHoleCalculator extends HoleCalculator
 	public TransferMatrix calcTransferMatrix(Hole hole, boolean isOpen,
 			double waveNumber, PhysicalParameters parameters)
 	{
-		double radius = mFudgeFactor * hole.getDiameter() / 2.;
+		double radius = mHoleSizeMult * hole.getDiameter() / 2.;
 		double boreRadius = hole.getBoreDiameter() / 2.;
 		Complex Ys = Complex.ZERO; // Shunt admittance == 1/Zs
 		Complex Za = Complex.ZERO; // Series impedance
 
-		double Z0h = parameters.calcZ0(radius); // Characteristic impedance of hole.
+		double Z0h = parameters.calcZ0(radius); // Characteristic impedance of
+												// hole.
 		double delta = radius / boreRadius;
 		double delta2 = delta * delta;
 
@@ -204,10 +206,12 @@ public class DefaultHoleCalculator extends HoleCalculator
 		// From Equation 2.3.12 from Lefebvre 2010.
 		// double outerDelta = radius / (boreRadius + hole.getHeight());
 		// tm = tm - 0.125d * (radius * outerDelta)
-		//			* (1 + 0.207d * outerDelta * outerDelta * outerDelta);
+		// * (1 + 0.207d * outerDelta * outerDelta * outerDelta);
 		double te = hole.getHeight() + tm;
 		// Equation 31.
-		double ti = radius
+		double ti = radius * (0.822d + delta * (-0.095d + delta * (-1.566d
+				+ delta * (2.138d + delta * (-1.640d + delta * 0.502d)))));
+		double tiCorrected = radius
 				* (0.822d + delta * (-0.095d + delta * (-1.566d + delta
 						* (2.138d + delta * (-1.640d + delta * 0.502d)))));
 
@@ -219,12 +223,13 @@ public class DefaultHoleCalculator extends HoleCalculator
 			double ka = waveNumber * boreRadius;
 
 			// Equation 33.
-			ta = (-0.35d + 0.06d * FastMath.tanh(2.7d * hole.getHeight() / radius))
+			ta = (-0.35d
+					+ 0.06d * FastMath.tanh(2.7d * hole.getHeight() / radius))
 					* radius * delta2;
 
 			// Equation 31 times equation 32.
-			ti = ti	* (1. + (1. - 4.56d * delta + 6.55d * delta2) * ka
-							* (0.17d + ka * (0.92d + ka * (0.16d - 0.29d * ka))));
+			ti = tiCorrected * (1. + (1. - 4.56d * delta + 6.55d * delta2) * ka
+					* (0.17d + ka * (0.92d + ka * (0.16d - 0.29d * ka))));
 
 			// Normalized radiation resistance, real part of Zs, per equation 3,
 			// (rather than real part of Zr in equation 10).
@@ -237,12 +242,14 @@ public class DefaultHoleCalculator extends HoleCalculator
 			double tr = radius * (0.822d - 0.47d * FastMath
 					.pow(radius / (boreRadius + hole.getHeight()), 0.8d));
 			// Benade and Murday, 1967.
-			// tr = 0.64d * radius * (1.0 + 0.32d * FastMath.log(0.3d/outerDelta));
+			// tr = 0.64d * radius * (1.0 + 0.32d *
+			// FastMath.log(0.3d/outerDelta));
 
 			// Equation 3 and 7, inverted.
-			double kttotal = waveNumber * ti + FastMath.tan(waveNumber * (te + tr));
-			Ys = Complex.ONE.divide(
-					Complex.I.multiply(kttotal).add(Rr).multiply(Z0h));
+			double kttotal = waveNumber * ti
+					+ FastMath.tan(waveNumber * (te + tr));
+			Ys = Complex.ONE
+					.divide(Complex.I.multiply(kttotal).add(Rr).multiply(Z0h));
 
 		}
 		else if (isPlugged)
@@ -256,9 +263,9 @@ public class DefaultHoleCalculator extends HoleCalculator
 			// Tonehole closed by player's finger.
 			// Equation 34, revised constants to better fit figure 13.
 			// ta = (-0.12d - 0.17d * FastMath.tanh(
-			ta = (-0.20d - 0.10d * FastMath.tanh(
-						2.4d * hole.getHeight() / radius))
-						* radius * delta2;
+			ta = (-0.20d
+					- 0.10d * FastMath.tanh(2.4d * hole.getHeight() / radius))
+					* radius * delta2;
 			double tf = 0.0;
 			// Dickens, 2007, from data limited to bore radius 7.5 mm.
 			// tf = 0.76d * radius * delta;
@@ -266,22 +273,31 @@ public class DefaultHoleCalculator extends HoleCalculator
 			{
 				// Approximate curve fit.
 				tf = radius * radius / fingerAdjustment;
+				// if (tf > te)
+				// {
+				// tf = te;
+				// fingerAdjustment = te / (radius * delta);
+				// }
 				// Estimated from volume removed by finger divided by hole area.
-				// double h = FingerRadius - FastMath.sqrt(FingerRadius * FingerRadius
-				//		- radius * radius);
+				// double h = FingerRadius - FastMath.sqrt(FingerRadius *
+				// FingerRadius
+				// - radius * radius);
 				// tf = h * (3.0d + h * h / (radius * radius))/6.0d;
 			}
 			// Equation 16, inverted.
 			double tankt = FastMath.tan(waveNumber * (te - tf));
-			Ys = Complex.valueOf(0.0, tankt/(Z0h * ( 1.0 - waveNumber * ti * tankt)));
+			Ys = Complex.valueOf(0.0,
+					tankt / (Z0h * (1.0 - waveNumber * ti * tankt)));
 		}
 		else
 		{
 			// Tonehole closed by key, not yet implemented.
-			ta = (-0.12d - 0.17d * FastMath.tanh(2.4d * hole.getHeight() / radius))
+			ta = (-0.12d
+					- 0.17d * FastMath.tanh(2.4d * hole.getHeight() / radius))
 					* radius * delta2;
 			double tankt = FastMath.tan(waveNumber * te);
-			Ys = Complex.valueOf(0.0, tankt/(Z0h * ( 1.0 - waveNumber * ti * tankt)));
+			Ys = Complex.valueOf(0.0,
+					tankt / (Z0h * (1.0 - waveNumber * ti * tankt)));
 		}
 
 		// Equation 4, 6.

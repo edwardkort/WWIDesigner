@@ -32,14 +32,14 @@ public class NafStudyOptimizationTest extends PerturbedInstrumentOptimization
 		setDefaultConstraints();
 		testOptimization("Re-optimize the un-perturbed instrument...", 0.015);
 		initialNorm = study.getInitialNorm();
-		assertEquals("Residual error incorrect", 0.23, study.getResidualErrorRatio(), 0.04);
+		assertEquals("Residual error incorrect", 1.0, study.getResidualErrorRatio(), 0.04);
 
 		perturbInstrument(1.05,1.05,0.95);
 		testOptimization("Optimize instrument after 5% stretch...", 0.015);
-		assertEquals("Residual error incorrect", 0.23, study.getFinalNorm()/initialNorm, 0.04);
+		assertEquals("Residual error incorrect", 1.0, study.getFinalNorm()/initialNorm, 0.04);
 
 		perturbInstrument(0.95,0.95,1.05);
 		testOptimization("Optimize instrument after 5% shrink...", 0.015);
-		assertEquals("Residual error incorrect", 0.23, study.getFinalNorm()/initialNorm, 0.04);
+		assertEquals("Residual error incorrect", 1.0, study.getFinalNorm()/initialNorm, 0.04);
 	}
 }

@@ -25,44 +25,44 @@
         <boreDiameter>1.070001155600312</boreDiameter>
     </borePoint>
     <borePoint>
-        <borePosition>17.991265046465102</borePosition>
-        <boreDiameter>1.0700011556003126</boreDiameter>
+        <borePosition>17.984847797521397</borePosition>
+        <boreDiameter>1.070001155600315</boreDiameter>
     </borePoint>
     <hole>
         <name>Hole 6</name>
-        <borePosition>5.350701622206135</borePosition>
-        <diameter>0.35145229731822336</diameter>
-        <height>0.1880002030400548</height>
+        <borePosition>5.355077903813028</borePosition>
+        <diameter>0.35240897937894244</diameter>
+        <height>0.18800020304005477</height>
     </hole>
     <hole>
         <name>Hole 5</name>
-        <borePosition>6.361983281320179</borePosition>
-        <diameter>0.38831708677834204</diameter>
-        <height>0.1880002030400548</height>
+        <borePosition>6.3637825556718</borePosition>
+        <diameter>0.38842216931140916</diameter>
+        <height>0.18800020304005477</height>
     </hole>
     <hole>
         <name>Hole 4</name>
-        <borePosition>7.373264940434224</borePosition>
-        <diameter>0.3451018670053733</diameter>
-        <height>0.1880002030400548</height>
+        <borePosition>7.372487207530572</borePosition>
+        <diameter>0.345743955082253</diameter>
+        <height>0.18800020304005477</height>
     </hole>
     <hole>
         <name>Hole 3</name>
-        <borePosition>9.211736900517202</borePosition>
-        <diameter>0.370646428570558</diameter>
-        <height>0.1880002030400548</height>
+        <borePosition>9.209309855647318</borePosition>
+        <diameter>0.3705065708955743</diameter>
+        <height>0.18800020304005477</height>
     </hole>
     <hole>
         <name>Hole 2</name>
-        <borePosition>10.461737575517203</borePosition>
-        <diameter>0.3551127947685945</diameter>
-        <height>0.1880002030400548</height>
+        <borePosition>10.459309855647318</borePosition>
+        <diameter>0.35510307780195755</diameter>
+        <height>0.18800020304005477</height>
     </hole>
     <hole>
         <name>Hole 1</name>
-        <borePosition>11.711738250517204</borePosition>
-        <diameter>0.3278859198191653</diameter>
-        <height>0.1880002030400548</height>
+        <borePosition>11.709309855647318</borePosition>
+        <diameter>0.32810198922095335</diameter>
+        <height>0.18800020304005477</height>
     </hole>
     <termination>
         <flangeDiameter>1.08</flangeDiameter>

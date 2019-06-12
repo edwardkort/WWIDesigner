@@ -22,33 +22,54 @@ import com.wwidesigner.geometry.Instrument;
 import com.wwidesigner.geometry.calculation.DefaultFippleMouthpieceCalculator;
 import com.wwidesigner.geometry.calculation.DefaultHoleCalculator;
 import com.wwidesigner.geometry.calculation.SimpleBoreSectionCalculator;
+//import com.wwidesigner.geometry.calculation.SimpleHoleCalculator;
 import com.wwidesigner.geometry.calculation.ThickFlangedOpenEndCalculator;
 import com.wwidesigner.util.PhysicalParameters;
 
 public class NAFCalculator extends DefaultInstrumentCalculator
 {
-	public NAFCalculator(Instrument aInstrument, PhysicalParameters physicalParams)
+	public NAFCalculator(Instrument aInstrument,
+			PhysicalParameters physicalParams)
 	{
 		super(aInstrument, physicalParams);
 
 		setMouthpieceCalculator(new DefaultFippleMouthpieceCalculator());
 		setTerminationCalculator(new ThickFlangedOpenEndCalculator());
-//		setHoleCalculator(new DefaultHoleCalculator(0.8294)); // Mike Prairie 6-hole, min. tuning deviation
-		setHoleCalculator(new DefaultHoleCalculator(0.9457));
-//		setHoleCalculator(new WhistleHoleCalculator());
+
+		// Mike Prairie 6-hole, min. tuning deviation
+		// setHoleCalculator(new DefaultHoleCalculator(0.8294));
+
+		// version 2.2.0 and earlier
+		// setHoleCalculator(new DefaultHoleCalculator(0.9457));
+
+		// based on 6/11/2019 validation runs
+		setHoleCalculator(new DefaultHoleCalculator(0.9605));
+
+		// invoke a simplified hole calculator
+		// setHoleCalculator(new SimpleHoleCalculator(0.9457));
+
 		setBoreSectionCalculator(new SimpleBoreSectionCalculator());
 	}
 
 	public NAFCalculator()
 	{
 		super();
-		
+
 		setMouthpieceCalculator(new DefaultFippleMouthpieceCalculator());
 		setTerminationCalculator(new ThickFlangedOpenEndCalculator());
-//		setHoleCalculator(new DefaultHoleCalculator(0.8294)); // Mike Prairie 6-hole, min. tuning deviation
-		setHoleCalculator(new DefaultHoleCalculator(0.9457));
-//		setHoleCalculator(new DefaultHoleCalculator(false, 0.003d));
-//		setHoleCalculator(new WhistleHoleCalculator());
+
+		// Mike Prairie 6-hole, min. tuning deviation
+		// setHoleCalculator(new DefaultHoleCalculator(0.8294));
+
+		// version 2.2.0 and earlier
+		// setHoleCalculator(new DefaultHoleCalculator(0.9457));
+
+		// based on 6/11/2019 validation runs
+		setHoleCalculator(new DefaultHoleCalculator(0.9605));
+
+		// invoke a simplified hole calculator
+		// setHoleCalculator(new SimpleHoleCalculator(0.9457));
+
 		setBoreSectionCalculator(new SimpleBoreSectionCalculator());
 	}
 
@@ -60,4 +81,3 @@ public class NAFCalculator extends DefaultInstrumentCalculator
 	}
 
 }
-

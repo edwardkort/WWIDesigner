@@ -2,6 +2,8 @@ package com.wwidesigner.optimization;
 
 import org.apache.commons.math3.exception.DimensionMismatchException;
 
+//import com.wwidesigner.geometry.calculation.DefaultHoleCalculator;
+//import com.wwidesigner.geometry.calculation.SimpleHoleCalculator;
 import com.wwidesigner.geometry.calculation.DefaultHoleCalculator;
 import com.wwidesigner.modelling.EvaluatorInterface;
 import com.wwidesigner.modelling.InstrumentCalculator;
@@ -9,7 +11,8 @@ import com.wwidesigner.note.TuningInterface;
 import com.wwidesigner.optimization.Constraint.ConstraintType;
 
 /**
- * Optimization objective function for the Hole Calculator's hole-size multiplier (fudgeFactor).
+ * Optimization objective function for the Hole Calculator's hole-size
+ * multiplier (fudgeFactor).
  * 
  * @author Edward Kort
  *
@@ -23,8 +26,9 @@ public class ToneholeMultiplierObjectiveFunction extends BaseObjectiveFunction
 	public static final String NAME = ToneholeMultiplierObjectiveFunction.class
 			.getSimpleName();
 
-	public ToneholeMultiplierObjectiveFunction(InstrumentCalculator aCcalculator,
-			TuningInterface tuning, EvaluatorInterface aEvaluator)
+	public ToneholeMultiplierObjectiveFunction(
+			InstrumentCalculator aCcalculator, TuningInterface tuning,
+			EvaluatorInterface aEvaluator)
 	{
 		super(aCcalculator, tuning, aEvaluator);
 		nrDimensions = 1;
@@ -40,7 +44,7 @@ public class ToneholeMultiplierObjectiveFunction extends BaseObjectiveFunction
 	{
 		double[] geometry = new double[1];
 		geometry[0] = ((DefaultHoleCalculator) calculator.getHoleCalculator())
-				.getFudgeFactor();
+				.getHoleSizeMult();
 		return geometry;
 	}
 
@@ -52,7 +56,7 @@ public class ToneholeMultiplierObjectiveFunction extends BaseObjectiveFunction
 			throw new DimensionMismatchException(point.length, nrDimensions);
 		}
 		((DefaultHoleCalculator) calculator.getHoleCalculator())
-				.setFudgeFactor(point[0]);
+				.setHoleSizeMult(point[0]);
 	}
 
 	protected void setConstraints()

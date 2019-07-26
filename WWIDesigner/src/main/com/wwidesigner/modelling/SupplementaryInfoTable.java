@@ -173,15 +173,7 @@ public class SupplementaryInfoTable extends DefaultTableModel
 				addColumn("Air Flow Rate");
 			}
 		}
-		addColumn("Log |Z|");
-		addColumn("Log |Z2|");
-		addColumn("Log |Z3|");
 		addColumn("Gain");
-		addColumn("Gain(2f)");
-		addColumn("Gain(3f)");
-		addColumn("Log G1/G2");
-		addColumn("Log G3/G2");
-		addColumn("Log G1*G3/G2^2");
 		addColumn("Q Factor");
 
 		for (int i = 0; i < fingeringsTarget.size(); ++i)
@@ -228,10 +220,6 @@ public class SupplementaryInfoTable extends DefaultTableModel
 			if (targetFreq != null)
 			{
 				zTarget = calculator.calcZ(targetFreq, fingeringsTarget.get(i));
-				Complex z2 = calculator.calcZ(targetFreq * 2.,
-						fingeringsTarget.get(i));
-				Complex z3 = calculator.calcZ(targetFreq * 3.,
-						fingeringsTarget.get(i));
 
 				// Air speed and flow values indicate what it would take to hit
 				// the target frequency.
@@ -249,9 +237,6 @@ public class SupplementaryInfoTable extends DefaultTableModel
 						values[colNr++] = formatted(speed * windwayArea);
 					}
 				}
-				values[colNr++] = formatted(Math.log(zTarget.abs()));
-				values[colNr++] = formatted(Math.log(z2.abs()));
-				values[colNr++] = formatted(Math.log(z3.abs()));
 			}
 			else
 			{
@@ -263,36 +248,19 @@ public class SupplementaryInfoTable extends DefaultTableModel
 						values[colNr++] = "";
 					}
 				}
-				values[colNr++] = "";
-				values[colNr++] = "";
-				values[colNr++] = "";
 			}
 
 			if (predictedFreq != null)
 			{
 				// Gain and Q values must be at predicted playing frequencies.
 				z = calculator.calcZ(predictedFreq, fingeringsPredicted.get(i));
-				double h1 = calculator.calcGain(predictedFreq, z);
-				double h2 = calculator.calcGain(2.0 * predictedFreq,
-						fingeringsPredicted.get(i));
-				double h3 = calculator.calcGain(3.0 * predictedFreq,
-						fingeringsPredicted.get(i));
-				values[colNr++] = formatted(h1);
-				values[colNr++] = formatted(h2);
-				values[colNr++] = formatted(h3);
-				values[colNr++] = formatted(Math.log(h1 / h2));
-				values[colNr++] = formatted(Math.log(h3 / h2));
-				values[colNr++] = formatted(Math.log(h1 * h3 / (h2 * h2)));
+				double gain1 = calculator.calcGain(predictedFreq, z);
+				values[colNr++] = formatted(gain1);
 				values[colNr++] = formatted(Q(predictedFreq, z, calculator,
 						fingeringsPredicted.get(i)));
 			}
 			else
 			{
-				values[colNr++] = "";
-				values[colNr++] = "";
-				values[colNr++] = "";
-				values[colNr++] = "";
-				values[colNr++] = "";
 				values[colNr++] = "";
 				values[colNr++] = "";
 			}
@@ -367,7 +335,7 @@ public class SupplementaryInfoTable extends DefaultTableModel
 				{
 					frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 				}
-				frame.setSize(900, 360);
+				frame.setSize(600, 360);
 				frame.getContentPane().add(new JScrollPane(table));
 				frame.setVisible(true);
 			}

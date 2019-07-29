@@ -2,7 +2,6 @@ package com.wwidesigner.geometry.view;
 
 import java.awt.BorderLayout;
 import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -39,19 +38,6 @@ public class NafPanel extends InstrumentPanel
 	protected void configureWidgets()
 	{
 		HOLE_TABLE_WIDTH = 400;
-	}
-
-	@Override
-	protected void layoutWidgets()
-	{
-		setLayout(new GridBagLayout());
-		setNameWidget(0, 0, 1);
-		setDescriptionWidget(0, 1, 1);
-		setLengthTypeWidget(0, 2, 1);
-		setMouthpieceWidget(1, 0, 3);
-		setTerminationWidget(1, 2, 1);
-		setHoleTableWidget(0, 3, GridBagConstraints.REMAINDER);
-		setBoreTableWidget(1, 3, 1);
 	}
 
 	@Override

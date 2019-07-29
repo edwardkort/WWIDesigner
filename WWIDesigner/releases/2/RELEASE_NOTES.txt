@@ -1,7 +1,30 @@
-Release notes for v2.2.0
+Release notes for v2.3.0
 
-This is an upgrade to v2.1.0. Please read INSTALL_README for
+This is an upgrade to v2.2.0. Please read INSTALL_README for
 installation details.
+
+v2.3.0 changes
+Enhancements:
+Added updated GUI (JideSoft) and math libraries (Apache commons).
+  No functional changes were noted.
+Issue #80: Added a user setting (in the Options/Preferences dialog), to
+  set the frequency range in the Note Spectrum Graph.
+Issue #81: Enhanced the tonehole model to include an allowance for the
+  presence of a finger closing the hole. The default value is implemented
+  for flutes and whistles, but no constant value for NAFs fit the test
+  data, so this feature is not set in the NAF study.
+  Changed the NAF empirical hole-size multiplier to better fit test
+  data, resulting in a uniform reduction in hole size of 1.5%.
+  These tonehole model changes remain a work in progress.
+Added optional names for individual bore points (see below).
+For flute and whistle studies only:
+  Added simplified, single-step calibrators that work with either
+  min/max frequencies or measured playing frequencies, whichever are
+  available. It is recommended that users recalibrate their existing models
+  before using them.
+  Added new bore-profile optimizers with their scope configured through
+  the bore-point names - in particular, optimizers for head joint and body
+  tapers.
 
 v2.2.0 changes
 Enhancements:

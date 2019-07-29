@@ -37,7 +37,7 @@ public class NAFHoleParameterOptimizationTest extends AbstractOptimizationTest
 	private void setBounds()
 	{
 		setLowerBound(new double[] { 0.0, 0.0 });
-		setUpperBound(new double[] { 1.0, 10.0 });
+		setUpperBound(new double[] { 2.0, 10.0 });
 	}
 
 	@SuppressWarnings("rawtypes")
@@ -89,7 +89,7 @@ public class NAFHoleParameterOptimizationTest extends AbstractOptimizationTest
 		Class objectiveClass = FippleFactorFingerAdjHoleMultObjectiveFunction.class;
 		String optimizationTitle = "Fipple factor, finger adjustment, and hole-size multiplier optimization";
 		setLowerBound(new double[] { 0.0, 0.0, 0.0 });
-		setUpperBound(new double[] { 1.0, 10.0, 1.0 });
+		setUpperBound(new double[] { 2.0, 10.0, 1.0 });
 
 		runOptimizer(args, startingFingerAdj, startingMultiplier,
 				objectiveClass, optimizationTitle);
@@ -103,7 +103,7 @@ public class NAFHoleParameterOptimizationTest extends AbstractOptimizationTest
 		Class objectiveClass = FippleFactorObjectiveFunction.class;
 		String optimizationTitle = "Fipple factor optimization, fixed finger adjustment and hole-size multiplier";
 		setLowerBound(new double[] { 0.0 });
-		setUpperBound(new double[] { 1.0 });
+		setUpperBound(new double[] { 2.0 });
 
 		runOptimizer(args, startingFingerAdj, startingMultiplier,
 				objectiveClass, optimizationTitle);

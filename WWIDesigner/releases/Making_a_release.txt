@@ -14,7 +14,9 @@ Steps in making a release:
 	a. Change the Class-Path root for the jar files to the
 		naming above
 	b. Change the Implementation-Version to the release version
-2. Update the version number in gui/images/about.html.
+2. Update the version number and copyright date in gui/images/about.html,
+    the copyright date in ConsoleView,
+    and the version-number folder name in UNIX_README.txt.
 3. If this is a minor version release, create the 
 	lib-<Major#>.<Minor#> directory with the necessary jars. I
 	use the Export->runnable jar wizard with the Copy option to

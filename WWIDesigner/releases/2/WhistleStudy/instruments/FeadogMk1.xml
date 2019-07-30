@@ -8,11 +8,11 @@
         <fipple>
             <windowLength>5.2</windowLength>
             <windowWidth>8.2</windowWidth>
-            <windowHeight>2.62</windowHeight>
+            <windowHeight>2.9</windowHeight>
             <windwayLength>24.5</windwayLength>
             <windwayHeight>1.8</windwayHeight>
         </fipple>
-        <beta>0.52</beta>
+        <beta>0.522</beta>
     </mouthpiece>
     <borePoint>
         <borePosition>-5.2</borePosition>

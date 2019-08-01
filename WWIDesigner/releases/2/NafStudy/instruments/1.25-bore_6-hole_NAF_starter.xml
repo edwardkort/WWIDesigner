@@ -23,37 +23,37 @@
     <hole>
         <name>Hole 6</name>
         <borePosition>6.891722779157808</borePosition>
-        <diameter>0.36936198623221533</diameter>
+        <diameter>0.36370070162298845</diameter>
         <height>0.1880012182436181</height>
     </hole>
     <hole>
         <name>Hole 5</name>
         <borePosition>8.028795688345417</borePosition>
-        <diameter>0.395312815615704</diameter>
+        <diameter>0.3892370249981716</diameter>
         <height>0.1880012182436181</height>
     </hole>
     <hole>
         <name>Hole 4</name>
         <borePosition>9.165868597533024</borePosition>
-        <diameter>0.3563181490605829</diameter>
+        <diameter>0.35083259694775604</diameter>
         <height>0.1880012182436181</height>
     </hole>
     <hole>
         <name>Hole 3</name>
         <borePosition>11.5175261489771</borePosition>
-        <diameter>0.4282302458938577</diameter>
+        <diameter>0.42163147850725885</diameter>
         <height>0.1880012182436181</height>
     </hole>
     <hole>
         <name>Hole 2</name>
         <borePosition>12.767524485950194</borePosition>
-        <diameter>0.33763871914567434</diameter>
+        <diameter>0.33242171087621813</diameter>
         <height>0.1880012182436181</height>
     </hole>
     <hole>
         <name>Hole 1</name>
         <borePosition>14.017522822923288</borePosition>
-        <diameter>0.31615503928894845</diameter>
+        <diameter>0.31127218210221863</diameter>
         <height>0.1880012182436181</height>
     </hole>
     <termination>

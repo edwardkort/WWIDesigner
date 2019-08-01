@@ -25,6 +25,10 @@ For flute and whistle studies only:
   Added new bore-profile optimizers with their scope configured through
   the bore-point names - in particular, optimizers for head joint and body
   tapers.
+Bug fixes:
+Issue #86: Resolved a tree selection refresh problem in the Study pane
+  under the latest java version 8 release (1.8.0_221) that only shows up
+  on some systems.
 
 v2.2.0 changes
 Enhancements:

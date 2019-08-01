@@ -206,6 +206,7 @@ public class StudyView extends DataViewPane implements EventSubscriber
 		tree.setModel(model);
 		TreeUtils.expandAll(tree);
 		tree.setSelectionPaths(selectionPaths.toArray(new TreePath[0]));
+		tree.updateUI();
 		setStudyViewName();
 		// Update on the appropriate thread
 		SwingUtilities.invokeLater(new Runnable()

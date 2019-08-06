@@ -1570,27 +1570,27 @@ public class InstrumentPanel extends JPanel implements FocusListener,
 		Set<AWTKeyStroke> forwardKeys = new HashSet<AWTKeyStroke>();
 		forwardKeys.add(AWTKeyStroke.getAWTKeyStroke(KeyEvent.VK_TAB, 0));
 		forwardKeys.add(AWTKeyStroke.getAWTKeyStroke(KeyEvent.VK_TAB,
-				InputEvent.CTRL_MASK));
+				InputEvent.CTRL_DOWN_MASK));
 		// Do not include Enter key: conflicts with default button action
 		forwardKeys.add(AWTKeyStroke.getAWTKeyStroke(KeyEvent.VK_ENTER,
-				InputEvent.CTRL_MASK));
+				InputEvent.CTRL_DOWN_MASK));
 		forwardKeys.add(AWTKeyStroke.getAWTKeyStroke(KeyEvent.VK_DOWN, 0));
 		forwardKeys.add(AWTKeyStroke.getAWTKeyStroke(KeyEvent.VK_DOWN,
-				InputEvent.CTRL_MASK));
+				InputEvent.CTRL_DOWN_MASK));
 		kfManager.setDefaultFocusTraversalKeys(
 				KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS, forwardKeys);
 		Set<AWTKeyStroke> backKeys = new HashSet<AWTKeyStroke>();
 		backKeys.add(AWTKeyStroke.getAWTKeyStroke(KeyEvent.VK_TAB,
-				InputEvent.SHIFT_MASK));
+				InputEvent.SHIFT_DOWN_MASK));
 		backKeys.add(AWTKeyStroke.getAWTKeyStroke(KeyEvent.VK_TAB,
-				InputEvent.CTRL_MASK | InputEvent.SHIFT_MASK));
+				InputEvent.CTRL_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK));
 		backKeys.add(AWTKeyStroke.getAWTKeyStroke(KeyEvent.VK_ENTER,
-				InputEvent.SHIFT_MASK));
+				InputEvent.SHIFT_DOWN_MASK));
 		backKeys.add(AWTKeyStroke.getAWTKeyStroke(KeyEvent.VK_ENTER,
-				InputEvent.CTRL_MASK | InputEvent.SHIFT_MASK));
+				InputEvent.CTRL_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK));
 		backKeys.add(AWTKeyStroke.getAWTKeyStroke(KeyEvent.VK_UP, 0));
 		backKeys.add(AWTKeyStroke.getAWTKeyStroke(KeyEvent.VK_UP,
-				InputEvent.CTRL_MASK));
+				InputEvent.CTRL_DOWN_MASK));
 		kfManager.setDefaultFocusTraversalKeys(
 				KeyboardFocusManager.BACKWARD_TRAVERSAL_KEYS, backKeys);
 	}

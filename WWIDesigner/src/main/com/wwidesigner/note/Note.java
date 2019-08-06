@@ -32,17 +32,17 @@ public class Note implements Serializable
 			Double dbl = note.getFrequency();
 			if (dbl != null)
 			{
-				setFrequency(new Double(dbl));
+				setFrequency(dbl);
 			}
 			dbl = note.getFrequencyMin();
 			if (dbl != null)
 			{
-				setFrequencyMin(new Double(dbl));
+				setFrequencyMin(dbl);
 			}
 			dbl = note.getFrequencyMax();
 			if (dbl != null)
 			{
-				setFrequencyMax(new Double(dbl));
+				setFrequencyMax(dbl);
 			}
 		}
 	}

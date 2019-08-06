@@ -14,7 +14,6 @@ import com.wwidesigner.geometry.PositionInterface;
  * @author kort
  * 
  */
-@SuppressWarnings("serial")
 public class SortedPositionList<T extends PositionInterface> extends
 		LinkedList<T>
 {

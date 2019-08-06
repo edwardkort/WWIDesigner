@@ -25,7 +25,6 @@ public class CalculationTest
 	static final double BaseRadius = 0.006; // Reference radius, in meters.
 	static final double BaseLength = 0.250; // Reference length of tube, in meters.
 
-	@SuppressWarnings("static-method")
 	@Test
 	public final void testImpedance()
 	{
@@ -47,7 +46,6 @@ public class CalculationTest
 		}
 	}
 
-	@SuppressWarnings("static-method")
 	@Test
 	public final void testCylinder()
 	{
@@ -85,7 +83,6 @@ public class CalculationTest
 		}
 	}
 
-	@SuppressWarnings("static-method")
 	@Test
 	public final void testCone()
 	{

@@ -327,7 +327,7 @@ public class ScalePanel extends JPanel implements KeyListener,
 		return scale;
 	}
 
-	@SuppressWarnings("rawtypes")
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public void setTableData(Vector data)
 	{
 		DefaultTableModel model = (DefaultTableModel) noteTable.getModel();
@@ -366,7 +366,7 @@ public class ScalePanel extends JPanel implements KeyListener,
 			}
 			else
 			{
-				clonedRow.add(new Double(interval));
+				clonedRow.add(interval);
 			}
 			clonedData.add(clonedRow);
 		}

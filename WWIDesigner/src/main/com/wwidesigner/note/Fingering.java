@@ -47,7 +47,7 @@ public class Fingering implements Serializable
 			List<Boolean> holes = fingering.getOpenHole();
 			for (Boolean hole : holes)
 			{
-				addOpenHole(new Boolean(hole));
+				addOpenHole(hole);
 			}
 			this.openEnd = fingering.getOpenEnd();
 		}

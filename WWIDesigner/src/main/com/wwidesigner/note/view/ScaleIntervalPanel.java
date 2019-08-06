@@ -70,7 +70,7 @@ public class ScaleIntervalPanel extends JPanel implements TableModelListener
 
 	}
 
-	@SuppressWarnings("rawtypes")
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public void setTableData(Vector data)
 	{
 		DefaultTableModel model = (DefaultTableModel) intervalTable.getModel();
@@ -109,7 +109,7 @@ public class ScaleIntervalPanel extends JPanel implements TableModelListener
 			}
 			else
 			{
-				clonedRow.add(new Double(interval));
+				clonedRow.add(interval);
 			}
 			clonedData.add(clonedRow);
 		}

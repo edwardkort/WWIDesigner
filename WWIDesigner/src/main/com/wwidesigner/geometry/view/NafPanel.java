@@ -205,8 +205,8 @@ public class NafPanel extends InstrumentPanel
 				}
 				for (BorePoint point : newPoints)
 				{
-					model.addRow(new Double[] { point.getBorePosition(),
-							point.getBoreDiameter() });
+					model.addRow(new Object[] { point.getName(),
+							point.getBorePosition(), point.getBoreDiameter() });
 				}
 			}
 		}

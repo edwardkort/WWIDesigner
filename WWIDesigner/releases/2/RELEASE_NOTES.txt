@@ -1,7 +1,16 @@
-Release notes for v2.3.0
+Release notes for v2.4.0
 
-This is an upgrade to v2.2.0. Please read INSTALL_README for
+This is an upgrade to v2.3.0. Please read INSTALL_README for
 installation details.
+
+v2.4.0 changes
+Bug fixes:
+Issue #87: Resolved a "broken" hemi-head creation button in the NAF
+  Study instrument view introduced in v2.3.0 (with the addition of
+  bore-point names).
+Enhancements:
+Issue #88: WIDesigner now supports java versions through 12. Please
+  read JAVA-README.txt.
 
 v2.3.0 changes
 Enhancements:

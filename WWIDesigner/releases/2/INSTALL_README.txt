@@ -16,5 +16,8 @@ If you normally keep your working files in the installation
 directory, you might want to copy them to the directory you just
 created with this new release.
 
-And if you are on a UNIX/Linux system, perform the
+If you are on a UNIX/Linux system, perform the
 steps in the UNIX_README file.
+
+And if you are using a java version greater the 8 (1.8.0), read
+the JAVA_README file.

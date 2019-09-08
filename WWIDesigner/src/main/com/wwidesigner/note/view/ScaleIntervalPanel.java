@@ -70,7 +70,7 @@ public class ScaleIntervalPanel extends JPanel implements TableModelListener
 
 	}
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@SuppressWarnings({ "rawtypes" })
 	public void setTableData(Vector data)
 	{
 		DefaultTableModel model = (DefaultTableModel) intervalTable.getModel();

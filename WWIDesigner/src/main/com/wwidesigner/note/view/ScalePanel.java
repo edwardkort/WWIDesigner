@@ -327,7 +327,7 @@ public class ScalePanel extends JPanel implements KeyListener,
 		return scale;
 	}
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@SuppressWarnings({ "rawtypes" })
 	public void setTableData(Vector data)
 	{
 		DefaultTableModel model = (DefaultTableModel) noteTable.getModel();

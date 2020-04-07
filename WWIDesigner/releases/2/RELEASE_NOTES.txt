@@ -1,7 +1,15 @@
-Release notes for v2.4.0
+Release notes for v2.5.0
 
-This is an upgrade to v2.3.0. Please read INSTALL_README for
+This is an upgrade to v2.4.0. Please read INSTALL_README for
 installation details.
+
+v2.5.0 change
+Bug fix:
+Issue #91: Resolved unnecessary focusLost/Gained logs from the
+  Console frame when that frame was docked/undocked. This entailed
+  updating an external library that manages this interface. No
+  WIDesigner code was changed. Because libraries were changed, a
+  complete install is necessary.
 
 v2.4.0 changes
 Bug fixes:

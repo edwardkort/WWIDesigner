@@ -9,7 +9,7 @@ If you want to run WIDesigner from the command line, the invocation is:
 
 	java -jar WIDesigner-<version #>.jar
 
-This assumes java is in your PATH and the WIDesigner-2.4 directory
+This assumes java is in your PATH and the WIDesigner-2.5 directory
 is your current working directory. You can, of course, use the
 above command line in your favorite shell scripting language.
 

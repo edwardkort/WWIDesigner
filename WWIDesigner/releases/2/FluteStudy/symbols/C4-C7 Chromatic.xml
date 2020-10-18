@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns2:scaleSymbolList xmlns:ns2="http://www.wwidesigner.com/Tuning">
+    <name>Three-octave chromatic</name>
+    <comment>Three octaves of chromatic symbols from C4</comment>
+    <scaleSymbol>C4</scaleSymbol>
+    <scaleSymbol>C#4</scaleSymbol>
+    <scaleSymbol>D4</scaleSymbol>
+    <scaleSymbol>Eb4</scaleSymbol>
+    <scaleSymbol>E4</scaleSymbol>
+    <scaleSymbol>F4</scaleSymbol>
+    <scaleSymbol>F#4</scaleSymbol>
+    <scaleSymbol>G4</scaleSymbol>
+    <scaleSymbol>G#4</scaleSymbol>
+    <scaleSymbol>A4</scaleSymbol>
+    <scaleSymbol>Bb4</scaleSymbol>
+    <scaleSymbol>B4</scaleSymbol>
+    <scaleSymbol>C5</scaleSymbol>
+    <scaleSymbol>C#5</scaleSymbol>
+    <scaleSymbol>D5</scaleSymbol>
+    <scaleSymbol>Eb5</scaleSymbol>
+    <scaleSymbol>E5</scaleSymbol>
+    <scaleSymbol>F5</scaleSymbol>
+    <scaleSymbol>F#5</scaleSymbol>
+    <scaleSymbol>G5</scaleSymbol>
+    <scaleSymbol>G#5</scaleSymbol>
+    <scaleSymbol>A5</scaleSymbol>
+    <scaleSymbol>Bb5</scaleSymbol>
+    <scaleSymbol>B5</scaleSymbol>
+    <scaleSymbol>C6</scaleSymbol>
+    <scaleSymbol>C#6</scaleSymbol>
+    <scaleSymbol>D6</scaleSymbol>
+    <scaleSymbol>Eb6</scaleSymbol>
+    <scaleSymbol>E6</scaleSymbol>
+    <scaleSymbol>F6</scaleSymbol>
+    <scaleSymbol>F#6</scaleSymbol>
+    <scaleSymbol>G6</scaleSymbol>
+    <scaleSymbol>G#6</scaleSymbol>
+    <scaleSymbol>A6</scaleSymbol>
+    <scaleSymbol>Bb6</scaleSymbol>
+    <scaleSymbol>B6</scaleSymbol>
+    <scaleSymbol>C7</scaleSymbol>
+</ns2:scaleSymbolList>

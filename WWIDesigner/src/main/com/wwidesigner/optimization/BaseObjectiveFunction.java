@@ -97,7 +97,7 @@ public abstract class BaseObjectiveFunction
 		this.calculator = aCalculator;
 		this.fingeringTargets = tuning.getFingering();
 		this.evaluator = aEvaluator;
-		nrDimensions = 1;
+		nrDimensions = 0;
 		optimizerType = OptimizerType.BOBYQAOptimizer;
 		maxEvaluations = 10000;
 		rangeProcessor = null;

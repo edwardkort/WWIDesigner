@@ -21,7 +21,8 @@ public class HoleSizeObjectiveFunction extends BaseObjectiveFunction
 	public static final String CONSTR_CAT = "Hole size";
 	public static final ConstraintType CONSTR_TYPE = ConstraintType.DIMENSIONAL;
 	public static final String DISPLAY_NAME = "Hole size only";
-	public static final String NAME = HoleSizeObjectiveFunction.class.getSimpleName();
+	public static final String NAME = HoleSizeObjectiveFunction.class
+			.getSimpleName();
 
 	public HoleSizeObjectiveFunction(InstrumentCalculator aCalculator,
 			TuningInterface tuning, EvaluatorInterface aEvaluator)
@@ -36,16 +37,13 @@ public class HoleSizeObjectiveFunction extends BaseObjectiveFunction
 		}
 		maxEvaluations = 20000 + (getNrDimensions() - 1) * 5000;
 		setConstraints();
-		constraints.setObjectiveDisplayName(DISPLAY_NAME);
-		constraints.setObjectiveFunctionName(NAME);
-		constraints.setConstraintsName("Default");
 	}
 
 	@Override
 	public double[] getGeometryPoint()
 	{
-		PositionInterface[] sortedHoles = Instrument.sortList(calculator
-				.getInstrument().getHole());
+		PositionInterface[] sortedHoles = Instrument
+				.sortList(calculator.getInstrument().getHole());
 
 		double[] geometry = new double[nrDimensions];
 
@@ -65,8 +63,8 @@ public class HoleSizeObjectiveFunction extends BaseObjectiveFunction
 		{
 			throw new DimensionMismatchException(point.length, nrDimensions);
 		}
-		PositionInterface[] sortedHoles = Instrument.sortList(calculator
-				.getInstrument().getHole());
+		PositionInterface[] sortedHoles = Instrument
+				.sortList(calculator.getInstrument().getHole());
 
 		for (int i = 0; i < nrDimensions; ++i)
 		{
@@ -79,8 +77,8 @@ public class HoleSizeObjectiveFunction extends BaseObjectiveFunction
 
 	protected void setConstraints()
 	{
-		PositionInterface[] sortedHoles = Instrument.sortList(calculator
-				.getInstrument().getHole());
+		PositionInterface[] sortedHoles = Instrument
+				.sortList(calculator.getInstrument().getHole());
 
 		for (int i = nrDimensions, idx = 0; i > 0; i--, idx++)
 		{
@@ -92,8 +90,8 @@ public class HoleSizeObjectiveFunction extends BaseObjectiveFunction
 			constraints.addConstraint(constraint);
 		}
 
-		constraints.setNumberOfHoles(calculator.getInstrument().getHole()
-				.size());
+		constraints
+				.setNumberOfHoles(calculator.getInstrument().getHole().size());
 		constraints.setObjectiveDisplayName(DISPLAY_NAME);
 		constraints.setObjectiveFunctionName(NAME);
 		constraints.setConstraintsName("Default");

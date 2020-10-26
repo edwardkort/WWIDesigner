@@ -112,6 +112,8 @@ public class AbstractOptimizationTest
 		calculator.setPhysicalParameters(params);
 		instrument.convertToMetres();
 		tuning = getTuningFromXml();
+		lowerBound = new double[0];
+		upperBound = new double[0];
 	}
 
 	/**

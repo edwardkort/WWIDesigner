@@ -52,15 +52,16 @@ public class HoleGroupPositionObjectiveFunction extends BaseObjectiveFunction
 		super(aCalculator, tuning, aEvaluator);
 		optimizerType = OptimizerType.BOBYQAOptimizer; // MultivariateOptimizer
 		setHoleGroups(aHoleGroups);
+		setConstraints();
 	}
 
 	public void setHoleGroups(int[][] groups) throws Exception
 	{
 		// Allows the constructor to have a null holeGroup parameter.
-		if (groups == null)
-		{
-			return;
-		}
+//		if (groups == null)
+//		{
+//			return;
+//		}
 
 		numberOfHoles = getNumberOfHoles();
 
@@ -76,8 +77,6 @@ public class HoleGroupPositionObjectiveFunction extends BaseObjectiveFunction
 			// BOBYQA doesn't support single dimension.
 			optimizerType = OptimizerType.CMAESOptimizer;
 		}
-
-		setConstraints();
 	}
 
 	private void validateHoleGroups(int[][] groups, int aNumberOfHoles)

@@ -24,6 +24,7 @@ import java.util.Comparator;
 import java.util.NoSuchElementException;
 
 import org.apache.commons.math3.exception.TooManyEvaluationsException;
+import org.apache.commons.math3.exception.ZeroException;
 import org.apache.commons.math3.optim.ConvergenceChecker;
 import org.apache.commons.math3.optim.InitialGuess;
 import org.apache.commons.math3.optim.MaxEval;
@@ -45,8 +46,8 @@ import org.apache.commons.math3.optim.univariate.UnivariateObjectiveFunction;
 import org.apache.commons.math3.optim.univariate.UnivariatePointValuePair;
 import org.apache.commons.math3.random.MersenneTwister;
 
-import com.wwidesigner.math.DIRECTOptimizer;
 import com.wwidesigner.math.DIRECTCOptimizer;
+import com.wwidesigner.math.DIRECTOptimizer;
 import com.wwidesigner.modelling.EvaluatorInterface;
 import com.wwidesigner.optimization.multistart.AbstractRangeProcessor;
 import com.wwidesigner.optimization.multistart.RandomRangeProcessor;
@@ -117,6 +118,11 @@ public class ObjectiveFunctionOptimizer
 		System.out.print(" optimization variables and ");
 		System.out.print(objective.getNrNotes());
 		System.out.print(" target notes.");
+
+		if (objective.getNrDimensions() == 0)
+		{
+			throw new ZeroException();
+		}
 
 		long startTime = System.currentTimeMillis();
 		double[] startPoint = objective.getInitialPoint();
@@ -198,7 +204,8 @@ public class ObjectiveFunctionOptimizer
 						+ outcome.getValue());
 
 				// Use BOBYQA to refine global optimum found.
-				PointValuePair outcome2 = runBobyqa(objective, outcome.getPoint());
+				PointValuePair outcome2 = runBobyqa(objective,
+						outcome.getPoint());
 				if (outcome.getValue() < outcome2.getValue())
 				{
 					// Don't use second-stage optimum if it isn't better.

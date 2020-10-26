@@ -35,8 +35,8 @@ import com.wwidesigner.note.TuningInterface;
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-public class HoleGroupPositionFromTopObjectiveFunction extends
-		HoleGroupPositionObjectiveFunction
+public class HoleGroupPositionFromTopObjectiveFunction
+		extends HoleGroupPositionObjectiveFunction
 {
 
 	public HoleGroupPositionFromTopObjectiveFunction(
@@ -55,8 +55,8 @@ public class HoleGroupPositionFromTopObjectiveFunction extends
 		// expressed as a fraction of the bore length (both measured from
 		// mouthpiece position).
 
-		PositionInterface[] sortedHoles = Instrument.sortList(calculator
-				.getInstrument().getHole());
+		PositionInterface[] sortedHoles = Instrument
+				.sortList(calculator.getInstrument().getHole());
 
 		// First just extract bore length and hole positions.
 		double[] dimensions = new double[numberOfHoles + 1];
@@ -79,14 +79,18 @@ public class HoleGroupPositionFromTopObjectiveFunction extends
 		Arrays.fill(geometry, 0.0);
 
 		geometry[0] = dimensions[0];
-		geometry[1] = getTopRatio(dimensions[0], dimensions[1]);
-
-		double priorPosition = dimensions[1];
-		for (int i = 2; i <= numberOfHoles; i++)
+		if (nrDimensions > 1)
 		{
-			geometry[dimensionByHole[i - 2] + 1] += (dimensions[i] - priorPosition)
-					/ groupSize[i - 2];
-			priorPosition = dimensions[i];
+			geometry[1] = getTopRatio(dimensions[0], dimensions[1]);
+
+			double priorPosition = dimensions[1];
+			for (int i = 2; i <= numberOfHoles; i++)
+			{
+				geometry[dimensionByHole[i - 2]
+						+ 1] += (dimensions[i] - priorPosition)
+								/ groupSize[i - 2];
+				priorPosition = dimensions[i];
+			}
 		}
 
 		return geometry;
@@ -104,14 +108,17 @@ public class HoleGroupPositionFromTopObjectiveFunction extends
 		double[] dimensions = new double[numberOfHoles + 1];
 
 		dimensions[0] = geometry[0]; // bore length
-		dimensions[1] = getTopPosition(geometry[0], geometry[1]);
-
-		double priorPosition = dimensions[1];
-		for (int i = 2; i <= numberOfHoles; i++)
+		if (numberOfHoles > 0)
 		{
-			dimensions[i] = priorPosition
-					+ geometry[dimensionByHole[i - 2] + 1];
-			priorPosition = dimensions[i];
+			dimensions[1] = getTopPosition(geometry[0], geometry[1]);
+
+			double priorPosition = dimensions[1];
+			for (int i = 2; i <= numberOfHoles; i++)
+			{
+				dimensions[i] = priorPosition
+						+ geometry[dimensionByHole[i - 2] + 1];
+				priorPosition = dimensions[i];
+			}
 		}
 
 		return dimensions;
@@ -140,8 +147,8 @@ public class HoleGroupPositionFromTopObjectiveFunction extends
 		setBore(point);
 		double[] dimensions = convertGeometryToDimensions(point);
 
-		PositionInterface[] sortedHoles = Instrument.sortList(calculator
-				.getInstrument().getHole());
+		PositionInterface[] sortedHoles = Instrument
+				.sortList(calculator.getInstrument().getHole());
 
 		for (int i = 0; i < sortedHoles.length; i++)
 		{
@@ -178,40 +185,42 @@ public class HoleGroupPositionFromTopObjectiveFunction extends
 	{
 		constraints.clearConstraints(CONSTR_CAT); // Reentrant
 
-		constraints.addConstraint(new Constraint(CONSTR_CAT, "Bore length",
-				CONSTR_TYPE));
+		constraints.addConstraint(
+				new Constraint(CONSTR_CAT, "Bore length", CONSTR_TYPE));
 
 		String constraintName = "";
-		PositionInterface[] sortedHoles = Instrument.sortList(calculator
-				.getInstrument().getHole());
-		for (int groupIdx = 0; groupIdx < holeGroups.length; groupIdx++)
+		PositionInterface[] sortedHoles = Instrument
+				.sortList(calculator.getInstrument().getHole());
+		if (holeGroups != null)
 		{
-			if (groupIdx == 0)
+			for (int groupIdx = 0; groupIdx < holeGroups.length; groupIdx++)
 			{
-				constraintName = "Ratio, from splitting edge, of top-hole position to bore length";
-				constraints
-						.addConstraint(new Constraint(CONSTR_CAT,
-								constraintName,
-								Constraint.ConstraintType.DIMENSIONLESS));
-			}
-			boolean isGroup = holeGroups[groupIdx].length > 1;
-			String firstGroupName = getGroupName(groupIdx, sortedHoles);
-			if (isGroup)
-			{
-				constraintName = firstGroupName + " spacing";
-				constraints.addConstraint(new Constraint(CONSTR_CAT,
-						constraintName, CONSTR_TYPE));
-			}
-			if ((groupIdx + 1) < holeGroups.length) // Not last group
-			{
-				String firstHoleName = getHoleNameFromGroup(groupIdx, false,
-						sortedHoles);
-				String secondHoleName = getHoleNameFromGroup(groupIdx + 1,
-						true, sortedHoles);
-				constraintName = firstHoleName + " to " + secondHoleName
-						+ " distance";
-				constraints.addConstraint(new Constraint(CONSTR_CAT,
-						constraintName, CONSTR_TYPE));
+				if (groupIdx == 0)
+				{
+					constraintName = "Ratio, from splitting edge, of top-hole position to bore length";
+					constraints.addConstraint(
+							new Constraint(CONSTR_CAT, constraintName,
+									Constraint.ConstraintType.DIMENSIONLESS));
+				}
+				boolean isGroup = holeGroups[groupIdx].length > 1;
+				String firstGroupName = getGroupName(groupIdx, sortedHoles);
+				if (isGroup)
+				{
+					constraintName = firstGroupName + " spacing";
+					constraints.addConstraint(new Constraint(CONSTR_CAT,
+							constraintName, CONSTR_TYPE));
+				}
+				if ((groupIdx + 1) < holeGroups.length) // Not last group
+				{
+					String firstHoleName = getHoleNameFromGroup(groupIdx, false,
+							sortedHoles);
+					String secondHoleName = getHoleNameFromGroup(groupIdx + 1,
+							true, sortedHoles);
+					constraintName = firstHoleName + " to " + secondHoleName
+							+ " distance";
+					constraints.addConstraint(new Constraint(CONSTR_CAT,
+							constraintName, CONSTR_TYPE));
+				}
 			}
 		}
 

@@ -8,6 +8,7 @@ import static org.junit.Assert.fail;
 
 import java.util.List;
 
+import org.apache.commons.math3.exception.ZeroException;
 import org.junit.Test;
 
 import com.wwidesigner.geometry.BorePoint;
@@ -63,6 +64,101 @@ public class NafOptimizationTest extends AbstractOptimizationTest
 	}
 
 	@Test
+	public final void testNoHoleWithHoleSizePositionOptimization()
+	{
+		try
+		{
+			setInputInstrumentXML(
+					"com/wwidesigner/optimization/example/NoHoleNAF1.xml");
+			setInputTuningXML(
+					"com/wwidesigner/optimization/example/NoHoleNAF1Tuning.xml");
+			setParams(new PhysicalParameters(22.22, TemperatureType.C));
+			setCalculator(new NAFCalculator());
+			setup();
+			setLowerBound(new double[] { 0.25 });
+			setUpperBound(new double[] { 0.4 });
+			evaluator = new ReactanceEvaluator(calculator);
+			objective = new HoleFromTopObjectiveFunction(calculator, tuning,
+					evaluator, BoreLengthAdjustmentType.PRESERVE_TAPER);
+
+			Instrument optimizedInstrument = doInstrumentOptimization(
+					"No-hole");
+
+			// Test bore length
+			List<BorePoint> borePoints = optimizedInstrument.getBorePoint();
+			PositionInterface[] sortedPoints = Instrument.sortList(borePoints);
+			PositionInterface lastPoint = sortedPoints[sortedPoints.length - 1];
+			assertEquals("Bore length incorrect", 11.97,
+					lastPoint.getBorePosition(), 0.1);
+		}
+		catch (Exception e)
+		{
+			fail(e.getMessage());
+		}
+	}
+
+	@Test
+	public final void testNoHoleWithGroupedHoleSizePositionOptimization()
+	{
+		try
+		{
+			setInputInstrumentXML(
+					"com/wwidesigner/optimization/example/NoHoleNAF1.xml");
+			setInputTuningXML(
+					"com/wwidesigner/optimization/example/NoHoleNAF1Tuning.xml");
+			setParams(new PhysicalParameters(22.22, TemperatureType.C));
+			setCalculator(new NAFCalculator());
+			setup();
+			setLowerBound(new double[] { 0.25 });
+			setUpperBound(new double[] { 0.4 });
+			evaluator = new ReactanceEvaluator(calculator);
+			objective = new HoleGroupFromTopObjectiveFunction(calculator,
+					tuning, evaluator, null);
+
+			Instrument optimizedInstrument = doInstrumentOptimization(
+					"No-hole");
+
+			// Test bore length
+			List<BorePoint> borePoints = optimizedInstrument.getBorePoint();
+			PositionInterface[] sortedPoints = Instrument.sortList(borePoints);
+			PositionInterface lastPoint = sortedPoints[sortedPoints.length - 1];
+			assertEquals("Bore length incorrect", 11.97,
+					lastPoint.getBorePosition(), 0.1);
+		}
+		catch (Exception e)
+		{
+			fail(e.getMessage());
+		}
+	}
+
+	@Test
+	public final void testNoHoleWithHoleSizeOnlyOptimization()
+	{
+		try
+		{
+			setInputInstrumentXML(
+					"com/wwidesigner/optimization/example/NoHoleNAF1.xml");
+			setInputTuningXML(
+					"com/wwidesigner/optimization/example/NoHoleNAF1Tuning.xml");
+			setParams(new PhysicalParameters(22.22, TemperatureType.C));
+			setCalculator(new NAFCalculator());
+			setup();
+			evaluator = new ReactanceEvaluator(calculator);
+			objective = new HoleSizeObjectiveFunction(calculator, tuning,
+					evaluator);
+
+			doInstrumentOptimization("No-hole");
+		}
+		catch (Exception e)
+		{
+			if (!(e instanceof ZeroException))
+			{
+				fail(e.getMessage());
+			}
+		}
+	}
+
+	@Test
 	public final void testNoHoleTaperOptimization()
 	{
 		try
@@ -88,6 +184,146 @@ public class NafOptimizationTest extends AbstractOptimizationTest
 			PositionInterface[] sortedPoints = Instrument.sortList(borePoints);
 			PositionInterface lastPoint = sortedPoints[sortedPoints.length - 1];
 			assertEquals("Bore length incorrect", 17.38,
+					lastPoint.getBorePosition(), 0.1);
+
+		}
+		catch (Exception e)
+		{
+			fail(e.getMessage());
+		}
+	}
+
+	@Test
+	public final void testNoHoleTaperOptimization2()
+	{
+		try
+		{
+			setInputInstrumentXML(
+					"com/wwidesigner/optimization/example/NoHoleTaperNAF.xml");
+			setInputTuningXML(
+					"com/wwidesigner/optimization/example/NoHoleTaperNAFTuning.xml");
+			setParams(new PhysicalParameters(22.22, TemperatureType.C));
+			setCalculator(new NAFCalculator());
+			setup();
+			setLowerBound(new double[] { 0.3, 0.8, 0.0, 0.0 });
+			setUpperBound(new double[] { 0.6, 1.2, 1.0, 1.0 });
+			evaluator = new ReactanceEvaluator(calculator);
+			objective = new SingleTaperNoHoleGroupingFromTopObjectiveFunction(
+					calculator, tuning, evaluator);
+
+			Instrument optimizedInstrument = doInstrumentOptimization(
+					"No-hole");
+
+			// Test bore length
+			List<BorePoint> borePoints = optimizedInstrument.getBorePoint();
+			PositionInterface[] sortedPoints = Instrument.sortList(borePoints);
+			PositionInterface lastPoint = sortedPoints[sortedPoints.length - 1];
+			assertEquals("Bore length incorrect", 17.38,
+					lastPoint.getBorePosition(), 0.1);
+
+		}
+		catch (Exception e)
+		{
+			fail(e.getMessage());
+		}
+	}
+
+	@Test
+	public final void testNoHoleGroupingTaperOptimization()
+	{
+		try
+		{
+			setInputInstrumentXML(
+					"com/wwidesigner/optimization/example/NoHoleTaperNAF.xml");
+			setInputTuningXML(
+					"com/wwidesigner/optimization/example/NoHoleTaperNAFTuning.xml");
+			setParams(new PhysicalParameters(22.22, TemperatureType.C));
+			setCalculator(new NAFCalculator());
+			setup();
+			setLowerBound(new double[] { 0.3, 0.8, 0.0, 0.0 });
+			setUpperBound(new double[] { 0.6, 1.2, 1.0, 1.0 });
+			evaluator = new ReactanceEvaluator(calculator);
+			objective = new SingleTaperHoleGroupFromTopObjectiveFunction(
+					calculator, tuning, evaluator, null);
+
+			Instrument optimizedInstrument = doInstrumentOptimization(
+					"No-hole");
+
+			// Test bore length
+			List<BorePoint> borePoints = optimizedInstrument.getBorePoint();
+			PositionInterface[] sortedPoints = Instrument.sortList(borePoints);
+			PositionInterface lastPoint = sortedPoints[sortedPoints.length - 1];
+			assertEquals("Bore length incorrect", 17.38,
+					lastPoint.getBorePosition(), 0.1);
+
+		}
+		catch (Exception e)
+		{
+			fail(e.getMessage());
+		}
+	}
+
+	@Test
+	public final void testNoHoleHemiHeadTaperOptimization()
+	{
+		try
+		{
+			setInputInstrumentXML(
+					"com/wwidesigner/optimization/example/NoHoleTaperNAF.xml");
+			setInputTuningXML(
+					"com/wwidesigner/optimization/example/NoHoleTaperNAFTuning.xml");
+			setParams(new PhysicalParameters(22.22, TemperatureType.C));
+			setCalculator(new NAFCalculator());
+			setup();
+			setLowerBound(new double[] { 0.3, 0.8, 0.0, 0.0 });
+			setUpperBound(new double[] { 0.6, 1.2, 1.0, 1.0 });
+			evaluator = new ReactanceEvaluator(calculator);
+			objective = new SingleTaperNoHoleGroupingFromTopHemiHeadObjectiveFunction(
+					calculator, tuning, evaluator);
+
+			Instrument optimizedInstrument = doInstrumentOptimization(
+					"No-hole");
+
+			// Test bore length
+			List<BorePoint> borePoints = optimizedInstrument.getBorePoint();
+			PositionInterface[] sortedPoints = Instrument.sortList(borePoints);
+			PositionInterface lastPoint = sortedPoints[sortedPoints.length - 1];
+			assertEquals("Bore length incorrect", 17.50,
+					lastPoint.getBorePosition(), 0.1);
+
+		}
+		catch (Exception e)
+		{
+			fail(e.getMessage());
+		}
+	}
+
+	@Test
+	public final void testNoHoleHemiHeadGroupingTaperOptimization()
+	{
+		try
+		{
+			setInputInstrumentXML(
+					"com/wwidesigner/optimization/example/NoHoleTaperNAF.xml");
+			setInputTuningXML(
+					"com/wwidesigner/optimization/example/NoHoleTaperNAFTuning.xml");
+			setParams(new PhysicalParameters(22.22, TemperatureType.C));
+			setCalculator(new NAFCalculator());
+			setup();
+			setLowerBound(new double[] { 0.3, 0.8, 0.0, 0.0 });
+			setUpperBound(new double[] { 0.6, 1.2, 1.0, 1.0 });
+			evaluator = new ReactanceEvaluator(calculator);
+			objective = new SingleTaperHoleGroupFromTopObjectiveFunction(
+					calculator, tuning, evaluator, null);
+
+			Instrument optimizedInstrument = doInstrumentOptimization(
+					"No-hole");
+
+			// Test bore length
+			List<BorePoint> borePoints = optimizedInstrument.getBorePoint();
+			PositionInterface[] sortedPoints = Instrument.sortList(borePoints);
+			PositionInterface lastPoint = sortedPoints[sortedPoints.length - 1];
+			assertEquals("Bore length incorrect", 17.30,
 					lastPoint.getBorePosition(), 0.1);
 
 		}
@@ -304,8 +540,11 @@ public class NafOptimizationTest extends AbstractOptimizationTest
 	public static void main(String[] args)
 	{
 		NafOptimizationTest test = new NafOptimizationTest();
-		test.testNoHoleOptimization();
+		// test.testNoHoleOptimization();
 		// test.testNoHoleTaperOptimization();
+		// test.testNoHoleWithHoleSizePositionOptimization();
+		test.testNoHoleWithHoleSizeOnlyOptimization();
+		// test.testNoHoleWithGroupedHoleSizePositionOptimization();
 		// test.test1HoleOptimization();
 		// test.test6HoleOptimization();
 		// test.test7HoleTaperOptimization();

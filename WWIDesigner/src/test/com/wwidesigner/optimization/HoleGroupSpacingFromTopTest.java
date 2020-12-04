@@ -9,7 +9,7 @@ import org.junit.Test;
 import com.wwidesigner.geometry.Instrument;
 import com.wwidesigner.modelling.CentDeviationEvaluator;
 import com.wwidesigner.modelling.NAFCalculator;
-import com.wwidesigner.optimization.HolePositionObjectiveFunction.BoreLengthAdjustmentType;
+import com.wwidesigner.optimization.BoreLengthAdjustmentInterface.BoreLengthAdjustmentType;
 import com.wwidesigner.optimization.gui.ConstraintsDialog;
 import com.wwidesigner.util.Constants.TemperatureType;
 import com.wwidesigner.util.PhysicalParameters;
@@ -51,12 +51,13 @@ public class HoleGroupSpacingFromTopTest extends AbstractOptimizationTest
 					0.003, 0.014, 0.014, 0.014, 0.014, 0.014, 0.008, 0.008 };
 			evaluator = new CentDeviationEvaluator(calculator);
 			objective = new HoleFromTopObjectiveFunction(calculator, tuning,
-					evaluator, BoreLengthAdjustmentType.PRESERVE_TAPER);
+					evaluator, BoreLengthAdjustmentType.PRESERVE_BORE);
 			objective.setMaxEvaluations(20000);
-			objective
-					.setOptimizerType(BaseObjectiveFunction.OptimizerType.BOBYQAOptimizer);
+			objective.setOptimizerType(
+					BaseObjectiveFunction.OptimizerType.BOBYQAOptimizer);
 
-			Instrument optimizedInstrument = doInstrumentOptimization("HoleFromTopObjectiveFunction, top ratio 0");
+			Instrument optimizedInstrument = doInstrumentOptimization(
+					"HoleFromTopObjectiveFunction, top ratio 0");
 			// Get bore length and top hole position
 			double boreLength1 = getBoreLength(optimizedInstrument);
 			double topHolePosition1 = getTopHolePosition(optimizedInstrument);
@@ -67,21 +68,20 @@ public class HoleGroupSpacingFromTopTest extends AbstractOptimizationTest
 			lowerBound = new double[] { 0.2, 0.0203, 0.0203, 0.0203, 0.0203,
 					0.0203, 0.0005, 0.018, 0.002, 0.002, 0.002, 0.002, 0.002,
 					0.002, 0.002 };
-			upperBound = new double[] { 0.5, 0.05, 0.05, 0.1, 0.05, 0.05,
-					0.003, 0.20, 0.014, 0.014, 0.014, 0.014, 0.014, 0.008,
-					0.008 };
-			holeGroups = new int[][] { { 0 }, { 1 }, { 2 }, { 3 }, { 4 },
-					{ 5 }, { 6 } };
+			upperBound = new double[] { 0.5, 0.05, 0.05, 0.1, 0.05, 0.05, 0.003,
+					0.20, 0.014, 0.014, 0.014, 0.014, 0.014, 0.008, 0.008 };
+			holeGroups = new int[][] { { 0 }, { 1 }, { 2 }, { 3 }, { 4 }, { 5 },
+					{ 6 } };
 			evaluator = new CentDeviationEvaluator(calculator);
-			objective = new HoleFromTopObjectiveFunction(calculator, tuning,
-					evaluator, BoreLengthAdjustmentType.PRESERVE_TAPER);
 			objective = new HoleGroupObjectiveFunction(calculator, tuning,
-					evaluator, holeGroups);
+					evaluator, holeGroups,
+					BoreLengthAdjustmentType.PRESERVE_BORE);
 			objective.setMaxEvaluations(20000);
-			objective
-					.setOptimizerType(BaseObjectiveFunction.OptimizerType.BOBYQAOptimizer);
+			objective.setOptimizerType(
+					BaseObjectiveFunction.OptimizerType.BOBYQAOptimizer);
 
-			optimizedInstrument = doInstrumentOptimization("HoleGroupObjectiveFunction");
+			optimizedInstrument = doInstrumentOptimization(
+					"HoleGroupObjectiveFunction");
 			// Get bore length and top hole position
 			double boreLength2 = getBoreLength(optimizedInstrument);
 			double topHolePosition2 = getTopHolePosition(optimizedInstrument);
@@ -94,16 +94,18 @@ public class HoleGroupSpacingFromTopTest extends AbstractOptimizationTest
 					0.002, 0.002 };
 			upperBound = new double[] { 0.7, 1.0, 0.05, 0.05, 0.1, 0.05, 0.05,
 					0.003, 0.014, 0.014, 0.014, 0.014, 0.014, 0.008, 0.008 };
-			holeGroups = new int[][] { { 0 }, { 1 }, { 2 }, { 3 }, { 4 },
-					{ 5 }, { 6 } };
+			holeGroups = new int[][] { { 0 }, { 1 }, { 2 }, { 3 }, { 4 }, { 5 },
+					{ 6 } };
 			evaluator = new CentDeviationEvaluator(calculator);
 			objective = new HoleGroupFromTopObjectiveFunction(calculator,
-					tuning, evaluator, holeGroups);
+					tuning, evaluator, holeGroups,
+					BoreLengthAdjustmentType.PRESERVE_BORE);
 			objective.setMaxEvaluations(20000);
-			objective
-					.setOptimizerType(BaseObjectiveFunction.OptimizerType.BOBYQAOptimizer);
+			objective.setOptimizerType(
+					BaseObjectiveFunction.OptimizerType.BOBYQAOptimizer);
 
-			optimizedInstrument = doInstrumentOptimization("HoleGroupFromTopObjectiveFunction, top ratio 0");
+			optimizedInstrument = doInstrumentOptimization(
+					"HoleGroupFromTopObjectiveFunction, top ratio 0");
 			// Get bore length and top hole position
 			double boreLength3 = getBoreLength(optimizedInstrument);
 			double topHolePosition3 = getTopHolePosition(optimizedInstrument);
@@ -150,15 +152,15 @@ public class HoleGroupSpacingFromTopTest extends AbstractOptimizationTest
 					0.014, 0.014, 0.014, 0.014, 0.014, 0.008, 0.008 };
 			holeGroups = new int[][] { { 0, 1, 2 }, { 3, 4, 5 }, { 6 } };
 			evaluator = new CentDeviationEvaluator(calculator);
-			objective = new HoleFromTopObjectiveFunction(calculator, tuning,
-					evaluator, BoreLengthAdjustmentType.PRESERVE_TAPER);
 			objective = new HoleGroupObjectiveFunction(calculator, tuning,
-					evaluator, holeGroups);
+					evaluator, holeGroups,
+					BoreLengthAdjustmentType.PRESERVE_BORE);
 			objective.setMaxEvaluations(20000);
-			objective
-					.setOptimizerType(BaseObjectiveFunction.OptimizerType.BOBYQAOptimizer);
+			objective.setOptimizerType(
+					BaseObjectiveFunction.OptimizerType.BOBYQAOptimizer);
 
-			Instrument optimizedInstrument = doInstrumentOptimization("HoleGroupObjectiveFunction");
+			Instrument optimizedInstrument = doInstrumentOptimization(
+					"HoleGroupObjectiveFunction");
 			// Get bore length and top hole position
 			double boreLength2 = getBoreLength(optimizedInstrument);
 			double topHolePosition2 = getTopHolePosition(optimizedInstrument);
@@ -168,17 +170,19 @@ public class HoleGroupSpacingFromTopTest extends AbstractOptimizationTest
 			setup();
 			lowerBound = new double[] { 0.2, 0.0, 0.0203, 0.0203, 0.0203,
 					0.0005, 0.002, 0.002, 0.002, 0.002, 0.002, 0.002, 0.002 };
-			upperBound = new double[] { 0.7, 1.0, 0.05, 0.05, 0.1, 0.003,
-					0.014, 0.014, 0.014, 0.014, 0.014, 0.008, 0.008 };
+			upperBound = new double[] { 0.7, 1.0, 0.05, 0.05, 0.1, 0.003, 0.014,
+					0.014, 0.014, 0.014, 0.014, 0.008, 0.008 };
 			holeGroups = new int[][] { { 0, 1, 2 }, { 3, 4, 5 }, { 6 } };
 			evaluator = new CentDeviationEvaluator(calculator);
 			objective = new HoleGroupFromTopObjectiveFunction(calculator,
-					tuning, evaluator, holeGroups);
+					tuning, evaluator, holeGroups,
+					BoreLengthAdjustmentType.PRESERVE_BORE);
 			objective.setMaxEvaluations(20000);
-			objective
-					.setOptimizerType(BaseObjectiveFunction.OptimizerType.BOBYQAOptimizer);
+			objective.setOptimizerType(
+					BaseObjectiveFunction.OptimizerType.BOBYQAOptimizer);
 
-			optimizedInstrument = doInstrumentOptimization("HoleGroupFromTopObjectiveFunction, top ratio 0");
+			optimizedInstrument = doInstrumentOptimization(
+					"HoleGroupFromTopObjectiveFunction, top ratio 0");
 			// Get bore length and top hole position
 			double boreLength3 = getBoreLength(optimizedInstrument);
 			double topHolePosition3 = getTopHolePosition(optimizedInstrument);
@@ -224,10 +228,11 @@ public class HoleGroupSpacingFromTopTest extends AbstractOptimizationTest
 			objective = new HoleFromTopObjectiveFunction(calculator, tuning,
 					evaluator, BoreLengthAdjustmentType.PRESERVE_TAPER);
 			objective.setMaxEvaluations(20000);
-			objective
-					.setOptimizerType(BaseObjectiveFunction.OptimizerType.BOBYQAOptimizer);
+			objective.setOptimizerType(
+					BaseObjectiveFunction.OptimizerType.BOBYQAOptimizer);
 
-			Instrument optimizedInstrument = doInstrumentOptimization("HoleFromTopObjectiveFunction, top ratio 0");
+			Instrument optimizedInstrument = doInstrumentOptimization(
+					"HoleFromTopObjectiveFunction, top ratio 0");
 			// Get bore length and top hole position
 			double boreLength1 = getBoreLength(optimizedInstrument);
 			double topHolePosition1 = getTopHolePosition(optimizedInstrument);
@@ -238,21 +243,20 @@ public class HoleGroupSpacingFromTopTest extends AbstractOptimizationTest
 			lowerBound = new double[] { 0.2, 0.0203, 0.0203, 0.0203, 0.0203,
 					0.0203, 0.0005, 0.018, 0.002, 0.002, 0.002, 0.002, 0.002,
 					0.002, 0.002 };
-			upperBound = new double[] { 0.5, 0.05, 0.05, 0.1, 0.05, 0.05,
-					0.003, 0.20, 0.014, 0.014, 0.014, 0.014, 0.014, 0.008,
-					0.008 };
-			holeGroups = new int[][] { { 0 }, { 1 }, { 2 }, { 3 }, { 4 },
-					{ 5 }, { 6 } };
+			upperBound = new double[] { 0.5, 0.05, 0.05, 0.1, 0.05, 0.05, 0.003,
+					0.20, 0.014, 0.014, 0.014, 0.014, 0.014, 0.008, 0.008 };
+			holeGroups = new int[][] { { 0 }, { 1 }, { 2 }, { 3 }, { 4 }, { 5 },
+					{ 6 } };
 			evaluator = new CentDeviationEvaluator(calculator);
-			objective = new HoleFromTopObjectiveFunction(calculator, tuning,
-					evaluator, BoreLengthAdjustmentType.PRESERVE_TAPER);
 			objective = new HoleGroupObjectiveFunction(calculator, tuning,
-					evaluator, holeGroups);
+					evaluator, holeGroups,
+					BoreLengthAdjustmentType.PRESERVE_BORE);
 			objective.setMaxEvaluations(20000);
-			objective
-					.setOptimizerType(BaseObjectiveFunction.OptimizerType.BOBYQAOptimizer);
+			objective.setOptimizerType(
+					BaseObjectiveFunction.OptimizerType.BOBYQAOptimizer);
 
-			optimizedInstrument = doInstrumentOptimization("HoleGroupObjectiveFunction");
+			optimizedInstrument = doInstrumentOptimization(
+					"HoleGroupObjectiveFunction");
 			// Get bore length and top hole position
 			double boreLength2 = getBoreLength(optimizedInstrument);
 			double topHolePosition2 = getTopHolePosition(optimizedInstrument);
@@ -265,16 +269,18 @@ public class HoleGroupSpacingFromTopTest extends AbstractOptimizationTest
 					0.002, 0.002, 0.002 };
 			upperBound = new double[] { 0.7, 1.0, 0.05, 0.05, 0.1, 0.05, 0.05,
 					0.003, 0.014, 0.014, 0.014, 0.014, 0.014, 0.008, 0.008 };
-			holeGroups = new int[][] { { 0 }, { 1 }, { 2 }, { 3 }, { 4 },
-					{ 5 }, { 6 } };
+			holeGroups = new int[][] { { 0 }, { 1 }, { 2 }, { 3 }, { 4 }, { 5 },
+					{ 6 } };
 			evaluator = new CentDeviationEvaluator(calculator);
 			objective = new HoleGroupFromTopObjectiveFunction(calculator,
-					tuning, evaluator, holeGroups);
+					tuning, evaluator, holeGroups,
+					BoreLengthAdjustmentType.PRESERVE_BORE);
 			objective.setMaxEvaluations(20000);
-			objective
-					.setOptimizerType(BaseObjectiveFunction.OptimizerType.BOBYQAOptimizer);
+			objective.setOptimizerType(
+					BaseObjectiveFunction.OptimizerType.BOBYQAOptimizer);
 
-			optimizedInstrument = doInstrumentOptimization("HoleGroupFromTopObjectiveFunction, top ratio 0");
+			optimizedInstrument = doInstrumentOptimization(
+					"HoleGroupFromTopObjectiveFunction, top ratio 0");
 			// Get bore length and top hole position
 			double boreLength3 = getBoreLength(optimizedInstrument);
 			double topHolePosition3 = getTopHolePosition(optimizedInstrument);
@@ -323,35 +329,40 @@ public class HoleGroupSpacingFromTopTest extends AbstractOptimizationTest
 			setCalculator(new NAFCalculator());
 			setup();
 			lowerBound = new double[] { minLength, minRatio, minSpacing1, 0.03,
-					0.04, minSpacing4, 0.002, 0.003, 0.004, 0.005,
-					minHoleSize5, 0.007, 0.008 };
+					0.04, minSpacing4, 0.002, 0.003, 0.004, 0.005, minHoleSize5,
+					0.007, 0.008 };
 			upperBound = new double[] { maxLength, maxRatio, maxSpacing1, 0.06,
-					0.07, maxSpacing4, 0.014, 0.015, 0.016, 0.017,
-					maxHoleSize5, 0.008, 0.009 };
+					0.07, maxSpacing4, 0.014, 0.015, 0.016, 0.017, maxHoleSize5,
+					0.008, 0.009 };
 			holeGroups = new int[][] { { 0, 1, 2 }, { 3, 4, 5 }, { 6 } };
 			evaluator = new CentDeviationEvaluator(calculator);
 			objective = new HoleGroupFromTopObjectiveFunction(calculator,
-					tuning, evaluator, holeGroups);
+					tuning, evaluator, holeGroups,
+					BoreLengthAdjustmentType.PRESERVE_BORE);
 			objective.setMaxEvaluations(20000);
-			objective
-					.setOptimizerType(BaseObjectiveFunction.OptimizerType.BOBYQAOptimizer);
+			objective.setOptimizerType(
+					BaseObjectiveFunction.OptimizerType.BOBYQAOptimizer);
 			objective.setLowerBounds(lowerBound);
 			objective.setUpperBounds(upperBound);
 
 			Constraints constraints = objective.getConstraints();
-			constraints
-					.setConstraintsName("Broad-span bounds, 3 hole groups, from top");
+			constraints.setConstraintsName(
+					"Broad-span bounds, 3 hole groups, from top");
 
 			String constCatPos = "Hole position";
 			String constCatSize = "Hole size";
-			assertEquals("Min bore length incorrect", minLength, constraints
-					.getConstraint(constCatPos, 0).getLowerBound(), 0.00001);
-			assertEquals("Max bore length incorrect", maxLength, constraints
-					.getConstraint(constCatPos, 0).getUpperBound(), 0.00001);
-			assertEquals("Min top ratio incorrect", minRatio, constraints
-					.getConstraint(constCatPos, 1).getLowerBound(), 0.00001);
-			assertEquals("Max top ratio incorrect", maxRatio, constraints
-					.getConstraint(constCatPos, 1).getUpperBound(), 0.00001);
+			assertEquals("Min bore length incorrect", minLength,
+					constraints.getConstraint(constCatPos, 0).getLowerBound(),
+					0.00001);
+			assertEquals("Max bore length incorrect", maxLength,
+					constraints.getConstraint(constCatPos, 0).getUpperBound(),
+					0.00001);
+			assertEquals("Min top ratio incorrect", minRatio,
+					constraints.getConstraint(constCatPos, 1).getLowerBound(),
+					0.00001);
+			assertEquals("Max top ratio incorrect", maxRatio,
+					constraints.getConstraint(constCatPos, 1).getUpperBound(),
+					0.00001);
 			assertEquals("Min Group 1 spacing incorrect", minSpacing1,
 					constraints.getConstraint(constCatPos, 2).getLowerBound(),
 					0.00001);
@@ -364,10 +375,12 @@ public class HoleGroupSpacingFromTopTest extends AbstractOptimizationTest
 			assertEquals("Max Hole 6 to 7 distance incorrect", maxSpacing4,
 					constraints.getConstraint(constCatPos, 5).getUpperBound(),
 					0.00001);
-			assertEquals("Min Hole 5 size incorrect", minHoleSize5, constraints
-					.getConstraint(constCatSize, 4).getLowerBound(), 0.00001);
-			assertEquals("Max Hole 5 size incorrect", maxHoleSize5, constraints
-					.getConstraint(constCatSize, 4).getUpperBound(), 0.00001);
+			assertEquals("Min Hole 5 size incorrect", minHoleSize5,
+					constraints.getConstraint(constCatSize, 4).getLowerBound(),
+					0.00001);
+			assertEquals("Max Hole 5 size incorrect", maxHoleSize5,
+					constraints.getConstraint(constCatSize, 4).getUpperBound(),
+					0.00001);
 		}
 		catch (Exception e)
 		{
@@ -395,21 +408,22 @@ public class HoleGroupSpacingFromTopTest extends AbstractOptimizationTest
 			setCalculator(new NAFCalculator());
 			setup();
 			lowerBound = new double[] { minLength, minRatio, minSpacing1, 0.03,
-					0.04, minSpacing4, 0.002, 0.003, 0.004, 0.005,
-					minHoleSize5, 0.007, 0.008 };
+					0.04, minSpacing4, 0.002, 0.003, 0.004, 0.005, minHoleSize5,
+					0.007, 0.008 };
 			upperBound = new double[] { maxLength, maxRatio, maxSpacing1, 0.06,
-					0.07, maxSpacing4, 0.014, 0.015, 0.016, 0.017,
-					maxHoleSize5, 0.008, 0.009 };
+					0.07, maxSpacing4, 0.014, 0.015, 0.016, 0.017, maxHoleSize5,
+					0.008, 0.009 };
 			holeGroups = new int[][] { { 0, 1, 2 }, { 3, 4, 5 }, { 6 } };
 			evaluator = new CentDeviationEvaluator(calculator);
 			objective = new HoleGroupFromTopObjectiveFunction(calculator,
-					tuning, evaluator, holeGroups);
+					tuning, evaluator, holeGroups,
+					BoreLengthAdjustmentType.PRESERVE_BORE);
 			objective.setLowerBounds(lowerBound);
 			objective.setUpperBounds(upperBound);
 
 			Constraints constraints = objective.getConstraints();
-			constraints
-					.setConstraintsName("Broad-span bounds, 3 hole groups, from top");
+			constraints.setConstraintsName(
+					"Broad-span bounds, 3 hole groups, from top");
 
 			ConstraintsDialog dialog = new ConstraintsDialog(constraints);
 			dialog.setVisible(true);
@@ -428,19 +442,20 @@ public class HoleGroupSpacingFromTopTest extends AbstractOptimizationTest
 			setCalculator(new NAFCalculator());
 			setup();
 			holeGroups = new int[][] { { 0, 1, 2 }, { 3, 4, 5 } };
-			lowerBound = new double[] { 0.2, 0.0, 0.0203, 0.0203, 0.0203,
-					0.002, 0.003, 0.003, 0.003, 0.003, 0.003 };
+			lowerBound = new double[] { 0.2, 0.0, 0.0203, 0.0203, 0.0203, 0.002,
+					0.003, 0.003, 0.003, 0.003, 0.003 };
 			upperBound = new double[] { 0.7, 1.0, 0.038, 0.07, 0.038, 0.0102,
 					0.0102, 0.010, 0.010, 0.010, 0.012 };
 			evaluator = new CentDeviationEvaluator(calculator);
 			objective = new HoleGroupFromTopObjectiveFunction(calculator,
-					tuning, evaluator, holeGroups);
+					tuning, evaluator, holeGroups,
+					BoreLengthAdjustmentType.PRESERVE_BORE);
 			objective.setLowerBounds(lowerBound);
 			objective.setUpperBounds(upperBound);
 
 			Constraints constraints = objective.getConstraints();
-			constraints
-					.setConstraintsName("Broad-span bounds, 2 hole groups, from top");
+			constraints.setConstraintsName(
+					"Broad-span bounds, 2 hole groups, from top");
 
 			ConstraintsDialog dialog = new ConstraintsDialog(constraints);
 			dialog.setVisible(true);

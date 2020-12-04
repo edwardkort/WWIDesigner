@@ -21,7 +21,7 @@ package com.wwidesigner.optimization;
 import com.wwidesigner.modelling.EvaluatorInterface;
 import com.wwidesigner.modelling.InstrumentCalculator;
 import com.wwidesigner.note.TuningInterface;
-import com.wwidesigner.optimization.HolePositionObjectiveFunction.BoreLengthAdjustmentType;
+import com.wwidesigner.optimization.BoreLengthAdjustmentInterface.BoreLengthAdjustmentType;
 
 /**
  * Optimization objective function for hole position and diameter,
@@ -34,9 +34,9 @@ public class GlobalHoleObjectiveFunction extends HoleObjectiveFunction
 
 	public GlobalHoleObjectiveFunction(InstrumentCalculator aCalculator,
 			TuningInterface tuning, EvaluatorInterface aEvaluator, 
-			BoreLengthAdjustmentType lengthAdjustmentMode)
+			BoreLengthAdjustmentType preserveBell)
 	{
-		super(aCalculator, tuning, aEvaluator, lengthAdjustmentMode);
+		super(aCalculator, tuning, aEvaluator, preserveBell);
 		optimizerType = OptimizerType.DIRECTOptimizer;
 		maxEvaluations = 40000;
 		constraints.setObjectiveDisplayName("Hole position and diameter global optimizer");

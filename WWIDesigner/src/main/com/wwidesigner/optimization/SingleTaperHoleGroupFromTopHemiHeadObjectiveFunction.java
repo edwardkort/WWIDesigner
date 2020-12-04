@@ -3,6 +3,7 @@ package com.wwidesigner.optimization;
 import com.wwidesigner.modelling.EvaluatorInterface;
 import com.wwidesigner.modelling.InstrumentCalculator;
 import com.wwidesigner.note.TuningInterface;
+import com.wwidesigner.optimization.BoreLengthAdjustmentInterface.BoreLengthAdjustmentType;
 
 /**
  * Optimization objective function for bore length, constrained position of top
@@ -29,8 +30,8 @@ import com.wwidesigner.note.TuningInterface;
  * 
  * @author Edward Kort
  */
-public class SingleTaperHoleGroupFromTopHemiHeadObjectiveFunction extends
-		MergedObjectiveFunction
+public class SingleTaperHoleGroupFromTopHemiHeadObjectiveFunction
+		extends MergedObjectiveFunction
 {
 	public static final String DISPLAY_NAME = "Single taper, hemi-head, grouped hole";
 	public static final String NAME = SingleTaperHoleGroupFromTopHemiHeadObjectiveFunction.class
@@ -38,13 +39,14 @@ public class SingleTaperHoleGroupFromTopHemiHeadObjectiveFunction extends
 
 	public SingleTaperHoleGroupFromTopHemiHeadObjectiveFunction(
 			InstrumentCalculator aCalculator, TuningInterface tuning,
-			EvaluatorInterface aEvaluator, int[][] holeGroups) throws Exception
+			EvaluatorInterface aEvaluator, int[][] holeGroups,
+			BoreLengthAdjustmentType aLengthAdjustmentMode) throws Exception
 	{
 		super(aCalculator, tuning, aEvaluator);
 		this.components = new BaseObjectiveFunction[3];
 		this.components[0] = new HoleGroupPositionFromTopObjectiveFunction(
-				aCalculator, tuning, aEvaluator, holeGroups)
-				.setAllowBoreSizeInterpolation(false);
+				aCalculator, tuning, aEvaluator, holeGroups,
+				aLengthAdjustmentMode).setAllowBoreSizeInterpolation(false);
 		this.components[1] = new HoleSizeObjectiveFunction(aCalculator, tuning,
 				aEvaluator);
 		this.components[2] = new SingleTaperSimpleRatioHemiHeadObjectiveFunction(

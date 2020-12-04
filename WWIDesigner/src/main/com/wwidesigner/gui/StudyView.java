@@ -64,6 +64,7 @@ import com.wwidesigner.modelling.SketchInstrument;
 import com.wwidesigner.note.Fingering;
 import com.wwidesigner.optimization.Constraints;
 import com.wwidesigner.util.Constants.LengthType;
+import com.wwidesigner.util.BoreProfileOptimizationException;
 import com.wwidesigner.util.InvalidFieldException;
 import com.wwidesigner.util.OperationCancelledException;
 
@@ -646,6 +647,10 @@ public class StudyView extends DataViewPane implements EventSubscriber
 				|| exception instanceof InstrumentTypeException)
 		{
 			exceptionType = "Incorrect selection";
+			messageType = MessageDialogRequest.ERROR_STYLE;
+		}
+		else if (exception instanceof BoreProfileOptimizationException) {
+			exceptionType = "Bore parameter problem";
 			messageType = MessageDialogRequest.ERROR_STYLE;
 		}
 		else

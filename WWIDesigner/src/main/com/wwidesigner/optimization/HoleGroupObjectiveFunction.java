@@ -3,6 +3,7 @@ package com.wwidesigner.optimization;
 import com.wwidesigner.modelling.EvaluatorInterface;
 import com.wwidesigner.modelling.InstrumentCalculator;
 import com.wwidesigner.note.TuningInterface;
+import com.wwidesigner.optimization.BoreLengthAdjustmentInterface.BoreLengthAdjustmentType;
 
 /**
  * Optimization objective function for bore length, hole positions, in groups,
@@ -17,12 +18,13 @@ public class HoleGroupObjectiveFunction extends MergedObjectiveFunction
 
 	public HoleGroupObjectiveFunction(InstrumentCalculator aCalculator,
 			TuningInterface tuning, EvaluatorInterface aEvaluator,
-			int[][] holeGroups) throws Exception
+			int[][] holeGroups, BoreLengthAdjustmentType aLengthAdjustmentMode)
+			throws Exception
 	{
 		super(aCalculator, tuning, aEvaluator);
 		this.components = new BaseObjectiveFunction[2];
 		this.components[0] = new HoleGroupPositionObjectiveFunction(aCalculator,
-				tuning, aEvaluator, holeGroups);
+				tuning, aEvaluator, holeGroups, aLengthAdjustmentMode);
 		this.components[1] = new HoleSizeObjectiveFunction(aCalculator, tuning,
 				aEvaluator);
 		optimizerType = OptimizerType.BOBYQAOptimizer; // MultivariateOptimizer

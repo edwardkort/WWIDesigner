@@ -33,9 +33,9 @@ public class GlobalHolePositionObjectiveFunction extends HolePositionObjectiveFu
 
 	public GlobalHolePositionObjectiveFunction(InstrumentCalculator aCalculator,
 			TuningInterface tuning, EvaluatorInterface aEvaluator, 
-			BoreLengthAdjustmentType aLengthAdjustmentMode)
+			BoreLengthAdjustmentType preserveBell)
 	{
-		super(aCalculator, tuning, aEvaluator, aLengthAdjustmentMode);
+		super(aCalculator, tuning, aEvaluator, preserveBell);
 		optimizerType = OptimizerType.DIRECTOptimizer;
 		maxEvaluations = 30000;
 	}

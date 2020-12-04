@@ -17,7 +17,7 @@ import com.wwidesigner.geometry.Instrument;
 import com.wwidesigner.geometry.PositionInterface;
 import com.wwidesigner.modelling.NAFCalculator;
 import com.wwidesigner.modelling.ReactanceEvaluator;
-import com.wwidesigner.optimization.HolePositionObjectiveFunction.BoreLengthAdjustmentType;
+import com.wwidesigner.optimization.BoreLengthAdjustmentInterface.BoreLengthAdjustmentType;
 import com.wwidesigner.util.Constants.TemperatureType;
 import com.wwidesigner.util.PhysicalParameters;
 import com.wwidesigner.util.SortedPositionList;
@@ -45,7 +45,7 @@ public class NafOptimizationTest extends AbstractOptimizationTest
 			setUpperBound(new double[] { 0.4 });
 			evaluator = new ReactanceEvaluator(calculator);
 			objective = new LengthObjectiveFunction(calculator, tuning,
-					evaluator, false);
+					evaluator, BoreLengthAdjustmentType.MOVE_BOTTOM);
 
 			Instrument optimizedInstrument = doInstrumentOptimization(
 					"No-hole");
@@ -113,7 +113,8 @@ public class NafOptimizationTest extends AbstractOptimizationTest
 			setUpperBound(new double[] { 0.4 });
 			evaluator = new ReactanceEvaluator(calculator);
 			objective = new HoleGroupFromTopObjectiveFunction(calculator,
-					tuning, evaluator, null);
+					tuning, evaluator, null,
+					BoreLengthAdjustmentType.PRESERVE_BORE);
 
 			Instrument optimizedInstrument = doInstrumentOptimization(
 					"No-hole");
@@ -174,7 +175,7 @@ public class NafOptimizationTest extends AbstractOptimizationTest
 			setUpperBound(new double[] { 0.6 });
 			evaluator = new ReactanceEvaluator(calculator);
 			objective = new LengthObjectiveFunction(calculator, tuning,
-					evaluator, false);
+					evaluator, BoreLengthAdjustmentType.MOVE_BOTTOM);
 
 			Instrument optimizedInstrument = doInstrumentOptimization(
 					"No-hole");
@@ -244,7 +245,8 @@ public class NafOptimizationTest extends AbstractOptimizationTest
 			setUpperBound(new double[] { 0.6, 1.2, 1.0, 1.0 });
 			evaluator = new ReactanceEvaluator(calculator);
 			objective = new SingleTaperHoleGroupFromTopObjectiveFunction(
-					calculator, tuning, evaluator, null);
+					calculator, tuning, evaluator, null,
+					BoreLengthAdjustmentType.PRESERVE_TAPER);
 
 			Instrument optimizedInstrument = doInstrumentOptimization(
 					"No-hole");
@@ -314,7 +316,8 @@ public class NafOptimizationTest extends AbstractOptimizationTest
 			setUpperBound(new double[] { 0.6, 1.2, 1.0, 1.0 });
 			evaluator = new ReactanceEvaluator(calculator);
 			objective = new SingleTaperHoleGroupFromTopObjectiveFunction(
-					calculator, tuning, evaluator, null);
+					calculator, tuning, evaluator, null,
+					BoreLengthAdjustmentType.PRESERVE_TAPER);
 
 			Instrument optimizedInstrument = doInstrumentOptimization(
 					"No-hole");

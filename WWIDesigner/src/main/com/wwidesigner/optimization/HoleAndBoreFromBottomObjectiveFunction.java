@@ -23,7 +23,7 @@ package com.wwidesigner.optimization;
 import com.wwidesigner.modelling.EvaluatorInterface;
 import com.wwidesigner.modelling.InstrumentCalculator;
 import com.wwidesigner.note.TuningInterface;
-import com.wwidesigner.optimization.HolePositionObjectiveFunction.BoreLengthAdjustmentType;
+import com.wwidesigner.optimization.BoreLengthAdjustmentInterface.BoreLengthAdjustmentType;
 
 /**
  * Optimization objective function for hole positions and diameters, and bore

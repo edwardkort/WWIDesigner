@@ -3,7 +3,7 @@ package com.wwidesigner.optimization;
 import com.wwidesigner.modelling.EvaluatorInterface;
 import com.wwidesigner.modelling.InstrumentCalculator;
 import com.wwidesigner.note.TuningInterface;
-import com.wwidesigner.optimization.HolePositionObjectiveFunction.BoreLengthAdjustmentType;
+import com.wwidesigner.optimization.BoreLengthAdjustmentInterface.BoreLengthAdjustmentType;
 
 /**
  * Optimization objective function for hole positions and diameters:
@@ -23,12 +23,12 @@ public class HoleFromTopObjectiveFunction extends MergedObjectiveFunction
 	public static final String NAME = HoleFromTopObjectiveFunction.class.getSimpleName();
 
 	public HoleFromTopObjectiveFunction(InstrumentCalculator aCalculator,
-			TuningInterface tuning, EvaluatorInterface aEvaluator, BoreLengthAdjustmentType lengthAdjustmentMode)
+			TuningInterface tuning, EvaluatorInterface aEvaluator, BoreLengthAdjustmentType preserveTaper)
 	{
 		super(aCalculator, tuning, aEvaluator);
 		this.components = new BaseObjectiveFunction[2];
 		this.components[0] = new HolePositionFromTopObjectiveFunction(
-				aCalculator, tuning, aEvaluator, lengthAdjustmentMode);
+				aCalculator, tuning, aEvaluator, preserveTaper);
 		this.components[1] = new HoleSizeObjectiveFunction(aCalculator, tuning,
 				aEvaluator);
 		optimizerType = OptimizerType.BOBYQAOptimizer; // MultivariateOptimizer

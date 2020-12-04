@@ -20,8 +20,6 @@ package com.wwidesigner.optimization;
 
 import java.util.List;
 
-import org.apache.commons.math3.exception.DimensionMismatchException;
-
 import com.wwidesigner.geometry.BorePoint;
 import com.wwidesigner.geometry.Hole;
 import com.wwidesigner.geometry.Instrument;
@@ -30,7 +28,6 @@ import com.wwidesigner.modelling.EvaluatorInterface;
 import com.wwidesigner.modelling.InstrumentCalculator;
 import com.wwidesigner.note.TuningInterface;
 import com.wwidesigner.optimization.Constraint.ConstraintType;
-import com.wwidesigner.util.SortedPositionList;
 
 /**
  * Optimization objective function for bore length and hole positions:
@@ -45,47 +42,20 @@ import com.wwidesigner.util.SortedPositionList;
  * @author Edward Kort, Burton Patkau
  * 
  */
-public class HolePositionObjectiveFunction extends BaseObjectiveFunction
+public class HolePositionObjectiveFunction extends BaseObjectiveFunction implements BoreLengthAdjustmentInterface
 {
 	public static final String CONSTR_CAT = "Hole position";
 	public static final ConstraintType CONSTR_TYPE = ConstraintType.DIMENSIONAL;
-	public enum BoreLengthAdjustmentType 
-	{
-		/**
-		 * Change the position of the bottom bore point, adjusting the diameter
-		 * to keep the taper angle unchanged.
-		 */
-		PRESERVE_TAPER,
-		/**
-		 * Change position of all bore points below longest bore segment,
-		 * leaving bore diameters unchanged.
-		 */
-		PRESERVE_BELL,
-		/**
-		 * Change position of the bottom bore point,
-		 * leaving bore diameters unchanged.
-		 */
-		MOVE_BOTTOM
-	}
-	protected BoreLengthAdjustmentType lengthAdjustmentMode;
-	protected static final double MINIMUM_BORE_POINT_SPACING = 0.00001d;
-	protected int bellIndex;
+
+	protected BoreLengthAdjuster boreLengthAdjuster;
 
 	public HolePositionObjectiveFunction(InstrumentCalculator aCalculator,
-			TuningInterface tuning, EvaluatorInterface aEvaluator, 
+			TuningInterface tuning, EvaluatorInterface aEvaluator,
 			BoreLengthAdjustmentType aLengthAdjustmentMode)
 	{
 		super(aCalculator, tuning, aEvaluator);
-		this.lengthAdjustmentMode = aLengthAdjustmentMode;
+		boreLengthAdjuster = new BoreLengthAdjuster(this, aLengthAdjustmentMode);
 		nrDimensions = 1 + aCalculator.getInstrument().getHole().size();
-		if (aLengthAdjustmentMode == BoreLengthAdjustmentType.PRESERVE_BELL)
-		{
-			bellIndex = findBell(aCalculator.getInstrument());
-		}
-		else
-		{
-			bellIndex = aCalculator.getInstrument().getBorePoint().size() - 1;
-		}
 		optimizerType = OptimizerType.BOBYQAOptimizer; // MultivariateOptimizer
 		if (nrDimensions == 1)
 		{
@@ -116,8 +86,8 @@ public class HolePositionObjectiveFunction extends BaseObjectiveFunction
 	@Override
 	public double[] getGeometryPoint()
 	{
-		PositionInterface[] sortedHoles = Instrument.sortList(calculator
-				.getInstrument().getHole());
+		PositionInterface[] sortedHoles = Instrument
+				.sortList(calculator.getInstrument().getHole());
 
 		double[] geometry = new double[nrDimensions];
 
@@ -143,8 +113,8 @@ public class HolePositionObjectiveFunction extends BaseObjectiveFunction
 	{
 		setBore(point);
 
-		PositionInterface[] sortedHoles = Instrument.sortList(calculator
-				.getInstrument().getHole());
+		PositionInterface[] sortedHoles = Instrument
+				.sortList(calculator.getInstrument().getHole());
 
 		// Geometry dimensions are distances between holes.
 		// Final dimension is distance between last hole and end of bore.
@@ -161,81 +131,18 @@ public class HolePositionObjectiveFunction extends BaseObjectiveFunction
 		calculator.getInstrument().updateComponents();
 	}
 
-	protected void setBore(double[] point)
+	public void setBore(double[] point)
 	{
-		if (point.length != nrDimensions)
-		{
-			throw new DimensionMismatchException(point.length, nrDimensions);
-		}
-
-		SortedPositionList<BorePoint> boreList = new SortedPositionList<BorePoint>(
-				calculator.getInstrument().getBorePoint());
-		BorePoint endPoint = boreList.getLast();
-
-		if (lengthAdjustmentMode == BoreLengthAdjustmentType.PRESERVE_BELL)
-		{
-			double netChange = point[0] - endPoint.getBorePosition();
-			double priorBorePoint = boreList.get(bellIndex - 1).getBorePosition();
-			for (int i = bellIndex; i < boreList.size(); ++i)
-			{
-				BorePoint borePoint = boreList.get(i);
-				double oldPosition = borePoint.getBorePosition(); 
-				if (oldPosition + netChange <= priorBorePoint + MINIMUM_BORE_POINT_SPACING)
-				{
-					// Squeeze bore points together if necessary.
-					// This has undesirable consequences: it will not be undone in
-					// subsequent optimization geometries even if it is no longer required.
-					borePoint.setBorePosition(priorBorePoint + MINIMUM_BORE_POINT_SPACING);
-				}
-				else
-				{
-					borePoint.setBorePosition(oldPosition + netChange);
-				}
-				priorBorePoint = borePoint.getBorePosition();
-			}
-		}
-		else
-		{
-			// Don't let optimizer delete a borePoint.
-			// Instead, move them up the bore a bit.
-			double newEndPosition = point[0];
-			int lastPointIndex = boreList.size() - 1;
-			for (int i = lastPointIndex - 1; i >= 0; i--)
-			{
-				BorePoint borePoint = boreList.get(i);
-				double currentPosition = borePoint.getBorePosition();
-				if (currentPosition >= newEndPosition)
-				{
-					// Squeeze bore points together if necessary.
-					// This has undesirable consequences: it will not be undone in
-					// subsequent optimization geometries even if it is no longer required.
-					newEndPosition -= MINIMUM_BORE_POINT_SPACING;
-					borePoint.setBorePosition(newEndPosition);
-				}
-				else
-				{
-					break;
-				}
-			}
-	
-			// Extrapolate/interpolate the bore diameter of end point
-			if (lengthAdjustmentMode == BoreLengthAdjustmentType.PRESERVE_TAPER)
-			{
-				double endDiameter = BorePoint
-						.getInterpolatedExtrapolatedBoreDiameter(boreList, point[0]);
-				endPoint.setBoreDiameter(endDiameter);
-			}
-			endPoint.setBorePosition(point[0]);
-		}
+		boreLengthAdjuster.setBore(point);
 	}
 
 	protected void setConstraints()
 	{
-		constraints.addConstraint(new Constraint(CONSTR_CAT, "Bore length",
-				CONSTR_TYPE));
+		constraints.addConstraint(
+				new Constraint(CONSTR_CAT, "Bore length", CONSTR_TYPE));
 
-		PositionInterface[] sortedHoles = Instrument.sortList(calculator
-				.getInstrument().getHole());
+		PositionInterface[] sortedHoles = Instrument
+				.sortList(calculator.getInstrument().getHole());
 		int lastIdx = sortedHoles.length;
 		for (int i = lastIdx, idx = 0; i > 0; i--, idx++)
 		{
@@ -253,40 +160,15 @@ public class HolePositionObjectiveFunction extends BaseObjectiveFunction
 			}
 			String constraintName = name + " to " + nextName + " distance";
 
-			constraints.addConstraint(new Constraint(CONSTR_CAT,
-					constraintName, CONSTR_TYPE));
+			constraints.addConstraint(
+					new Constraint(CONSTR_CAT, constraintName, CONSTR_TYPE));
 		}
 
-		constraints.setNumberOfHoles(calculator.getInstrument().getHole()
-				.size());
+		constraints
+				.setNumberOfHoles(calculator.getInstrument().getHole().size());
 		constraints.setObjectiveDisplayName("Hole position optimizer");
 		constraints.setObjectiveFunctionName(this.getClass().getSimpleName());
 		constraints.setConstraintsName("Default");
-	}
-	
-	/**
-	 * Find the beginning of the instrument bell, for use with PRESERVE_BELL.
-	 * Chooses the bore point that follows the longest bore segment.
-	 * @param boreList
-	 * @return index of bore point at start of bell.
-	 */
-	protected static int findBell(Instrument instrument)
-	{
-		SortedPositionList<BorePoint> boreList = new SortedPositionList<BorePoint>(
-				instrument.getBorePoint());
-		double longestSegment = 0;
-		double lastPosition = boreList.get(0).getBorePosition();
-		int bellIndex = boreList.size() - 1;
-		for (int idx = 1; idx < boreList.size(); ++idx)
-		{
-			if (boreList.get(idx).getBorePosition() - lastPosition >= longestSegment)
-			{
-				bellIndex = idx;
-				longestSegment = boreList.get(idx).getBorePosition();
-			}
-			lastPosition = boreList.get(idx).getBorePosition();
-		}
-		return bellIndex;
 	}
 
 }

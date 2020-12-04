@@ -9,6 +9,7 @@ import org.junit.Test;
 import com.wwidesigner.geometry.Instrument;
 import com.wwidesigner.modelling.CentDeviationEvaluator;
 import com.wwidesigner.modelling.NAFCalculator;
+import com.wwidesigner.optimization.BoreLengthAdjustmentInterface.BoreLengthAdjustmentType;
 import com.wwidesigner.util.Constants.TemperatureType;
 import com.wwidesigner.util.PhysicalParameters;
 
@@ -29,7 +30,8 @@ public class SingleTaperHoleGroupFromTopTest extends AbstractOptimizationTest
 	 * Test that 4 objective functions (SingleTaperNoHoleGrouping,
 	 * SingleTaperNoHoleGroupingFromTop, SingleTaperHoleGroup, and
 	 * SingleTaperHoleGroupFromTop) give the same answer with the simplest
-	 * scenario that uses no grouping and no hole-from-top ratio constraints:<br>
+	 * scenario that uses no grouping and no hole-from-top ratio
+	 * constraints:<br>
 	 * 6 holes in 6 hole groups<br>
 	 * minimum top-hole ratio of 0.
 	 */
@@ -52,10 +54,11 @@ public class SingleTaperHoleGroupFromTopTest extends AbstractOptimizationTest
 			objective = new SingleTaperNoHoleGroupingObjectiveFunction(
 					calculator, tuning, evaluator);
 			objective.setMaxEvaluations(20000);
-			objective
-					.setOptimizerType(BaseObjectiveFunction.OptimizerType.BOBYQAOptimizer);
+			objective.setOptimizerType(
+					BaseObjectiveFunction.OptimizerType.BOBYQAOptimizer);
 
-			Instrument optimizedInstrument = doInstrumentOptimization("SingleTaperNoHoleGroupingObjectiveFunction");
+			Instrument optimizedInstrument = doInstrumentOptimization(
+					"SingleTaperNoHoleGroupingObjectiveFunction");
 			// Get bore length and top hole position
 			double boreLength1 = getBoreLength(optimizedInstrument);
 			double topHolePosition1 = getTopHolePosition(optimizedInstrument);
@@ -72,10 +75,11 @@ public class SingleTaperHoleGroupFromTopTest extends AbstractOptimizationTest
 			objective = new SingleTaperNoHoleGroupingFromTopObjectiveFunction(
 					calculator, tuning, evaluator);
 			objective.setMaxEvaluations(20000);
-			objective
-					.setOptimizerType(BaseObjectiveFunction.OptimizerType.BOBYQAOptimizer);
+			objective.setOptimizerType(
+					BaseObjectiveFunction.OptimizerType.BOBYQAOptimizer);
 
-			optimizedInstrument = doInstrumentOptimization("SingleTaperNoHoleGroupingFromTopObjectiveFunction, ratio 0");
+			optimizedInstrument = doInstrumentOptimization(
+					"SingleTaperNoHoleGroupingFromTopObjectiveFunction, ratio 0");
 			// Get bore length and top hole position
 			double boreLength2 = getBoreLength(optimizedInstrument);
 			double topHolePosition2 = getTopHolePosition(optimizedInstrument);
@@ -89,15 +93,18 @@ public class SingleTaperHoleGroupFromTopTest extends AbstractOptimizationTest
 					0.8, 0.2, 0.0 };
 			upperBound = new double[] { 0.7, 0.05, 0.05, 0.1, 0.05, 0.05, 0.20,
 					0.014, 0.014, 0.014, 0.014, 0.014, 0.014, 1.2, 1.0, 0.9 };
-			holeGroups = new int[][] { { 0 }, { 1 }, { 2 }, { 3 }, { 4 }, { 5 } };
+			holeGroups = new int[][] { { 0 }, { 1 }, { 2 }, { 3 }, { 4 },
+					{ 5 } };
 			evaluator = new CentDeviationEvaluator(calculator);
 			objective = new SingleTaperHoleGroupObjectiveFunction(calculator,
-					tuning, evaluator, holeGroups);
+					tuning, evaluator, holeGroups,
+					BoreLengthAdjustmentType.PRESERVE_TAPER);
 			objective.setMaxEvaluations(20000);
-			objective
-					.setOptimizerType(BaseObjectiveFunction.OptimizerType.BOBYQAOptimizer);
+			objective.setOptimizerType(
+					BaseObjectiveFunction.OptimizerType.BOBYQAOptimizer);
 
-			optimizedInstrument = doInstrumentOptimization("SingleTaperHoleGroupObjectiveFunction");
+			optimizedInstrument = doInstrumentOptimization(
+					"SingleTaperHoleGroupObjectiveFunction");
 			// Get bore length and top hole position
 			double boreLength3 = getBoreLength(optimizedInstrument);
 			double topHolePosition3 = getTopHolePosition(optimizedInstrument);
@@ -110,15 +117,18 @@ public class SingleTaperHoleGroupFromTopTest extends AbstractOptimizationTest
 					0.8, 0.2, 0.0 };
 			upperBound = new double[] { 0.7, 1.0, 0.05, 0.05, 0.1, 0.05, 0.05,
 					0.014, 0.014, 0.014, 0.014, 0.014, 0.014, 1.2, 1.0, 0.9 };
-			holeGroups = new int[][] { { 0 }, { 1 }, { 2 }, { 3 }, { 4 }, { 5 } };
+			holeGroups = new int[][] { { 0 }, { 1 }, { 2 }, { 3 }, { 4 },
+					{ 5 } };
 			evaluator = new CentDeviationEvaluator(calculator);
 			objective = new SingleTaperHoleGroupFromTopObjectiveFunction(
-					calculator, tuning, evaluator, holeGroups);
+					calculator, tuning, evaluator, holeGroups,
+					BoreLengthAdjustmentType.PRESERVE_TAPER);
 			objective.setMaxEvaluations(20000);
-			objective
-					.setOptimizerType(BaseObjectiveFunction.OptimizerType.BOBYQAOptimizer);
+			objective.setOptimizerType(
+					BaseObjectiveFunction.OptimizerType.BOBYQAOptimizer);
 
-			optimizedInstrument = doInstrumentOptimization("SingleTaperHoleGroupFromTopObjectiveFunction, top ratio 0");
+			optimizedInstrument = doInstrumentOptimization(
+					"SingleTaperHoleGroupFromTopObjectiveFunction, top ratio 0");
 			// Get bore length and top hole position
 			double boreLength4 = getBoreLength(optimizedInstrument);
 			double topHolePosition4 = getTopHolePosition(optimizedInstrument);
@@ -173,12 +183,14 @@ public class SingleTaperHoleGroupFromTopTest extends AbstractOptimizationTest
 			holeGroups = new int[][] { { 0, 1, 2 }, { 3, 4, 5 } };
 			evaluator = new CentDeviationEvaluator(calculator);
 			objective = new SingleTaperHoleGroupObjectiveFunction(calculator,
-					tuning, evaluator, holeGroups);
+					tuning, evaluator, holeGroups,
+					BoreLengthAdjustmentType.PRESERVE_TAPER);
 			objective.setMaxEvaluations(20000);
-			objective
-					.setOptimizerType(BaseObjectiveFunction.OptimizerType.BOBYQAOptimizer);
+			objective.setOptimizerType(
+					BaseObjectiveFunction.OptimizerType.BOBYQAOptimizer);
 
-			Instrument optimizedInstrument = doInstrumentOptimization("SingleTaperHoleGroupObjectiveFunction");
+			Instrument optimizedInstrument = doInstrumentOptimization(
+					"SingleTaperHoleGroupObjectiveFunction");
 			// Get bore length and top hole position
 			double boreLength1 = getBoreLength(optimizedInstrument);
 			double topHolePosition1 = getTopHolePosition(optimizedInstrument);
@@ -186,19 +198,21 @@ public class SingleTaperHoleGroupFromTopTest extends AbstractOptimizationTest
 			// Hole from top, grouping optimizer, no top constraint
 			setCalculator(new NAFCalculator());
 			setup();
-			lowerBound = new double[] { 0.2, 0.0, 0.0203, 0.0203, 0.0203,
-					0.002, 0.002, 0.002, 0.002, 0.002, 0.002, 0.8, 0.2, 0.0 };
-			upperBound = new double[] { 0.7, 1.0, 0.05, 0.1, 0.05, 0.014,
-					0.014, 0.014, 0.014, 0.014, 0.014, 1.2, 1.0, 0.9 };
+			lowerBound = new double[] { 0.2, 0.0, 0.0203, 0.0203, 0.0203, 0.002,
+					0.002, 0.002, 0.002, 0.002, 0.002, 0.8, 0.2, 0.0 };
+			upperBound = new double[] { 0.7, 1.0, 0.05, 0.1, 0.05, 0.014, 0.014,
+					0.014, 0.014, 0.014, 0.014, 1.2, 1.0, 0.9 };
 			holeGroups = new int[][] { { 0, 1, 2 }, { 3, 4, 5 } };
 			evaluator = new CentDeviationEvaluator(calculator);
 			objective = new SingleTaperHoleGroupFromTopObjectiveFunction(
-					calculator, tuning, evaluator, holeGroups);
+					calculator, tuning, evaluator, holeGroups,
+					BoreLengthAdjustmentType.PRESERVE_TAPER);
 			objective.setMaxEvaluations(20000);
-			objective
-					.setOptimizerType(BaseObjectiveFunction.OptimizerType.BOBYQAOptimizer);
+			objective.setOptimizerType(
+					BaseObjectiveFunction.OptimizerType.BOBYQAOptimizer);
 
-			optimizedInstrument = doInstrumentOptimization("SingleTaperHoleGroupFromTopObjectiveFunction, top ratio 0");
+			optimizedInstrument = doInstrumentOptimization(
+					"SingleTaperHoleGroupFromTopObjectiveFunction, top ratio 0");
 			// Get bore length and top hole position
 			double boreLength2 = getBoreLength(optimizedInstrument);
 			double topHolePosition2 = getTopHolePosition(optimizedInstrument);
@@ -206,19 +220,21 @@ public class SingleTaperHoleGroupFromTopTest extends AbstractOptimizationTest
 			// Hole from top, grouping optimizer, top constraint 0.3
 			setCalculator(new NAFCalculator());
 			setup();
-			lowerBound = new double[] { 0.2, 0.3, 0.0203, 0.0203, 0.0203,
-					0.002, 0.002, 0.002, 0.002, 0.002, 0.002, 0.8, 0.2, 0.0 };
-			upperBound = new double[] { 0.7, 1.0, 0.05, 0.1, 0.05, 0.014,
-					0.014, 0.014, 0.014, 0.014, 0.014, 1.2, 1.0, 0.9 };
+			lowerBound = new double[] { 0.2, 0.3, 0.0203, 0.0203, 0.0203, 0.002,
+					0.002, 0.002, 0.002, 0.002, 0.002, 0.8, 0.2, 0.0 };
+			upperBound = new double[] { 0.7, 1.0, 0.05, 0.1, 0.05, 0.014, 0.014,
+					0.014, 0.014, 0.014, 0.014, 1.2, 1.0, 0.9 };
 			holeGroups = new int[][] { { 0, 1, 2 }, { 3, 4, 5 } };
 			evaluator = new CentDeviationEvaluator(calculator);
 			objective = new SingleTaperHoleGroupFromTopObjectiveFunction(
-					calculator, tuning, evaluator, holeGroups);
+					calculator, tuning, evaluator, holeGroups,
+					BoreLengthAdjustmentType.PRESERVE_TAPER);
 			objective.setMaxEvaluations(20000);
-			objective
-					.setOptimizerType(BaseObjectiveFunction.OptimizerType.BOBYQAOptimizer);
+			objective.setOptimizerType(
+					BaseObjectiveFunction.OptimizerType.BOBYQAOptimizer);
 
-			optimizedInstrument = doInstrumentOptimization("SingleTaperHoleGroupFromTopObjectiveFunction, top ratio 0.3");
+			optimizedInstrument = doInstrumentOptimization(
+					"SingleTaperHoleGroupFromTopObjectiveFunction, top ratio 0.3");
 			// Get bore length and top hole position
 			double boreLength3 = getBoreLength(optimizedInstrument);
 			double topHolePosition3 = getTopHolePosition(optimizedInstrument);
@@ -269,10 +285,11 @@ public class SingleTaperHoleGroupFromTopTest extends AbstractOptimizationTest
 			objective = new SingleTaperNoHoleGroupingFromTopObjectiveFunction(
 					calculator, tuning, evaluator);
 			objective.setMaxEvaluations(20000);
-			objective
-					.setOptimizerType(BaseObjectiveFunction.OptimizerType.BOBYQAOptimizer);
+			objective.setOptimizerType(
+					BaseObjectiveFunction.OptimizerType.BOBYQAOptimizer);
 
-			Instrument optimizedInstrument = doInstrumentOptimization("SingleTaperNoHoleGroupingFromTopObjectiveFunction, ratio 0");
+			Instrument optimizedInstrument = doInstrumentOptimization(
+					"SingleTaperNoHoleGroupingFromTopObjectiveFunction, ratio 0");
 			// Get bore length and top hole position
 			double boreLength1 = getBoreLength(optimizedInstrument);
 			double topHolePosition1 = getTopHolePosition(optimizedInstrument);
@@ -285,15 +302,18 @@ public class SingleTaperHoleGroupFromTopTest extends AbstractOptimizationTest
 					0.8, 0.2, 0.0 };
 			upperBound = new double[] { 0.7, 1.0, 0.05, 0.05, 0.1, 0.05, 0.05,
 					0.014, 0.014, 0.014, 0.014, 0.014, 0.014, 1.2, 1.0, 0.9 };
-			holeGroups = new int[][] { { 0 }, { 1 }, { 2 }, { 3 }, { 4 }, { 5 } };
+			holeGroups = new int[][] { { 0 }, { 1 }, { 2 }, { 3 }, { 4 },
+					{ 5 } };
 			evaluator = new CentDeviationEvaluator(calculator);
 			objective = new SingleTaperHoleGroupFromTopObjectiveFunction(
-					calculator, tuning, evaluator, holeGroups);
+					calculator, tuning, evaluator, holeGroups,
+					BoreLengthAdjustmentType.PRESERVE_TAPER);
 			objective.setMaxEvaluations(20000);
-			objective
-					.setOptimizerType(BaseObjectiveFunction.OptimizerType.BOBYQAOptimizer);
+			objective.setOptimizerType(
+					BaseObjectiveFunction.OptimizerType.BOBYQAOptimizer);
 
-			optimizedInstrument = doInstrumentOptimization("SingleTaperHoleGroupFromTopObjectiveFunction, top ratio 0");
+			optimizedInstrument = doInstrumentOptimization(
+					"SingleTaperHoleGroupFromTopObjectiveFunction, top ratio 0");
 			// Get bore length and top hole position
 			double boreLength2 = getBoreLength(optimizedInstrument);
 			double topHolePosition2 = getTopHolePosition(optimizedInstrument);

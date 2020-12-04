@@ -36,30 +36,31 @@ import com.wwidesigner.modelling.InstrumentTuner;
 import com.wwidesigner.modelling.SimpleInstrumentTuner;
 import com.wwidesigner.modelling.SimpleReedCalculator;
 import com.wwidesigner.note.Tuning;
+import com.wwidesigner.optimization.BaseObjectiveFunction;
 import com.wwidesigner.optimization.BoreDiameterFromBottomObjectiveFunction;
 import com.wwidesigner.optimization.BoreFromBottomObjectiveFunction;
+import com.wwidesigner.optimization.BoreLengthAdjustmentInterface.BoreLengthAdjustmentType;
 import com.wwidesigner.optimization.BorePositionObjectiveFunction;
+import com.wwidesigner.optimization.Constraints;
 import com.wwidesigner.optimization.GlobalHoleAndBoreDiameterFromBottomObjectiveFunction;
 import com.wwidesigner.optimization.GlobalHoleObjectiveFunction;
 import com.wwidesigner.optimization.GlobalHolePositionObjectiveFunction;
 import com.wwidesigner.optimization.HoleAndBoreDiameterFromBottomObjectiveFunction;
 import com.wwidesigner.optimization.HoleAndBoreFromBottomObjectiveFunction;
 import com.wwidesigner.optimization.HoleAndBorePositionObjectiveFunction;
-import com.wwidesigner.optimization.ReedCalibratorObjectiveFunction;
-import com.wwidesigner.optimization.BaseObjectiveFunction;
-import com.wwidesigner.optimization.Constraints;
 import com.wwidesigner.optimization.HoleObjectiveFunction;
 import com.wwidesigner.optimization.HolePositionObjectiveFunction;
 import com.wwidesigner.optimization.HoleSizeObjectiveFunction;
 import com.wwidesigner.optimization.LengthObjectiveFunction;
-import com.wwidesigner.optimization.HolePositionObjectiveFunction.BoreLengthAdjustmentType;
+import com.wwidesigner.optimization.ReedCalibratorObjectiveFunction;
 import com.wwidesigner.optimization.bind.OptimizationBindFactory;
-import com.wwidesigner.util.Constants.TemperatureType;
 import com.wwidesigner.util.BindFactory;
+import com.wwidesigner.util.Constants.TemperatureType;
 import com.wwidesigner.util.PhysicalParameters;
 
 /**
- * Class to encapsulate methods for analyzing and optimizing reed instrument models.
+ * Class to encapsulate methods for analyzing and optimizing reed instrument
+ * models.
  * 
  * @author Burton Patkau
  * 
@@ -71,7 +72,8 @@ public class ReedStudyModel extends StudyModel
 	// Reed calibrator optimizes both alpha and beta.
 	public static final String HOLESIZE_OPT_SUB_CATEGORY_ID = "02. Hole Size Optimizer";
 	public static final String HOLESPACE_OPT_SUB_CATEGORY_ID = "03. Hole Spacing Optimizer";
-	public static final String LENGTH_OPT_SUB_CATEGORY_ID = "03. Length Optimizer";		// Not used.
+	public static final String LENGTH_OPT_SUB_CATEGORY_ID = "03. Length Optimizer"; // Not
+																					// used.
 	public static final String HOLE_OPT_SUB_CATEGORY_ID = "04. Hole Size+Spacing Optimizer";
 	public static final String BORE_DIAMETER_OPT_SUB_CATEGORY_ID = "05. Bore Diameter Optimizer";
 	public static final String BORE_POSITION_OPT_SUB_CATEGORY_ID = "06. Bore Point Position Optimizer";
@@ -79,8 +81,7 @@ public class ReedStudyModel extends StudyModel
 	public static final String HOLE_BOREDIAMETER_OPT_SUB_CATEGORY_ID = "08. Hole and Bore Diameter Optimizer";
 	public static final String HOLE_BOREPOSITION_OPT_SUB_CATEGORY_ID = "09. Hole and Bore Position Optimizer";
 	public static final String GLOBAL_HOLE_OPT_SUB_CATEGORY_ID = "10. Global Hole Size+Spacing Optimizer";
-	public static final String GLOBAL_HOLE_BOREDIAMETER_OPT_SUB_CATEGORY_ID
-									= "11. Global Hole and Bore Diameter Optimizer";
+	public static final String GLOBAL_HOLE_BOREDIAMETER_OPT_SUB_CATEGORY_ID = "11. Global Hole and Bore Diameter Optimizer";
 
 	// Default minimum and maximum bore length, in meters
 	// (actually, position of bottom bore point).
@@ -94,7 +95,7 @@ public class ReedStudyModel extends StudyModel
 	// Default minimum and maximum bore diameter at bottom, in meters.
 	public static final double MIN_BORE_DIAMETER = 0.0030;
 	public static final double MAX_BORE_DIAMETER = 0.1000;
-	
+
 	// Minimum space between thumb and index finger, in meters.
 	public static final double MIN_THUMB_HOLE_SPACING = 0.0002;
 
@@ -120,7 +121,8 @@ public class ReedStudyModel extends StudyModel
 
 	protected void setLocalCategories()
 	{
-		setParams(new PhysicalParameters(27, TemperatureType.C, 98.4, 100, 0.04));
+		setParams(
+				new PhysicalParameters(27, TemperatureType.C, 98.4, 100, 0.04));
 
 		// Add the standard set of optimizers to the Optimizer category,
 		// and assign an associated objective function name to each one.
@@ -130,7 +132,7 @@ public class ReedStudyModel extends StudyModel
 				ReedCalibratorObjectiveFunction.class.getSimpleName());
 		// optimizers.addSub(LENGTH_OPT_SUB_CATEGORY_ID, null);
 		// objectiveFunctionNames.put(LENGTH_OPT_SUB_CATEGORY_ID,
-		//		LengthObjectiveFunction.class.getSimpleName());
+		// LengthObjectiveFunction.class.getSimpleName());
 		optimizers.addSub(HOLESIZE_OPT_SUB_CATEGORY_ID, null);
 		objectiveFunctionNames.put(HOLESIZE_OPT_SUB_CATEGORY_ID,
 				HoleSizeObjectiveFunction.class.getSimpleName());
@@ -145,7 +147,8 @@ public class ReedStudyModel extends StudyModel
 				BoreDiameterFromBottomObjectiveFunction.class.getSimpleName());
 		optimizers.addSub(HOLE_BOREDIAMETER_OPT_SUB_CATEGORY_ID, null);
 		objectiveFunctionNames.put(HOLE_BOREDIAMETER_OPT_SUB_CATEGORY_ID,
-				HoleAndBoreDiameterFromBottomObjectiveFunction.class.getSimpleName());
+				HoleAndBoreDiameterFromBottomObjectiveFunction.class
+						.getSimpleName());
 		optimizers.addSub(BORE_POSITION_OPT_SUB_CATEGORY_ID, null);
 		objectiveFunctionNames.put(BORE_POSITION_OPT_SUB_CATEGORY_ID,
 				BorePositionObjectiveFunction.class.getSimpleName());
@@ -160,7 +163,8 @@ public class ReedStudyModel extends StudyModel
 				GlobalHoleObjectiveFunction.class.getSimpleName());
 		optimizers.addSub(GLOBAL_HOLE_BOREDIAMETER_OPT_SUB_CATEGORY_ID, null);
 		objectiveFunctionNames.put(GLOBAL_HOLE_BOREDIAMETER_OPT_SUB_CATEGORY_ID,
-				GlobalHoleAndBoreDiameterFromBottomObjectiveFunction.class.getSimpleName());
+				GlobalHoleAndBoreDiameterFromBottomObjectiveFunction.class
+						.getSimpleName());
 		categories.add(optimizers);
 	}
 
@@ -174,8 +178,8 @@ public class ReedStudyModel extends StudyModel
 	@Override
 	public void setPreferences(Preferences newPreferences)
 	{
-		setBlowingLevel(newPreferences.getInt(
-				OptimizationPreferences.BLOWING_LEVEL_OPT, 5));
+		setBlowingLevel(newPreferences
+				.getInt(OptimizationPreferences.BLOWING_LEVEL_OPT, 5));
 		super.setPreferences(newPreferences);
 	}
 
@@ -257,7 +261,8 @@ public class ReedStudyModel extends StudyModel
 		switch (objectiveFunctionClass)
 		{
 			case "ReedCalibratorObjectiveFunction":
-				evaluator = new CentDeviationEvaluator(calculator, getInstrumentTuner());
+				evaluator = new CentDeviationEvaluator(calculator,
+						getInstrumentTuner());
 				aObjective = new ReedCalibratorObjectiveFunction(calculator,
 						tuning, evaluator);
 				lowerBound = new double[] { 0.00, 0.00 };
@@ -267,7 +272,7 @@ public class ReedStudyModel extends StudyModel
 			case "LengthObjectiveFunction":
 				evaluator = new BellNoteEvaluator(calculator);
 				aObjective = new LengthObjectiveFunction(calculator, tuning,
-						evaluator, true);
+						evaluator, BoreLengthAdjustmentType.PRESERVE_TAPER);
 				lowerBound = new double[] { MIN_BORE_LENGTH };
 				upperBound = new double[] { MAX_BORE_LENGTH };
 				break;
@@ -289,18 +294,22 @@ public class ReedStudyModel extends StudyModel
 			case "GlobalHolePositionObjectiveFunction":
 				evaluator = new CentDeviationEvaluator(calculator,
 						getInstrumentTuner());
-				if (objectiveFunctionClass.equals("GlobalHolePositionObjectiveFunction"))
+				if (objectiveFunctionClass
+						.equals("GlobalHolePositionObjectiveFunction"))
 				{
-					aObjective = new GlobalHolePositionObjectiveFunction(calculator,
-							tuning, evaluator, BoreLengthAdjustmentType.PRESERVE_BELL);
+					aObjective = new GlobalHolePositionObjectiveFunction(
+							calculator, tuning, evaluator,
+							BoreLengthAdjustmentType.PRESERVE_BELL);
 				}
 				else
 				{
 					aObjective = new HolePositionObjectiveFunction(calculator,
-							tuning, evaluator, BoreLengthAdjustmentType.PRESERVE_BELL);
+							tuning, evaluator,
+							BoreLengthAdjustmentType.PRESERVE_BELL);
 				}
 				nrDimensions = aObjective.getNrDimensions();
-				// Bounds are overall length, and hole separations, expressed in meters.
+				// Bounds are overall length, and hole separations, expressed in
+				// meters.
 				lowerBound = new double[nrDimensions];
 				upperBound = new double[nrDimensions];
 				Arrays.fill(lowerBound, 0.012);
@@ -315,7 +324,7 @@ public class ReedStudyModel extends StudyModel
 				{
 					// Allow extra space between hands, assuming upper hand
 					// uses same number or one more finger than lower hand.
-					upperBound[(numberOfHoles+1)/2] = 0.100;
+					upperBound[(numberOfHoles + 1) / 2] = 0.100;
 				}
 				if (numberOfHoles >= 7)
 				{
@@ -335,10 +344,12 @@ public class ReedStudyModel extends StudyModel
 			default:
 				evaluator = new CentDeviationEvaluator(calculator,
 						getInstrumentTuner());
-				if (objectiveFunctionClass.equals("GlobalHoleObjectiveFunction"))
+				if (objectiveFunctionClass
+						.equals("GlobalHoleObjectiveFunction"))
 				{
-					aObjective = new GlobalHoleObjectiveFunction(calculator, tuning,
-							evaluator, BoreLengthAdjustmentType.PRESERVE_BELL);
+					aObjective = new GlobalHoleObjectiveFunction(calculator,
+							tuning, evaluator,
+							BoreLengthAdjustmentType.PRESERVE_BELL);
 				}
 				else
 				{
@@ -368,7 +379,7 @@ public class ReedStudyModel extends StudyModel
 				{
 					// Allow extra space between hands, assuming upper hand
 					// uses same number or one more finger than lower hand.
-					upperBound[(numberOfHoles+1)/2] = 0.100;
+					upperBound[(numberOfHoles + 1) / 2] = 0.100;
 				}
 				if (numberOfHoles >= 7)
 				{
@@ -436,7 +447,7 @@ public class ReedStudyModel extends StudyModel
 				{
 					// Allow extra space between hands, assuming upper hand
 					// uses same number or one more finger than lower hand.
-					upperBound[(numberOfHoles+1)/2] = 0.100;
+					upperBound[(numberOfHoles + 1) / 2] = 0.100;
 				}
 				if (numberOfHoles >= 7)
 				{
@@ -450,17 +461,17 @@ public class ReedStudyModel extends StudyModel
 				}
 				// Bounds on bore diameter ratios.
 				// Bore taper flares out toward bottom.
-				Arrays.fill(lowerBound, 2*numberOfHoles + 1, 
+				Arrays.fill(lowerBound, 2 * numberOfHoles + 1,
 						lowerBound.length, 1.0);
-				Arrays.fill(upperBound, 2*numberOfHoles + 1, 
+				Arrays.fill(upperBound, 2 * numberOfHoles + 1,
 						upperBound.length, 2.0);
 				break;
 
 			case "BorePositionObjectiveFunction":
 				evaluator = new CentDeviationEvaluator(calculator,
 						getInstrumentTuner());
-				aObjective = new BorePositionObjectiveFunction(calculator, tuning,
-						evaluator);
+				aObjective = new BorePositionObjectiveFunction(calculator,
+						tuning, evaluator);
 				nrDimensions = aObjective.getNrDimensions();
 				// First bound is bottom bore position, expressed in meters.
 				// Remaining bounds are fractional positions.
@@ -475,8 +486,8 @@ public class ReedStudyModel extends StudyModel
 			case "HoleAndBorePositionObjectiveFunction":
 				evaluator = new CentDeviationEvaluator(calculator,
 						getInstrumentTuner());
-				aObjective = new HoleAndBorePositionObjectiveFunction(calculator,
-						tuning, evaluator);
+				aObjective = new HoleAndBorePositionObjectiveFunction(
+						calculator, tuning, evaluator);
 				nrDimensions = aObjective.getNrDimensions();
 				// Separation bounds and diameter bounds, expressed in meters,
 				// and bore position ratios.
@@ -501,7 +512,7 @@ public class ReedStudyModel extends StudyModel
 				{
 					// Allow extra space between hands, assuming upper hand
 					// uses same number or one more finger than lower hand.
-					upperBound[(numberOfHoles+1)/2] = 0.100;
+					upperBound[(numberOfHoles + 1) / 2] = 0.100;
 				}
 				if (numberOfHoles >= 7)
 				{
@@ -514,31 +525,32 @@ public class ReedStudyModel extends StudyModel
 					lowerBound[6] = MIN_THUMB_HOLE_SPACING;
 				}
 				// Bore position ratios.
-				Arrays.fill(lowerBound, 2*numberOfHoles + 1,
+				Arrays.fill(lowerBound, 2 * numberOfHoles + 1,
 						lowerBound.length, 0.1);
-				Arrays.fill(upperBound, 2*numberOfHoles + 1,
+				Arrays.fill(upperBound, 2 * numberOfHoles + 1,
 						upperBound.length, 0.9);
 				break;
 
 			case "BoreObjectiveFunction":
 				evaluator = new CentDeviationEvaluator(calculator,
 						getInstrumentTuner());
-				aObjective = new BoreFromBottomObjectiveFunction(calculator, tuning,
-							evaluator);
+				aObjective = new BoreFromBottomObjectiveFunction(calculator,
+						tuning, evaluator);
 				nrDimensions = aObjective.getNrDimensions();
-				// First half are bore positions, second half are bore diameters.
+				// First half are bore positions, second half are bore
+				// diameters.
 				lowerBound = new double[nrDimensions];
 				upperBound = new double[nrDimensions];
 				lowerBound[0] = MIN_BORE_LENGTH;
 				upperBound[0] = MAX_BORE_LENGTH;
 				if (nrDimensions > 2)
 				{
-					Arrays.fill(lowerBound, 1, nrDimensions/2 + 1, 0.1);
-					Arrays.fill(upperBound, 1, nrDimensions/2 + 1, 0.9);
+					Arrays.fill(lowerBound, 1, nrDimensions / 2 + 1, 0.1);
+					Arrays.fill(upperBound, 1, nrDimensions / 2 + 1, 0.9);
 					// Bore taper flares out toward bottom.
-					Arrays.fill(lowerBound, nrDimensions/2 + 1, 
+					Arrays.fill(lowerBound, nrDimensions / 2 + 1,
 							lowerBound.length, 1.0);
-					Arrays.fill(upperBound, nrDimensions/2 + 1, 
+					Arrays.fill(upperBound, nrDimensions / 2 + 1,
 							upperBound.length, 1.5);
 				}
 				break;
@@ -546,8 +558,8 @@ public class ReedStudyModel extends StudyModel
 			case "HoleAndBoreObjectiveFunction":
 				evaluator = new CentDeviationEvaluator(calculator,
 						getInstrumentTuner());
-				aObjective = new HoleAndBoreFromBottomObjectiveFunction(calculator,
-							tuning, evaluator);
+				aObjective = new HoleAndBoreFromBottomObjectiveFunction(
+						calculator, tuning, evaluator);
 				nrDimensions = aObjective.getNrDimensions();
 				// Separation bounds and diameter bounds, expressed in meters,
 				// and bore position ratios.
@@ -572,7 +584,7 @@ public class ReedStudyModel extends StudyModel
 				{
 					// Allow extra space between hands, assuming upper hand
 					// uses same number or one more finger than lower hand.
-					upperBound[(numberOfHoles+1)/2] = 0.100;
+					upperBound[(numberOfHoles + 1) / 2] = 0.100;
 				}
 				if (numberOfHoles >= 7)
 				{
@@ -588,15 +600,15 @@ public class ReedStudyModel extends StudyModel
 				if (nrDimensions > firstBoreDia)
 				{
 					// Bore position ratios.
-					Arrays.fill(lowerBound, 2*numberOfHoles + 1,
-							firstBoreDia, 0.1);
-					Arrays.fill(upperBound, 2*numberOfHoles + 1,
-							firstBoreDia, 0.9);
+					Arrays.fill(lowerBound, 2 * numberOfHoles + 1, firstBoreDia,
+							0.1);
+					Arrays.fill(upperBound, 2 * numberOfHoles + 1, firstBoreDia,
+							0.9);
 					// Bore taper flares out toward bottom.
-					Arrays.fill(lowerBound, firstBoreDia, 
-							lowerBound.length, 1.0);
-					Arrays.fill(upperBound, firstBoreDia, 
-							upperBound.length, 1.5);
+					Arrays.fill(lowerBound, firstBoreDia, lowerBound.length,
+							1.0);
+					Arrays.fill(upperBound, firstBoreDia, upperBound.length,
+							1.5);
 				}
 				break;
 
@@ -624,7 +636,8 @@ public class ReedStudyModel extends StudyModel
 				}
 				else
 				{
-					throw new OptimizerMismatchException("Number of dimensions (holes or bore points) for selected constraints does not match the selected instrument.");
+					throw new OptimizerMismatchException(
+							"Number of dimensions (holes or bore points) for selected constraints does not match the selected instrument.");
 				}
 			}
 		}
@@ -652,9 +665,9 @@ public class ReedStudyModel extends StudyModel
 	{
 		toggleXmlViewLists = new HashMap<String, Class<ContainedXmlView>[]>();
 
-		toggleXmlViewLists.put(INSTRUMENT_CATEGORY_ID, new Class[] {
-				ContainedXmlTextView.class,
-				ContainedReedInstrumentView.class });
+		toggleXmlViewLists.put(INSTRUMENT_CATEGORY_ID,
+				new Class[] { ContainedXmlTextView.class,
+						ContainedReedInstrumentView.class });
 		toggleXmlViewLists.put(TUNING_CATEGORY_ID, new Class[] {
 				ContainedXmlTextView.class, ContainedTuningView.class });
 		toggleXmlViewLists.put(CONSTRAINTS_CATEGORY_ID,

@@ -51,6 +51,7 @@ import com.wwidesigner.math.DIRECTOptimizer;
 import com.wwidesigner.modelling.EvaluatorInterface;
 import com.wwidesigner.optimization.multistart.AbstractRangeProcessor;
 import com.wwidesigner.optimization.multistart.RandomRangeProcessor;
+import com.wwidesigner.util.BoreProfileOptimizationException;
 import com.wwidesigner.util.OperationCancelledException;
 
 public class ObjectiveFunctionOptimizer
@@ -238,6 +239,11 @@ public class ObjectiveFunctionOptimizer
 			}
 			System.out.println(
 					"\nOptimization cancelled.\nPartially-optimized result returned.\n");
+		}
+		catch (BoreProfileOptimizationException e)
+		{
+			System.out.println("\nOptimization aborted.\n");
+			throw (e);
 		}
 		catch (Exception e)
 		{

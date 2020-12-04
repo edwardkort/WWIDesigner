@@ -45,6 +45,7 @@ import com.wwidesigner.optimization.BasicTaperObjectiveFunction;
 import com.wwidesigner.optimization.BetaObjectiveFunction;
 import com.wwidesigner.optimization.BoreDiameterFromBottomObjectiveFunction;
 import com.wwidesigner.optimization.BoreDiameterFromTopObjectiveFunction;
+import com.wwidesigner.optimization.BoreLengthAdjustmentInterface.BoreLengthAdjustmentType;
 import com.wwidesigner.optimization.BoreSpacingFromTopObjectiveFunction;
 import com.wwidesigner.optimization.Constraints;
 import com.wwidesigner.optimization.FluteCalibrationObjectiveFunction;
@@ -66,10 +67,9 @@ import com.wwidesigner.optimization.LengthObjectiveFunction;
 import com.wwidesigner.optimization.StopperPositionObjectiveFunction;
 import com.wwidesigner.optimization.WhistleCalibrationObjectiveFunction;
 import com.wwidesigner.optimization.WindowHeightObjectiveFunction;
-import com.wwidesigner.optimization.HolePositionObjectiveFunction.BoreLengthAdjustmentType;
 import com.wwidesigner.optimization.bind.OptimizationBindFactory;
-import com.wwidesigner.util.Constants.TemperatureType;
 import com.wwidesigner.util.BindFactory;
+import com.wwidesigner.util.Constants.TemperatureType;
 import com.wwidesigner.util.PhysicalParameters;
 
 /**
@@ -81,22 +81,31 @@ import com.wwidesigner.util.PhysicalParameters;
 public class WhistleStudyModel extends StudyModel
 {
 	// Named constants for the standard set of optimizers.
-	public static final String WHISTLE_CALIB_SUB_CATEGORY_ID = "1. Whistle Calibrator";				// for whistles
-	public static final String FLUTE_CALIB_SUB_CATEGORY_ID = "1. Flute Calibrator";					// for flutes
-	public static final String WINDOW_OPT_SUB_CATEGORY_ID = "1.1 Window Height Calibrator";			// for whistles
-	public static final String AIRSTREAM_OPT_SUB_CATEGORY_ID = "1.1 Airstream Length Calibrator";	// for flutes
+	public static final String WHISTLE_CALIB_SUB_CATEGORY_ID = "1. Whistle Calibrator"; // for
+																						// whistles
+	public static final String FLUTE_CALIB_SUB_CATEGORY_ID = "1. Flute Calibrator"; // for
+																					// flutes
+	public static final String WINDOW_OPT_SUB_CATEGORY_ID = "1.1 Window Height Calibrator"; // for
+																							// whistles
+	public static final String AIRSTREAM_OPT_SUB_CATEGORY_ID = "1.1 Airstream Length Calibrator"; // for
+																									// flutes
 	public static final String BETA_OPT_SUB_CATEGORY_ID = "1.2 Beta Calibrator";
 	public static final String HOLESIZE_OPT_SUB_CATEGORY_ID = "2. Hole Size Optimizer";
 	public static final String HOLESPACE_OPT_SUB_CATEGORY_ID = "3. Hole Spacing Optimizer";
 	public static final String HOLE_OPT_SUB_CATEGORY_ID = "4. Hole Size+Spacing Optimizer";
-	public static final String LENGTH_OPT_SUB_CATEGORY_ID = "4.1 Length Optimizer";					// Not used
+	public static final String LENGTH_OPT_SUB_CATEGORY_ID = "4.1 Length Optimizer"; // Not
+																					// used
 	public static final String TAPER_OPT_SUB_CATEGORY_ID = "5. Taper Optimizer";
 	public static final String HOLE_TAPER_OPT_SUB_CATEGORY_ID = "5.1 Hole and Taper Optimizer";
-	public static final String BORE_DIA_TOP_OPT_SUB_CATEGORY_ID = "6. Upper Bore Diameter Optimizer";	// for whistles
+	public static final String BORE_DIA_TOP_OPT_SUB_CATEGORY_ID = "6. Upper Bore Diameter Optimizer"; // for
+																										// whistles
 	public static final String HOLE_BORE_DIA_TOP_OPT_SUB_CATEGORY_ID = "6.1 Hole and Upper Bore Diameter Optimizer";
-	public static final String STOPPER_OPT_SUB_CATEGORY_ID = "6. Stopper Position Optimizer";			// for flutes
-	public static final String HEADJOINT_OPT_SUB_CATEGORY_ID = "6.1 Headjoint Optimizer";				// for flutes
-	public static final String HOLE_HEADJOINT_OPT_SUB_CATEGORY_ID = "6.2 Hole and Headjoint Optimizer";	// for flutes
+	public static final String STOPPER_OPT_SUB_CATEGORY_ID = "6. Stopper Position Optimizer"; // for
+																								// flutes
+	public static final String HEADJOINT_OPT_SUB_CATEGORY_ID = "6.1 Headjoint Optimizer"; // for
+																							// flutes
+	public static final String HOLE_HEADJOINT_OPT_SUB_CATEGORY_ID = "6.2 Hole and Headjoint Optimizer"; // for
+																										// flutes
 	public static final String BORE_DIA_BOTTOM_OPT_SUB_CATEGORY_ID = "7. Lower Bore Diameter Optimizer";
 	public static final String HOLE_BORE_DIA_BOTTOM_OPT_SUB_CATEGORY_ID = "7.1 Hole and Lower Bore Diameter Optimizer";
 	public static final String BORE_SPACING_OPT_SUB_CATEGORY_ID = "8. Upper Bore Spacing Optimizer";
@@ -138,7 +147,8 @@ public class WhistleStudyModel extends StudyModel
 
 	protected void setLocalCategories()
 	{
-		setParams(new PhysicalParameters(27, TemperatureType.C, 98.4, 100, 0.04));
+		setParams(
+				new PhysicalParameters(27, TemperatureType.C, 98.4, 100, 0.04));
 
 		// Add the standard set of optimizers to the Optimizer category,
 		// and assign an associated objective function name to each one.
@@ -156,7 +166,7 @@ public class WhistleStudyModel extends StudyModel
 				BetaObjectiveFunction.class.getSimpleName());
 		// optimizers.addSub(LENGTH_OPT_SUB_CATEGORY_ID, null);
 		// objectiveFunctionNames.put(LENGTH_OPT_SUB_CATEGORY_ID,
-		//		LengthObjectiveFunction.class.getSimpleName());
+		// LengthObjectiveFunction.class.getSimpleName());
 		optimizers.addSub(HOLESIZE_OPT_SUB_CATEGORY_ID, null);
 		objectiveFunctionNames.put(HOLESIZE_OPT_SUB_CATEGORY_ID,
 				HoleSizeObjectiveFunction.class.getSimpleName());
@@ -181,7 +191,8 @@ public class WhistleStudyModel extends StudyModel
 				HeadjointObjectiveFunction.class.getSimpleName());
 		optimizers.addSub(HOLE_BORE_DIA_TOP_OPT_SUB_CATEGORY_ID, null);
 		objectiveFunctionNames.put(HOLE_BORE_DIA_TOP_OPT_SUB_CATEGORY_ID,
-				HoleAndBoreDiameterFromTopObjectiveFunction.class.getSimpleName());
+				HoleAndBoreDiameterFromTopObjectiveFunction.class
+						.getSimpleName());
 		objectiveFunctionNames.put(HOLE_HEADJOINT_OPT_SUB_CATEGORY_ID,
 				HoleAndHeadjointObjectiveFunction.class.getSimpleName());
 		optimizers.addSub(BORE_DIA_BOTTOM_OPT_SUB_CATEGORY_ID, null);
@@ -189,13 +200,15 @@ public class WhistleStudyModel extends StudyModel
 				BoreDiameterFromBottomObjectiveFunction.class.getSimpleName());
 		optimizers.addSub(HOLE_BORE_DIA_BOTTOM_OPT_SUB_CATEGORY_ID, null);
 		objectiveFunctionNames.put(HOLE_BORE_DIA_BOTTOM_OPT_SUB_CATEGORY_ID,
-				HoleAndBoreDiameterFromBottomObjectiveFunction.class.getSimpleName());
+				HoleAndBoreDiameterFromBottomObjectiveFunction.class
+						.getSimpleName());
 		optimizers.addSub(BORE_SPACING_OPT_SUB_CATEGORY_ID, null);
 		objectiveFunctionNames.put(BORE_SPACING_OPT_SUB_CATEGORY_ID,
 				BoreSpacingFromTopObjectiveFunction.class.getSimpleName());
 		optimizers.addSub(HOLE_BORE_SPACING_OPT_SUB_CATEGORY_ID, null);
 		objectiveFunctionNames.put(HOLE_BORE_SPACING_OPT_SUB_CATEGORY_ID,
-				HoleAndBoreSpacingFromTopObjectiveFunction.class.getSimpleName());
+				HoleAndBoreSpacingFromTopObjectiveFunction.class
+						.getSimpleName());
 		optimizers.addSub(GLOBAL_HOLESPACE_OPT_SUB_CATEGORY_ID, null);
 		objectiveFunctionNames.put(GLOBAL_HOLESPACE_OPT_SUB_CATEGORY_ID,
 				GlobalHolePositionObjectiveFunction.class.getSimpleName());
@@ -205,9 +218,12 @@ public class WhistleStudyModel extends StudyModel
 		optimizers.addSub(GLOBAL_HOLE_TAPER_OPT_SUB_CATEGORY_ID, null);
 		objectiveFunctionNames.put(GLOBAL_HOLE_TAPER_OPT_SUB_CATEGORY_ID,
 				GlobalHoleAndTaperObjectiveFunction.class.getSimpleName());
-		optimizers.addSub(GLOBAL_HOLE_BORE_DIA_BOTTOM_OPT_SUB_CATEGORY_ID, null);
-		objectiveFunctionNames.put(GLOBAL_HOLE_BORE_DIA_BOTTOM_OPT_SUB_CATEGORY_ID,
-				GlobalHoleAndBoreDiameterFromBottomObjectiveFunction.class.getSimpleName());
+		optimizers.addSub(GLOBAL_HOLE_BORE_DIA_BOTTOM_OPT_SUB_CATEGORY_ID,
+				null);
+		objectiveFunctionNames.put(
+				GLOBAL_HOLE_BORE_DIA_BOTTOM_OPT_SUB_CATEGORY_ID,
+				GlobalHoleAndBoreDiameterFromBottomObjectiveFunction.class
+						.getSimpleName());
 		categories.add(optimizers);
 	}
 
@@ -221,8 +237,8 @@ public class WhistleStudyModel extends StudyModel
 	@Override
 	public void setPreferences(Preferences newPreferences)
 	{
-		setBlowingLevel(newPreferences.getInt(
-				OptimizationPreferences.BLOWING_LEVEL_OPT, 5));
+		setBlowingLevel(newPreferences
+				.getInt(OptimizationPreferences.BLOWING_LEVEL_OPT, 5));
 		super.setPreferences(newPreferences);
 	}
 
@@ -328,15 +344,17 @@ public class WhistleStudyModel extends StudyModel
 				break;
 
 			case "WhistleCalibrationObjectiveFunction":
-				evaluator = new FminmaxEvaluator(calculator, getInstrumentTuner());
+				evaluator = new FminmaxEvaluator(calculator,
+						getInstrumentTuner());
 				aObjective = new WhistleCalibrationObjectiveFunction(calculator,
 						tuning, evaluator);
 				lowerBound = new double[] { 0.0001, 0.2 };
-				upperBound = new double[] { 0.020,  1.0 };
+				upperBound = new double[] { 0.020, 1.0 };
 				break;
 
 			case "FluteCalibrationObjectiveFunction":
-				evaluator = new FminmaxEvaluator(calculator, getInstrumentTuner());
+				evaluator = new FminmaxEvaluator(calculator,
+						getInstrumentTuner());
 				aObjective = new FluteCalibrationObjectiveFunction(calculator,
 						tuning, evaluator);
 				lowerBound = new double[] { 0.001, 0.2 };
@@ -346,7 +364,7 @@ public class WhistleStudyModel extends StudyModel
 			case "LengthObjectiveFunction":
 				evaluator = new BellNoteEvaluator(calculator);
 				aObjective = new LengthObjectiveFunction(calculator, tuning,
-						evaluator, true);
+						evaluator, BoreLengthAdjustmentType.PRESERVE_TAPER);
 				lowerBound = new double[] { MIN_BORE_LENGTH };
 				upperBound = new double[] { MAX_BORE_LENGTH };
 				break;
@@ -354,8 +372,8 @@ public class WhistleStudyModel extends StudyModel
 			case "StopperPositionObjectiveFunction":
 				evaluator = new CentDeviationEvaluator(calculator,
 						getInstrumentTuner());
-				aObjective = new StopperPositionObjectiveFunction(calculator, tuning,
-						evaluator, true);
+				aObjective = new StopperPositionObjectiveFunction(calculator,
+						tuning, evaluator, true);
 				lowerBound = new double[] { 0.00 };
 				upperBound = new double[] { 0.03 };
 				break;
@@ -376,15 +394,18 @@ public class WhistleStudyModel extends StudyModel
 			case "GlobalHolePositionObjectiveFunction":
 				evaluator = new CentDeviationEvaluator(calculator,
 						getInstrumentTuner());
-				if (objectiveFunctionClass.equals("GlobalHolePositionObjectiveFunction"))
+				if (objectiveFunctionClass
+						.equals("GlobalHolePositionObjectiveFunction"))
 				{
-					aObjective = new GlobalHolePositionObjectiveFunction(calculator,
-							tuning, evaluator, BoreLengthAdjustmentType.MOVE_BOTTOM);
+					aObjective = new GlobalHolePositionObjectiveFunction(
+							calculator, tuning, evaluator,
+							BoreLengthAdjustmentType.MOVE_BOTTOM);
 				}
 				else
 				{
 					aObjective = new HolePositionObjectiveFunction(calculator,
-							tuning, evaluator, BoreLengthAdjustmentType.PRESERVE_TAPER);
+							tuning, evaluator,
+							BoreLengthAdjustmentType.PRESERVE_TAPER);
 				}
 				// Bounds are hole separations, expressed in meters.
 				lowerBound = new double[numberOfHoles + 1];
@@ -400,16 +421,16 @@ public class WhistleStudyModel extends StudyModel
 					upperBound[numberOfHoles - 3] = 0.100;
 				}
 
-
 				// Use the following lines to use multi-start optimization.
-				// if (objectiveFunctionClass.equals("GlobalHolePositionObjectiveFunction"))
+				// if
+				// (objectiveFunctionClass.equals("GlobalHolePositionObjectiveFunction"))
 				// {
-					// int nrOfStarts = 4 * numberOfHoles;
-					// GridRangeProcessor rangeProcessor = new GridRangeProcessor(
-					//		lowerBound, upperBound, null, nrOfStarts);
-					// objective.setRangeProcessor(rangeProcessor);
-					// objective.setMaxEvaluations(nrOfStarts
-					//		* objective.getMaxEvaluations());
+				// int nrOfStarts = 4 * numberOfHoles;
+				// GridRangeProcessor rangeProcessor = new GridRangeProcessor(
+				// lowerBound, upperBound, null, nrOfStarts);
+				// objective.setRangeProcessor(rangeProcessor);
+				// objective.setMaxEvaluations(nrOfStarts
+				// * objective.getMaxEvaluations());
 				// }
 				break;
 
@@ -418,10 +439,12 @@ public class WhistleStudyModel extends StudyModel
 			default:
 				evaluator = new CentDeviationEvaluator(calculator,
 						getInstrumentTuner());
-				if (objectiveFunctionClass.equals("GlobalHoleObjectiveFunction"))
+				if (objectiveFunctionClass
+						.equals("GlobalHoleObjectiveFunction"))
 				{
-					aObjective = new GlobalHoleObjectiveFunction(calculator, tuning,
-							evaluator, BoreLengthAdjustmentType.PRESERVE_TAPER);
+					aObjective = new GlobalHoleObjectiveFunction(calculator,
+							tuning, evaluator,
+							BoreLengthAdjustmentType.PRESERVE_TAPER);
 				}
 				else
 				{
@@ -465,10 +488,11 @@ public class WhistleStudyModel extends StudyModel
 			case "GlobalHoleAndTaperObjectiveFunction":
 				evaluator = new CentDeviationEvaluator(calculator,
 						getInstrumentTuner());
-				if (objectiveFunctionClass.equals("GlobalHoleAndTaperObjectiveFunction"))
+				if (objectiveFunctionClass
+						.equals("GlobalHoleAndTaperObjectiveFunction"))
 				{
-					aObjective = new GlobalHoleAndTaperObjectiveFunction(calculator,
-							tuning, evaluator);
+					aObjective = new GlobalHoleAndTaperObjectiveFunction(
+							calculator, tuning, evaluator);
 				}
 				else
 				{
@@ -506,10 +530,11 @@ public class WhistleStudyModel extends StudyModel
 			case "BoreDiameterFromTopObjectiveFunction":
 				evaluator = new CentDeviationEvaluator(calculator,
 						getInstrumentTuner());
-				aObjective = new BoreDiameterFromTopObjectiveFunction(calculator, tuning,
-						evaluator);
+				aObjective = new BoreDiameterFromTopObjectiveFunction(
+						calculator, tuning, evaluator);
 				nrDimensions = aObjective.getNrDimensions();
-				// Bounds are diameter ratios.  Default to taper inward toward top.
+				// Bounds are diameter ratios. Default to taper inward toward
+				// top.
 				lowerBound = new double[nrDimensions];
 				upperBound = new double[nrDimensions];
 				Arrays.fill(lowerBound, 0.5);
@@ -520,10 +545,11 @@ public class WhistleStudyModel extends StudyModel
 			case "BoreDiameterFromBottomObjectiveFunction":
 				evaluator = new CentDeviationEvaluator(calculator,
 						getInstrumentTuner());
-				aObjective = new BoreDiameterFromBottomObjectiveFunction(calculator, tuning,
-						evaluator);
+				aObjective = new BoreDiameterFromBottomObjectiveFunction(
+						calculator, tuning, evaluator);
 				nrDimensions = aObjective.getNrDimensions();
-				// Bounds are diameter ratios.  Default to taper inward toward bottom.
+				// Bounds are diameter ratios. Default to taper inward toward
+				// bottom.
 				lowerBound = new double[nrDimensions];
 				upperBound = new double[nrDimensions];
 				Arrays.fill(lowerBound, 0.5);
@@ -551,15 +577,16 @@ public class WhistleStudyModel extends StudyModel
 			case "GlobalHoleAndBoreDiameterFromTopObjectiveFunction":
 				evaluator = new CentDeviationEvaluator(calculator,
 						getInstrumentTuner());
-				if (objectiveFunctionClass.equals("GlobalHoleAndBoreDiameterFromTopObjectiveFunction"))
+				if (objectiveFunctionClass.equals(
+						"GlobalHoleAndBoreDiameterFromTopObjectiveFunction"))
 				{
-					aObjective = new GlobalHoleAndBoreDiameterFromTopObjectiveFunction(calculator,
-							tuning, evaluator);
+					aObjective = new GlobalHoleAndBoreDiameterFromTopObjectiveFunction(
+							calculator, tuning, evaluator);
 				}
 				else
 				{
-					aObjective = new HoleAndBoreDiameterFromTopObjectiveFunction(calculator,
-							tuning, evaluator);
+					aObjective = new HoleAndBoreDiameterFromTopObjectiveFunction(
+							calculator, tuning, evaluator);
 				}
 				nrDimensions = aObjective.getNrDimensions();
 				// Separation bounds and diameter bounds, expressed in meters,
@@ -585,13 +612,13 @@ public class WhistleStudyModel extends StudyModel
 				{
 					// Allow extra space between hands, assuming upper hand
 					// uses same number or one more finger than lower hand.
-					upperBound[(numberOfHoles+1)/2] = 0.100;
+					upperBound[(numberOfHoles + 1) / 2] = 0.100;
 				}
 				// Bore diameter ratios.
-				lowerBound[2*numberOfHoles + 1] = 0.999;
-				Arrays.fill(lowerBound, 2*numberOfHoles + 2,
+				lowerBound[2 * numberOfHoles + 1] = 0.999;
+				Arrays.fill(lowerBound, 2 * numberOfHoles + 2,
 						lowerBound.length, 0.5);
-				Arrays.fill(upperBound, 2*numberOfHoles + 1,
+				Arrays.fill(upperBound, 2 * numberOfHoles + 1,
 						upperBound.length, 1.0);
 				break;
 
@@ -624,16 +651,16 @@ public class WhistleStudyModel extends StudyModel
 				{
 					// Allow extra space between hands, assuming upper hand
 					// uses same number or one more finger than lower hand.
-					upperBound[(numberOfHoles+1)/2] = 0.100;
+					upperBound[(numberOfHoles + 1) / 2] = 0.100;
 				}
 				// Stopper position.
-				lowerBound[2*numberOfHoles + 1] = 0.00;
-				upperBound[2*numberOfHoles + 1] = 0.03;
+				lowerBound[2 * numberOfHoles + 1] = 0.00;
+				upperBound[2 * numberOfHoles + 1] = 0.03;
 				// Bore diameter ratios.
-				lowerBound[2*numberOfHoles + 2] = 0.90;
-				Arrays.fill(lowerBound, 2*numberOfHoles + 3,
+				lowerBound[2 * numberOfHoles + 2] = 0.90;
+				Arrays.fill(lowerBound, 2 * numberOfHoles + 3,
 						lowerBound.length, 0.5);
-				Arrays.fill(upperBound, 2*numberOfHoles + 2,
+				Arrays.fill(upperBound, 2 * numberOfHoles + 2,
 						upperBound.length, 1.0);
 				break;
 
@@ -641,15 +668,16 @@ public class WhistleStudyModel extends StudyModel
 			case "GlobalHoleAndBoreDiameterFromBottomObjectiveFunction":
 				evaluator = new CentDeviationEvaluator(calculator,
 						getInstrumentTuner());
-				if (objectiveFunctionClass.equals("GlobalHoleAndBoreDiameterFromBottomObjectiveFunction"))
+				if (objectiveFunctionClass.equals(
+						"GlobalHoleAndBoreDiameterFromBottomObjectiveFunction"))
 				{
-					aObjective = new GlobalHoleAndBoreDiameterFromBottomObjectiveFunction(calculator,
-							tuning, evaluator);
+					aObjective = new GlobalHoleAndBoreDiameterFromBottomObjectiveFunction(
+							calculator, tuning, evaluator);
 				}
 				else
 				{
-					aObjective = new HoleAndBoreDiameterFromBottomObjectiveFunction(calculator,
-							tuning, evaluator);
+					aObjective = new HoleAndBoreDiameterFromBottomObjectiveFunction(
+							calculator, tuning, evaluator);
 				}
 				nrDimensions = aObjective.getNrDimensions();
 				// Separation bounds and diameter bounds, expressed in meters,
@@ -675,20 +703,20 @@ public class WhistleStudyModel extends StudyModel
 				{
 					// Allow extra space between hands, assuming upper hand
 					// uses same number or one more finger than lower hand.
-					upperBound[(numberOfHoles+1)/2] = 0.100;
+					upperBound[(numberOfHoles + 1) / 2] = 0.100;
 				}
 				// Bore diameter ratios.
-				Arrays.fill(lowerBound, 2*numberOfHoles + 1,
+				Arrays.fill(lowerBound, 2 * numberOfHoles + 1,
 						lowerBound.length, 0.5);
-				Arrays.fill(upperBound, 2*numberOfHoles + 1,
+				Arrays.fill(upperBound, 2 * numberOfHoles + 1,
 						upperBound.length, 1.0);
 				break;
 
 			case "BoreSpacingFromTopObjectiveFunction":
 				evaluator = new CentDeviationEvaluator(calculator,
 						getInstrumentTuner());
-				aObjective = new BoreSpacingFromTopObjectiveFunction(calculator, tuning,
-						evaluator);
+				aObjective = new BoreSpacingFromTopObjectiveFunction(calculator,
+						tuning, evaluator);
 				nrDimensions = aObjective.getNrDimensions();
 				// Bounds are bore point spacings.
 				lowerBound = new double[nrDimensions];
@@ -700,8 +728,8 @@ public class WhistleStudyModel extends StudyModel
 			case "HoleAndBoreSpacingFromTopObjectiveFunction":
 				evaluator = new CentDeviationEvaluator(calculator,
 						getInstrumentTuner());
-				aObjective = new HoleAndBoreSpacingFromTopObjectiveFunction(calculator,
-						tuning, evaluator);
+				aObjective = new HoleAndBoreSpacingFromTopObjectiveFunction(
+						calculator, tuning, evaluator);
 				nrDimensions = aObjective.getNrDimensions();
 				// Separation bounds and diameter bounds, expressed in meters,
 				// and bore position ratios.
@@ -726,12 +754,12 @@ public class WhistleStudyModel extends StudyModel
 				{
 					// Allow extra space between hands, assuming upper hand
 					// uses same number or one more finger than lower hand.
-					upperBound[(numberOfHoles+1)/2] = 0.100;
+					upperBound[(numberOfHoles + 1) / 2] = 0.100;
 				}
 				// Bore point spacing.
-				Arrays.fill(lowerBound, 2*numberOfHoles + 1,
+				Arrays.fill(lowerBound, 2 * numberOfHoles + 1,
 						lowerBound.length, 0.001);
-				Arrays.fill(upperBound, 2*numberOfHoles + 1,
+				Arrays.fill(upperBound, 2 * numberOfHoles + 1,
 						upperBound.length, 0.010);
 				break;
 		}
@@ -758,7 +786,8 @@ public class WhistleStudyModel extends StudyModel
 				}
 				else
 				{
-					throw new OptimizerMismatchException("Number of dimensions (holes or bore points) for selected constraints does not match the selected instrument.");
+					throw new OptimizerMismatchException(
+							"Number of dimensions (holes or bore points) for selected constraints does not match the selected instrument.");
 				}
 			}
 		}
@@ -786,9 +815,9 @@ public class WhistleStudyModel extends StudyModel
 	{
 		toggleXmlViewLists = new HashMap<String, Class<ContainedXmlView>[]>();
 
-		toggleXmlViewLists.put(INSTRUMENT_CATEGORY_ID, new Class[] {
-				ContainedXmlTextView.class,
-				ContainedWhistleInstrumentView.class });
+		toggleXmlViewLists.put(INSTRUMENT_CATEGORY_ID,
+				new Class[] { ContainedXmlTextView.class,
+						ContainedWhistleInstrumentView.class });
 		toggleXmlViewLists.put(TUNING_CATEGORY_ID, new Class[] {
 				ContainedXmlTextView.class, ContainedTuningView.class });
 		toggleXmlViewLists.put(CONSTRAINTS_CATEGORY_ID,

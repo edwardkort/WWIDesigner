@@ -20,14 +20,12 @@ package com.wwidesigner.optimization;
 
 import java.util.List;
 
-import org.apache.commons.math3.exception.DimensionMismatchException;
-
 import com.wwidesigner.geometry.BorePoint;
 import com.wwidesigner.modelling.EvaluatorInterface;
 import com.wwidesigner.modelling.InstrumentCalculator;
 import com.wwidesigner.note.TuningInterface;
+import com.wwidesigner.optimization.BoreLengthAdjustmentInterface.BoreLengthAdjustmentType;
 import com.wwidesigner.optimization.Constraint.ConstraintType;
-import com.wwidesigner.util.SortedPositionList;
 
 /**
  * Optimization objective function for the position of the end bore point.
@@ -41,8 +39,7 @@ public class LengthObjectiveFunction extends BaseObjectiveFunction
 	public static final ConstraintType CONSTR_TYPE = ConstraintType.DIMENSIONAL;
 	public static final String DISPLAY_NAME = "Length optimizer";
 
-	protected boolean preserveTaper;
-	protected static final double MINIMUM_BORE_POINT_SPACING = 0.00001d;
+	protected BoreLengthAdjuster boreLengthAdjuster;
 
 	/**
 	 * Optimization objective function for the position of the end bore point.
@@ -50,16 +47,15 @@ public class LengthObjectiveFunction extends BaseObjectiveFunction
 	 * @param aCalculator
 	 * @param tuning
 	 * @param aEvaluator
-	 * @param aPreserveTaper
 	 *            - false to leave bore diameter unchanged, true to adjust bore
 	 *            diameter to preserve bore taper.
 	 */
 	public LengthObjectiveFunction(InstrumentCalculator aCalculator,
 			TuningInterface tuning, EvaluatorInterface aEvaluator,
-			boolean aPreserveTaper)
+			BoreLengthAdjustmentType aLengthAdjustmentMode)
 	{
 		super(aCalculator, tuning, aEvaluator);
-		this.preserveTaper = aPreserveTaper;
+		boreLengthAdjuster = new BoreLengthAdjuster(this, aLengthAdjustmentMode);
 		nrDimensions = 1;
 		optimizerType = OptimizerType.BrentOptimizer; // UnivariateOptimizer
 		setConstraints();
@@ -100,53 +96,14 @@ public class LengthObjectiveFunction extends BaseObjectiveFunction
 	@Override
 	public void setGeometryPoint(double[] point)
 	{
-		if (point.length != nrDimensions)
-		{
-			throw new DimensionMismatchException(point.length, nrDimensions);
-		}
-
-		SortedPositionList<BorePoint> boreList = new SortedPositionList<BorePoint>(
-				calculator.getInstrument().getBorePoint());
-		double newBottomPosition = point[0];
-		double diameter;
-
-		BorePoint borePoint = boreList.get(boreList.size() - 1);
-		if (preserveTaper)
-		{
-			// Extrapolate/interpolate the bore diameter of end point
-			diameter = BorePoint
-					.getInterpolatedExtrapolatedBoreDiameter(boreList,
-							newBottomPosition);
-			borePoint.setBoreDiameter(diameter);
-		}
-		borePoint.setBorePosition(newBottomPosition);
-
-		// Don't let optimizer delete or re-arrange borePoints.
-		// Instead, move them up the bore a bit.
-		for (int i = boreList.size() - 2; i > 0; --i)
-		{
-			borePoint = boreList.get(i);
-			double currentPosition = borePoint.getBorePosition();
-			if (currentPosition >= newBottomPosition)
-			{
-				newBottomPosition -= MINIMUM_BORE_POINT_SPACING;
-				if (preserveTaper)
-				{
-					// Extrapolate/interpolate the bore diameter
-					diameter = BorePoint
-							.getInterpolatedExtrapolatedBoreDiameter(boreList,
-									newBottomPosition);
-					borePoint.setBoreDiameter(diameter);
-				}
-				borePoint.setBorePosition(newBottomPosition);
-			}
-			else
-			{
-				break;
-			}
-		}
+		setBore(point);
+		
 
 		calculator.getInstrument().updateComponents();
 	}
 
+	public void setBore(double[] point)
+	{
+		boreLengthAdjuster.setBore(point);
+	}
 }

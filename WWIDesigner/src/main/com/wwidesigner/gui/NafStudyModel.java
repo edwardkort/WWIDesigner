@@ -40,11 +40,11 @@ import com.wwidesigner.modelling.SimpleInstrumentTuner;
 import com.wwidesigner.modelling.SupplementaryInfoTable;
 import com.wwidesigner.note.Tuning;
 import com.wwidesigner.optimization.BaseObjectiveFunction;
+import com.wwidesigner.optimization.BoreLengthAdjustmentInterface.BoreLengthAdjustmentType;
 import com.wwidesigner.optimization.Constraints;
 import com.wwidesigner.optimization.FippleFactorObjectiveFunction;
 import com.wwidesigner.optimization.HoleFromTopObjectiveFunction;
 import com.wwidesigner.optimization.HoleGroupFromTopObjectiveFunction;
-import com.wwidesigner.optimization.HolePositionObjectiveFunction.BoreLengthAdjustmentType;
 import com.wwidesigner.optimization.HoleSizeObjectiveFunction;
 import com.wwidesigner.optimization.NafHoleSizeObjectiveFunction;
 import com.wwidesigner.optimization.SingleTaperHoleGroupFromTopHemiHeadObjectiveFunction;
@@ -187,7 +187,7 @@ public class NafStudyModel extends StudyModel
 	{
 		// Run the base class to get whatever common prefs exist.
 		super.setPreferences(newPreferences);
-		
+
 		double currentTemperature = newPreferences.getDouble(
 				OptimizationPreferences.TEMPERATURE_OPT,
 				OptimizationPreferences.DEFAULT_TEMPERATURE);
@@ -430,8 +430,8 @@ public class NafStudyModel extends StudyModel
 				}
 				break;
 			case HOLESIZE_OPT_SUB_CATEGORY_ID:
-				aObjective = new NafHoleSizeObjectiveFunction(calculator, tuning,
-						evaluator);
+				aObjective = new NafHoleSizeObjectiveFunction(calculator,
+						tuning, evaluator);
 				if (objectiveFunctionIntent == BaseObjectiveFunction.DEFAULT_CONSTRAINTS_INTENT)
 				{
 					// Bounds are hole diameters expressed in meters.
@@ -463,8 +463,9 @@ public class NafStudyModel extends StudyModel
 				}
 				break;
 			case NO_GROUP_OPT_SUB_CATEGORY_ID:
-				aObjective = new HoleFromTopObjectiveFunction(calculator, tuning,
-						evaluator, BoreLengthAdjustmentType.PRESERVE_TAPER);
+				aObjective = new HoleFromTopObjectiveFunction(calculator,
+						tuning, evaluator,
+						BoreLengthAdjustmentType.PRESERVE_BORE);
 				if (objectiveFunctionIntent == BaseObjectiveFunction.DEFAULT_CONSTRAINTS_INTENT)
 				{
 					// Length bounds are expressed in meters, diameter bounds as
@@ -566,7 +567,8 @@ public class NafStudyModel extends StudyModel
 					}
 				}
 				aObjective = new HoleGroupFromTopObjectiveFunction(calculator,
-						tuning, evaluator, holeGroups);
+						tuning, evaluator, holeGroups,
+						BoreLengthAdjustmentType.PRESERVE_BORE);
 				break;
 			case TAPER_NO_GROUP_OPT_SUB_CATEGORY_ID:
 				aObjective = new SingleTaperNoHoleGroupingFromTopObjectiveFunction(
@@ -718,7 +720,8 @@ public class NafStudyModel extends StudyModel
 					}
 				}
 				aObjective = new SingleTaperHoleGroupFromTopObjectiveFunction(
-						calculator, tuning, evaluator, holeGroups);
+						calculator, tuning, evaluator, holeGroups,
+						BoreLengthAdjustmentType.PRESERVE_TAPER);
 				break;
 			case TAPER_HEMI_HEAD_GROUP_OPT_SUB_CATEGORY_ID:
 				// Length bounds are expressed in meters, diameter bounds as
@@ -786,7 +789,8 @@ public class NafStudyModel extends StudyModel
 					}
 				}
 				aObjective = new SingleTaperHoleGroupFromTopHemiHeadObjectiveFunction(
-						calculator, tuning, evaluator, holeGroups);
+						calculator, tuning, evaluator, holeGroups,
+						BoreLengthAdjustmentType.PRESERVE_TAPER);
 				break;
 		}
 
@@ -807,21 +811,42 @@ public class NafStudyModel extends StudyModel
 			String multiStartSelected = multiStartCategory.getSelectedSub();
 			if (multiStartSelected == VARY_FIRST_MULTI_START_SUB_CATEGORY_ID)
 			{
-				GridRangeProcessor rangeProcessor = new GridRangeProcessor(
-						aObjective.getLowerBounds(), aObjective.getUpperBounds(),
-						new int[] { 0 }, numberOfStarts);
-				aObjective.setRangeProcessor(rangeProcessor);
-				aObjective.setMaxEvaluations(
-						numberOfStarts * aObjective.getMaxEvaluations());
+				// Multi-start optimization is not needed for the following
+				// optimizers, and it can improperly move bore points.
+				if (optimizer.equals(NO_GROUP_OPT_SUB_CATEGORY_ID)
+						|| optimizer.equals(GROUP_OPT_SUB_CATEGORY_ID))
+				{
+					System.out.print("No multi-start optimization is used.");
+				}
+				else
+				{
+					GridRangeProcessor rangeProcessor = new GridRangeProcessor(
+							aObjective.getLowerBounds(),
+							aObjective.getUpperBounds(), new int[] { 0 },
+							numberOfStarts);
+					aObjective.setRangeProcessor(rangeProcessor);
+					aObjective.setMaxEvaluations(
+							numberOfStarts * aObjective.getMaxEvaluations());
+				}
 			}
 			else if (multiStartSelected == VARY_ALL_MULTI_START_SUB_CATEGORY_ID)
 			{
-				GridRangeProcessor rangeProcessor = new GridRangeProcessor(
-						aObjective.getLowerBounds(), aObjective.getUpperBounds(),
-						null, numberOfStarts);
-				aObjective.setRangeProcessor(rangeProcessor);
-				aObjective.setMaxEvaluations(
-						numberOfStarts * aObjective.getMaxEvaluations());
+				// Multi-start optimization is not needed for the following
+				// optimizers, and it can improperly move bore points.
+				if (optimizer.equals(NO_GROUP_OPT_SUB_CATEGORY_ID)
+						|| optimizer.equals(GROUP_OPT_SUB_CATEGORY_ID))
+				{
+					System.out.print("No multi-start optimization is used.");
+				}
+				else
+				{
+					GridRangeProcessor rangeProcessor = new GridRangeProcessor(
+							aObjective.getLowerBounds(),
+							aObjective.getUpperBounds(), null, numberOfStarts);
+					aObjective.setRangeProcessor(rangeProcessor);
+					aObjective.setMaxEvaluations(
+							numberOfStarts * aObjective.getMaxEvaluations());
+				}
 			}
 		}
 
@@ -834,8 +859,7 @@ public class NafStudyModel extends StudyModel
 				parentFrame, numberOfHoles);
 		spacingDialog.pack();
 		spacingDialog.setVisible(true);
-		if (spacingDialog
-				.getDialogResult() == StandardDialog.RESULT_AFFIRMED)
+		if (spacingDialog.getDialogResult() == StandardDialog.RESULT_AFFIRMED)
 		{
 			return spacingDialog.getHoleSpacingGroups();
 		}

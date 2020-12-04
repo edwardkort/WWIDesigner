@@ -35,6 +35,10 @@ import com.wwidesigner.util.SortedPositionList;
  * @author kort
  * 
  */
+/**
+ * @author kort
+ *
+ */
 public class Instrument implements InstrumentInterface
 {
 
@@ -169,9 +173,8 @@ public class Instrument implements InstrumentInterface
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * com.wwidesigner.geometry.InstrumentInterface#setMouthpiece(com.wwidesigner
-	 * .geometry.bind.XmlMouthpiece)
+	 * @see com.wwidesigner.geometry.InstrumentInterface#setMouthpiece(com.
+	 * wwidesigner .geometry.bind.XmlMouthpiece)
 	 */
 	@Override
 	public void setMouthpiece(Mouthpiece value)
@@ -219,9 +222,8 @@ public class Instrument implements InstrumentInterface
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * com.wwidesigner.geometry.InstrumentInterface#setTermination(com.wwidesigner
-	 * .geometry.bind.XmlEndBoreSection)
+	 * @see com.wwidesigner.geometry.InstrumentInterface#setTermination(com.
+	 * wwidesigner .geometry.bind.XmlEndBoreSection)
 	 */
 	@Override
 	public void setTermination(Termination value)
@@ -368,8 +370,8 @@ public class Instrument implements InstrumentInterface
 		}
 		for (Hole currentHole : hole)
 		{
-			currentHole
-					.checkValidity(handler, minimumPosition, maximumPosition);
+			currentHole.checkValidity(handler, minimumPosition,
+					maximumPosition);
 		}
 		termination.checkValidity(handler, terminalBorePoint);
 		handler.reportErrors(false);
@@ -391,7 +393,8 @@ public class Instrument implements InstrumentInterface
 			// Sort the bore points from lowest (left-most) to highest
 			// (right-most)
 			// position.
-			SortedPositionList<BorePoint> borePointList = makePositionList(borePoint);
+			SortedPositionList<BorePoint> borePointList = makePositionList(
+					borePoint);
 
 			// Put any bore sections to the left of the mouthpiece position
 			// into the mouthpiece headspace.
@@ -418,7 +421,8 @@ public class Instrument implements InstrumentInterface
 			}
 
 			// Process the rest of the sections. There must be at least one
-			double lastPosition = borePointList.getLast().getBorePosition() + 1.;
+			double lastPosition = borePointList.getLast().getBorePosition()
+					+ 1.;
 			makeSections(borePointList, lastPosition);
 		}
 	}
@@ -444,7 +448,8 @@ public class Instrument implements InstrumentInterface
 		termination.setBorePosition(lastPoint.getBorePosition());
 	}
 
-	protected void processMouthpiece(SortedPositionList<BorePoint> borePointList)
+	protected void processMouthpiece(
+			SortedPositionList<BorePoint> borePointList)
 	{
 		double mouthpiecePosition = mouthpiece.getBorePosition();
 
@@ -615,7 +620,8 @@ public class Instrument implements InstrumentInterface
 		}
 		Arrays.sort(sortedPositions, new Comparator<PositionInterface>()
 		{
-			public int compare(PositionInterface first, PositionInterface second)
+			public int compare(PositionInterface first,
+					PositionInterface second)
 			{
 				if (first.getBorePosition() < second.getBorePosition())
 				{
@@ -633,6 +639,30 @@ public class Instrument implements InstrumentInterface
 	}
 
 	/**
+	 * Returns the lowest bore point in this instrument.
+	 * 
+	 * @return
+	 */
+	public PositionInterface getLowestBorePoint()
+	{
+		PositionInterface[] sortedBorePoints = sortList(getBorePoint());
+
+		return sortedBorePoints[sortedBorePoints.length - 1];
+	}
+
+	/**
+	 * Returns to next to the lowest bore point in this instrument.
+	 * 
+	 * @return
+	 */
+	public PositionInterface getNextLowestBorePoint()
+	{
+		PositionInterface[] sortedBorePoints = sortList(getBorePoint());
+
+		return sortedBorePoints[sortedBorePoints.length - 2];
+	}
+
+	/**
 	 * Locates a BorePointInterface object (BorePoint and Hole) by name in a
 	 * list of positions.
 	 * 
@@ -645,13 +675,15 @@ public class Instrument implements InstrumentInterface
 	 *            false to find an element with a name containing the specified
 	 *            name.
 	 * @param isLastMatch
-	 *            - false to find the matching element with lowest bore position;
-	 *            true to find the matching element with highest position.
-	 * @return index of element found, in list as sorted by bore position, or
-	 *         -1 if no matching element found.
+	 *            - false to find the matching element with lowest bore
+	 *            position; true to find the matching element with highest
+	 *            position.
+	 * @return index of element found, in list as sorted by bore position, or -1
+	 *         if no matching element found.
 	 */
-	public static <P extends PositionInterface> int positionIndex(List<P> positions,
-			String name, boolean isExactMatch, boolean isLastMatch)
+	public static <P extends PositionInterface> int positionIndex(
+			List<P> positions, String name, boolean isExactMatch,
+			boolean isLastMatch)
 	{
 		PositionInterface[] sortedPoints = sortList(positions);
 		int boreIdx;
@@ -661,8 +693,8 @@ public class Instrument implements InstrumentInterface
 			for (boreIdx = sortedPoints.length - 1; boreIdx >= 0; --boreIdx)
 			{
 				pointName = sortedPoints[boreIdx].getName();
-				if (name.equalsIgnoreCase(pointName)
-					|| (! isExactMatch && pointName != null && pointName.contains(name)))
+				if (name.equalsIgnoreCase(pointName) || (!isExactMatch
+						&& pointName != null && pointName.contains(name)))
 				{
 					return boreIdx;
 				}
@@ -673,8 +705,8 @@ public class Instrument implements InstrumentInterface
 			for (boreIdx = 0; boreIdx < sortedPoints.length; ++boreIdx)
 			{
 				pointName = sortedPoints[boreIdx].getName();
-				if (name.equalsIgnoreCase(pointName)
-					|| (! isExactMatch && pointName != null && pointName.contains(name)))
+				if (name.equalsIgnoreCase(pointName) || (!isExactMatch
+						&& pointName != null && pointName.contains(name)))
 				{
 					return boreIdx;
 				}

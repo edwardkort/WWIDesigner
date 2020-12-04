@@ -41,9 +41,11 @@ public class HoleGroupPositionFromTopObjectiveFunction
 
 	public HoleGroupPositionFromTopObjectiveFunction(
 			InstrumentCalculator aCalculator, TuningInterface tuning,
-			EvaluatorInterface aEvaluator, int[][] aHoleGroups) throws Exception
+			EvaluatorInterface aEvaluator, int[][] aHoleGroups,
+			BoreLengthAdjustmentType aLengthAdjustmentMode) throws Exception
 	{
-		super(aCalculator, tuning, aEvaluator, aHoleGroups);
+		super(aCalculator, tuning, aEvaluator, aHoleGroups,
+				aLengthAdjustmentMode);
 	}
 
 	@Override

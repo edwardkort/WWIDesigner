@@ -34,8 +34,8 @@ public class HemisphericalBoreHead
 			double heightInterval = (double) i / NUM_HEMI_POINTS;
 			double boreDiameter = headDiameter * heightInterval;
 			point.setBoreDiameter(boreDiameter);
-			double position = (headDiameter - Math.sqrt(headDiameter
-					* headDiameter - boreDiameter * boreDiameter))
+			double position = (headDiameter - Math.sqrt(
+					headDiameter * headDiameter - boreDiameter * boreDiameter))
 					/ 2. + origin;
 			point.setBorePosition(position);
 			borePoints.add(point);
@@ -45,7 +45,8 @@ public class HemisphericalBoreHead
 	/**
 	 * Determine the BorePoint representing the equator of the hemisphere to be
 	 * created. This method makes no assumptions on the regularity of the bore
-	 * profile.
+	 * profile. But it does honor the initial bore point diameter: if non-zero,
+	 * it is the hemiTop diameter.
 	 * 
 	 * @param sortedPoints
 	 *            The array of BorePoints in the flute before adding the
@@ -55,19 +56,29 @@ public class HemisphericalBoreHead
 	public static BorePoint getHemiTopPoint(PositionInterface[] sortedPoints)
 	{
 		BorePoint hemiTopPoint = new BorePoint();
-		double topPosition = sortedPoints[0].getBorePosition();
-		for (int i = 1; i < sortedPoints.length; i++)
+		BorePoint topPoint = (BorePoint) sortedPoints[0];
+		double topPosition = topPoint.getBorePosition();
+		double topDiameter = topPoint.getBoreDiameter();
+		double diameter = 0.;
+		if (topDiameter > 0.00002)
 		{
-			BorePoint point = (BorePoint) sortedPoints[i];
-			double position = point.getBorePosition();
-			double diameter = point.getBoreDiameter();
-			if ((position - topPosition) >= diameter / 2.)
+			diameter = topDiameter;
+		}
+		else
+		{
+			for (int i = 1; i < sortedPoints.length; i++)
 			{
-				hemiTopPoint.setBorePosition(diameter / 2. + topPosition);
-				hemiTopPoint.setBoreDiameter(diameter);
-				break;
+				BorePoint point = (BorePoint) sortedPoints[i];
+				double position = point.getBorePosition();
+				diameter = point.getBoreDiameter();
+				if ((position - topPosition) >= diameter / 2.)
+				{
+					break;
+				}
 			}
 		}
+		hemiTopPoint.setBorePosition(diameter / 2. + topPosition);
+		hemiTopPoint.setBoreDiameter(diameter);
 
 		return hemiTopPoint;
 	}

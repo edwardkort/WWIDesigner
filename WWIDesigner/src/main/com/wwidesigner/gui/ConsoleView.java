@@ -81,6 +81,7 @@ public class ConsoleView extends DataViewPane
 			public void run()
 			{
 				textArea.append(text);
+				textArea.setCaretPosition(textArea.getText().length());
 			}
 		});
 	}

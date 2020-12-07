@@ -112,9 +112,12 @@ public class BoreLengthAdjusterPreserveBore
 		{
 			message += "\n\nThe likely cause is a final bore length shorter than the"
 					+ "\nabove bore points. Delete all bore points below the point"
-					+ "\nat position"
+					+ "\nat position "
 					+ formatter.valueToString(errors[lastIdx].getBorePosition())
-					+ ".";
+					+ "."
+					+ "\n\nRarely, you may have to increase the lower bore length "
+					+ "\nbound (in the constraints) so it excludes the bore points "
+					+ "\nyou want to protect";
 		}
 		catch (ParseException ex)
 		{

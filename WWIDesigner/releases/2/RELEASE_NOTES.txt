@@ -1,7 +1,42 @@
-Release notes for v2.5.0
+Release notes for v2.6.0
 
-This is an upgrade to v2.4.0. Please read INSTALL_README for
+This is an upgrade to v2.5.0. Please read INSTALL_README for
 installation details.
+
+v2.6.0 changes
+Bug fixes:
+Issue #98: Resolved error when running the NAF hole size and
+  position optimizer with no holes. Since this optimizer is
+  used to estimate bore length independent of holes, this was
+  a needed fix.
+Issue #99: Resolved error in NAF optimizers working on fixed
+  bore profiles (Grouped hole position & size, and Hole size
+  and position) would move intermediate bore points. The scenarios
+  invoking these errors involved either (1) using multi-start
+  optimization or (2) having intermediate bore points on the starter
+  flute lower than the optimized flute length. The fix for (1) is
+  to turn off multi-start optimization for these optimizers (I never
+  found it to be useful). The fix for (2) is to abort the optimization
+  and display a message that tells the user what to do - typically
+  delete one or more bore points from the foot of the starter flute.
+  In the future this may be done programmatically, but I want to get
+  more information on whether this can transiently occur during
+  optimization.
+Issue #101: Resolved incorrect scrolling of the Console pane.
+Enhancements:
+Issue #103: When creating hemispherical heads in the NAF instrument
+  pane, the diameter of the top bore point was ignored (but not its
+  position). Instead, the program walked down the bore until it
+  found an appropriately size/spaced bore point to use to set the
+  hemispherical head diameter. With this change, if the top bore
+  point diameter is > 0, the program uses this diameter to set
+  the hemispherical head diameter; otherwise, it performs as
+  before.
+Additional symbol/scale/tuning files were added for the sample
+  C4 flute.
+The JideSoft libraries were updated to version 2.7.11. This change
+  made an upgrade (rather than update) necessary.
+  
 
 v2.5.0 change
 Bug fix:

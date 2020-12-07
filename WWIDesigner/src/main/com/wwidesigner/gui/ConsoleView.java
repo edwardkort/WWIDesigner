@@ -65,7 +65,7 @@ public class ConsoleView extends DataViewPane
 		redirectSystemStreams();
 
 		System.out.println("Woodwind Instrument Designer");
-		System.out.println("Copyright (C) 2019, Edward Kort, Antoine Lefebvre, Burton Patkau.");
+		System.out.println("Copyright (C) 2020, Edward Kort, Antoine Lefebvre, Burton Patkau.");
 		System.out.println("This program comes with ABSOLUTELY NO WARRANTY.");
 		System.out.println("This is free software, and you are welcome to redistribute it");
 		System.out.println("under the terms of the GNU General Public License, version 3 or later.");

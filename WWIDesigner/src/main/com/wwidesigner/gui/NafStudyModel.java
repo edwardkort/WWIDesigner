@@ -816,7 +816,7 @@ public class NafStudyModel extends StudyModel
 				if (optimizer.equals(NO_GROUP_OPT_SUB_CATEGORY_ID)
 						|| optimizer.equals(GROUP_OPT_SUB_CATEGORY_ID))
 				{
-					System.out.print("No multi-start optimization is used.");
+					System.out.println("\nNo multi-start optimization is used.");
 				}
 				else
 				{
